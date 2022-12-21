@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+
+
+{% block page %}
+  <div class="row q-my-lg" :class="{'q-mt-xl': $q.screen.gt.sm}">
+    <div class="col-12 col-md-2 q-pr-xl"></div>
+    <div class="col-12 col-md-6 q-pb-xl">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/components/django.js' %}"></script>
+{% endblock %}
