@@ -8,6 +8,12 @@ omit = ["*apps.py", "*migrations/*", "*settings/*", "*tests/*", "*migratedata.py
 exclude_lines = ["pragma: no cover", "raise NotImplementedError", "def __repr__"]
 show_missing = true
 
+[tool.mypy]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "sparta.settings"
+
 [tool.pytest.ini_options]
 addopts = "--cov=sparta --cov-report=html"
 DJANGO_SETTINGS_MODULE = "sparta.settings.test"
