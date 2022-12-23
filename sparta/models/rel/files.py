@@ -12,7 +12,7 @@ def get_upload_path(instance, filename):
 class File(models.Model):
     PUBLIC = "public"
     PRIVATE = "private"
-    TYPE_CHOICES = (
+    TYPES = (
         (PUBLIC, "Public"),
         (PRIVATE, "Private"),
     )
@@ -21,7 +21,7 @@ class File(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
-    type = models.CharField(max_length=8, choices=TYPE_CHOICES)
+    type = models.CharField(max_length=8, choices=TYPES)
     file = models.FileField(upload_to=get_upload_path)
     position = models.PositiveSmallIntegerField(default=0)
     description = models.TextField(null=True, blank=True)
@@ -38,7 +38,7 @@ class File(models.Model):
 
 
 class FilesMixin(models.Model):
-    files = GenericRelation("sparta.File")
+    files = GenericRelation(File)
 
     class Meta:
         abstract = True

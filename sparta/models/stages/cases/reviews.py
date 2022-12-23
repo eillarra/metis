@@ -10,7 +10,7 @@ class Review(BaseModel):
     NEW = 1  # `nieuw`
     CONCEPT = 5  # `concept` => `onafgewerkt` ? (= niet definitief na einde evaluatieperiode)
     FINAL = 9  # `definitief`
-    STATUS_CHOICES = (
+    STATUSES = (
         (NEW, pgettext_lazy("cases.Review.status", "New")),
         (CONCEPT, pgettext_lazy("cases.Review.status", "Concept")),
         (FINAL, pgettext_lazy("cases.Review.status", "Final")),
@@ -18,8 +18,7 @@ class Review(BaseModel):
     )
 
     case = models.OneToOneField(Case, null=True, related_name="review", on_delete=models.SET_NULL)
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=NEW)
-    status = models.CharField(max_length=16, default=NEW, choices=STATUS_CHOICES)
+    status = models.PositiveSmallIntegerField(choices=STATUSES, default=NEW)
     evaluation = models.JSONField(default=dict)
 
     class Meta:

@@ -127,6 +127,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # Account
 
+AUTH_USER_MODEL = "sparta.User"
+
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptPasswordHasher",
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",

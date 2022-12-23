@@ -1,8 +1,8 @@
 import maya
 
-from model_bakery.recipe import Recipe, foreign_key, related
+from model_bakery.recipe import Recipe, foreign_key
 
-from sparta.models import Link, Place
+from sparta.models import Place
 
 
 now = maya.now()

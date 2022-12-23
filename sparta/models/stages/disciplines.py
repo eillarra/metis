@@ -27,3 +27,7 @@ class TrainingDiscipline(BaseModel):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def name(self) -> str:
+        return str(self.discipline)

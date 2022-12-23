@@ -35,6 +35,7 @@ whitenoise = "*"
 
 [dev-packages]
 black = "*"
+colorama = "*"
 django-debug-toolbar = "*"
 django-stubs = "*"
 djangorestframework-stubs = "*"
@@ -45,5 +46,4 @@ model-bakery = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-django = "*"
-pytz = "*"
 sqlalchemy = "*"

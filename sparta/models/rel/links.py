@@ -13,7 +13,7 @@ class Link(models.Model):
     WEBSITE = "website"
     LINKEDIN = "linkedin"
     OTHER = "other"
-    TYPE_CHOICES = (
+    TYPES = (
         (WEBSITE, "Website"),
         (LINKEDIN, "LinkedIn"),
         (OTHER, "Other"),
@@ -23,7 +23,7 @@ class Link(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
-    type = models.CharField(max_length=32, choices=TYPE_CHOICES, default=WEBSITE)
+    type = models.CharField(max_length=32, choices=TYPES, default=WEBSITE)
     url = models.URLField()
 
     class Meta:
@@ -32,7 +32,7 @@ class Link(models.Model):
 
 class LinksMixin(models.Model):
     links_cache = None
-    links = GenericRelation("sparta.Link")
+    links = GenericRelation(Link)
 
     class Meta:
         abstract = True

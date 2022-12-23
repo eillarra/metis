@@ -3,13 +3,14 @@ from django.db import models
 from django.utils.translation import pgettext_lazy
 
 from sparta.models.base import BaseModel
-from sparta.models.files import File, FilesMixin
+from sparta.models.rel.files import File, FilesMixin
+from sparta.models.rel.remarks import RemarksMixin
 
 
 STAGE_DAYS_LIMIT = 4
 
 
-class Case(FilesMixin, BaseModel):
+class Case(FilesMixin, RemarksMixin, BaseModel):
     """
     `reviewer` is a User in Sparta. it can be suggested by the student, in that case a new account is created.
     Files can be uploaded by the student and can be viewed by student/reviewers.
@@ -17,7 +18,7 @@ class Case(FilesMixin, BaseModel):
 
     REGULAR = "regular"
     INTERACTIVE = "interactive"
-    TYPE_CHOICES = (
+    TYPES = (
         (REGULAR, pgettext_lazy("cases.Case.type", "Regular")),
         (INTERACTIVE, pgettext_lazy("cases.Case.type", "Interactive")),
     )
@@ -25,7 +26,7 @@ class Case(FilesMixin, BaseModel):
     training = models.ForeignKey("sparta.Training", related_name="cases", on_delete=models.CASCADE)
     reviewer = models.ForeignKey("sparta.Contact", null=True, related_name="cases", on_delete=models.SET_NULL)
     title = models.CharField(max_length=255)
-    type = models.CharField(max_length=16, default=REGULAR, choices=TYPE_CHOICES)
+    type = models.CharField(max_length=16, default=REGULAR, choices=TYPES)
     submission_date = models.DateField()  # automatic on final submission? this seems to be same as created_at
 
     reviewer_is_approved = models.BooleanField(default=False)
