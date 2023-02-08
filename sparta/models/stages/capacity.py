@@ -1,6 +1,6 @@
 from django.db import models
 
-from ...._pre.models.base import BaseModel
+from ..base import BaseModel
 
 
 class TrainingCapacity(BaseModel):

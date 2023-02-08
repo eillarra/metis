@@ -195,7 +195,10 @@ REST_FRAMEWORK = {
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(SITE_ROOT, "templates")],
+        "DIRS": [
+            os.path.join(SITE_ROOT, "templates"),
+            os.path.join(PACKAGE_ROOT, "admin", "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "debug": DEBUG,

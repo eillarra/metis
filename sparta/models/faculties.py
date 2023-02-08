@@ -1,10 +1,12 @@
 from django.db import models
 
 from .base import BaseModel
+from .rel.permissions import PermissionsMixin
 
 
 class Faculty(BaseModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=32)
+    full_name = models.CharField(max_length=160)
 
     class Meta:
         verbose_name_plural = "faculties"
@@ -13,7 +15,7 @@ class Faculty(BaseModel):
         return self.name
 
 
-class Degree(BaseModel):
+class Education(PermissionsMixin, BaseModel):
     MASTER = "master"
     BACHELOR = "bachelor"
     TYPES = (
@@ -21,8 +23,8 @@ class Degree(BaseModel):
         (BACHELOR, "Bachelor"),
     )
 
-    faculty = models.ForeignKey(Faculty, null=True, related_name="degrees", on_delete=models.SET_NULL)
-    name = models.CharField(max_length=255)
+    faculty = models.ForeignKey(Faculty, null=True, related_name="educations", on_delete=models.SET_NULL)
+    name = models.CharField(max_length=160)
     type = models.CharField(max_length=16, choices=TYPES)
 
     def __str__(self) -> str:

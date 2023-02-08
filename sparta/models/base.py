@@ -2,9 +2,6 @@ from django.db import models
 
 
 class BaseModel(models.Model):
-    is_active = models.BooleanField(default=True)
-    position = models.SmallIntegerField(default=0)
-
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         "sparta.User",

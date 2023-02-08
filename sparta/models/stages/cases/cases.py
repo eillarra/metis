@@ -24,13 +24,13 @@ class Case(FilesMixin, RemarksMixin, BaseModel):
     )
 
     training = models.ForeignKey("sparta.Training", related_name="cases", on_delete=models.CASCADE)
-    reviewer = models.ForeignKey("sparta.Contact", null=True, related_name="cases", on_delete=models.SET_NULL)
-    title = models.CharField(max_length=255)
+    reviewer = models.ForeignKey("sparta.User", null=True, related_name="cases", on_delete=models.SET_NULL)
+    title = models.CharField(max_length=160)
     type = models.CharField(max_length=16, default=REGULAR, choices=TYPES)
     submission_date = models.DateField()  # automatic on final submission? this seems to be same as created_at
 
     reviewer_is_approved = models.BooleanField(default=False)
-    reviewer_name = models.CharField(max_length=255, null=True, blank=True)
+    reviewer_name = models.CharField(max_length=160, null=True, blank=True)
     reviewer_email = models.EmailField(null=True, blank=True)
 
     class Meta:

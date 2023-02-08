@@ -7,10 +7,6 @@ from sparta.models.rel.remarks import RemarksMixin
 
 
 class Absence(FilesMixin, RemarksMixin, BaseModel):
-    """
-    TODO: QUESTION: currently these are linked to projects? does it make any sense? it should be linked to trainings
-    """
-
     PENDING = "pending"
     ACCEPTED = "accepted"
     REJECTED = "rejected"
@@ -20,7 +16,7 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
         (REJECTED, "Rejected"),
     )
 
-    training = models.ForeignKey("sparta.Training", related_name="absences", on_delete=models.SET_NULL, null=True)
+    training = models.ForeignKey("sparta.Training", related_name="absences", on_delete=models.CASCADE)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
     status = models.CharField(max_length=8, choices=STATUSES, default=PENDING)
@@ -29,13 +25,10 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
         db_table = "sparta_training_absence"
 
     def clean(self) -> None:
-        """
-        TODO: QUESTION: training should be required and removed from the conditions below
-        """
-        if self.training and self.start_at < self.training.period.start_at:
+        if self.start_at.date() < self.training.start_date:
             raise ValidationError("Absence start date cannot be before training start date.")
 
-        if self.training and self.end_at > self.training.period.end_at:
+        if self.end_at.date() > self.training.end_date:
             raise ValidationError("Absence end date cannot be after training end date.")
 
     @property

@@ -253,8 +253,8 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingContactLinkTrainingContactRole
 - [ ] TrainingContactLinkTrainingPlace
 - [ ] TrainingContactRole
-- [ ] TrainingDGroup: `TrainingDisciplineGroup`
-- [ ] TrainingDiscipline: `TrainingDiscipline`
+- [ ] TrainingDGroup
+- [ ] TrainingDiscipline
 - [ ] TrainingDisciplineConsecutive
 - [ ] TrainingDisciplineLinkTrainingDGroup
 - [ ] TrainingDisciplineMutuallyExclude

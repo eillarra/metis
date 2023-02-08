@@ -3,23 +3,31 @@ import datetime
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
+from typing import Optional
 
 from ..base import BaseModel
 
 
 class Project(BaseModel):
-    name = models.CharField(max_length=255)
-    start_at = models.DateTimeField()
-    end_at = models.DateTimeField()
-    disciplines = models.ManyToManyField("sparta.Discipline", related_name="projects")
+    education = models.ForeignKey("sparta.Education", null=True, related_name="projects", on_delete=models.SET_NULL)
+    name = models.CharField(max_length=160)
 
+    is_active = models.BooleanField(default=True)
     is_visible_to_planner = models.BooleanField(default=True)
     is_visible_to_contacts = models.BooleanField(default=True)
     is_visible_to_students = models.BooleanField(default=False)
-    # IsVisibleForBureau
 
     def __str__(self) -> str:
         return self.name
+
+    @cached_property
+    def start_date(self) -> Optional[datetime.date]:
+        return self.periods.first().start_date if self.periods.exists() else None
+
+    @cached_property
+    def end_date(self) -> Optional[datetime.date]:
+        return self.periods.last().end_date if self.periods.exists() else None
 
     @property
     def duration(self) -> datetime.timedelta:
@@ -27,27 +35,27 @@ class Project(BaseModel):
 
     @property
     def is_open(self) -> bool:
-        return self.is_active and self.start_at < timezone.now() < self.end_at
+        return (
+            self.is_active
+            and self.start_date
+            and self.end_date
+            and (self.start_date < timezone.now().date() < self.end_date)
+        )
 
 
 class Period(BaseModel):
     project = models.ForeignKey(Project, related_name="periods", on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=240)
     start_date = models.DateField()
     end_date = models.DateField()
 
     class Meta:
         db_table = "sparta_project_period"
+        ordering = ["project", "start_date"]
 
     def clean(self) -> None:
         if self.start_date > self.end_date:
             raise ValidationError("Start date must be before end date.")
-
-        if self.project.start_at.date() > self.start_date:
-            raise ValidationError("Period start date must be after project start date.")
-
-        if self.project.end_at.date() < self.end_date:
-            raise ValidationError("Period end date must be before project end date.")
 
         return super().clean()
 
