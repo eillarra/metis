@@ -13,6 +13,6 @@ class FacultyAdmin(admin.ModelAdmin):
 class EducationAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     list_display = ("name", "faculty")
-    list_filter = ("faculty", "type")
+    list_filter = ("faculty",)
     # form
     inlines = (ManagersInline,)

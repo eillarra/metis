@@ -16,16 +16,8 @@ class Faculty(BaseModel):
 
 
 class Education(PermissionsMixin, BaseModel):
-    MASTER = "master"
-    BACHELOR = "bachelor"
-    TYPES = (
-        (MASTER, "Master"),
-        (BACHELOR, "Bachelor"),
-    )
-
     faculty = models.ForeignKey(Faculty, null=True, related_name="educations", on_delete=models.SET_NULL)
     name = models.CharField(max_length=160)
-    type = models.CharField(max_length=16, choices=TYPES)
 
     def __str__(self) -> str:
         return self.name

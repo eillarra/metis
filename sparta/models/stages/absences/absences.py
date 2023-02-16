@@ -16,7 +16,7 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
         (REJECTED, "Rejected"),
     )
 
-    training = models.ForeignKey("sparta.Training", related_name="absences", on_delete=models.CASCADE)
+    internship = models.ForeignKey("sparta.Internship", related_name="absences", on_delete=models.CASCADE)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
     status = models.CharField(max_length=8, choices=STATUSES, default=PENDING)

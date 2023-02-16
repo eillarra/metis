@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
-from typing import Optional
 
 from ..base import BaseModel
 
@@ -22,12 +21,12 @@ class Project(BaseModel):
         return self.name
 
     @cached_property
-    def start_date(self) -> Optional[datetime.date]:
-        return self.periods.first().start_date if self.periods.exists() else None
+    def start_date(self) -> datetime.date:
+        return self.periods.first().start_date
 
     @cached_property
-    def end_date(self) -> Optional[datetime.date]:
-        return self.periods.last().end_date if self.periods.exists() else None
+    def end_date(self) -> datetime.date:
+        return self.periods.last().end_date
 
     @property
     def duration(self) -> datetime.timedelta:
@@ -35,15 +34,15 @@ class Project(BaseModel):
 
     @property
     def is_open(self) -> bool:
-        return (
-            self.is_active
-            and self.start_date
-            and self.end_date
-            and (self.start_date < timezone.now().date() < self.end_date)
-        )
+        return self.is_active and self.periods.exists() and (self.start_date <= timezone.now().date() <= self.end_date)
 
 
 class Period(BaseModel):
+    """
+    A first proposal is made based on the ProgrammePeriods defined at ProgrammeBlock level.
+    TODO: could we live without this?
+    """
+
     project = models.ForeignKey(Project, related_name="periods", on_delete=models.CASCADE)
     name = models.CharField(max_length=240)
     start_date = models.DateField()
@@ -61,10 +60,10 @@ class Period(BaseModel):
 
     @property
     def is_open(self) -> bool:
-        return self.is_active and self.start_date < timezone.now().date() < self.end_date
+        return self.is_active and (self.start_date <= timezone.now().date() <= self.end_date)
 
     def accepts_cases(self, *, extension_days: int = 4) -> bool:
         """
         De casus wordt 'automatisch' gekoppeld aan een stage. De uiterste indiendatum kan per project ingesteld worden (Dit wordt ingesteld op niveau van het 'Casustype', analoog aan de instellingen van de datums voor beoordeling stages), typisch is deze uiterste datum relatief tov einddatum van de stage van de student. (De einddatum van de stage van een student valt mogelijks niet samen met een blokgrens.)
         """
-        return self.is_open or self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date()
+        return self.is_open or (self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date())

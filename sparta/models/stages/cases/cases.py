@@ -23,7 +23,7 @@ class Case(FilesMixin, RemarksMixin, BaseModel):
         (INTERACTIVE, pgettext_lazy("cases.Case.type", "Interactive")),
     )
 
-    training = models.ForeignKey("sparta.Training", related_name="cases", on_delete=models.CASCADE)
+    internship = models.ForeignKey("sparta.Internship", related_name="cases", on_delete=models.CASCADE)
     reviewer = models.ForeignKey("sparta.User", null=True, related_name="cases", on_delete=models.SET_NULL)
     title = models.CharField(max_length=160)
     type = models.CharField(max_length=16, default=REGULAR, choices=TYPES)

@@ -7,16 +7,17 @@ from ..base import BaseModel
 from ..rel.remarks import RemarksMixin
 
 
-class Training(RemarksMixin, BaseModel):
+class Internship(RemarksMixin, BaseModel):
     """
-    TODO: QUESTION: we allow nulls here to be able to migrate data from the legacy database
-    If we are not migrating existing data, or not all of it, we should remove the nulls
+    An internship by a student.
     """
 
-    block = models.ForeignKey("sparta.ProgrammeBlock", related_name="trainings", on_delete=models.SET_NULL, null=True)
-    period = models.ForeignKey("sparta.Period", related_name="trainings", on_delete=models.SET_NULL, null=True)
-    student = models.ForeignKey("sparta.User", related_name="trainings", on_delete=models.SET_NULL, null=True)
-    place = models.ForeignKey("sparta.Place", related_name="trainings", on_delete=models.SET_NULL, null=True)
+    programme_period = models.ForeignKey(
+        "sparta.ProgrammePeriod", related_name="internships", null=True, on_delete=models.SET_NULL
+    )
+    period = models.ForeignKey("sparta.Period", related_name="internships", on_delete=models.CASCADE)
+    student = models.ForeignKey("sparta.User", related_name="internships", on_delete=models.CASCADE)
+    place = models.ForeignKey("sparta.Place", related_name="internships", on_delete=models.CASCADE)
     custom_start_date = models.DateField(null=True)  # by default start date is period's start date
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
 
@@ -42,9 +43,9 @@ class Training(RemarksMixin, BaseModel):
     def duration(self) -> datetime.timedelta:
         return self.end_at - self.start_at
 
+    @property
     def is_active(self) -> bool:
-        today = timezone.now().date()
-        return today >= self.start_date and today <= self.end_date
+        return self.start_date <= timezone.now().date() <= self.end_date
 
     def accepts_cases(self) -> bool:
         raise NotImplementedError
