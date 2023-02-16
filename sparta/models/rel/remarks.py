@@ -1,7 +1,8 @@
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.core import serializers
 from django.db import models
+
+from .snapshots import save_snapshot
 
 
 class Remark(models.Model):
@@ -15,7 +16,6 @@ class Remark(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     text = models.TextField()
-    snapshot = models.JSONField(null=True, editable=False)
 
     created_by = models.ForeignKey("sparta.User", related_name="remarks", on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -25,9 +25,8 @@ class Remark(models.Model):
         db_table = "sparta_rel_remark"
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            self.snapshot = serializers.serialize("json", [self.content_object])
         super().save(*args, **kwargs)
+        save_snapshot(self.content_object.__class__, self.content_object)
 
 
 class RemarksMixin(models.Model):
