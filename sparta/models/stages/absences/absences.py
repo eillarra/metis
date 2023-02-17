@@ -22,7 +22,7 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
     status = models.CharField(max_length=8, choices=STATUSES, default=PENDING)
 
     class Meta:
-        db_table = "sparta_training_absence"
+        db_table = "sparta_internship_absence"
 
     def clean(self) -> None:
         if self.start_at.date() < self.training.start_date:

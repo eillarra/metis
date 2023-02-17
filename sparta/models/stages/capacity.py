@@ -16,4 +16,4 @@ class TrainingCapacity(BaseModel):
     capacity = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
-        db_table = "sparta_training_capacity"
+        db_table = "sparta_internship_capacity"

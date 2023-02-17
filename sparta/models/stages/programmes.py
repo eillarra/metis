@@ -47,9 +47,8 @@ class ProgrammePeriod(BaseModel):
     """
     An internship period inside a ProgrammeBlock.
     The final internships or stages will be linked to this model, so we can later check the dependencies
-    between them and make sure the student has covered all the requirements for the programme.
+    between them and make sure the student has covered all the requirements for the programme / trajectory.
     A programme period defines some orientative 'dates' that will be used to create the actual periods for a project.
-    TODO: can we reach this via Internship => Period => ProgrammePeriod? Maybe remove programme_period from Internship?
     """
 
     block = models.ForeignKey(ProgrammeBlock, related_name="periods", on_delete=models.CASCADE)
@@ -68,7 +67,7 @@ class ProgrammePeriod(BaseModel):
 
 class Trajectory(BaseModel):
     """
-    A trajectory is a set of periods that are related and have some kind of dependency.
+    A trajectory is a set of periods that are related and have some dependencies defined.
     """
 
     name = models.CharField(max_length=160)
@@ -84,6 +83,7 @@ class Trajectory(BaseModel):
 class TrajectoryPeriod(BaseModel):
     """
     Related model that defines the order of the periods inside a trajectory.
+    Special requirements for a trajectory are also saved here.
     """
 
     trajectory = models.ForeignKey(Trajectory, on_delete=models.CASCADE)
@@ -93,33 +93,3 @@ class TrajectoryPeriod(BaseModel):
     class Meta:
         db_table = "sparta_programme_trajectory_period"
         ordering = ["trajectory", "position"]
-
-
-class DisciplineRule(BaseModel):
-    REQUIRED = "required"
-    OPTIONAL = "optional"
-    TYPES = (
-        (REQUIRED, "Required"),
-        (OPTIONAL, "Optional"),
-    )
-
-    programme = models.ForeignKey(Programme, related_name="discipline_rules", on_delete=models.CASCADE)
-    type = models.CharField(max_length=16, choices=TYPES, default=REQUIRED)
-    disciplines = models.ManyToManyField("sparta.Discipline", related_name="rules")
-    choices = models.PositiveSmallIntegerField(default=1)
-
-    class Meta:
-        ordering = ["programme", "type"]
-        unique_together = ("programme", "type")
-
-    """
-    there is sometimes a project that is not part of the programme,+
-    that takes the space of a period
-    """
-
-    def clean(self) -> None:
-        pass
-
-    """
-    other rules: what period should be used
-    """

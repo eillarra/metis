@@ -2,7 +2,9 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from typing import Optional
 
+from .programmes import Programme
 from ..base import BaseModel
 from ..rel.remarks import RemarksMixin
 
@@ -12,15 +14,13 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
-    programme_period = models.ForeignKey(
-        "sparta.ProgrammePeriod", related_name="internships", null=True, on_delete=models.SET_NULL
-    )
     period = models.ForeignKey("sparta.Period", related_name="internships", on_delete=models.CASCADE)
     student = models.ForeignKey("sparta.User", related_name="internships", on_delete=models.CASCADE)
     place = models.ForeignKey("sparta.Place", related_name="internships", on_delete=models.CASCADE)
     custom_start_date = models.DateField(null=True)  # by default start date is period's start date
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
 
+    disciplines = models.ManyToManyField("sparta.Discipline", related_name="internships")
     # evaluation_deadline = models.DateField()  # this can be used for cases > reviews
 
     def clean(self) -> None:
@@ -49,3 +49,6 @@ class Internship(RemarksMixin, BaseModel):
 
     def accepts_cases(self) -> bool:
         raise NotImplementedError
+
+    def programme(self) -> Optional[Programme]:
+        return self.period.programme_period.programme if self.period.programme_period else None

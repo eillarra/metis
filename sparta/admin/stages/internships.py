@@ -7,5 +7,5 @@ from ..rel.remarks import RemarksInline
 @admin.register(Internship)
 class InternshipAdmin(admin.ModelAdmin):
     # form
-    raw_id_fields = ("programme_period", "period", "student", "place")
+    raw_id_fields = ("period", "student", "place")
     inlines = (RemarksInline,)

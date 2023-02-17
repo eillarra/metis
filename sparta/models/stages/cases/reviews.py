@@ -22,7 +22,7 @@ class Review(BaseModel):
     evaluation = models.JSONField(default=dict)
 
     class Meta:
-        db_table = "sparta_training_case_review"
+        db_table = "sparta_internship_case_review"
 
     def can_be_managed_by(self, user) -> bool:
         return self.case.reviewer == user

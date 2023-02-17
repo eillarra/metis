@@ -9,6 +9,11 @@ from ..base import BaseModel
 
 
 class Project(BaseModel):
+    """
+    A project is a collection of internships for an academic year or other period of time.
+    Projects are created so that the planner can distribute students to places. It is mainly an administrative tool.
+    """
+
     education = models.ForeignKey("sparta.Education", null=True, related_name="projects", on_delete=models.SET_NULL)
     name = models.CharField(max_length=160)
 
@@ -40,10 +45,12 @@ class Project(BaseModel):
 class Period(BaseModel):
     """
     A first proposal is made based on the ProgrammePeriods defined at ProgrammeBlock level.
-    TODO: could we live without this?
     """
 
     project = models.ForeignKey(Project, related_name="periods", on_delete=models.CASCADE)
+    programme_period = models.ForeignKey(
+        "sparta.ProgrammePeriod", null=True, related_name="project_periods", on_delete=models.SET_NULL
+    )
     name = models.CharField(max_length=240)
     start_date = models.DateField()
     end_date = models.DateField()
@@ -64,6 +71,9 @@ class Period(BaseModel):
 
     def accepts_cases(self, *, extension_days: int = 4) -> bool:
         """
-        De casus wordt 'automatisch' gekoppeld aan een stage. De uiterste indiendatum kan per project ingesteld worden (Dit wordt ingesteld op niveau van het 'Casustype', analoog aan de instellingen van de datums voor beoordeling stages), typisch is deze uiterste datum relatief tov einddatum van de stage van de student. (De einddatum van de stage van een student valt mogelijks niet samen met een blokgrens.)
+        De casus wordt 'automatisch' gekoppeld aan een stage. De uiterste indiendatum kan per project ingesteld worden
+        (Dit wordt ingesteld op niveau van het 'Casustype', analoog aan de instellingen van de datums voor beoordeling
+        stages), typisch is deze uiterste datum relatief tov einddatum van de stage van de student. (De einddatum van
+        de stage van een student valt mogelijks niet samen met een blokgrens.)
         """
         return self.is_open or (self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date())

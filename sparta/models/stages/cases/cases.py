@@ -34,7 +34,7 @@ class Case(FilesMixin, RemarksMixin, BaseModel):
     reviewer_email = models.EmailField(null=True, blank=True)
 
     class Meta:
-        db_table = "sparta_training_case"
+        db_table = "sparta_internship_case"
 
     def clean(self) -> None:
         if not self.training.accepts_cases():
