@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 from typing import Optional
 
-from .programmes import Programme
+from .programs import Program
 from ..base import BaseModel
 from ..rel.remarks import RemarksMixin
 
@@ -26,7 +26,7 @@ class Internship(RemarksMixin, BaseModel):
     def clean(self) -> None:
         """
         Things to check:
-        - if student has a training in the same programme (via block) check if DisciplineRule allows it
+        - if student has a training in the same Program (via block) check if DisciplineRule allows it
         - if Education has place rules, check if the place is allowed
         """
         return super().clean()
@@ -47,8 +47,9 @@ class Internship(RemarksMixin, BaseModel):
     def is_active(self) -> bool:
         return self.start_date <= timezone.now().date() <= self.end_date
 
+    @property
+    def program(self) -> Optional[Program]:
+        return self.period.program_period.program if self.period.program_period else None
+
     def accepts_cases(self) -> bool:
         raise NotImplementedError
-
-    def programme(self) -> Optional[Programme]:
-        return self.period.programme_period.programme if self.period.programme_period else None

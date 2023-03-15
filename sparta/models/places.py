@@ -6,6 +6,16 @@ from .rel.links import LinksMixin
 from .rel.remarks import RemarksMixin
 
 
+class Region(BaseModel):
+    name = models.CharField(max_length=160)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Place(AddressesMixin, LinksMixin, RemarksMixin, BaseModel):
     HOSPITAL = "hospital"
     WARD = "ward"
@@ -18,12 +28,14 @@ class Place(AddressesMixin, LinksMixin, RemarksMixin, BaseModel):
 
     type = models.CharField(max_length=16, choices=TYPES, default=HOSPITAL)
     name = models.CharField(max_length=160)
-    parent = models.ForeignKey("self", related_name="children", on_delete=models.CASCADE, null=True, blank=True)
+    parent = models.ForeignKey("self", related_name="children", on_delete=models.SET_NULL, null=True, blank=True)
+    region = models.ForeignKey(Region, related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
 
-    # contact info
-    # contacts
-
+    practical_information = models.TextField(blank=True, null=True)
     disciplines = models.ManyToManyField("sparta.Discipline", related_name="places")
+
+    class Meta:
+        ordering = ["type", "name"]
 
     def __str__(self) -> str:
         return self.name

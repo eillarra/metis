@@ -1,5 +1,5 @@
 # flake8: noqa
 
 from .internships import *
-from .programmes import *
+from .programs import *
 from .projects import *

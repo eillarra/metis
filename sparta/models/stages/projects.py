@@ -44,12 +44,12 @@ class Project(BaseModel):
 
 class Period(BaseModel):
     """
-    A first proposal is made based on the ProgrammePeriods defined at ProgrammeBlock level.
+    A first proposal is made based on the ProgramInternships defined at ProgramBlock level.
     """
 
     project = models.ForeignKey(Project, related_name="periods", on_delete=models.CASCADE)
-    programme_period = models.ForeignKey(
-        "sparta.ProgrammePeriod", null=True, related_name="project_periods", on_delete=models.SET_NULL
+    program_internship = models.ForeignKey(
+        "sparta.ProgramInternship", null=True, related_name="project_periods", on_delete=models.SET_NULL
     )
     name = models.CharField(max_length=240)
     start_date = models.DateField()

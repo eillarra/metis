@@ -5,7 +5,7 @@ from ..base import BaseModel
 
 class StudentGroup(BaseModel):
     """
-    TODO: QUESTION: do we realy need this when we have ProgrammeBlock?
+    TODO: QUESTION: do we realy need this when we have ProgramBlock?
     """
 
     project = models.ForeignKey("sparta.Project", related_name="groups", on_delete=models.CASCADE)
