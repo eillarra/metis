@@ -2,10 +2,10 @@ from django.db import models
 from django.utils import timezone
 
 from ..base import BaseModel
-from .rules import RulesMixin
+from .constraints import DisciplineConstraintsMixin
 
 
-class Program(RulesMixin, BaseModel):
+class Program(DisciplineConstraintsMixin, BaseModel):
     """
     A generic definition of an internship curriculum.
     Different constraints can be applied to the program.
@@ -32,7 +32,7 @@ class Program(RulesMixin, BaseModel):
         return self.valid_from <= today and (not self.valid_until or self.valid_until >= today)
 
 
-class ProgramBlock(RulesMixin, BaseModel):
+class ProgramBlock(DisciplineConstraintsMixin, BaseModel):
     """
     Based on semesters or a natural year, a orientative block is defined.
     Normally these will be linked to an academic year, and they will be closely related to degrees (Ba3, Ma1, Ma2).
@@ -51,7 +51,7 @@ class ProgramBlock(RulesMixin, BaseModel):
         return f"{self.Program} - {self.name}"
 
 
-class ProgramInternship(RulesMixin, BaseModel):
+class ProgramInternship(DisciplineConstraintsMixin, BaseModel):
     """
     An internship inside a ProgramBlock.
     The final Internship or stage will be linked to this model, so we can later check the dependencies
@@ -83,7 +83,7 @@ class ProgramInternship(RulesMixin, BaseModel):
         return f"{self.block} - {self.name}"
 
 
-class Track(RulesMixin, BaseModel):
+class Track(DisciplineConstraintsMixin, BaseModel):
     """
     A Track is a set of program internships that are related and (can) have some constraints of their own.
     """
@@ -103,9 +103,9 @@ class Track(RulesMixin, BaseModel):
         return self.program.is_valid
 
 
-class TrackInternship(RulesMixin, models.Model):
+class TrackInternship(DisciplineConstraintsMixin, models.Model):
     """
-    Related model that defines the order of the periods inside a Track.
+    Related model that defines the order of the internships inside a Track.
     Special requirements for a Track are also saved here.
     """
 
