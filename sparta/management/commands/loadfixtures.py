@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from model_bakery import baker
 
 from sparta import factories as f
+from ..fixtures.create_program import create_audiology
 
 
 class Command(BaseCommand):
@@ -15,3 +16,6 @@ class Command(BaseCommand):
         # places
         f.RegionFactory.create_batch(4)
         f.PlaceFactory.create_batch(50)
+
+        # programs
+        create_audiology()

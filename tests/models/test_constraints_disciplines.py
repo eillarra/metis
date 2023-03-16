@@ -4,7 +4,7 @@ from typing import List
 
 from sparta.models.disciplines import Discipline
 from sparta.models.faculties import Education
-from sparta.models.stages.constraints import DisciplineConstraint, validate_discipline_constraint
+from sparta.models.stages.constraints import DisciplineConstraint, validate_discipline_constraints
 from sparta.models.stages.programs import Program, Track
 
 
@@ -94,13 +94,13 @@ def create_constraint(request, program):
     ],
     indirect=["create_constraint"],
 )
-def test_validate_discipline_constraint(
+def test_validate_discipline_constraints(
     create_constraint,
     discipline_ids: List[int],
     expected_result: bool,
 ):
     constraint = create_constraint
-    assert validate_discipline_constraint(discipline_ids, constraint) is expected_result
+    assert validate_discipline_constraints(discipline_ids, [constraint]) is expected_result
 
 
 @pytest.mark.django_db
@@ -108,17 +108,11 @@ def test_validate_discipline_constraint(
     "discipline_ids,expected_result",
     [
         ([1, 1, 2, 3, 4, 5, 6], True),  # OK
+        ([1, 1, 2, 2, 2, 5, 6], True),  # OK
         ([1, 1, 2, 3, 4, 5], False),  # Total count is not 7
         ([1, 1, 1, 2, 3, 4, 5], False),  # Discipline 1 must be repeated exactly twice
         ([1, 1, 2, 3, 4, 5, 7], False),  # Discipline 7 not allowed
     ],
 )
 def test_track_with_multiple_constraints(track_with_constraints, discipline_ids, expected_result):
-    print(f"Testing discipline_ids: {discipline_ids}")
-    print("Constraints:")
-    for constraint in track_with_constraints.constraints.all():
-        print(f"  - {constraint}, allowed_disciplines: {list(constraint.disciplines.values_list('id', flat=True))}")
-    result = track_with_constraints.validate_discipline_constraints(discipline_ids)
-    print(f"Expected: {expected_result}, Result: {result}")
-    assert result == expected_result
-    # assert track_with_constraints.validate_discipline_constraints(discipline_ids) == expected_result
+    assert track_with_constraints.validate_discipline_constraints(discipline_ids) == expected_result
