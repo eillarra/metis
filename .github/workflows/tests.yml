@@ -28,7 +28,7 @@ jobs:
         env:
           DJANGO_ENV: test
         run: |
-          pip install maya model-bakery pytest pytest-cov pytest-django
+          pip install factory-boy maya pytest pytest-cov pytest-django
           pytest --cov=sparta --cov-report=xml
 
       - name: Upload coverage to Codecov
