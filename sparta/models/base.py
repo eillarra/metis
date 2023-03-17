@@ -1,7 +1,9 @@
 from django.db import models
 
+from .rel.snapshots import SnapshotsMixin
 
-class BaseModel(models.Model):
+
+class BaseModel(SnapshotsMixin, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         "sparta.User",
@@ -28,9 +30,3 @@ class BaseModel(models.Model):
         """TODO: find the best way of always enforcing checks."""
         # self.full_clean()
         super().save(*args, **kwargs)
-
-    def save_model(self, request, obj, form, change) -> None:
-        if not obj.pk:
-            obj.created_by = request.user
-        obj.updated_by = request.user
-        super().save_model(request, obj, form, change)

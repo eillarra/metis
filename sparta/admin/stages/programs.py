@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from sparta.models.stages.programs import Program, Track
+from ..base import BaseModelAdmin
 
 
 class TrackInline(admin.TabularInline):
@@ -9,7 +10,7 @@ class TrackInline(admin.TabularInline):
 
 
 @admin.register(Program)
-class ProgramAdmin(admin.ModelAdmin):
+class ProgramAdmin(BaseModelAdmin):
     date_hierarchy = "valid_from"
     list_display = ("name", "education", "valid_from", "valid_until")
     list_filter = (("education", admin.RelatedOnlyFieldListFilter),)

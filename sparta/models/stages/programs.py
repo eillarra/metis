@@ -35,7 +35,7 @@ class Program(DisciplineConstraintsMixin, BaseModel):
         return self.valid_from <= today and (not self.valid_until or self.valid_until >= today)
 
 
-class ProgramBlock(DisciplineConstraintsMixin, BaseModel):
+class ProgramBlock(BaseModel):
     """
     Based on semesters or a natural year, a orientative block is defined.
     Normally these will be linked to an academic year, and they will be closely related to degrees (Ba3, Ma1, Ma2).
