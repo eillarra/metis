@@ -56,7 +56,6 @@ black sparta
 [github-tests-badge]: https://github.com/eillarra/sparta/workflows/tests/badge.svg
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 
-
 [django]: https://www.djangoproject.com/
 [drf]: https://www.django-rest-framework.org/
 [pipenv]: https://docs.pipenv.org/#install-pipenv-today

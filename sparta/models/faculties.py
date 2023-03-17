@@ -5,7 +5,7 @@ from .rel.permissions import PermissionsMixin
 
 
 class Faculty(BaseModel):
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=160)
     full_name = models.CharField(max_length=160)
 
     class Meta:

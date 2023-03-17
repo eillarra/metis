@@ -1,5 +1,6 @@
 import pytest
 
+from datetime import date
 from typing import List
 
 from sparta.models.disciplines import Discipline
@@ -17,7 +18,7 @@ def disciplines():
 def program(disciplines):
     education = Education.objects.create(name="Education 1")
     program = Program.objects.create(
-        id=1, education=education, name="Program 1", valid_from="2022-01-01", valid_until="2024-12-31"
+        id=1, education=education, name="Program 1", valid_from=date(2020, 1, 1), valid_until=date(2030, 12, 31)
     )
 
     return program

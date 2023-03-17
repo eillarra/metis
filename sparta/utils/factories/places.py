@@ -1,6 +1,6 @@
 import factory
 
-from sparta.models import Region
+from sparta.models.places import Region, Place
 
 
 class RegionFactory(factory.django.DjangoModelFactory):
@@ -11,7 +11,8 @@ class RegionFactory(factory.django.DjangoModelFactory):
 
 
 class PlaceFactory(factory.django.DjangoModelFactory):
-    region = factory.Iterator(Region.objects.all())
+    region = factory.SubFactory(RegionFactory)
+    name = factory.Sequence(lambda n: f"Place {n}")
 
     class Meta:
-        model = "sparta.Place"
+        model = Place

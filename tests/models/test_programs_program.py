@@ -2,7 +2,7 @@ import pytest
 
 from django.utils import timezone
 
-from sparta.factories import ProgramFactory
+from sparta.utils.factories import ProgramFactory
 
 
 @pytest.mark.django_db

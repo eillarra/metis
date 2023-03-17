@@ -1,7 +1,18 @@
-from sparta.models import Discipline, Education, Program, ProgramBlock, ProgramInternship, Track, TrackInternship
+from datetime import date
+
+from sparta.models import (
+    Discipline,
+    Education,
+    Faculty,
+    Program,
+    ProgramBlock,
+    ProgramInternship,
+    Track,
+    TrackInternship,
+)
 
 
-def create_audiology():
+def create_audiology_program() -> Program:
     """
     Create an Audiology program with the following structure:
 
@@ -14,19 +25,20 @@ def create_audiology():
     - Track B: 1 clinical, 2 prosthetic
 
     Internship discipline constraints:
-    - Track A internships allow a choice between clinical and prosthetic disciplines
+    - Track A internships have no extra constraints: choose between clinical and prosthetic disciplines
     - Track B internships have limited discipline choice: 1B - prosthetic, 2B - clinical, 3B - prosthetic
 
     Returns:
-        Program: An instance of program with the specified structure
+        Program: An instance of Program with the specified structure
     """
 
     # Create Education
-    education = Education.objects.create(name="Hearing Sciences")
+    faculty, _ = Faculty.objects.get_or_create(name="Faculty of Medicine and Health Sciences")
+    education, _ = Education.objects.get_or_create(faculty=faculty, name="Hearing Sciences")
 
     # Create Program
     program = Program.objects.create(
-        education=education, name="Audiology", valid_from="2020-01-01", valid_until="2025-12-31"
+        education=education, name="Audiology", valid_from=date(2020, 1, 1), valid_until=date(2030, 12, 31)
     )
 
     # Create Program Blocks
@@ -35,8 +47,8 @@ def create_audiology():
     ma2 = ProgramBlock.objects.create(program=program, name="Ma2", position=3)
 
     # Create Disciplines
-    clinical = Discipline.objects.create(name="clinical")
-    prosthetic = Discipline.objects.create(name="prosthetic")
+    clinical, _ = Discipline.objects.get_or_create(name="clinical")
+    prosthetic, _ = Discipline.objects.get_or_create(name="prosthetic")
 
     # Create Program Internships
     for i, code in enumerate(["1A", "2A", "3A", "4A", "1B", "2B", "3B"]):
