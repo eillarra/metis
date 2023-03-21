@@ -6,6 +6,7 @@ from ..base import BaseModel
 class InternshipCapacity(BaseModel):
     """
     Assigned capacity for a place in a period.
+    This can be copied from previous project.
     """
 
     place = models.ForeignKey("sparta.TrainingPlace", related_name="capacities", on_delete=models.CASCADE)

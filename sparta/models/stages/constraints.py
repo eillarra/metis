@@ -3,10 +3,10 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.query import QuerySet
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
-from django.utils.functional import cached_property
-from typing import List, Set, Tuple
+from typing import List, Tuple
 
 
 from sparta.models import Discipline
@@ -76,16 +76,6 @@ class DisciplineConstraintsMixin(models.Model):
     class Meta:
         abstract = True
 
-    @cached_property
-    def available_disciplines(self) -> models.QuerySet:
-        """
-        Returns a set of all available disciplines included in the constraints.
-
-        Returns:
-            QuerySet: A QuerySet of Discipline objects.
-        """
-        return Discipline.objects.filter(constraints__in=self.constraints.all())
-
     def _constraints_conflict(self, constraint1: DisciplineConstraint, constraint2: DisciplineConstraint) -> bool:
         allowed_disciplines1 = set(constraint1.disciplines.values_list("id", flat=True))
         allowed_disciplines2 = set(constraint2.disciplines.values_list("id", flat=True))
@@ -128,6 +118,27 @@ class DisciplineConstraintsMixin(models.Model):
 
     def validate_discipline_constraints(self, discipline_ids: List[int]) -> bool:
         return validate_discipline_constraints(discipline_ids, list(self.constraints.all()))
+
+    def add_required_discipline(self, discipline: Discipline) -> None:
+        constraint = self.constraints.create(min_count=1, max_count=1, max_repeat=1)
+        constraint.disciplines.set([discipline])
+
+    def get_available_disciplines(self) -> "QuerySet[Discipline]":
+        return get_disciplines_from_constraints(self.constraints.all())
+
+
+def get_disciplines_from_constraints(constraints: models.QuerySet) -> "QuerySet[Discipline]":
+    """
+    Returns a set of all disciplines included in the given constraints.
+    """
+
+    print(constraints)
+    disciplines = Discipline.objects.none()
+
+    for constraint in constraints:
+        disciplines |= constraint.disciplines.all()
+
+    return disciplines
 
 
 def validate_discipline_constraints(

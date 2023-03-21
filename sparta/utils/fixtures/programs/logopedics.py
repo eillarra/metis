@@ -57,6 +57,6 @@ def create_logopedics_program() -> Program:
 
     # Create Track Internships
     for internship in ProgramInternship.objects.all():
-        TrackInternship.objects.create(track=track_a, internship=internship, position=i)
+        TrackInternship.objects.create(track=track_a, program_internship=internship, position=i)
 
     return program

@@ -1,34 +1,90 @@
 import datetime
 
+from collections import Counter
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from typing import Optional
+from typing import List, Optional
 
 from .programs import Program
 from ..base import BaseModel
+from ..disciplines import Discipline
 from ..rel.remarks import RemarksMixin
 
 
-def validate_discipline_choice(obj: "Internship") -> None:
-    available_disciplines = obj.program_internship.available_disciplines
+def get_remaining_discipline_constraints(obj: "Internship") -> List[dict]:
+    """
+    Calculate the remaining discipline constraints based on the track constraints.
 
-    if obj.discipline not in available_disciplines:
+    Args:
+        obj (Internship): An instance of the Internship class.
+
+    Returns:
+        List[Dict]: A list of remaining DisciplineConstraint objects.
+    """
+
+    covered_counts = obj.get_counter_for_disciplines()
+    remaining_constraints = []
+
+    # check internship contraints
+
+    if obj.track:
+        for constraint in obj.track.constraints.all():
+            constraint_discipline_ids = list(constraint.disciplines.values_list("id", flat=True))
+            remaining_min_count = constraint.min_count
+            remaining_max_count = constraint.max_count
+            remaining_max_repeat = constraint.max_repeat
+
+            for discipline_id, count in covered_counts.items():
+                if discipline_id in constraint_discipline_ids:
+                    remaining_min_count = remaining_min_count - count
+                    remaining_max_count = remaining_max_count - count
+                    remaining_max_repeat = remaining_max_repeat - 1
+
+            remaining_constraint = {
+                "min_count": max(0, remaining_min_count),
+                "max_count": max(0, remaining_max_count),
+                "max_repeat": max(0, remaining_max_repeat),
+                "disciplines": constraint.disciplines.all(),
+            }
+
+            remaining_constraints.append(remaining_constraint)
+
+    print(remaining_constraints)
+
+    return remaining_constraints
+
+
+def validate_discipline_choice(obj: "Internship") -> None:
+    """
+    TODO: this needs refactoring.
+    """
+    """
+    Validate if the chosen discipline for an internship is available and meets the constraints.
+
+    This function checks whether the chosen discipline is one of the available disciplines
+    for the given internship program, and if it meets the remaining constraints for the student.
+    Raises a ValidationError if the chosen discipline is invalid.
+
+    Args:
+        obj (Internship): An instance of the Internship class.
+
+    Raises:
+        ValidationError: If the chosen discipline is not available for the internship program
+            or does not meet the remaining constraints for the student.
+
+    Example:
+        validate_discipline_choice(my_internship)
+    """
+    if obj.discipline not in obj.get_available_disciplines():
         raise ValidationError(f"Chosen discipline is not available for this internship: {obj.program_internship}")
 
-    covered_disciplines = obj.student.internships.values_list("discipline", flat=True)
-    remaining_constraints = obj.program_internship.get_remaining_discipline_constraints(covered_disciplines)
+    if obj.track and obj.get_counter_for_disciplines()[obj.discipline_id] >= obj.track.constraints.first().max_repeat:
+        raise ValidationError("Chosen discipline does not meet the remaining constraints for this internship.")
 
-    valid_choice = False
-    for constraint in remaining_constraints:
-        if obj.discipline in constraint.disciplines.all():
-            valid_choice = True
-            break
-
-    if not valid_choice:
-        raise ValidationError(
-            f"Chosen discipline does not meet the remaining constraints for this internship: {obj.program_internship}"
-        )
+    for constraint in get_remaining_discipline_constraints(obj):
+        if constraint["max_count"] == 0:
+            raise ValidationError("Chosen discipline does not meet the remaining constraints for this internship.")
 
 
 class Internship(RemarksMixin, BaseModel):
@@ -36,10 +92,11 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
+    student = models.ForeignKey("sparta.User", related_name="internships", on_delete=models.CASCADE)
+    track = models.ForeignKey("sparta.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
     program_internship = models.ForeignKey(
         "sparta.ProgramInternship", related_name="internships", on_delete=models.CASCADE
     )
-    student = models.ForeignKey("sparta.User", related_name="internships", on_delete=models.CASCADE)
     place = models.ForeignKey("sparta.Place", related_name="internships", on_delete=models.CASCADE)
     custom_start_date = models.DateField(null=True)  # by default start date is period's start date
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
@@ -52,9 +109,13 @@ class Internship(RemarksMixin, BaseModel):
     def clean(self) -> None:
         """
         Things to check:
-        - if student has a training in the same Program (via block) check if DisciplineRule allows it
-        - if Education has place rules, check if the place is allowed
+        - the selected program_internship is part of the selected track (if a track is selected)
+        - if the student has previous internships in same Track, check if DisciplineConstraint allows it
+        - TODO: if Education has place rules, check if the place is allowed
         """
+        if self.track and not self.track.program_internships.filter(id=self.program_internship.id).count():
+            raise ValidationError("The chosen program internship is not part of the chosen track.")
+
         validate_discipline_choice(self)
         return super().clean()
 
@@ -80,3 +141,42 @@ class Internship(RemarksMixin, BaseModel):
 
     def accepts_cases(self) -> bool:
         raise NotImplementedError
+
+    def get_available_disciplines(self) -> models.QuerySet:
+        """
+        Returns a set of all available disciplines included in the constraints.
+
+        Returns:
+            QuerySet: A QuerySet of Discipline objects.
+        """
+        program_disciplines = self.program_internship.get_available_disciplines()
+
+        if program_disciplines.count() > 0:
+            return program_disciplines
+
+        return self.track.get_available_disciplines() if self.track else Discipline.objects.none()
+
+    def get_covered_disciplines(self) -> models.QuerySet:
+        """
+        If a track exists, it returns a list of disciplines that have already been covered by this student.
+
+        Returns:
+            QuerySet: A QuerySet of Discipline objects.
+        """
+        if self.track is None:
+            return Discipline.objects.none()
+
+        past_internships = self.student.internships.exclude(id=self.id).filter(track=self.track)
+        return Discipline.objects.filter(internships__in=past_internships)
+
+    def get_counter_for_disciplines(self) -> Counter:
+        """
+        Returns a dictionary of discipline IDs and their count for this internship.
+
+        Returns:
+            Dict: A dictionary of disciplines and their count for this internship.
+        """
+        if not self.track:
+            return {}
+
+        return Counter(self.get_covered_disciplines().values_list("id", flat=True))

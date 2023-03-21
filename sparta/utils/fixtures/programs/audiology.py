@@ -69,10 +69,10 @@ def create_audiology_program() -> Program:
 
     # Create Track Internships
     for i, internship in enumerate(internships[:4], start=1):
-        TrackInternship.objects.create(track=track_a, internship=internship, position=i)
+        TrackInternship.objects.create(track=track_a, program_internship=internship, position=i)
 
     for i, internship in enumerate(internships[4:], start=1):
-        TrackInternship.objects.create(track=track_b, internship=internship, position=i)
+        TrackInternship.objects.create(track=track_b, program_internship=internship, position=i)
 
     # Create internship constraints
     for internship in internships:

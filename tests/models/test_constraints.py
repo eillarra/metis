@@ -1,11 +1,16 @@
 import pytest
 
 from datetime import date
+from django.db.models import QuerySet
 from typing import List
 
 from sparta.models.disciplines import Discipline
 from sparta.models.faculties import Education
-from sparta.models.stages.constraints import DisciplineConstraint, validate_discipline_constraints
+from sparta.models.stages.constraints import (
+    DisciplineConstraint,
+    get_disciplines_from_constraints,
+    validate_discipline_constraints,
+)
 from sparta.models.stages.programs import Program, Track
 
 
@@ -22,6 +27,12 @@ def program(disciplines):
     )
 
     return program
+
+
+@pytest.fixture
+def track(disciplines, program):
+    track = Track.objects.create(program=program, name="Test Track")
+    return track
 
 
 @pytest.fixture
@@ -48,10 +59,10 @@ def track_with_constraints(disciplines, program):
 
 
 @pytest.fixture
-def create_constraint(request, program):
+def create_constraint(request, track):
     min_count, max_count, max_repeat = request.param
     constraint = DisciplineConstraint.objects.create(
-        content_object=program, min_count=min_count, max_count=max_count, max_repeat=max_repeat
+        content_object=track, min_count=min_count, max_count=max_count, max_repeat=max_repeat
     )
     constraint.disciplines.set([1, 2, 3])
 
@@ -117,3 +128,12 @@ def test_validate_discipline_constraints(
 )
 def test_track_with_multiple_constraints(track_with_constraints, discipline_ids, expected_result):
     assert track_with_constraints.validate_discipline_constraints(discipline_ids) == expected_result
+
+
+@pytest.mark.django_db
+def test_get_disciplines_from_constraints_no_constraints():
+    constraints = DisciplineConstraint.objects.none()
+    disciplines = get_disciplines_from_constraints(constraints)
+
+    assert isinstance(disciplines, QuerySet)
+    assert disciplines.count() == 0
