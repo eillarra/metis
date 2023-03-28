@@ -35,9 +35,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    # "allauth.socialaccount.providers.google",
     # "allauth.socialaccount.providers.linkedin_oauth2",
-    "allauth.socialaccount.providers.microsoft",  # ugent
     # api
     "corsheaders",
     "rest_framework",
@@ -46,6 +44,7 @@ INSTALLED_APPS = [
     "sparta",
     "sparta.api",
     "sparta.site",
+    "sparta.ugent_provider",
     # tasks
     "huey.contrib.djhuey",
     # admin
@@ -156,18 +155,12 @@ ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 # Social accounts
 
 SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {
-            "access_type": "online",
-        },
-    },
     "linkedin_oauth2": {
         "SCOPE": ["r_emailaddress", "r_liteprofile"],
         "PROFILE_FIELDS": ["id", "firstName", "lastName", "emailAddress"],
     },
-    "microsoft": {
-        "TENANT": "organizations",
+    "ugent": {
+        "TENANT": os.environ.get("UGENT_TENANT_ID", "organizations"),
     },
 }
 
