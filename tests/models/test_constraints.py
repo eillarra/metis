@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 from typing import List
 
 from sparta.models.disciplines import Discipline
-from sparta.models.faculties import Education
+from sparta.models.faculties import Faculty, Education
 from sparta.models.stages.constraints import (
     DisciplineConstraint,
     get_disciplines_from_constraints,
@@ -15,18 +15,19 @@ from sparta.models.stages.programs import Program, Track
 
 
 @pytest.fixture
-def disciplines():
-    return [Discipline.objects.create(name=f"Discipline {i}") for i in range(1, 7)]
-
-
-@pytest.fixture
-def program(disciplines):
-    education = Education.objects.create(name="Education 1")
+def program():
+    faculty = Faculty.objects.create(name="Faculty 1")
+    education = Education.objects.create(faculty=faculty, name="Education 1")
     program = Program.objects.create(
         id=1, education=education, name="Program 1", valid_from=date(2020, 1, 1), valid_until=date(2030, 12, 31)
     )
 
     return program
+
+
+@pytest.fixture
+def disciplines(program):
+    return [Discipline.objects.create(education=program.education, name=f"Discipline {i}") for i in range(1, 7)]
 
 
 @pytest.fixture

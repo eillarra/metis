@@ -34,7 +34,7 @@ def create_audiology_program() -> Program:
 
     # Create Education
     faculty, _ = Faculty.objects.get_or_create(name="Faculty of Medicine and Health Sciences")
-    education, _ = Education.objects.get_or_create(faculty=faculty, name="Hearing Sciences")
+    education, _ = Education.objects.get_or_create(faculty=faculty, name="Hearing Sciences", short_name="Audiology")
 
     # Create Program
     program = Program.objects.create(
@@ -47,8 +47,8 @@ def create_audiology_program() -> Program:
     ma2 = ProgramBlock.objects.create(program=program, name="Ma2", position=3)
 
     # Create Disciplines
-    clinical, _ = Discipline.objects.get_or_create(name="clinical")
-    prosthetic, _ = Discipline.objects.get_or_create(name="prosthetic")
+    clinical, _ = Discipline.objects.get_or_create(education=education, name="clinical")
+    prosthetic, _ = Discipline.objects.get_or_create(education=education, name="prosthetic")
 
     # Create Program Internships
     for i, code in enumerate(["1A", "2A", "3A", "4A", "1B", "2B", "3B"]):

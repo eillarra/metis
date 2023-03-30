@@ -3,21 +3,14 @@ import factory
 from django.utils import timezone
 
 from sparta.models.stages.programs import Program, ProgramBlock, ProgramInternship, Track, TrackInternship
-
-
-class EducationFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = "sparta.Education"
-
-    # Add any required fields or default values here
-    name = factory.Sequence(lambda n: f"Education {n}")
+from ..faculties import EducationFactory
 
 
 class DisciplineFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "sparta.Discipline"
 
-    # Add any required fields or default values here
+    education = factory.SubFactory(EducationFactory)
     name = factory.Sequence(lambda n: f"Discipline {n}")
 
 

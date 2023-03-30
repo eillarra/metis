@@ -29,7 +29,7 @@ def create_logopedics_program() -> Program:
 
     # Create Education
     faculty, _ = Faculty.objects.get_or_create(name="Faculty of Medicine and Health Sciences")
-    education, _ = Education.objects.get_or_create(faculty=faculty, name="Hearing Sciences")
+    education, _ = Education.objects.get_or_create(faculty=faculty, name="Logopedics", short_name="Logopedics")
 
     # Create Program
     program = Program.objects.create(
@@ -42,7 +42,7 @@ def create_logopedics_program() -> Program:
     ma2 = ProgramBlock.objects.create(program=program, name="Ma2", position=3)
 
     # Create Disciplines
-    logopedics, _ = Discipline.objects.get_or_create(name="logopedics")
+    logopedics, _ = Discipline.objects.get_or_create(education=education, name="logopedics")
 
     # Create Program Internships
     for i, code in enumerate(["1A", "2A", "3A"]):

@@ -109,7 +109,7 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
 def test_validate_discipline_choice(audiology_program, track_name, internships_done, failing_internship):
     user = UserFactory()
     track = Track.objects.get(name=f"Track {track_name}")
-    Discipline.objects.create(name="not_a_discipline")
+    Discipline.objects.create(education=track.program.education, name="not_a_discipline")
 
     for data in internships_done:
         internship = InternshipFactory(

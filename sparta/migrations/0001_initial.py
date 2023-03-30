@@ -115,17 +115,6 @@ class Migration(migrations.Migration):
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
-                (
-                    "updated_by",
-                    models.ForeignKey(
-                        blank=True,
-                        editable=False,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="%(class)s_updated_by",
-                        to=settings.AUTH_USER_MODEL,
-                    ),
-                ),
             ],
             options={
                 "ordering": ["name"],
@@ -155,6 +144,8 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("name", models.CharField(max_length=160)),
+                ("short_name", models.CharField(max_length=80)),
+                ("description", models.TextField(blank=True, null=True)),
                 (
                     "created_by",
                     models.ForeignKey(
@@ -918,8 +909,13 @@ class Migration(migrations.Migration):
             model_name="education",
             name="faculty",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.SET_NULL, related_name="educations", to="sparta.faculty"
+                on_delete=django.db.models.deletion.PROTECT, related_name="educations", to="sparta.faculty"
             ),
+        ),
+        migrations.AddField(
+            model_name="education",
+            name="office_members",
+            field=models.ManyToManyField(blank=True, related_name="educations", to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name="education",
@@ -957,6 +953,25 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "sparta_discipline_constraint",
             },
+        ),
+        migrations.AddField(
+            model_name="discipline",
+            name="education",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT, related_name="disciplines", to="sparta.education"
+            ),
+        ),
+        migrations.AddField(
+            model_name="discipline",
+            name="updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_updated_by",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.CreateModel(
             name="Case",
