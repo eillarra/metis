@@ -27,7 +27,10 @@ def program():
 
 @pytest.fixture
 def disciplines(program):
-    return [Discipline.objects.create(education=program.education, name=f"Discipline {i}") for i in range(1, 7)]
+    return [
+        Discipline.objects.create(education=program.education, code=f"dis{i}", name=f"Discipline {i}")
+        for i in range(1, 7)
+    ]
 
 
 @pytest.fixture

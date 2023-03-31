@@ -1,13 +1,11 @@
 import factory
 
-from sparta.models.places import Region, Place
-
 
 class RegionFactory(factory.django.DjangoModelFactory):
     name = factory.Iterator(["Oost-Vlaanderen", "West-Vlaanderen", "Antwerpen", "Brussel"])
 
     class Meta:
-        model = Region
+        model = "sparta.Region"
 
 
 class PlaceFactory(factory.django.DjangoModelFactory):
@@ -15,4 +13,4 @@ class PlaceFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: f"Place {n}")
 
     class Meta:
-        model = Place
+        model = "sparta.Place"

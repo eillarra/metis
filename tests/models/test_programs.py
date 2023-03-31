@@ -58,7 +58,7 @@ def test_available_disciplines(audiology_program, track_name, internship_name, d
             track=Track.objects.get(name=f"Track {track_name}"),
             program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}"),
             student=user,
-            discipline=Discipline.objects.get(name=discipline_name),
+            discipline=Discipline.objects.get(code=discipline_name),
         )
 
 
@@ -81,7 +81,7 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"),
             student=user,
-            discipline=Discipline.objects.get(name=data[1]),
+            discipline=Discipline.objects.get(code=data[1]),
         )
         internship.clean()
         internship.save()
@@ -90,7 +90,7 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
         track=track,
         program_internship=ProgramInternship.objects.get(name=f"Internship {new_internship[0]}"),
         student=user,
-        discipline=Discipline.objects.get(name=new_internship[1]),
+        discipline=Discipline.objects.get(code=new_internship[1]),
     )
 
     assert len(new_internship.get_covered_disciplines()) == len(internships_done)
@@ -109,14 +109,14 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
 def test_validate_discipline_choice(audiology_program, track_name, internships_done, failing_internship):
     user = UserFactory()
     track = Track.objects.get(name=f"Track {track_name}")
-    Discipline.objects.create(education=track.program.education, name="not_a_discipline")
+    Discipline.objects.create(education=track.program.education, code="not_a_discipline", name="None")
 
     for data in internships_done:
         internship = InternshipFactory(
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"),
             student=user,
-            discipline=Discipline.objects.get(name=data[1]),
+            discipline=Discipline.objects.get(code=data[1]),
         )
         internship.clean()
         internship.save()
@@ -126,7 +126,7 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {failing_internship[0]}"),
             student=user,
-            discipline=Discipline.objects.get(name=failing_internship[1]),
+            discipline=Discipline.objects.get(code=failing_internship[1]),
         )
         new_internship.clean()
         new_internship.save()

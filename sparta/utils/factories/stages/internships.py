@@ -1,6 +1,7 @@
 import factory
 
 from sparta.models.stages.internships import Internship
+from .projects import ProjectFactory
 from ..places import PlaceFactory
 from ..users import UserFactory
 
@@ -9,6 +10,7 @@ class InternshipFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Internship
 
+    project = factory.SubFactory(ProjectFactory)
     student = factory.SubFactory(UserFactory)
     place = factory.SubFactory(PlaceFactory)
     custom_start_date = factory.Faker("date_between", start_date="-1y", end_date="today")

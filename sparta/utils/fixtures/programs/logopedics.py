@@ -44,7 +44,7 @@ def create_logopedics_program() -> Program:
     ma2 = ProgramBlock.objects.create(program=program, name="Ma2", position=3)
 
     # Create Disciplines
-    logopedics, _ = Discipline.objects.get_or_create(education=education, name="logopedics")
+    logopedics, _ = Discipline.objects.get_or_create(education=education, code="logopedics", name="Logopedics")
 
     # Create Program Internships
     for i, code in enumerate(["1A", "2A", "3A"]):
@@ -58,7 +58,7 @@ def create_logopedics_program() -> Program:
     track_a.constraints.first().disciplines.set([logopedics])
 
     # Create Track Internships
-    for internship in ProgramInternship.objects.all():
+    for i, internship in enumerate(ProgramInternship.objects.filter(block__program=program).order_by("name")):
         TrackInternship.objects.create(track=track_a, program_internship=internship, position=i)
 
     return program

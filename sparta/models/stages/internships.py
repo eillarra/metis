@@ -92,6 +92,7 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
+    project = models.ForeignKey("sparta.Project", related_name="internships", on_delete=models.CASCADE)
     student = models.ForeignKey("sparta.User", related_name="internships", on_delete=models.CASCADE)
     track = models.ForeignKey("sparta.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
     program_internship = models.ForeignKey(

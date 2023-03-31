@@ -24,7 +24,7 @@ class Program(BaseModel):
     # evaluation_form = models.ForeignKey("sparta.EvaluationForm", related_name="Programs", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.education} - {self.name}"
+        return self.name
 
     @property
     def is_valid(self):
@@ -48,7 +48,7 @@ class ProgramBlock(BaseModel):
         ordering = ["program", "position"]
 
     def __str__(self) -> str:
-        return f"{self.program} - {self.name}"
+        return self.name
 
 
 class ProgramInternship(DisciplineConstraintsMixin, BaseModel):

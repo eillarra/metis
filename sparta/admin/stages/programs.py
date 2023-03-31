@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from sparta.models.stages.programs import Program, Track
+from sparta.models.stages.programs import Program, ProgramBlock, Track, TrackInternship
 from ..base import BaseModelAdmin
 
 
-class TrackInline(admin.TabularInline):
-    model = Track
+class ProgramBlockInline(admin.TabularInline):
+    model = ProgramBlock
     extra = 0
 
 
@@ -15,5 +15,16 @@ class ProgramAdmin(BaseModelAdmin):
     list_display = ("name", "education", "valid_from", "valid_until")
     list_filter = (("education", admin.RelatedOnlyFieldListFilter),)
     # form
-    raw_id_fields = ("education",)
-    inlines = (TrackInline,)
+    inlines = (ProgramBlockInline,)
+
+
+class TrackInternshipInline(admin.TabularInline):
+    model = TrackInternship
+    extra = 0
+
+
+@admin.register(Track)
+class TrackAdmin(BaseModelAdmin):
+    list_filter = (("program", admin.RelatedOnlyFieldListFilter),)
+    # form
+    inlines = (TrackInternshipInline,)

@@ -17,8 +17,8 @@ class Faculty(BaseModel):
 
 
 class Education(PermissionsMixin, BaseModel):
-    code = models.CharField(max_length=16, unique=True)
     faculty = models.ForeignKey(Faculty, related_name="educations", on_delete=models.PROTECT)
+    code = models.CharField(max_length=16, unique=True)
     name = models.CharField(max_length=160)
     short_name = models.CharField(max_length=80)
     description = models.TextField(blank=True, null=True)
