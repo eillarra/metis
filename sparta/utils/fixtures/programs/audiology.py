@@ -34,7 +34,9 @@ def create_audiology_program() -> Program:
 
     # Create Education
     faculty, _ = Faculty.objects.get_or_create(name="Faculty of Medicine and Health Sciences")
-    education, _ = Education.objects.get_or_create(faculty=faculty, name="Hearing Sciences", short_name="Audiology")
+    education, _ = Education.objects.get_or_create(
+        code="audio", faculty=faculty, name="Hearing Sciences", short_name="Audiology"
+    )
 
     # Create Program
     program = Program.objects.create(

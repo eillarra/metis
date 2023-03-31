@@ -1,0 +1,114 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load static %}
+
+
+{% block head_title %}{{ education.code }} - {{ block.super }}{% endblock %}
+
+{% block header %}
+  <q-header class="bg-ugent text-white q-pl-sm">
+    <q-toolbar>
+      <q-btn flat round dense @click="visibleDrawer = !visibleDrawer" icon="menu"></q-btn>
+      <q-toolbar-title>
+        <strong>OFFICE</strong>
+      </q-toolbar-title>
+      <sparta-user-menu username="{{ user }}"></sparta-user-menu>
+    </q-toolbar>
+  </q-header>
+{% endblock %}
+
+{% block drawer %}
+  <q-drawer show-if-above v-model="visibleDrawer" side="left" :elevated="$q.screen.lt.md" class="bg-grey-1 text-weight-medium" :width="250">
+    <q-scroll-area class="fit">
+      <div class="q-pt-lg q-pb-xl q-pl-sm">
+        <q-list :dense="$q.screen.gt.sm">
+          <q-item-label header>Overview</q-item-label>
+          <q-item clickable :to="{name: 'programs'}">
+            <q-item-section avatar><q-icon name="insights"></q-icon></q-item-section>
+            <q-item-section>Programs</q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+    </q-scroll-area>
+  </q-drawer>
+{% endblock %}
+
+{% block content %}
+  <div id="vars"></div>
+  <router-view></router-view>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-programs.html' %}
+  {% include './v-students.html' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js file app_office %}
+  <script src="{% static 'js/components/forms.js' %}"></script>
+  <!--<script src="{% static 'js/mixins/event_related.js' %}"></script>
+  <script src="{% static 'js/mixins/query.js' %}"></script>
+  <script src="{% static 'js/mixins/uploader.js' %}"></script>-->
+  <script type="text/javascript">
+    var VARS = document.querySelector('#vars').dataset;
+
+    var Store = Vuex.createStore({
+      state: {
+      },
+      getters: {
+      },
+      mutations: {
+      }
+    });
+
+    var ProgramsView = {
+      template: '#v-programs',
+    };
+
+    var StudentsView = {
+      template: '#v-students',
+    };
+
+    var Router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
+      routes: [
+        {
+          path: '/',
+          redirect: {name: 'programs'}
+        },
+        {
+          name: 'programs',
+          path: '/programs/',
+          pathToRegexpOptions: {strict: true},
+          component: ProgramsView
+        },
+        {
+          name: 'students',
+          path: '/students/',
+          pathToRegexpOptions: {strict: true},
+          component: StudentsView
+        },
+      ]
+    });
+
+    var app = Vue.createApp({
+      data: function () {
+        return {
+          visibleDrawer: true
+        };
+      },
+      created: function () {
+        // this.$q.loading.show();
+      }
+    });
+
+    Sparta.utils.registerComponents(app, [SpartaCommonComponents, SpartaFormComponents]);
+
+    app.use(Store);
+    app.use(Router);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+{% endblock %}

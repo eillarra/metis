@@ -14,5 +14,6 @@ class EducationFactory(factory.django.DjangoModelFactory):
         model = "sparta.Education"
 
     # Add any required fields or default values here
+    code = factory.Sequence(lambda n: f"ed{n}")
     faculty = factory.SubFactory(FacultyFactory)
     name = factory.Sequence(lambda n: f"Education {n}")

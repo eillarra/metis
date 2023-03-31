@@ -29,7 +29,9 @@ def create_logopedics_program() -> Program:
 
     # Create Education
     faculty, _ = Faculty.objects.get_or_create(name="Faculty of Medicine and Health Sciences")
-    education, _ = Education.objects.get_or_create(faculty=faculty, name="Logopedics", short_name="Logopedics")
+    education, _ = Education.objects.get_or_create(
+        code="logo", faculty=faculty, name="Logopedics", short_name="Logopedics"
+    )
 
     # Create Program
     program = Program.objects.create(

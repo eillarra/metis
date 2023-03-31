@@ -128,6 +128,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = "sparta.User"
 
+LOGIN_URL = "account_login"
+LOGIN_REDIRECT_URL = "homepage"
+
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptPasswordHasher",
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
