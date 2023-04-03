@@ -6,27 +6,43 @@
 
 {% block head_title %}{{ education.code }} - {{ block.super }}{% endblock %}
 
-{% block header %}
-  <q-header class="bg-ugent text-white q-pl-sm">
-    <q-toolbar>
-      <q-btn flat round dense @click="visibleDrawer = !visibleDrawer" icon="menu"></q-btn>
-      <q-toolbar-title>
-        <strong>OFFICE</strong>
-      </q-toolbar-title>
-      <sparta-user-menu username="{{ user }}"></sparta-user-menu>
-    </q-toolbar>
-  </q-header>
+{% block toolbar_menu %}
+  <q-toolbar class="col-12 col-md-10 offset-md-2 bg-white text-primary q-pl-none">
+    <q-tabs shrink dense class="ugent__submenu q-gutter-md">
+      <q-tab no-caps>Stagebureau</q-tab>
+      <!--<q-route-tab no-caps>Other</q-route-tab>-->
+    </q-tabs>
+  </q-toolbar>
 {% endblock %}
 
 {% block drawer %}
-  <q-drawer show-if-above v-model="visibleDrawer" side="left" :elevated="$q.screen.lt.md" class="bg-grey-1 text-weight-medium" :width="250">
+  <q-drawer show-if-above v-model="visibleDrawer" side="left" :elevated="$q.screen.lt.md" class="q-pt-lg text-weight-medium" :width="214">
     <q-scroll-area class="fit">
-      <div class="q-pt-lg q-pb-xl q-pl-sm">
+      <div class="q-pt-lg q-pb-xl q-pr-md">
         <q-list :dense="$q.screen.gt.sm">
-          <q-item-label header>Overview</q-item-label>
           <q-item clickable :to="{name: 'programs'}">
-            <q-item-section avatar><q-icon name="insights"></q-icon></q-item-section>
+            <q-item-section avatar>
+              <q-icon name="app_registration" size="xs"></q-icon>
+            </q-item-section>
             <q-item-section>Programs</q-item-section>
+          </q-item>
+          <q-item clickable :to="{name: 'students'}">
+            <q-item-section avatar>
+              <q-icon name="person_search" size="xs"></q-icon>
+            </q-item-section>
+            <q-item-section>Students</q-item-section>
+          </q-item>
+          <q-item clickable :to="{name: 'calendar'}">
+            <q-item-section avatar>
+              <q-icon name="calendar_month" size="xs"></q-icon>
+            </q-item-section>
+            <q-item-section>Calendar</q-item-section>
+          </q-item>
+          <q-item clickable :to="{name: 'places'}">
+            <q-item-section avatar>
+              <q-icon name="business" size="xs"></q-icon>
+            </q-item-section>
+            <q-item-section>Places</q-item-section>
           </q-item>
         </q-list>
       </div>
@@ -40,6 +56,8 @@
 {% endblock %}
 
 {% block vue_templates %}
+  {% include './v-calendar.html' %}
+  {% include './v-places.html' %}
   {% include './v-programs.html' %}
   {% include './v-students.html' %}
 {% endblock %}
@@ -62,6 +80,14 @@
       }
     });
 
+    var CalendarView = {
+      template: '#v-calendar',
+    };
+
+    var PlacesView = {
+      template: '#v-places',
+    };
+
     var ProgramsView = {
       template: '#v-programs',
     };
@@ -76,6 +102,18 @@
         {
           path: '/',
           redirect: {name: 'programs'}
+        },
+        {
+          name: 'calendar',
+          path: '/calendar/',
+          pathToRegexpOptions: {strict: true},
+          component: CalendarView
+        },
+        {
+          name: 'places',
+          path: '/places/',
+          pathToRegexpOptions: {strict: true},
+          component: PlacesView
         },
         {
           name: 'programs',

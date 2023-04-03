@@ -5,22 +5,23 @@
 
 
 {% block header %}
-  <div class="row ugent__header">
+  <q-header class="row ugent__header bg-white">
     <q-toolbar class="col-3 col-md-2 bg-white q-pl-none q-pt-md">
       <a href="/"><img src="{% static 'images/ugent.svg' %}" class="logo q-mr-sm"></a>
     </q-toolbar>
-    <q-toolbar class="col-9 col-md-10 bg-ugent text-white q-pl-md q-pb-xs" :class="{'q-pl-lg': $q.screen.gt.sm}" style="align-items: flex-end">
+    <q-toolbar class="col-9 col-md-10 bg-ugent text-white q-pl-md" :class="{'q-pl-lg': $q.screen.gt.sm}" style="align-items: flex-end">
       <h2 class="q-ma-none">SPARTA</h2>
       <div class="absolute-top-right header-links text-white q-py-sm q-px-md q-gutter-x-lg" :class="{'q-py-md q-px-lg': $q.screen.gt.sm}">
         {% if user.is_authenticated %}
-           {% if user.is_staff %}<a href="/admin/">Admin</a>{% endif %}
-          <a href="{% url 'account_logout' %}">Afmelden <q-icon name="logout" size="xxs"></q-icon></a>
+          {% if user.is_staff %}<a href="/admin/">Admin</a>{% endif %}
+          <sparta-user-menu display-name="{{ user.name }}"></sparta-user-menu>
         {% else %}
           <a href="{% url 'account_login' %}">Aanmelden <q-icon name="login" size="xxs"></q-icon></a>
         {% endif %}
       </div>
     </q-toolbar>
-  </div>
+    {% block toolbar_menu %}{% endblock %}
+  </q-header>
 {% endblock %}
 
 {% block page %}

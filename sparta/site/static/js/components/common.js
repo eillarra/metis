@@ -151,16 +151,17 @@ var SpartaCommonComponents = {
       };
     },
     props: {
-      username: {
+      displayName: {
         type: String
       }
     },
     template: `
-      <q-btn v-if="userId > 0" no-caps flat icon-right="account_circle" color="grey-8" :label="($q.screen.gt.xs) ? username : null">
-        <q-menu>
+      <a v-if="userId > 0" class="cursor-pointer">
+        <span v-show="$q.screen.gt.xs">{{ displayName }} &nbsp;<q-icon name="account_circle" size="xxs" />
+        <q-menu anchor="top end" self="bottom right" :offset="[0, 8]">
           <q-list style="min-width: 140px">
-            <q-item clickable tag="a" href="/u/dashboard/">
-              <q-item-section>Dashboard</q-item-section>
+            <q-item clickable tag="a" href="/">
+              <q-item-section>Homepage</q-item-section>
             </q-item>
             <q-separator />
             <q-item clickable tag="a" href="/u/logout/">
@@ -169,7 +170,7 @@ var SpartaCommonComponents = {
             </q-item>
           </q-list>
         </q-menu>
-      </q-btn>
+      </a>
     `
   },
 

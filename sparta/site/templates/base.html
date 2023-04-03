@@ -35,7 +35,7 @@
       </div>
     </noscript>
     <div id="vue" v-cloak>
-      <q-layout view="hhh Lpr fff" class="container">
+      <q-layout view="hhh lpR fff" class="container">
         {% if messages %}
           {% for message in messages %}
             <django-message message="{{ message }}" level="{{ message.level }}" tags="{{ message.tags }}"></django-message>
@@ -64,7 +64,7 @@
             </q-page>
           </q-page-container>
         {% endblock %}
-        <div class="ugent__footer bg-ugent text-white q-py-lg q-mt-xl full-width q-px-md" :class="{'q-px-lg': $q.screen.gt.sm}">
+        <q-footer class="ugent__footer bg-ugent text-white q-py-lg q-mt-xl full-width q-px-md" :class="{'q-px-lg': $q.screen.gt.sm}">
           <div class="row justify-between text-body2">
             <div class="col-12 col-md">
               <p>Version <version-hash></version-hash></p>
@@ -76,7 +76,7 @@
               </ul>
             </div>
           </div>
-        </div>
+        </q-footer>
       </q-layout>
     </div>
     {% block vue_templates %}{% endblock %}

@@ -32,9 +32,9 @@ body {
 .container {
   padding: 0 12px;
 
-  @media (min-width: 1284px) {
+  @media (min-width: 1260px) {
     margin: 0 auto;
-    max-width: 1284px;
+    max-width: 1260px;
   }
 }
 
@@ -45,6 +45,34 @@ body {
   img.logo {
     height: 90px;
     max-width: 100%;
+  }
+}
+
+.ugent__submenu {
+  font-size: 20px;
+  font-family: 'UGent Panno Medium', 'Arial', sans-serif;
+
+  .q-tab {
+    margin-right: 24px;
+    padding-left: 0;
+    padding-right: 0;
+    color: $ugent-blue;
+    transition: none;
+
+    &.q-tab--active {
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+    }
+
+    &.q-tab--inactive {
+      opacity: 1;
+    }
+  }
+
+  .q-ripple,
+  .q-focus-helper,
+  .q-tab__indicator {
+    display: none;
   }
 }
 

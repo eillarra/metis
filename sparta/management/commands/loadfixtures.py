@@ -45,7 +45,7 @@ class Command(BaseCommand):
                 if group[1] <= year:
                     for user in group[0]:
                         try:
-                            # TODO: fix this
+                            # TODO: fix this
                             f.InternshipFactory.create(
                                 project=project,
                                 student=user,

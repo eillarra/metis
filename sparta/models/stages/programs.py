@@ -73,7 +73,7 @@ class ProgramInternship(DisciplineConstraintsMixin, BaseModel):
 
     class Meta:
         db_table = "sparta_program_internship"
-        ordering = ["block", "position"]
+        ordering = ["block__position", "name"]  # TODO: position
 
     def __str__(self) -> str:
         return f"{self.block} - {self.name}"
