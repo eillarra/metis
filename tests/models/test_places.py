@@ -1,7 +1,7 @@
 import pytest
 
-from sparta.models import Link, Place
-from sparta.utils.factories import PlaceFactory
+from epione.models import Link, Place
+from epione.utils.factories import PlaceFactory
 
 
 @pytest.fixture

@@ -1,2 +1,2 @@
-sparta/migrations/** linguist-generated
-sparta/site/static/vendor/** linguist-vendored
+epione/migrations/** linguist-generated
+epione/site/static/vendor/** linguist-vendored

@@ -2,9 +2,9 @@ import pytest
 
 from django.core.exceptions import ValidationError
 
-from sparta.utils.factories import UserFactory, InternshipFactory
-from sparta.utils.fixtures.programs import create_audiology_program
-from sparta.models import Discipline, Program, ProgramInternship, Track
+from epione.utils.factories import UserFactory, InternshipFactory
+from epione.utils.fixtures.programs import create_audiology_program
+from epione.models import Discipline, Program, ProgramInternship, Track
 
 
 @pytest.fixture

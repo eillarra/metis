@@ -12,8 +12,8 @@ show_missing = true
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 
 [tool.django-stubs]
-django_settings_module = "sparta.settings"
+django_settings_module = "epione.settings"
 
 [tool.pytest.ini_options]
-addopts = "--cov=sparta --cov-report=html"
-DJANGO_SETTINGS_MODULE = "sparta.settings.test"
+addopts = "--cov=epione --cov-report=html"
+DJANGO_SETTINGS_MODULE = "epione.settings.test"

@@ -4,14 +4,14 @@ from datetime import date
 from django.db.models import QuerySet
 from typing import List
 
-from sparta.models.disciplines import Discipline
-from sparta.models.faculties import Faculty, Education
-from sparta.models.stages.constraints import (
+from epione.models.disciplines import Discipline
+from epione.models.faculties import Faculty, Education
+from epione.models.stages.constraints import (
     DisciplineConstraint,
     get_disciplines_from_constraints,
     validate_discipline_constraints,
 )
-from sparta.models.stages.programs import Program, Track
+from epione.models.stages.programs import Program, Track
 
 
 @pytest.fixture

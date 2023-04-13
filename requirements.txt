@@ -16,6 +16,7 @@ django-countries==7.5.1
 django-dnt==1.0
 django-ical==1.9.0
 django-libsass==0.9
+django-modeltranslation==0.18.9
 django-recaptcha==3.0.0
 django-recurrence==1.11.1 ; python_version >= '3.7'
 djangorestframework==3.14.0
@@ -26,7 +27,7 @@ greenlet==2.0.2 ; platform_python_implementation == 'CPython'
 gunicorn==20.1.0
 hiredis==2.2.2
 huey==2.4.5
-icalendar==5.0.4 ; python_version >= '3.7'
+icalendar==5.0.5 ; python_version >= '3.7'
 idna==3.4 ; python_version >= '3.5'
 libsass==0.22.0 ; python_version >= '3.6'
 mysqlclient==2.1.1

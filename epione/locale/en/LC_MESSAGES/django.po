@@ -1,0 +1,86 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-04-14 11:20+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: epione/models/stages/cases/cases.py:22
+msgctxt "cases.Case.type"
+msgid "Regular"
+msgstr ""
+
+#: epione/models/stages/cases/cases.py:23
+msgctxt "cases.Case.type"
+msgid "Interactive"
+msgstr ""
+
+#: epione/models/stages/cases/reviews.py:14
+msgctxt "cases.Review.status"
+msgid "New"
+msgstr ""
+
+#: epione/models/stages/cases/reviews.py:15
+msgctxt "cases.Review.status"
+msgid "Concept"
+msgstr ""
+
+#: epione/models/stages/cases/reviews.py:16
+msgctxt "cases.Review.status"
+msgid "Final"
+msgstr ""
+
+#: epione/models/stages/cases/reviews.py:17
+msgctxt "cases.Review.status"
+msgid "Unfinished"
+msgstr ""
+
+#: epione/site/templates/account/login.html:14
+#: epione/site/templates/account/login.html:29
+#: epione/site/templates/layout.html:20
+msgid "Sign in"
+msgstr ""
+
+#: epione/site/templates/account/login.html:17
+#, python-format
+msgid ""
+"Please sign in with one\n"
+"of your existing third party accounts. Or, <a href=\"%(signup_url)s\">sign "
+"up</a>\n"
+"for a %(site_name)s account and sign in below:"
+msgstr ""
+
+#: epione/site/templates/account/login.html:25
+#, python-format
+msgid ""
+"If you have not created an account yet, then please\n"
+"<a href=\"%(signup_url)s\">sign up</a> first."
+msgstr ""
+
+#: epione/site/templates/account/login.html:38
+msgid "Forgot Password?"
+msgstr ""
+
+#: epione/site/templates/base.html:71
+msgid "Version"
+msgstr ""
+
+#: epione/site/templates/base.html:76
+msgid "Faculty of Medicine and Health Sciences"
+msgstr ""
+
+#: epione/site/templates/base.html:76
+msgid "Ghent University"
+msgstr ""

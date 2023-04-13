@@ -2,7 +2,7 @@ import pytest
 
 from datetime import date, timedelta
 
-from sparta.utils.factories import TrackFactory, ProgramFactory
+from epione.utils.factories import TrackFactory, ProgramFactory
 
 
 @pytest.mark.django_db
