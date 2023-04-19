@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 
 from epione.models import Education
+from .inertia import render_inertia
 
 
 class OfficeView(generic.DetailView):
@@ -25,3 +26,10 @@ class OfficeView(generic.DetailView):
             )
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return render_inertia(
+            request,
+            "apps/office/main.ts",
+            props={"code": self.get_object().code},
+        )

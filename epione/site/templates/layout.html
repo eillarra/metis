@@ -21,7 +21,7 @@
       <div class="absolute-top-right header-links text-white q-py-sm q-px-md q-gutter-x-lg" :class="{'q-py-md q-px-lg': $q.screen.gt.sm}">
         {% if user.is_authenticated %}
           {% if user.is_staff %}<a href="/admin/">Admin</a>{% endif %}
-          <epione-user-menu display-name="{{ user.name }}"></epione-user-menu>
+          <epione-user-menu display-name="{{ user.name }}" locale="{{ LANGUAGE_CODE }}"></epione-user-menu>
         {% else %}
           <a href="{% url 'account_login' %}">{% translate 'Sign in' %} <q-icon name="login" size="xxs"></q-icon></a>
         {% endif %}

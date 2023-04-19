@@ -5,6 +5,8 @@
 [![license-badge]](LICENSE)
 
 
+## Backend
+
 The Epione api/website uses [Django][django] and the [Django REST Framework][drf].
 
 ### Application dependencies
@@ -49,6 +51,17 @@ Tab size is 4 spaces. Max line length is 120. You should run `flake8` and `black
 black epione
 ```
 
+## Frontend
+
+Some parts of the website are developed as one page applications with Vue (`vue` folder).
+When working on these, it is necessary to start a node server in parallel, so Django can access the
+modules via [Inertia][inertia].
+
+```bash
+yarn
+yarn dev
+```
+
 
 [codecov]: https://app.codecov.io/gh/eillarra/epione
 [codecov-badge]: https://codecov.io/gh/eillarra/epione/branch/master/graph/badge.svg?token=UAQVA8J7YS
@@ -58,4 +71,5 @@ black epione
 
 [django]: https://www.djangoproject.com/
 [drf]: https://www.django-rest-framework.org/
+[inertia]: https://inertiajs.com/
 [pipenv]: https://docs.pipenv.org/#install-pipenv-today

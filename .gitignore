@@ -1,6 +1,8 @@
 .DS_Store
 ._*
 
+# Django
+
 __pycache__
 *.py[cod]
 *$py.class
@@ -13,5 +15,12 @@ __pycache__
 dev.db
 htmlcov
 test-reports
+
+# Vue
+
+node_modules
+vue/dist
+
+# Other
 
 cloc.md

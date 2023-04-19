@@ -1,7 +1,3 @@
-var CommonMarkReader = new commonmark.Parser({safe: true, smart: true});
-var CommonMarkWriter = new commonmark.HtmlRenderer();
-
-
 var EpioneCommonComponents = {
 
     'version-hash': {
@@ -128,22 +124,6 @@ var EpioneCommonComponents = {
     template: '<h6 class="q-mt-sm q-mb-lg text-weight-bold"><slot></slot></h6>'
   },
 
-  'marked': {
-    props: {
-      text: {
-        type: String,
-        default: ''
-      }
-    },
-    template: '<div class="marked" v-html="compiledText"></div>',
-    computed: {
-      compiledText: function () {
-        if (!this.text || this.text == '') return this.text;
-        return CommonMarkWriter.render(CommonMarkReader.parse(this.text));
-      }
-    }
-  },
-
   'epione-user-menu': {
     data: function () {
       return {
@@ -153,6 +133,10 @@ var EpioneCommonComponents = {
     props: {
       displayName: {
         type: String
+      },
+      locale: {
+        type: String,
+        default: 'nl'
       }
     },
     template: `
@@ -164,7 +148,7 @@ var EpioneCommonComponents = {
               <q-item-section>Homepage</q-item-section>
             </q-item>
             <q-item clickable tag="a" href="/u/logout/">
-              <q-item-section>Log out</q-item-section>
+              <q-item-section><span v-if="locale == 'nl'">Afmelden</span><span v-else>Log out</span></q-item-section>
               <q-item-section side><q-icon name="logout" size="xs" /></q-item-section>
             </q-item>
           </q-list>
