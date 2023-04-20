@@ -5,12 +5,12 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import generic
 
+from epione.api.serializers.faculties import EducationSerializer
 from epione.models import Education
 from .inertia import render_inertia
 
 
-class OfficeView(generic.DetailView):
-    template_name = "app/office/index.html"
+class OfficeView(generic.View):
 
     def get_object(self, queryset=None) -> Education:
         if not hasattr(self, "object"):
@@ -31,5 +31,7 @@ class OfficeView(generic.DetailView):
         return render_inertia(
             request,
             "apps/office/main.ts",
-            props={"code": self.get_object().code},
+            props={
+                "education": EducationSerializer(self.get_object(), context={"request": request}).data,
+            },
         )

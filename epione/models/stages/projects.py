@@ -41,6 +41,9 @@ class Project(BaseModel):
     def is_open(self) -> bool:
         return self.is_active and self.periods.exists() and (self.start_date <= timezone.now().date() <= self.end_date)
 
+    def can_be_managed_by(self, user) -> bool:
+        return self.education.can_be_managed_by(user)
+
 
 class Period(BaseModel):
     """
