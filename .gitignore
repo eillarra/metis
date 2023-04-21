@@ -18,6 +18,7 @@ test-reports
 
 # Vue
 
+.vite
 node_modules
 vue/dist
 

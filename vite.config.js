@@ -38,7 +38,7 @@ export default defineConfig({
         manualChunks: {
           helpers: ['axios', 'date-fns', 'lodash-es', '@sentry/vue'],
           quasar: ['quasar'],
-          vue: ['vue', 'vue-router', 'pinia'],
+          vue: ['vue', 'vue-router', 'pinia', 'vue-i18n'],
         },
       },
     },

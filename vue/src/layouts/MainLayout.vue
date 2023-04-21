@@ -74,17 +74,17 @@ import LocaleMenu from '@/components/LocaleMenu.vue';
 import UserMenu from '@/components/UserMenu.vue';
 
 // get basic info from Django
-defineProps({
+const props = defineProps({
   django_csrf_token: String,
   django_debug: Boolean,
   django_locale: String,
   django_user: [Object, null],
+  git_commit_hash: String,
 });
 
-const htmlEl = document.querySelector('html');
-const version = htmlEl.getAttribute('data-rev').substring(0, 7);
-
+const version = props.git_commit_hash.substring(0, 7);
 const helpdeskEmail = 'helpdesk.ariadne@ugent.be';
-const leftDrawer = ref(false);
 const year = new Date().getFullYear();
+
+const leftDrawer = ref(false);
 </script>

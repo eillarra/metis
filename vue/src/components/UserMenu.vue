@@ -1,8 +1,8 @@
 <template>
   <a class="cursor-pointer">
     <span v-show="$q.screen.gt.xs">{{ displayName }} &nbsp;</span><q-icon name="account_circle" size="xxs" />
-    <q-menu anchor="top end" self="bottom right" :offset="[0, 8]">
-      <q-list dense style="min-width: 140px" class="text-body2 q-py-sm">
+    <q-menu anchor="top end" self="bottom right" :offset="[0, 8]" style="min-width: 140px">
+      <q-list dense class="text-body2 q-py-sm">
         <q-item clickable tag="a" href="/">
           <q-item-section>Homepage</q-item-section>
         </q-item>
