@@ -16,6 +16,7 @@ urlpatterns = [
     path("office/", include(office_patterns, namespace="office")),
     # pages
     path("", views.HomeView.as_view(), name="homepage"),
+    path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
 ]
 
 # Flatpages “catchall” pattern

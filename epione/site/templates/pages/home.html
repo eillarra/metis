@@ -1,8 +1,0 @@
-{% extends 'layout.html' %}
-
-
-{% block content %}
-  {% for education in user.educations.all %}
-    <a href="{% url 'office:app' education.code %}">{{ education }}</a>
-  {% endfor %}
-{% endblock %}

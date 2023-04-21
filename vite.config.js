@@ -1,7 +1,16 @@
+const fs = require('fs');
 const { resolve } = require('path');
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+
+// read apps folder and create a list of entries
+const apps = fs.readdirSync(resolve(__dirname, './vue/src/apps'));
+const appsToBuild = {};
+apps.forEach((app) => {
+  appsToBuild[app] = resolve(__dirname, `./vue/src/apps/${app}/main.ts`);
+});
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -30,9 +39,7 @@ export default defineConfig({
     emptyOutDir: true,
     target: 'es2015',
     rollupOptions: {
-      input: {
-        office: resolve('./vue/src/apps/office/main.ts'),
-      },
+      input: appsToBuild,
       output: {
         chunkFileNames: undefined,
         manualChunks: {

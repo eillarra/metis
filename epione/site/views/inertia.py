@@ -3,6 +3,7 @@ import os
 from django.conf import settings
 from django.middleware.csrf import get_token as get_csrf_token
 from django.utils.text import slugify
+from django.views.generic import View
 from inertia import render
 from typing import Dict, Optional
 
@@ -28,3 +29,20 @@ def render_inertia(request, vue_entry_point: str, *, props: Optional[Dict] = Non
             "vue_entry_point": vue_entry_point
         },
     )
+
+
+class InertiaView(View):
+    vue_entry_point = None
+
+    def get_props(self, request, *args, **kwargs):
+        return {}
+
+    def get(self, request, *args, **kwargs):
+        if self.vue_entry_point is None:
+            raise NotImplementedError("`vue_entry_point` must be set")
+
+        return render_inertia(
+            request,
+            self.vue_entry_point,
+            props=self.get_props(request, *args, **kwargs),
+        )

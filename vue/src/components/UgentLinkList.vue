@@ -1,0 +1,54 @@
+<style lang="scss">
+.ugent__link-list {
+  h5 {
+    font-size: 20px;
+    margin: 0 0 10px 0;
+  }
+
+  .q-focus-helper {
+    display: none;
+  }
+
+  .q-item {
+    &:hover {
+      .q-item__section--main {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .q-item--dense,
+  .q-list--dense > .q-item {
+    padding: 0;
+  }
+
+  .q-item__section--avatar {
+    min-width: auto;
+  }
+}
+</style>
+
+<template>
+  <div class="ugent__link-list">
+    <h5 v-if="title">{{ title }}</h5>
+    <q-list dense>
+      <q-item v-for="item in items" :key="item.label" :to="item.to" :href="item.href">
+        <q-item-section avatar>
+          <q-icon color="primary" name="east" size="14px" />
+        </q-item-section>
+        <q-item-section>{{ item.label }}</q-item-section>
+      </q-item>
+    </q-list>
+  </div>
+</template>
+
+<script setup lang="ts">
+defineProps<{
+  items: {
+    label: string;
+    href?: string;
+    to?: object;
+  }[];
+  title?: string;
+}>();
+</script>
