@@ -1,2 +1,2 @@
-epione/migrations/** linguist-generated
-epione/site/static/vendor/** linguist-vendored
+metis/migrations/** linguist-generated
+metis/site/static/vendor/** linguist-vendored

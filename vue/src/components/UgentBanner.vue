@@ -1,5 +1,5 @@
 <style lang="scss">
-.banner-display {
+.ugent__banner .box {
   max-width: 380px;
   margin-left: 0;
   padding: 20px;
@@ -31,15 +31,17 @@
 </style>
 
 <template>
-  <div class="row q-my-xl">
+  <div class="ugent__banner row q-my-xl">
     <div class="col-12 col-md-4 bg-tertiary q-pa-lg">
       <slot></slot>
     </div>
     <div class="col-12 col-md bg-ugent relative-position">
-      <slot name="image">
-        <q-img :src="imgSrc" :ratio="2 / 1" />
-      </slot>
-      <div class="banner-display">
+      <q-responsive :ratio="2/1">
+        <slot name="image">
+          <img src="https://www.ugent.be/nl/@@images/central_subsite_image" />
+        </slot>
+      </q-responsive>
+      <div class="box">
         <h1>{{ title }}</h1>
         <h2 v-if="subtitle">{{ subtitle }}</h2>
       </div>
@@ -49,7 +51,6 @@
 
 <script setup lang="ts">
 defineProps<{
-  imgSrc: string;
   title: string;
   subtitle?: string;
 }>();

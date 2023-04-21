@@ -2,7 +2,7 @@ import pytest
 
 from django.utils import timezone
 
-from epione.utils.factories import ProgramFactory
+from metis.utils.factories import ProgramFactory
 
 
 @pytest.mark.django_db

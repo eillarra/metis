@@ -4,8 +4,8 @@
       <q-header class="row ugent__header bg-white">
         <q-toolbar class="col-3 col-md-2 bg-white q-pl-none q-pt-md">
           <a href="/">
-            <img v-if="django_locale == 'nl'" src="../assets/ugent.svg" class="logo q-mr-sm" />
-            <img v-else src="../assets/ugent_en.svg" class="logo q-mr-sm" />
+            <img v-if="django_locale == 'nl'" src="@/assets/ugent.svg" class="logo q-mr-sm" />
+            <img v-else src="@/assets/ugent_en.svg" class="logo q-mr-sm" />
           </a>
         </q-toolbar>
         <q-toolbar
@@ -13,7 +13,7 @@
           :class="{ 'q-pl-lg': $q.screen.gt.sm }"
           style="align-items: flex-end"
         >
-          <h2 class="text-uppercase q-ma-none">Epione</h2>
+          <h2 class="text-uppercase q-ma-none">Metis</h2>
           <div
             class="absolute-top-right header-links text-white q-py-sm q-px-md q-gutter-x-lg"
             :class="{ 'q-py-md q-px-lg': $q.screen.gt.sm }"

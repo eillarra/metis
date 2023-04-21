@@ -2,9 +2,9 @@ import pytest
 
 from django.core.exceptions import ValidationError
 
-from epione.utils.factories import UserFactory, InternshipFactory
-from epione.utils.fixtures.programs import create_audiology_program
-from epione.models import Discipline, Program, ProgramInternship, Track
+from metis.utils.factories import UserFactory, InternshipFactory
+from metis.utils.fixtures.programs import create_audiology_program
+from metis.models import Discipline, Program, ProgramInternship, Track
 
 
 @pytest.fixture

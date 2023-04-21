@@ -1,7 +1,7 @@
 import pytest
 
-from epione.models import Link, Place
-from epione.utils.factories import PlaceFactory
+from metis.models import Link, Place
+from metis.utils.factories import PlaceFactory
 
 
 @pytest.fixture

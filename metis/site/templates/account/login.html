@@ -1,0 +1,70 @@
+{% extends 'account/base.html' %}
+
+{% load compress %}
+{% load i18n %}
+
+{% load account socialaccount %}
+
+
+{% block head_title %}Sign in - {{ block.super }}{% endblock %}
+
+{% block content %}
+  {% get_providers as socialaccount_providers %}
+
+  <display-5>{% translate 'Sign in' %}</display-5>
+
+  {% if socialaccount_providers %}
+    <p>{% blocktrans with site.name as site_name %}Please sign in with one
+of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+    <div class="q-mb-xl">
+      {% include 'socialaccount/snippets/provider_list.html' with process='login' %}
+    </div>
+    {% include 'socialaccount/snippets/login_extra.html' %}
+  {% else %}
+    <p>{% blocktrans %}If you have not created an account yet, then please
+<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+  {% endif %}
+
+  <django-form action="{% url 'account_login' %}" :fields="fields" btn-text="{% translate 'Sign in' %}" class="q-mb-lg">
+    {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+    {% endif %}
+  </django-form>
+
+  <q-separator></q-separator>
+  <p class="text-caption q-mt-lg">
+    <q-icon name="help_outline" size="14px" class="q-mr-sm"></q-icon>
+    <a href="{% url 'account_reset_password' %}">{% trans 'Forgot Password?' %}</a>
+  </p>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+  <script type="text/javascript">
+    var app = Vue.createApp({
+      data: function () {
+        return {
+          fields: [
+            {
+              name: 'login',
+              label: 'Username or email',
+              type: 'text',
+              required: true
+            },
+            {
+              name: 'password',
+              label: 'Password',
+              type: 'password',
+              required: true
+            }
+          ]
+        };
+      }
+    });
+    Metis.utils.registerComponents(app, [DjangoComponents, MetisCommonComponents]);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+{% endblock %}

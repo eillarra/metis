@@ -22,6 +22,10 @@
     padding: 0;
   }
 
+  .q-item__section--side {
+    padding-right: 8px;
+  }
+
   .q-item__section--avatar {
     min-width: auto;
   }

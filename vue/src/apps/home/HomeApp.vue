@@ -2,24 +2,20 @@
   <ugent-banner
     title="De UGent zet al meer dan 200 jaar aan tot kritisch en onafhankelijk denken"
     subtitle="Lees meer over de UGent..."
-    img-src="https://www.ugent.be/nl/@@images/central_subsite_image"
+    img-src="@/assets/metis.jpg"
   >
-    <ugent-btn
-      v-if="user"
-      :label="$t('menu.dashboard')"
-      color="yellow"
-      :href="`/${$i18n.locale}/dashboard/`"
-    />
-    <div v-else class="fit column justify-between">
-      <div class="q-mb-xl">
-        <ugent-btn
-          :label="$t('home.oauth_login')"
-          color="yellow"
-          href="/u/ugent/login/?process=login"
-        />
+    <template #default>
+      <ugent-btn v-if="user" :label="$t('menu.dashboard')" color="yellow" :href="`/${$i18n.locale}/dashboard/`" />
+      <div v-else class="fit column justify-between">
+        <div class="q-mb-xl">
+          <ugent-btn :label="$t('home.oauth_login')" color="yellow" href="/u/ugent/login/?process=login" />
+        </div>
+        <ugent-link-list title="Help" :items="links" />
       </div>
-      <ugent-link-list title="Help" :items="links" />
-    </div>
+    </template>
+    <template #image>
+      <img src="@/assets/metis.jpg" />
+    </template>
   </ugent-banner>
 </template>
 
@@ -33,9 +29,9 @@ import UgentBtn from '@/components/UgentBtn.vue';
 import UgentLinkList from '@/components/UgentLinkList.vue';
 
 const { t } = useI18n();
-const page = usePage()
+const page = usePage();
 
-const user = computed(() => page.props.django_user)
+const user = computed(() => page.props.django_user);
 
 const links = [
   {
