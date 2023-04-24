@@ -3,13 +3,19 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '',
-    name: 'home',
+    redirect: { name: 'dashboard' },
     strict: true,
     components: {
       default: () => import('./OfficeApp.vue'),
       drawer: () => import('./OfficeMenu.vue'),
     },
     children: [
+      {
+        path: '/',
+        name: 'dashboard',
+        strict: true,
+        component: () => import('./pages/DashboardPage.vue'),
+      },
       {
         path: 'calendar/',
         name: 'calendar',

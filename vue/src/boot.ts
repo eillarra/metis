@@ -21,7 +21,7 @@ const bootApp = (routes: RouteRecordRaw[]) => {
         legacy: false,
         locale: props.initialPage.props.django_locale,
         fallbackLocale: {
-          default: ['nl'],
+          default: ['en'],
         },
         messages,
       });

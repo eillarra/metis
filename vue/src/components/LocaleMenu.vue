@@ -40,7 +40,7 @@ const props = defineProps({
   },
 });
 
-const localeForm = ref(null);
+const localeForm = ref();
 
 function change(lang: string) {
   localeForm.value.language.value = lang;

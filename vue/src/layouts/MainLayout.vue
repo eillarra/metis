@@ -3,7 +3,7 @@
     <q-layout view="hhh lpR fff">
       <q-header class="row ugent__header bg-white">
         <q-toolbar class="col-3 col-md-2 bg-white q-pl-none q-pt-md">
-          <a href="/">
+          <a href="/" class="q-mr-sm">
             <img v-if="django_locale == 'nl'" src="@/assets/ugent.svg" class="logo q-mr-sm" />
             <img v-else src="@/assets/ugent_en.svg" class="logo q-mr-sm" />
           </a>
@@ -20,7 +20,7 @@
           >
             <a v-if="django_user && django_user.is_staff" href="/admin/">Admin</a>
             <user-menu v-if="django_user" :user="django_user" />
-            <a v-else href="/u/login/">{{ $t('menu.login') }} <q-icon name="login" size="xxs"></q-icon></a>
+            <a v-else href="/u/login/"><span v-t="'menu.login'"></span> <q-icon name="login" size="xxs"></q-icon></a>
             <locale-menu :locale="django_locale" :csrfToken="django_csrf_token" />
           </div>
         </q-toolbar>
@@ -47,7 +47,7 @@
       >
         <div class="row justify-between text-body2">
           <div class="col-12 col-md">
-            <p>{{ $t('version') }} {{ version }}</p>
+            <p><span v-t="'version'"></span> {{ version }}</p>
           </div>
           <div class="col-12 col-md-9">
             <ul :class="{ 'text-right q-gutter-x-md': $q.screen.gt.sm }">
@@ -57,8 +57,8 @@
               <li :class="{ inline: $q.screen.gt.sm }">
                 <span
                   >&copy; {{ year }}
-                  <a :href="`https://www.ugent.be/ge/${django_locale}`" target="_blank" rel="noopener">{{ $t('ge') }}</a
-                  >, <span class="text-no-wrap">{{ $t('ugent') }}</span></span
+                  <a v-t="'ge'" :href="`https://www.ugent.be/ge/${django_locale}`" target="_blank" rel="noopener"></a
+                  >, <span v-t="'ugent'" class="text-no-wrap"></span></span
                 >
               </li>
             </ul>
@@ -76,16 +76,16 @@ import LocaleMenu from '@/components/LocaleMenu.vue';
 import UserMenu from '@/components/UserMenu.vue';
 
 // get basic info from Django
-const props = defineProps({
-  django_csrf_token: String,
-  django_debug: Boolean,
-  django_locale: String,
-  django_user: [Object, null],
-  git_commit_hash: String,
-});
+const props = defineProps<{
+  django_csrf_token: string;
+  django_debug: boolean;
+  django_locale: string;
+  django_user: DjangoAuthenticatedUser | null;
+  git_commit_hash: string;
+}>();
 
 const version = props.git_commit_hash.substring(0, 7);
-const helpdeskEmail = 'helpdesk.ariadne@ugent.be';
+const helpdeskEmail = 'helpdesk.metis@ugent.be';
 const year = new Date().getFullYear();
 
 const leftDrawer = ref(false);

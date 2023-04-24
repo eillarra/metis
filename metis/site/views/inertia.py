@@ -33,7 +33,11 @@ def render_inertia(request, vue_entry_point: str, *, props: Optional[Dict] = Non
 
 
 class InertiaView(View):
+    page_title: Optional[str] = None
     vue_entry_point = None
+
+    def get_page_title(self, request, *args, **kwargs) -> Optional[str]:
+        return self.page_title
 
     def get_props(self, request, *args, **kwargs):
         return {}
@@ -46,4 +50,5 @@ class InertiaView(View):
             request,
             self.vue_entry_point,
             props=self.get_props(request, *args, **kwargs),
+            page_title=self.get_page_title(self, request, *args, **kwargs)
         )

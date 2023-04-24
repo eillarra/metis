@@ -5,7 +5,7 @@
 [![license-badge]](LICENSE)
 
 
-## Backend
+## Backend
 
 The Metis api/website uses [Django][django] and the [Django REST Framework][drf].
 
@@ -53,7 +53,7 @@ black metis
 
 ## Frontend
 
-Some parts of the website are developed as one page applications with Vue (`vue` folder).
+Some parts of the website are developed as one page applications with [Vue][vue] (`vue` folder).
 When working on these, it is necessary to start a node server in parallel, so Django can access the
 modules via [Inertia][inertia].
 
@@ -73,3 +73,4 @@ yarn dev
 [drf]: https://www.django-rest-framework.org/
 [inertia]: https://inertiajs.com/
 [pipenv]: https://docs.pipenv.org/#install-pipenv-today
+[vue]: https://vuejs.org/

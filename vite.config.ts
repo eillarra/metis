@@ -11,7 +11,6 @@ apps.forEach((app) => {
   appsToBuild[app] = resolve(__dirname, `./vue/src/apps/${app}/main.ts`);
 });
 
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
@@ -27,7 +26,7 @@ export default defineConfig({
     },
   },
   resolve: {
-    extensions: ['.vue', '.js', '.json'],
+    extensions: ['.vue', '.ts', '.js', '.json'],
     alias: {
       '@': resolve(__dirname, './vue/src'),
     },
@@ -43,7 +42,7 @@ export default defineConfig({
       output: {
         chunkFileNames: undefined,
         manualChunks: {
-          helpers: ['axios', 'date-fns', 'lodash-es', '@sentry/vue'],
+          helpers: ['axios', '@sentry/vue'],
           quasar: ['quasar'],
           vue: ['vue', 'vue-router', 'pinia', 'vue-i18n'],
         },

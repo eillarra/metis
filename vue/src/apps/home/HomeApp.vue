@@ -1,8 +1,7 @@
 <template>
   <ugent-banner
-    title="De UGent zet al meer dan 200 jaar aan tot kritisch en onafhankelijk denken"
-    subtitle="Lees meer over de UGent..."
-    img-src="@/assets/metis.jpg"
+    title="Metis"
+    subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
   >
     <template #default>
       <ugent-btn v-if="user" :label="$t('menu.dashboard')" color="yellow" :href="`/${$i18n.locale}/dashboard/`" />
@@ -14,7 +13,7 @@
       </div>
     </template>
     <template #image>
-      <img src="@/assets/metis.jpg" />
+      <img src="@/assets/uzgent.jpg" />
     </template>
   </ugent-banner>
 </template>

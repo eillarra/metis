@@ -21,22 +21,17 @@
     square
     no-caps
     :icon="icon"
-    :label="props.label"
+    :label="label"
     text-color="dark"
     class="ugent__btn"
-    :class="classes"
+    :class="`bg-${color}`"
   />
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   label: string;
   color?: string;
   icon?: string;
 }>();
-
-const classes = {
-  'bg-blue': props.color === 'blue',
-  'bg-yellow': props.color === 'yellow',
-};
 </script>
