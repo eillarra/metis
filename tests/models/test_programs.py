@@ -44,13 +44,13 @@ def test_wrong_track_chosen(audiology_program):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "track_name,internship_name,discipline_name",
+    "track_name,internship_name,discipline_code",
     [
-        ("B", "1B", "clinical"),
-        ("B", "2B", "prosthetic"),
+        ("B", "1B", "klinisch"),
+        ("B", "2B", "prothetisch"),
     ],
 )
-def test_available_disciplines(audiology_program, track_name, internship_name, discipline_name):
+def test_available_disciplines(audiology_program, track_name, internship_name, discipline_code):
     user = UserFactory()
 
     with pytest.raises(ValidationError):
@@ -58,7 +58,7 @@ def test_available_disciplines(audiology_program, track_name, internship_name, d
             track=Track.objects.get(name=f"Track {track_name}"),
             program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}"),
             student=user,
-            discipline=Discipline.objects.get(code=discipline_name),
+            discipline=Discipline.objects.get(education=audiology_program.education, code=discipline_code),
         )
 
 
@@ -66,10 +66,10 @@ def test_available_disciplines(audiology_program, track_name, internship_name, d
 @pytest.mark.parametrize(
     "track_name,internships_done,new_internship",
     [
-        (None, [], ["1A", "clinical"]),
-        ("A", [["1A", "prosthetic"], ["2A", "prosthetic"]], ["3A", "clinical"]),
-        ("A", [["1A", "prosthetic"], ["2A", "prosthetic"], ["3A", "clinical"]], ["4A", "clinical"]),
-        ("A", [["1A", "prosthetic"], ["2A", "clinical"], ["3A", "clinical"]], ["4A", "prosthetic"]),
+        (None, [], ["1A", "klinisch"]),
+        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "klinisch"]),
+        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"], ["3A", "klinisch"]], ["4A", "klinisch"]),
+        ("A", [["1A", "prothetisch"], ["2A", "klinisch"], ["3A", "klinisch"]], ["4A", "prothetisch"]),
     ],
 )
 def test_previously_covered_disciplines(audiology_program, track_name, internships_done, new_internship):
@@ -81,7 +81,7 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"),
             student=user,
-            discipline=Discipline.objects.get(code=data[1]),
+            discipline=Discipline.objects.get(education=audiology_program.education, code=data[1]),
         )
         internship.clean()
         internship.save()
@@ -90,7 +90,7 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
         track=track,
         program_internship=ProgramInternship.objects.get(name=f"Internship {new_internship[0]}"),
         student=user,
-        discipline=Discipline.objects.get(code=new_internship[1]),
+        discipline=Discipline.objects.get(education=audiology_program.education, code=new_internship[1]),
     )
 
     assert len(new_internship.get_covered_disciplines()) == len(internships_done)
@@ -100,10 +100,10 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
 @pytest.mark.parametrize(
     "track_name,internships_done,failing_internship",
     [
-        ("A", [["1A", "prosthetic"], ["2A", "prosthetic"]], ["3A", "not_a_discipline"]),
-        ("A", [["1A", "prosthetic"], ["2A", "prosthetic"]], ["3A", "prosthetic"]),
-        ("A", [["1A", "prosthetic"], ["2A", "prosthetic"], ["3A", "clinical"]], ["4A", "prosthetic"]),
-        ("A", [["1A", "prosthetic"], ["2A", "clinical"], ["3A", "clinical"]], ["4A", "clinical"]),
+        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "not_a_discipline"]),
+        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "prothetisch"]),
+        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"], ["3A", "klinisch"]], ["4A", "prothetisch"]),
+        ("A", [["1A", "prothetisch"], ["2A", "klinisch"], ["3A", "klinisch"]], ["4A", "klinisch"]),
     ],
 )
 def test_validate_discipline_choice(audiology_program, track_name, internships_done, failing_internship):
@@ -116,7 +116,7 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"),
             student=user,
-            discipline=Discipline.objects.get(code=data[1]),
+            discipline=Discipline.objects.get(education=audiology_program.education, code=data[1]),
         )
         internship.clean()
         internship.save()
@@ -126,7 +126,7 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {failing_internship[0]}"),
             student=user,
-            discipline=Discipline.objects.get(code=failing_internship[1]),
+            discipline=Discipline.objects.get(education=audiology_program.education, code=failing_internship[1]),
         )
         new_internship.clean()
         new_internship.save()
