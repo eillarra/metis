@@ -143,7 +143,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 AUTH_USER_MODEL = "metis.User"
 
 LOGIN_URL = "account_login"
-LOGIN_REDIRECT_URL = "homepage"
+LOGIN_REDIRECT_URL = "dashboard"
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptPasswordHasher",
