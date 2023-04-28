@@ -30,12 +30,27 @@ def create_logopedics_program() -> Program:
     # Create Education
     faculty, _ = Faculty.objects.get_or_create(name="Faculty of Medicine and Health Sciences")
     education, _ = Education.objects.get_or_create(
-        code="logo", faculty=faculty, name="Logopedics", short_name="Logopedics"
+        code="logo",
+        faculty=faculty,
+        name_nl="Logopedie",
+        name_en="Logopedics",
+        short_name_nl="Logopedie",
+        short_name_en="Logopedics",
     )
 
     # Create Program
+    try:
+        program = Program.objects.get(education=education, name_nl="Logopedie")
+        return program
+    except Program.DoesNotExist:
+        pass
+
     program = Program.objects.create(
-        education=education, name="Logopedics", valid_from=date(2020, 1, 1), valid_until=date(2030, 12, 31)
+        education=education,
+        name_nl="Logopedie",
+        name_en="Logopedics",
+        valid_from=date(2020, 1, 1),
+        valid_until=date(2030, 12, 31),
     )
 
     # Create Program Blocks
@@ -44,7 +59,12 @@ def create_logopedics_program() -> Program:
     ma2 = ProgramBlock.objects.create(program=program, name="Ma2", position=3)
 
     # Create Disciplines
-    logopedics, _ = Discipline.objects.get_or_create(education=education, code="logopedics", name="Logopedics")
+    logopedics, _ = Discipline.objects.get_or_create(
+        education=education,
+        code="logopedie",
+        name_nl="Logopedie",
+        name_en="Logopedics",
+    )
 
     # Create Program Internships
     for i, code in enumerate(["1A", "2A", "3A"]):

@@ -47,6 +47,12 @@ def create_audiology_program() -> Program:
     )
 
     # Create Program
+    try:
+        program = Program.objects.get(education=education, name_nl="Audiologie")
+        return program
+    except Program.DoesNotExist:
+        pass
+
     program = Program.objects.create(
         education=education,
         name_nl="Audiologie",
@@ -61,8 +67,18 @@ def create_audiology_program() -> Program:
     ma2 = ProgramBlock.objects.create(program=program, name="Ma2", position=3)
 
     # Create Disciplines
-    clinical, _ = Discipline.objects.get_or_create(education=education, code="clinical", name="Clinical")
-    prosthetic, _ = Discipline.objects.get_or_create(education=education, code="prosthetic", name="Prosthetic")
+    clinical, _ = Discipline.objects.get_or_create(
+        education=education,
+        code="klinisch",
+        name_nl="Klinisch",
+        name_en="Clinical",
+    )
+    prosthetic, _ = Discipline.objects.get_or_create(
+        education=education,
+        code="prothetisch",
+        name_nl="Prothetisch",
+        name_en="Prosthetic",
+    )
 
     # Create Program Internships
     for i, code in enumerate(["1A", "2A", "3A", "4A", "1B", "2B", "3B"]):
