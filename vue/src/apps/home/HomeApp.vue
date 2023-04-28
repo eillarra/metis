@@ -4,7 +4,7 @@
     subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
   >
     <template #default>
-      <ugent-btn v-if="user" :label="$t('menu.dashboard')" color="yellow" :href="`/${$i18n.locale}/dashboard/`" />
+      <ugent-btn v-if="user" :label="$t('user_menu.dashboard')" color="yellow" :href="`/${$i18n.locale}/dashboard/`" />
       <div v-else class="fit column justify-between">
         <div class="q-mb-xl">
           <ugent-btn :label="$t('home.oauth_login')" color="yellow" href="/u/ugent/login/?process=login" />

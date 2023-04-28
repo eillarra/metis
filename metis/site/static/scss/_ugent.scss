@@ -78,6 +78,24 @@ body {
   }
 }
 
+.ugent__submenu__select {
+  padding: 4px 0;
+  display: inline-block;
+
+  .text-underline {
+    font-family: 'UGent Panno Medium', 'Arial', sans-serif;
+    font-size: 20px;
+    line-height: 17px;
+    color: $ugent-blue;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .q-select__dropdown-icon {
+    color: $ugent-blue;
+  }
+}
+
 .ugent__footer {
   color: white;
 
@@ -181,4 +199,8 @@ h4, h5, h6 {
 
 .text-h6, .text-body1 {
   line-height: 1.25;
+}
+
+.text-ugent {
+  color: $ugent-blue;
 }

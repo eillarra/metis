@@ -4,11 +4,14 @@ import { createApp, h } from 'vue';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { createPinia } from 'pinia';
 import { createInertiaApp } from '@inertiajs/vue3';
-import { Quasar } from 'quasar';
+import { Quasar, Notify } from 'quasar';
 import * as Sentry from '@sentry/vue';
 
-import { axios, api } from './axios.ts';
-import { createI18n, messages } from './i18n.ts';
+import langNl from 'quasar/lang/nl';
+
+import { axios, api } from './axios';
+import { createI18n, messages } from './i18n';
+import { storage } from './storage';
 
 const bootApp = (routes: RouteRecordRaw[]) => {
   createInertiaApp({
@@ -16,6 +19,9 @@ const bootApp = (routes: RouteRecordRaw[]) => {
       return import('./layouts/MainLayout.vue');
     },
     setup({ el, App, props, plugin }) {
+      // locale
+      storage.set('metis.locale', props.initialPage.props.django_locale);
+
       // i18n
       const i18n = createI18n({
         legacy: false,
@@ -38,7 +44,10 @@ const bootApp = (routes: RouteRecordRaw[]) => {
       // app
       const app = createApp({ render: () => h(App, props) });
       app.use(plugin);
-      app.use(Quasar, {});
+      app.use(Quasar, {
+        lang: props.initialPage.props.django_locale === 'nl' ? langNl : undefined,
+        plugins: { Notify },
+      });
       app.use(Router);
       app.use(Store);
       app.use(i18n);

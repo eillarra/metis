@@ -4,8 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 
-from metis.api.serializers.faculties import EducationSerializer
-from metis.api.serializers.stages.projects import ProjectSerializer
+from metis.api.serializers import EducationSerializer, ProgramSerializer, ProjectSerializer
 from metis.models import Education
 from .inertia import InertiaView
 
@@ -29,9 +28,11 @@ class OfficeView(InertiaView):
         return self.object
 
     def get_props(self, request, *args, **kwargs):
+        programs = self.get_object().programs.prefetch_related("blocks")
         projects = self.get_object().projects.prefetch_related("periods")
 
         return {
             "education": EducationSerializer(self.get_object(), context={"request": request}).data,
+            "programs": ProgramSerializer(programs, many=True, context={"request": request}).data,
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
         }

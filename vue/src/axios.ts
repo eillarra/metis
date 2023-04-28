@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
+import { storage } from './storage';
+
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
@@ -16,8 +18,7 @@ const api = axios.create({ baseURL: '/api/v1/' });
 
 api.interceptors.request.use(
   (config) => {
-    // const lang = storage.get('locale') || 'nl';
-    const lang = 'nl';
+    const lang = storage.get('metis.locale') || 'nl';
     config.headers['Accept-Language'] = lang;
     return config;
   },

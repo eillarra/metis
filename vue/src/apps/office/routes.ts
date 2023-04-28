@@ -17,16 +17,22 @@ const routes: RouteRecordRaw[] = [
         component: () => import('./pages/DashboardPage.vue'),
       },
       {
-        path: 'calendar/',
-        name: 'calendar',
+        path: 'planning/',
+        name: 'planning',
         strict: true,
-        component: () => import('./pages/CalendarPage.vue'),
+        component: () => import('./pages/PlanningPage.vue'),
       },
       {
         path: 'places/',
         name: 'places',
         strict: true,
         component: () => import('./pages/PlacesPage.vue'),
+      },
+      {
+        path: 'places/contacts/',
+        name: 'placeContacts',
+        strict: true,
+        component: () => import('./pages/PlaceContactsPage.vue'),
       },
       {
         path: 'programs/',

@@ -4,10 +4,10 @@
     <q-menu anchor="top end" self="bottom right" :offset="[0, 8]" style="min-width: 140px">
       <q-list dense class="text-body2 q-py-sm">
         <q-item clickable tag="a" :href="`/${$i18n.locale}/dashboard/`">
-          <q-item-section v-t="'menu.dashboard'"></q-item-section>
+          <q-item-section v-t="'user_menu.dashboard'"></q-item-section>
         </q-item>
         <q-item clickable tag="a" href="/u/logout/">
-          <q-item-section v-t="'menu.logout'"></q-item-section>
+          <q-item-section v-t="'user_menu.logout'"></q-item-section>
           <q-item-section side><q-icon name="logout" size="xs" /></q-item-section>
         </q-item>
       </q-list>

@@ -50,5 +50,5 @@ class InertiaView(View):
             request,
             self.vue_entry_point,
             props=self.get_props(request, *args, **kwargs),
-            page_title=self.get_page_title(self, request, *args, **kwargs)
+            page_title=self.get_page_title(self, request, *args, **kwargs),
         )
