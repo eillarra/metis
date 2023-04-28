@@ -1,27 +1,32 @@
 from django.db import models
+from django_countries.fields import CountryField
 from modeltranslation.translator import TranslationOptions
+from typing import Optional
 
 from .base import BaseModel
 from .rel.addresses import AddressesMixin
 from .rel.links import LinksMixin
+from .rel.phone_numbers import PhoneNumbersMixin
 from .rel.remarks import RemarksMixin
 
 
 class Region(BaseModel):
+    wikidata_id = models.CharField(max_length=16, db_index=True, null=True, blank=True)
     name = models.CharField(max_length=160)
+    country = CountryField()
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["country", "name"]
 
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name} ({self.country})"
 
 
 class RegionTranslationOptions(TranslationOptions):
     fields = ("name",)
 
 
-class Place(AddressesMixin, LinksMixin, RemarksMixin, BaseModel):
+class Place(AddressesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, BaseModel):
     HOSPITAL = "hospital"
     WARD = "ward"
     PRIVATE = "private_center"
@@ -56,3 +61,7 @@ class Place(AddressesMixin, LinksMixin, RemarksMixin, BaseModel):
     @property
     def is_private(self) -> bool:
         return self.type == self.PRIVATE
+
+    @property
+    def city(self) -> Optional[str]:
+        return ", ".join([address.city for address in self.addresses.all()])

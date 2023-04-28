@@ -7,3 +7,5 @@ from .faculties import *
 from .places import *
 from .stages import *
 from .users import *
+
+from .tmp.stages import *

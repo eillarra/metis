@@ -92,7 +92,6 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
-    # mentors
     project = models.ForeignKey("metis.Project", related_name="internships", on_delete=models.CASCADE)
     student = models.ForeignKey("metis.User", related_name="internships", on_delete=models.CASCADE)
     track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
@@ -103,10 +102,9 @@ class Internship(RemarksMixin, BaseModel):
     custom_start_date = models.DateField(null=True)  # by default start date is period's start date
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
 
-    discipline = models.ForeignKey(
-        "metis.Discipline", related_name="internships", null=True, on_delete=models.SET_NULL
-    )
+    discipline = models.ForeignKey("metis.Discipline", related_name="internships", null=True, on_delete=models.SET_NULL)
     # evaluation_deadline = models.DateField()  # this can be used for cases > reviews
+    # mentors
 
     def clean(self) -> None:
         """

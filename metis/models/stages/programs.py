@@ -17,12 +17,12 @@ class Program(BaseModel):
     How many regions can the student choose preferences
     """
 
-    education = models.ForeignKey("metis.Education", related_name="Programs", on_delete=models.CASCADE)
+    education = models.ForeignKey("metis.Education", related_name="programs", on_delete=models.CASCADE)
     name = models.CharField(max_length=160)
     valid_from = models.DateField()
     valid_until = models.DateField(null=True, blank=True)
 
-    # evaluation_form = models.ForeignKey("metis.EvaluationForm", related_name="Programs", on_delete=models.CASCADE)
+    # evaluation_form = models.ForeignKey("metis.EvaluationForm", related_name="programs", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.name

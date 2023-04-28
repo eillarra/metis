@@ -19,7 +19,7 @@ class Permission(models.Model):
         unique_together = ["content_type", "object_id", "user"]
 
     def __str__(self) -> str:
-        return self.user
+        return str(self.user)
 
 
 class PermissionsMixin(models.Model):

@@ -23,7 +23,7 @@ class Link(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
-    type = models.CharField(max_length=32, choices=TYPES, default=WEBSITE)
+    type = models.CharField(max_length=16, choices=TYPES, default=WEBSITE)
     url = models.URLField()
 
     class Meta:

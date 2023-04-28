@@ -7,17 +7,15 @@ from django_countries.fields import CountryField
 class Address(models.Model):
     """
     A physical address.
-    TODO: include Mapbox-specific information?
     """
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="addresses")
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
-    street_address = models.CharField(max_length=100)
-    city = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
-    postal_code = models.CharField(max_length=10)
+    address = models.CharField(max_length=160)
+    city = models.CharField(max_length=40)
+    postcode = models.CharField(max_length=16)
     country = CountryField()
 
     class Meta:

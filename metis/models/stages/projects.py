@@ -16,11 +16,21 @@ class Project(BaseModel):
 
     education = models.ForeignKey("metis.Education", null=True, related_name="projects", on_delete=models.SET_NULL)
     name = models.CharField(max_length=160)
+    places = models.ManyToManyField("metis.Place", through="ProjectPlace")
 
     is_active = models.BooleanField(default=True)
     is_visible_to_planner = models.BooleanField(default=True)
     is_visible_to_contacts = models.BooleanField(default=True)
     is_visible_to_students = models.BooleanField(default=False)
+
+    # TODO: QUESTION: there are dates in the old database, do we need them or do we use the period/project dates?
+
+    # number_of_periods = ???
+    # min_place_choices
+    # max_place_choices
+    # min_region_choices
+    # max_region_choices
+    # dates: select_period,
 
     def __str__(self) -> str:
         return self.name
@@ -80,3 +90,20 @@ class Period(BaseModel):
         de stage van een student valt mogelijks niet samen met een blokgrens.)
         """
         return self.is_open or (self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date())
+
+
+class ProjectPlace(BaseModel):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    place = models.ForeignKey("metis.Place", on_delete=models.CASCADE)
+    contacts = models.ManyToManyField("metis.User")
+    disciplines = models.ManyToManyField("metis.Discipline")
+
+    class Meta:
+        db_table = "metis_project_place"
+        ordering = ["project", "place"]
+        unique_together = ("project", "place")
+
+    def clean(self) -> None:
+        if self.disciplines.filter(education__id__ne=self.project.education_id).exists():
+            raise ValidationError("Disciplines are limited to the disciplines of the project's education.")
+        return super().clean()
