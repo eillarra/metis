@@ -49,7 +49,13 @@
       >
         <div class="row justify-between text-body2">
           <div class="col-12 col-md">
-            <p><span v-t="'version'"></span> {{ version }}</p>
+            <p>
+              <span v-t="'version'"></span>&nbsp;<a
+                v-if="django_user && django_user.is_staff"
+                :href="`https://github.ugent.be/eillarra/metis/tree/${git_commit_hash}`"
+                >{{ version }}</a
+              ><span v-else>{{ version }}</span>
+            </p>
           </div>
           <div class="col-12 col-md-9">
             <ul :class="{ 'text-right q-gutter-x-md': $q.screen.gt.sm }">
@@ -59,9 +65,9 @@
               <li :class="{ inline: $q.screen.gt.sm }">
                 <span
                   >&copy; {{ year }}
-                  <a v-t="'ge'" :href="`https://www.ugent.be/ge/${django_locale}`" target="_blank" rel="noopener"></a
-                  >, <span v-t="'ugent'" class="text-no-wrap"></span></span
-                >
+                  <a v-t="'ge'" :href="`https://www.ugent.be/ge/${django_locale}`" target="_blank" rel="noopener"></a>,
+                  <span v-t="'ugent'" class="text-no-wrap"></span
+                ></span>
               </li>
             </ul>
           </div>

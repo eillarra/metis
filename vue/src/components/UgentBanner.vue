@@ -36,7 +36,7 @@
       <slot></slot>
     </div>
     <div class="col-12 col-md bg-ugent relative-position">
-      <q-responsive :ratio="2/1">
+      <q-responsive :ratio="2 / 1">
         <slot name="image">
           <img src="https://www.ugent.be/nl/@@images/central_subsite_image" />
         </slot>
