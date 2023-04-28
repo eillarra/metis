@@ -1,8 +1,8 @@
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.serializers import serialize
 from django.db import models
-from typing import Type, TYPE_CHECKING
+from typing import Optional, Type, TYPE_CHECKING
 
 from metis.services.mailer import send_mail_to_admins
 
@@ -28,22 +28,7 @@ class Snapshot(models.Model):
         db_table = "metis_rel_snapshot"
 
 
-class SnapshotsMixin(models.Model):
-    snapshots = GenericRelation(Snapshot)
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        """
-        Note that this mixin should only be used by BaseModel.
-        """
-
-        super().save(*args, **kwargs)
-        save_snapshot(self.__class__, self, user=self.updated_by)
-
-
-def save_snapshot(sender: Type["BaseModel"], instance: models.Model, *, user: "User") -> None:
+def save_snapshot(sender: Type["BaseModel"], instance: models.Model, *, user: Optional["User"]) -> None:
     """
     Save a snapshot of a given Django model instance.
 
@@ -67,7 +52,7 @@ def save_snapshot(sender: Type["BaseModel"], instance: models.Model, *, user: "U
 
     snapshot = Snapshot()
     snapshot.content_object = instance
-    snapshot.created_by = user
+    snapshot.created_by = user  # type: ignore
 
     try:
         snapshot.data = serialize("json", [instance])

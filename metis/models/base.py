@@ -1,9 +1,10 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericRelation
 
-from .rel.snapshots import SnapshotsMixin
+from .rel.snapshots import Snapshot, save_snapshot
 
 
-class BaseModel(SnapshotsMixin, models.Model):
+class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         "metis.User",
@@ -22,6 +23,7 @@ class BaseModel(SnapshotsMixin, models.Model):
         blank=True,
         editable=False,
     )
+    snapshots = GenericRelation(Snapshot)
 
     class Meta:
         abstract = True
@@ -30,3 +32,4 @@ class BaseModel(SnapshotsMixin, models.Model):
         """TODO: find the best way of always enforcing checks."""
         # self.full_clean()
         super().save(*args, **kwargs)
+        save_snapshot(self.__class__, self, user=self.updated_by)

@@ -26,7 +26,7 @@ class Remark(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        save_snapshot(self.content_object.__class__, self.content_object)
+        save_snapshot(self.content_object.__class__, self.content_object, user=self.created_by)  # type: ignore
 
 
 class RemarksMixin(models.Model):
