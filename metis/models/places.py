@@ -1,4 +1,5 @@
 from django.db import models
+from modeltranslation.translator import TranslationOptions
 
 from .base import BaseModel
 from .rel.addresses import AddressesMixin
@@ -14,6 +15,10 @@ class Region(BaseModel):
 
     def __str__(self) -> str:
         return self.name
+
+
+class RegionTranslationOptions(TranslationOptions):
+    fields = ("name",)
 
 
 class Place(AddressesMixin, LinksMixin, RemarksMixin, BaseModel):

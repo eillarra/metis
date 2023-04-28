@@ -15,7 +15,7 @@ def audiology_program():
 @pytest.mark.django_db
 def test_program_creation(audiology_program):
     assert isinstance(audiology_program, Program)
-    assert audiology_program.name == "Audiology"
+    assert audiology_program.name == "Audiologie"
 
 
 @pytest.mark.django_db

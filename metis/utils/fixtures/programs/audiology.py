@@ -33,14 +33,26 @@ def create_audiology_program() -> Program:
     """
 
     # Create Education
-    faculty, _ = Faculty.objects.get_or_create(name="Faculty of Medicine and Health Sciences")
+    faculty, _ = Faculty.objects.get_or_create(
+        name_nl="Faculteit Geneeskunde en Gezondheidswetenschappen",
+        name_en="Faculty of Medicine and Health Sciences",
+    )
     education, _ = Education.objects.get_or_create(
-        code="audio", faculty=faculty, name="Hearing Sciences", short_name="Audiology"
+        code="audio",
+        faculty=faculty,
+        name_nl="Audiologie",
+        name_en="Hearing Sciences",
+        short_name_nl="Audiologie",
+        short_name_en="Audiology",
     )
 
     # Create Program
     program = Program.objects.create(
-        education=education, name="Audiology", valid_from=date(2020, 1, 1), valid_until=date(2030, 12, 31)
+        education=education,
+        name_nl="Audiologie",
+        name_en="Audiology",
+        valid_from=date(2020, 1, 1),
+        valid_until=date(2030, 12, 31),
     )
 
     # Create Program Blocks

@@ -1,4 +1,5 @@
 from django.db import models
+from modeltranslation.translator import TranslationOptions
 
 from .base import BaseModel
 
@@ -15,3 +16,7 @@ class Discipline(BaseModel):
 
     def __str__(self) -> str:
         return self.code
+
+
+class DisciplineTranslationOptions(TranslationOptions):
+    fields = ("name",)
