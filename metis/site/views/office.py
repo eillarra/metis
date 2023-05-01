@@ -36,3 +36,6 @@ class OfficeView(InertiaView):
             "programs": ProgramSerializer(programs, many=True, context={"request": request}).data,
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
         }
+
+    def get_page_title(self, request, *args, **kwargs) -> str:
+        return f"{self.get_object().short_name} - Stagebureau"

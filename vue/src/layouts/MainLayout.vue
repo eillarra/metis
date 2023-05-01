@@ -2,7 +2,7 @@
   <div class="container">
     <q-layout view="hhh lpR fff">
       <q-header class="row ugent__header bg-white">
-        <q-toolbar class="col-3 col-md-2 bg-white q-pl-none q-pt-md">
+        <q-toolbar class="col-3 col-md-2 bg-white q-pl-none">
           <a href="/" class="q-mr-sm">
             <img v-if="django_locale == 'nl'" src="@/assets/ugent.svg" class="logo q-mr-sm" />
             <img v-else src="@/assets/ugent_en.svg" class="logo q-mr-sm" />
