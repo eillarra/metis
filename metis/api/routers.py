@@ -10,6 +10,8 @@ class Router(DefaultRouter):
         self.schema_title = f"Metis API {version}"
 
         self.register(r"educations", views.EducationViewSet, basename="education")
+        self.register(r"places", views.PlaceViewSet, basename="place")
+        self.register(r"projects", views.ProjectViewSet, basename="project")
 
     def get_urls(self):
         return [url for url in super().get_urls() if url.name != "auth-user-detail"]

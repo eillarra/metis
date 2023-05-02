@@ -1,6 +1,10 @@
 from rest_framework.permissions import IsAuthenticated
 
 
+class IsUser(IsAuthenticated):
+    pass
+
+
 class IsManager(IsAuthenticated):
     """
     Only managers can update an object.

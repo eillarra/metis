@@ -1,11 +1,11 @@
 from modeltranslation.fields import TranslationField
 from rest_framework import serializers
 
-from .users import UserMiniSerializer
+from .users import UserBasicSerializer
 
 
 class BaseModelSerializer(serializers.ModelSerializer):
-    updated_by = UserMiniSerializer(read_only=True)
+    updated_by = UserBasicSerializer(read_only=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
