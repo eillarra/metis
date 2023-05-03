@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from metis.models.faculties import Education, Faculty
 from .base import BaseModelSerializer
+from .disciplines import DisciplineSerializer
 from .users import UserTinySerializer
 
 
@@ -17,7 +18,8 @@ class EducationSerializer(BaseModelSerializer):
     rel_programs = serializers.HyperlinkedIdentityField(view_name="v1:education-programs", read_only=True)
     rel_projects = serializers.HyperlinkedIdentityField(view_name="v1:education-projects", read_only=True)
     faculty = FacultySerializer(read_only=True)
-    office_members = UserTinySerializer(many=True, read_only=True)
+    office_members = UserTinySerializer(many=True)
+    disciplines = DisciplineSerializer(many=True)
 
     class Meta:
         model = Education

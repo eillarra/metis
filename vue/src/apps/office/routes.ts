@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         path: 'places/contacts/',
         name: 'placeContacts',
         strict: true,
-        component: () => import('./pages/PlaceContactsPage.vue'),
+        component: () => import('./pages/ContactsPage.vue'),
       },
       {
         path: 'programs/',

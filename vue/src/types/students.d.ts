@@ -1,4 +1,4 @@
-interface StudentRecords {
+interface StudentObjects {
   id: number;
   project: ProjectTiny;
   block: ProgramBlockTiny;
@@ -7,5 +7,5 @@ interface StudentRecords {
 
 interface Student extends BasicUser {
   id: number;
-  student_records: StudentRecords[];
+  student_objects: StudentObjects[];
 }

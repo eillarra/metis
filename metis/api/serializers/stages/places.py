@@ -1,6 +1,6 @@
 from metis.models.stages.places import Place, Contact
 from ..base import BaseModelSerializer
-from ..disciplines import DisciplineTinySerializer
+from ..disciplines import DisciplineSerializer
 from ..institutions import InstitutionSerializer
 from ..users import UserTinySerializer
 
@@ -16,7 +16,7 @@ class ContactSerializer(BaseModelSerializer):
 class PlaceSerializer(BaseModelSerializer):
     institution = InstitutionSerializer()
     contacts = ContactSerializer(many=True)
-    disciplines = DisciplineTinySerializer(many=True)
+    disciplines = DisciplineSerializer(many=True)
 
     class Meta:
         model = Place

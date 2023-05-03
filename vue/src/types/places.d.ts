@@ -1,13 +1,14 @@
-interface Region {
+interface Contact {
   id: number;
-  name: string;
-  country: string;
+  user: TinyUser;
+  is_staff: boolean;
+  is_mentor: boolean;
+  institutions?: Institution[];
 }
 
 interface Place {
   id: number;
-  name: string;
-  type: string;
-  region: Region | null;
-  disciplines: DisciplineTiny[];
+  institution: Institution;
+  disciplines: Discipline[];
+  contacts: Contact[];
 }

@@ -1,6 +1,10 @@
+interface TinyUser {
+  name: string;
+  email: string;
+}
+
 interface BasicUser {
   username: string;
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string;
 }

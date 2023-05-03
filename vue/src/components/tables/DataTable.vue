@@ -1,0 +1,240 @@
+<style lang="scss">
+.ugent__data-table {
+  .q-table {
+    max-width: 100%;
+
+    th.sticky-left,
+    td.sticky-left {
+      background-color: white;
+      position: -webkit-sticky;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+
+    th.sticky-right,
+    td.sticky-right {
+      background-color: white;
+      position: -webkit-sticky;
+      position: sticky;
+      right: 0;
+      z-index: 2;
+    }
+  }
+
+  .q-field,
+  thead th,
+  tbody td {
+    font-size: 1em;
+  }
+
+  thead th {
+    font-family: 'UGent Panno Medium', 'Arial', sans-serif;
+  }
+
+  .q-table__bottom {
+    font-size: smaller;
+  }
+}
+</style>
+
+<template>
+  <div>
+    <div class="row q-col-gutter-sm q-mb-lg">
+      <q-input dense square filled type="text" v-model="query" class="col-12 col-md">
+        <template #prepend>
+          <q-icon name="search" />
+        </template>
+        <template #append>
+          <q-icon v-if="query !== ''" name="cancel" @click="query = ''" class="cursor-pointer" color="grey" />
+        </template>
+      </q-input>
+      <q-select
+        v-model="visibleColumns"
+        multiple
+        dense
+        square
+        filled
+        options-dense
+        :display-value="$q.lang.table.columns"
+        :options="columns"
+        option-disable="required"
+        option-value="name"
+        option-label="label"
+        class="col-12 col-md-2"
+        emit-value
+        map-options
+      >
+        <template #prepend>
+          <q-icon name="view_column" />
+        </template>
+      </q-select>
+    </div>
+    <q-table
+      class="ugent__data-table q-mb-xl"
+      flat
+      dense
+      :rows="queriedRows"
+      :columns="extendedColumns"
+      :visible-columns="visibleColumns.concat(['edit'])"
+      row-key="name"
+      :loading="loading"
+      :pagination="initialPagination"
+      binary-state-sort
+    >
+      <template #body-cell="props">
+        <!-- Custom boolean field -->
+        <q-td :props="props" :auto-width="props.col.name.startsWith('is_')">
+          <span v-if="props.col.name.startsWith('is_')">
+            <q-icon v-if="props.value" name="check_circle" color="green" :size="iconSize" />
+            <q-icon v-else name="highlight_off" color="red" :size="iconSize" />
+          </span>
+          <span v-else-if="props.col.name == 'disciplines'" class="q-gutter-x-xs">
+            <q-badge outline v-for="d in props.value" :key="d.code" :label="d.name" color="dark" />
+          </span>
+          <span v-else>{{ props.value }}</span>
+        </q-td>
+      </template>
+      <template #body-cell-email="props">
+        <!-- Custom email field -->
+        <q-td :props="props" auto-width>
+          <a href="mailto:props.row.email" target="_blank" rel="noopener" class="inherit">{{ props.row.email }}</a>
+          <q-icon
+            @click="copyText(props.row.email)"
+            name="content_copy"
+            :size="iconSize"
+            class="cursor-pointer q-ml-xs"
+          />
+        </q-td>
+      </template>
+      <template #body-cell-edit="props">
+        <!-- Edit icon -->
+        <q-td :props="props" auto-width>
+          <q-icon
+            @click="selectedObj = props.row._self"
+            name="edit"
+            :size="iconSize"
+            color="primary"
+            class="cursor-pointer"
+          />
+        </q-td>
+      </template>
+    </q-table>
+    <q-dialog v-if="formComponent" v-model="dialogVisible" position="right" full-height>
+      <component :is="formComponent" :obj="selectedObj"></component>
+    </q-dialog>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { copyToClipboard, Notify } from 'quasar';
+
+import { storage } from '@/storage';
+
+const router = useRouter();
+const { t } = useI18n();
+
+const props = defineProps<{
+  rows: any[];
+  columns: any[];
+  queryColumns: string[];
+  sortBy?: string;
+  loading?: boolean;
+  formComponent?: any;
+}>();
+
+const initialPagination = {
+  rowsPerPage: 25,
+  sortBy: props.sortBy || undefined,
+};
+
+const iconSize = '16px';
+
+const extendedColumns = computed(() => {
+  const columns = [...props.columns];
+
+  // add custom edit field
+  if (props.formComponent) {
+    columns.push({
+      name: 'edit',
+      label: null,
+      field: 'edit',
+      align: 'center',
+      headerClasses: 'sticky-right',
+      classes: 'sticky-right',
+    });
+  }
+
+  return columns;
+});
+
+const query = ref<string>('');
+
+const queriedRows = computed(() => {
+  if (!query.value) {
+    return props.rows;
+  }
+
+  // we split the query search and count the matches
+  // if the number of matches is equal to the number of query terms, we have a match
+
+  const queryTerms = query.value.toLowerCase().split(' ');
+
+  return props.rows.filter((row) => {
+    let matches = 0;
+
+    for (const queryTerm of queryTerms) {
+      for (const column of props.queryColumns) {
+        if (row[column]?.toLowerCase().includes(queryTerm)) {
+          matches++;
+          break;
+        }
+      }
+    }
+    return matches === queryTerms.length;
+  });
+});
+
+const visibleColumnsStorageKey = computed<string>(
+  () => `metis.data_table.visible_columns.${router.currentRoute.value.name}`
+);
+const visibleColumns = ref<string[]>(storage.get(visibleColumnsStorageKey.value) || []);
+
+const selectedObj = ref<any | null>(null);
+const dialogVisible = computed<boolean>({
+  get() {
+    return !!selectedObj.value;
+  },
+  set(value) {
+    if (!value) {
+      selectedObj.value = null;
+    }
+  },
+});
+
+function copyText(text: string) {
+  copyToClipboard(text).then(() => {
+    Notify.create({
+      message: t('copied_to_clipboard'),
+      icon: 'info',
+    });
+  });
+}
+
+onMounted(() => {
+  if (visibleColumns.value.length === 0) {
+    visibleColumns.value = props.columns.map((column) => column.name);
+  }
+});
+
+/*
+deep watch visibleColumns and save user's selection in local storage
+*/
+watch(visibleColumns, (newVal) => {
+  // TODO: save to user's preferences via API
+  storage.set(visibleColumnsStorageKey.value, newVal);
+});
+</script>

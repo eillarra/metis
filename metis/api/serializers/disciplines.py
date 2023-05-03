@@ -2,7 +2,7 @@ from metis.models.disciplines import Discipline
 from .base import BaseModelSerializer
 
 
-class DisciplineTinySerializer(BaseModelSerializer):
+class DisciplineSerializer(BaseModelSerializer):
     class Meta:
         model = Discipline
-        fields = ("code", "name")
+        fields = ("id", "code", "name", "color")

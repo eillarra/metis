@@ -1,9 +1,6 @@
-interface DisciplineTiny {
+interface Discipline {
   id: number;
   code: string;
   name: string;
-}
-
-interface Discipline extends DisciplineTiny {
-  self: string;
+  color: string | null;
 }

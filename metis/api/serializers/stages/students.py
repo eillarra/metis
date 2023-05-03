@@ -2,12 +2,12 @@ from rest_framework import serializers
 
 from metis.models import User, Student
 from .projects import ProjectTinySerializer
-from .programs import ProgramBlockTinySerializer
+from .programs import ProgramBlockSerializer
 
 
 class StudentObjectSerializer(serializers.ModelSerializer):
     project = ProjectTinySerializer()
-    block = ProgramBlockTinySerializer()
+    block = ProgramBlockSerializer()
 
     class Meta:
         model = Student

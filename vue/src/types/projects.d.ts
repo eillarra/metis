@@ -5,6 +5,7 @@ interface ProjectTiny {
 
 interface Project extends ProjectTiny {
   self: string;
+  rel_internships: ApiEndpoint;
   rel_places: ApiEndpoint;
   rel_students: ApiEndpoint;
   updated_at: string;

@@ -7,7 +7,7 @@
         borderless
         square
         options-dense
-        v-model="selectedProject"
+        v-model="selectedProjectId"
         :options="projects"
         option-value="id"
         option-label="name"
@@ -43,7 +43,7 @@ const officeStore = useOfficeStore();
 
 const djangoPrograms: ComputedRef<Program[]> = computed(() => page.props.programs);
 const djangoProjects: ComputedRef<Project[]> = computed(() => page.props.projects);
-const { projects, project, selectedProject } = storeToRefs(officeStore);
+const { projects, project, selectedProjectId } = storeToRefs(officeStore);
 
 officeStore.setPrograms(djangoPrograms.value);
 officeStore.setProjects(djangoProjects.value);

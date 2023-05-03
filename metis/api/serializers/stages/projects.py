@@ -12,6 +12,7 @@ class ProjectTinySerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(BaseModelSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:project-detail", read_only=True)
+    rel_internships = serializers.HyperlinkedIdentityField(view_name="v1:project-internships", read_only=True)
     rel_places = serializers.HyperlinkedIdentityField(view_name="v1:project-places", read_only=True)
     rel_students = serializers.HyperlinkedIdentityField(view_name="v1:project-students", read_only=True)
     education = serializers.HyperlinkedRelatedField(view_name="v1:education-detail", read_only=True)
@@ -20,5 +21,4 @@ class ProjectSerializer(BaseModelSerializer):
 
     class Meta:
         model = Project
-        exclude = ("created_at", "created_by")
-        depth = 1
+        exclude = ("created_at", "created_by", "institutions")
