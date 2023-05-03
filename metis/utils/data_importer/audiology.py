@@ -1,23 +1,19 @@
 import pandas as pd
 
-from django.db.utils import IntegrityError
-from django.utils.text import slugify
-from typing import Optional
-
-from metis.models import ProgramBlock, Project, ProjectPlace, Student, User
+from metis.models import ProgramBlock, Project, ProjectPlace, Student
 from metis.models.tmp.stages import TmpStudent, TmpMentor, TmpInternship
-from .base import parse_emails, parse_phones, parse_mentors, get_or_create_place, df_to_places
+from .base import (
+    df_to_places,
+    find_email_for_name,
+    get_or_create_place,
+    get_or_create_user,
+    parse_emails,
+    parse_phones,
+    parse_mentors,
+)
 
 
-def find_email_for_name(name: str, emails: list[str]) -> Optional[str]:
-    for substring in name.lower().split():
-        for email in emails:
-            if substring in email.lower():
-                return email
-    return None
-
-
-def load_places(*, project: Optional[Project] = None):
+def load_places(project: Project):
     file_path = "metis/utils/data_importer/files/Stageplaatsen_audiologie_AJ22-23.xlsx"
     df = pd.read_excel(file_path, sheet_name="Overzicht stageplaatsen", nrows=230)
     df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
@@ -47,9 +43,11 @@ def load_internships(audio_periods, *, education):
         file_path = "metis/utils/data_importer/files/verdeling_stageplaatsen_audiologie.xlsx"
         df = pd.read_excel(file_path, sheet_name=f"{data.project_name}-{data.block_name}-Periode{data.period}")
 
+        # rename columns
         df.rename(
             columns={
                 "Student": "student_name",
+                "E-mail student": "student_email",
                 "Stageplaats": "place_name",
                 "Stagementoren": "mentors",
                 "Adres": "place_adress",
@@ -60,24 +58,27 @@ def load_internships(audio_periods, *, education):
             inplace=True,
         )
 
+        # strip whitespace
+        df["student_name"] = df["student_name"].str.strip()
+        df["student_email"] = df["student_email"].str.strip()
+        df["place_name"] = df["place_name"].str.strip()
+
+        # transform data
         df["mentors"] = df["mentors"].apply(parse_mentors)
         df["mentor_emails"] = df["mentor_emails"].apply(parse_emails)
         df["mentor_phone_numbers"] = df["mentor_phone_numbers"].apply(parse_phones)
         df["place"] = df.apply(
-            lambda row: get_or_create_place(str(row["place_name"]), str(row["place_adress"])), axis=1
+            lambda row: get_or_create_place(
+                row["place_name"],
+                str(row["place_adress"]),
+            ),
+            axis=1,
         )
 
         # link place to project
 
         project = Project.objects.get(name=data.project_name)
         block = ProgramBlock.objects.get(program__education=education, name=data.block_name)
-
-        if data.link_places:
-            for place in df["place"]:
-                try:
-                    ProjectPlace.objects.create(project=project, place=place)
-                except IntegrityError:
-                    pass
 
         # create temp tables
 
@@ -88,6 +89,7 @@ def load_internships(audio_periods, *, education):
                 project=project,
                 block=block,
                 name=str(row["student_name"]).strip(),
+                email=str(row["student_email"]).strip().lower(),
                 period=data.period,
             )
 
@@ -124,17 +126,14 @@ def load_internships(audio_periods, *, education):
     # move data to the real tables
 
     for tmp_student in TmpStudent.objects.all():
-        first_name, *last_name = tmp_student.name.split(None, 1)
-        last_name = last_name[0] if last_name else "?"
-
-        user, _ = User.objects.get_or_create(
-            username=slugify(f"{first_name}.{last_name}"),
-            first_name=first_name,
-            last_name=last_name,
-            email=tmp_student.email or "noreply@ugent.be",
-        )
+        user = get_or_create_user(name=tmp_student.name, email=tmp_student.email)
         student, _ = Student.objects.get_or_create(
             user=user,
             project=tmp_student.project,
             block=tmp_student.block,
         )
+
+    for tmp_mentor in TmpMentor.objects.all():
+        user = get_or_create_user(name=tmp_mentor.name, email=tmp_mentor.email)
+        training_place, _ = ProjectPlace.objects.get_or_create(project=tmp_mentor.project, place=tmp_mentor.place)
+        training_place.contacts.add(user)

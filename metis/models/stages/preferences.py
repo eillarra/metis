@@ -12,7 +12,7 @@ class Preference(BaseModel):
     TODO: link with ProgramInternship instead?
     """
 
-    student = models.ForeignKey("metis.User", related_name="preferences", on_delete=models.CASCADE)
+    student = models.ForeignKey("metis.Student", related_name="preferences", on_delete=models.CASCADE)
     internship = models.ForeignKey("metis.Internship", related_name="preferences", on_delete=models.CASCADE)
     regions = models.ManyToManyField("metis.Region", through="RegionPreference")
     places = models.ManyToManyField("metis.Place", through="PlacePreference")
@@ -29,7 +29,7 @@ class RegionPreference(models.Model):
     position = models.PositiveIntegerField()
 
     class Meta:
-        db_table = "metis_preference_region"
+        db_table = "metis_preference_regions"
         ordering = ["preference", "position"]
 
 
@@ -43,7 +43,7 @@ class PlacePreference(models.Model):
     position = models.PositiveIntegerField()
 
     class Meta:
-        db_table = "metis_preference_place"
+        db_table = "metis_preference_places"
         ordering = ["preference", "position"]
 
 
@@ -57,5 +57,5 @@ class DisciplinePreference(models.Model):
     position = models.PositiveIntegerField()
 
     class Meta:
-        db_table = "metis_preference_discipline"
+        db_table = "metis_preference_disciplines"
         ordering = ["preference", "position"]

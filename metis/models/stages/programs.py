@@ -48,7 +48,7 @@ class ProgramBlock(BaseModel):
     position = models.PositiveSmallIntegerField()
 
     class Meta:
-        db_table = "metis_program_block"
+        db_table = "metis_program_blocks"
         unique_together = ("program", "position")
         ordering = ["program", "position"]
 
@@ -77,8 +77,8 @@ class ProgramInternship(DisciplineConstraintsMixin, BaseModel):
     duration = models.DurationField(null=True, blank=True)
 
     class Meta:
-        db_table = "metis_program_internship"
-        ordering = ["block__position", "name"]  # TODO: position
+        db_table = "metis_program_internships"
+        ordering = ["block__position", "position"]
 
     def __str__(self) -> str:
         return f"{self.block} - {self.name}"
@@ -91,10 +91,10 @@ class Track(DisciplineConstraintsMixin, BaseModel):
 
     program = models.ForeignKey(Program, related_name="tracks", on_delete=models.CASCADE)
     name = models.CharField(max_length=160)
-    program_internships = models.ManyToManyField(ProgramInternship, through="TrackInternship")
+    program_internships = models.ManyToManyField(ProgramInternship, through="metis.TrackInternship")
 
     class Meta:
-        db_table = "metis_program_track"
+        db_table = "metis_program_tracks"
 
     def __str__(self) -> str:
         return f"{self.program} - {self.name}"
@@ -115,5 +115,5 @@ class TrackInternship(models.Model):
     position = models.PositiveIntegerField()
 
     class Meta:
-        db_table = "metis_program_track_internship"
+        db_table = "metis_program_track_internships"
         ordering = ["track", "position"]

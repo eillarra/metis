@@ -2,6 +2,6 @@
 
 from .disciplines import *
 from .faculties import *
-from .places import *
+from .institutions import *
 from .stages import *
 from .users import *

@@ -7,4 +7,5 @@ from .internships import *
 from .preferences import *
 from .programs import *
 from .projects import *
+from .places import *
 from .students import *

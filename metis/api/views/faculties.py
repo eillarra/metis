@@ -15,12 +15,12 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
 
     @action(detail=True, pagination_class=None)
     def projects(self, request, *args, **kwargs):
-        projects = self.get_object().projects.prefetch_related("periods", "updated_by").distinct()
+        projects = self.get_object().projects.prefetch_related("periods", "updated_by")
         return Response(ProjectSerializer(projects, many=True, context={"request": request}).data)
 
     @action(detail=True, pagination_class=None)
     def programs(self, request, *args, **kwargs):
-        programs = self.get_object().programs.prefetch_related("blocks__updated_by", "updated_by").distinct()
+        programs = self.get_object().programs.prefetch_related("blocks__updated_by", "updated_by")
         return Response(ProgramSerializer(programs, many=True, context={"request": request}).data)
 
     @action(detail=True, pagination_class=None)

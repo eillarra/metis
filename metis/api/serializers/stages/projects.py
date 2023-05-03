@@ -20,5 +20,5 @@ class ProjectSerializer(BaseModelSerializer):
 
     class Meta:
         model = Project
-        exclude = ("created_at", "created_by", "places")
+        exclude = ("created_at", "created_by")
         depth = 1

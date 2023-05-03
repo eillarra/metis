@@ -5,7 +5,7 @@ from .projects import ProjectTinySerializer
 from .programs import ProgramBlockTinySerializer
 
 
-class StudentRecord(serializers.ModelSerializer):
+class StudentObjectSerializer(serializers.ModelSerializer):
     project = ProjectTinySerializer()
     block = ProgramBlockTinySerializer()
 
@@ -15,8 +15,8 @@ class StudentRecord(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    student_records = StudentRecord(many=True)
+    student_objects = StudentObjectSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ("username", "first_name", "last_name", "email", "last_login", "is_active", "student_records")
+        fields = ("username", "name", "email", "last_login", "is_active", "student_objects")

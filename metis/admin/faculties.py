@@ -7,7 +7,7 @@ from .rel.permissions import ManagersInline
 
 @admin.register(Faculty)
 class FacultyAdmin(BaseModelAdmin):
-    list_display = ("name", "full_name")
+    list_display = ("name",)
 
 
 @admin.register(Education)

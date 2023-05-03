@@ -26,7 +26,7 @@ class RegionTranslationOptions(TranslationOptions):
     fields = ("name",)
 
 
-class Place(AddressesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, BaseModel):
+class Institution(AddressesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, BaseModel):
     HOSPITAL = "hospital"
     WARD = "ward"
     PRIVATE = "private_center"
@@ -40,9 +40,6 @@ class Place(AddressesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, BaseMod
     name = models.CharField(max_length=160)
     parent = models.ForeignKey("self", related_name="children", on_delete=models.SET_NULL, null=True, blank=True)
     region = models.ForeignKey(Region, related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
-
-    practical_information = models.TextField(blank=True, null=True)
-    disciplines = models.ManyToManyField("metis.Discipline", related_name="places")
 
     class Meta:
         ordering = ["type", "name"]
@@ -63,5 +60,5 @@ class Place(AddressesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, BaseMod
         return self.type == self.PRIVATE
 
     @property
-    def city(self) -> Optional[str]:
+    def cities(self) -> Optional[str]:
         return ", ".join([address.city for address in self.addresses.all()])

@@ -6,10 +6,9 @@ try:
 except ImportError:
     phonenumbers = None
 
-from django.db.utils import IntegrityError
 from typing import Optional
 
-from metis.models import Discipline, Region, Place, Project, ProjectPlace
+from metis.models import User, Discipline, Region, Place, Project, ProjectPlace
 from metis.models.rel.addresses import Address
 from metis.models.rel.phone_numbers import PhoneNumber
 from metis.models.rel.remarks import Remark
@@ -52,6 +51,30 @@ def get_or_create_place(name: str, address: str) -> Place:
     return place
 
 
+def get_or_create_user(*, name: str, email: Optional[str]) -> User:
+    first_name, *last_name = name.split(None, 1)
+    last_name = last_name[0] if last_name else "nan"
+    username = f"{first_name}.{last_name}".lower().replace(" ", "")
+
+    try:
+        return User.objects.get(username=username)
+    except User.DoesNotExist:
+        return User.objects.create(
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email or f"{username}@ugent.be",
+        )
+
+
+def find_email_for_name(name: str, emails: list[str]) -> Optional[str]:
+    for substring in name.lower().split():
+        for email in emails:
+            if substring in email.lower():
+                return email
+    return None
+
+
 def format_phone_number(phone_number: str):
     try:
         return phonenumbers.format_number(
@@ -66,16 +89,17 @@ def parse_emails(emails: str) -> list[str]:
 
 
 def parse_phones(phones: str) -> list[str]:
-    return [format_phone_number(phone.strip()) for phone in re.split(r";|\s-\s| en | of | / ", str(phones))]
+    return [format_phone_number(phone.strip()) for phone in re.split(r";|,\s|\s-\s| en | of | / ", str(phones))]
 
 
 def parse_mentors(mentors: str) -> list[str]:
     return [mentor.strip() for mentor in re.split(r";|,\s|/", str(mentors))]
 
 
-def df_to_places(df: pd.DataFrame, project: Optional[Project] = None):
+def df_to_places(df: pd.DataFrame, *, project: Project):
     df["phones"] = df["phones"].apply(parse_phones)
     df["mentors"] = df["mentors"].apply(parse_mentors)
+    df["email"] = df["email"].apply(parse_emails)
 
     with Mapbox() as mapbox:
         df["feature"] = df["address"].apply(mapbox.geocode)
@@ -83,26 +107,26 @@ def df_to_places(df: pd.DataFrame, project: Optional[Project] = None):
     # create a new place for each row
     for _, row in df.iterrows():
         place = get_or_create_place(str(row["name"]), str(row["address"]))
+        project_place, _ = ProjectPlace.objects.get_or_create(place=place, project=project)
 
-        # contact information
+        # phones
         if row["phones"]:
             for phone in row["phones"]:
                 PhoneNumber.objects.create(content_object=place, number=str(phone)[:22], type=PhoneNumber.LANDLINE)
 
         # disciplines
+        if row["discipline"]:
+            discipline = Discipline.objects.get(code=row["discipline"])
+            project_place.disciplines.add(discipline)
 
         # remarks
+        if not pd.isna(row["remarks"]):
+            Remark.objects.create(content_object=project_place, text=row["remarks"])
 
-        if row["remarks"]:
-            Remark.objects.create(content_object=place, text=row["remarks"])
-
-        # add to project
-
-        if project:
-            try:
-                pp = ProjectPlace.objects.create(project=project, place=place)
-                pp.disciplines.add(Discipline.objects.get(code=row["discipline"]))
-            except IntegrityError:
-                pass
+        # mentors
+        for mentor_name in row["mentors"]:
+            email = find_email_for_name(mentor_name, row["email"]) or row["email"][0]
+            user = get_or_create_user(name=mentor_name, email=email)
+            project_place.contacts.add(user)
 
     return df

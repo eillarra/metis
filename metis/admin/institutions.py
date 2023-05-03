@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from metis.models.places import Region, Place
+from metis.models.institutions import Region, Institution
 from .base import BaseModelAdmin
 from .rel.remarks import RemarksInline
 
@@ -11,9 +11,8 @@ class RegionAdmin(BaseModelAdmin):
         return False
 
 
-@admin.register(Place)
-class PlaceAdmin(BaseModelAdmin):
+@admin.register(Institution)
+class InstitutionAdmin(BaseModelAdmin):
     list_filter = ("type",)
     # form
-    autocomplete_fields = ("disciplines",)
     inlines = (RemarksInline,)

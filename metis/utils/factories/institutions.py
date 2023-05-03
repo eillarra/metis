@@ -8,9 +8,9 @@ class RegionFactory(factory.django.DjangoModelFactory):
         model = "metis.Region"
 
 
-class PlaceFactory(factory.django.DjangoModelFactory):
+class InstitutionFactory(factory.django.DjangoModelFactory):
     region = factory.SubFactory(RegionFactory)
     name = factory.Sequence(lambda n: f"Place {n}")
 
     class Meta:
-        model = "metis.Place"
+        model = "metis.Institution"

@@ -4,12 +4,15 @@ from collections import Counter
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 from ..base import BaseModel
 from ..disciplines import Discipline
 from ..rel.remarks import RemarksMixin
-from .programs import Program
+
+if TYPE_CHECKING:
+    from .programs import Program
+from .projects import Project
 
 
 def get_remaining_discipline_constraints(obj: "Internship") -> List[dict]:
@@ -92,12 +95,12 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
-    project = models.ForeignKey("metis.Project", related_name="internships", on_delete=models.CASCADE)
-    student = models.ForeignKey("metis.User", related_name="internships", on_delete=models.CASCADE)
-    track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
     program_internship = models.ForeignKey(
         "metis.ProgramInternship", related_name="internships", on_delete=models.CASCADE
     )
+    track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
+
+    student = models.ForeignKey("metis.Student", related_name="internships", null=True, on_delete=models.SET_NULL)
     place = models.ForeignKey("metis.Place", related_name="internships", on_delete=models.CASCADE)
     custom_start_date = models.DateField(null=True)  # by default start date is period's start date
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
@@ -136,8 +139,12 @@ class Internship(RemarksMixin, BaseModel):
         return self.start_date <= timezone.now().date() <= self.end_date
 
     @property
-    def program(self) -> Optional[Program]:
+    def program(self) -> Optional["Program"]:
         return self.program_internship.block.program if self.period.program_period else None
+
+    @property
+    def project(self) -> Optional["Project"]:
+        return self.student.project if self.student else None
 
     def accepts_cases(self) -> bool:
         raise NotImplementedError
@@ -163,7 +170,7 @@ class Internship(RemarksMixin, BaseModel):
         Returns:
             QuerySet: A QuerySet of Discipline objects.
         """
-        if self.track is None:
+        if self.track is None or self.student is None:
             return Discipline.objects.none()
 
         past_internships = self.student.internships.exclude(id=self.id).filter(track=self.track)
@@ -177,6 +184,6 @@ class Internship(RemarksMixin, BaseModel):
             Dict: A dictionary of disciplines and their count for this internship.
         """
         if not self.track:
-            return {}
+            return Counter()
 
         return Counter(self.get_covered_disciplines().values_list("id", flat=True))

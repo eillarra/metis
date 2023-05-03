@@ -1,5 +1,5 @@
 # flake8: noqa
 
 from .faculties import *
-from .places import *
+from .institutions import *
 from .stages import *

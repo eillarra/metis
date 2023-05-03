@@ -16,7 +16,7 @@ class Project(BaseModel):
 
     education = models.ForeignKey("metis.Education", null=True, related_name="projects", on_delete=models.SET_NULL)
     name = models.CharField(max_length=160)
-    places = models.ManyToManyField("metis.Place", through="ProjectPlace")
+    institutions = models.ManyToManyField("metis.Institution", through="metis.Place")
 
     is_active = models.BooleanField(default=True)
     is_visible_to_planner = models.BooleanField(default=True)
@@ -62,14 +62,14 @@ class Period(BaseModel):
 
     project = models.ForeignKey(Project, related_name="periods", on_delete=models.CASCADE)
     program_internship = models.ForeignKey(
-        "metis.ProgramInternship", null=True, related_name="project_periods", on_delete=models.SET_NULL
+        "metis.ProgramInternship", null=True, related_name="periods", on_delete=models.SET_NULL
     )
     name = models.CharField(max_length=240)
     start_date = models.DateField()
     end_date = models.DateField()
 
     class Meta:
-        db_table = "metis_project_period"
+        db_table = "metis_project_periods"
         ordering = ["project", "start_date"]
 
     def clean(self) -> None:
@@ -90,20 +90,3 @@ class Period(BaseModel):
         de stage van een student valt mogelijks niet samen met een blokgrens.)
         """
         return self.is_open or (self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date())
-
-
-class ProjectPlace(BaseModel):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    place = models.ForeignKey("metis.Place", on_delete=models.CASCADE)
-    contacts = models.ManyToManyField("metis.User")
-    disciplines = models.ManyToManyField("metis.Discipline")
-
-    class Meta:
-        db_table = "metis_project_place"
-        ordering = ["project", "place"]
-        unique_together = ("project", "place")
-
-    def clean(self) -> None:
-        if self.disciplines.filter(education__id__ne=self.project.education_id).exists():
-            raise ValidationError("Disciplines are limited to the disciplines of the project's education.")
-        return super().clean()

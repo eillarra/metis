@@ -35,9 +35,9 @@ class Command(BaseCommand):
             Period("AJ21-22", "Ma1", 1),
             Period("AJ21-22", "Ma1", 2),
             Period("AJ21-22", "Ma2", 1),
-            Period("AJ22-23", "Ma1", 1, False),
-            Period("AJ22-23", "Ma1", 2, False),
-            Period("AJ22-23", "Ma2", 1, False),
+            Period("AJ22-23", "Ma1", 1),
+            Period("AJ22-23", "Ma1", 2),
+            Period("AJ22-23", "Ma2", 1),
         ]
 
         for period in audio_periods:
@@ -46,11 +46,8 @@ class Command(BaseCommand):
                 name=period.project_name,
             )
 
-        for i, year in enumerate(range(2021, 2024), start=1):
-            f.ProjectFactory.create(education=logo.education, name=f"LOGO {year}")
-
         # places
-        # real_audio.load_places(project=m.Project.objects.get(name="AJ22-23"))
+        real_audio.load_places(project=m.Project.objects.get(name="AJ22-23"))
         # real_logo.load_places(project=m.Project.objects.get(name="LOGO 2023"))
 
         # internships

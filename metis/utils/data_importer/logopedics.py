@@ -1,12 +1,10 @@
 import pandas as pd
 
-from typing import Optional
-
 from metis.models import Project
 from .base import df_to_places
 
 
-def load_places(*, project: Optional[Project] = None):
+def load_places(project: Project):
     file_path = "metis/utils/data_importer/files/Stageplaatsen_logopedie_AJ22-23.xlsx"
     df = pd.read_excel(file_path, sheet_name="Blad1", nrows=263)
 

@@ -1,9 +1,8 @@
-from rest_framework import serializers
-
 from metis.models.disciplines import Discipline
+from .base import BaseModelSerializer
 
 
-class DisciplineTinySerializer(serializers.ModelSerializer):
+class DisciplineTinySerializer(BaseModelSerializer):
     class Meta:
         model = Discipline
-        fields = ("id", "code", "name")
+        fields = ("code", "name")
