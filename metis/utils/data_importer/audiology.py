@@ -1,11 +1,24 @@
 import pandas as pd
 
-from metis.models import ProgramBlock, Project, ProjectPlace, Student
-from metis.models.tmp.stages import TmpStudent, TmpMentor, TmpInternship
+from typing import Dict, Tuple
+
+from metis.models import (
+    Track,
+    ProgramBlock,
+    Project,
+    Place,
+    Student,
+    Contact,
+    Remark,
+    Internship,
+    ProgramInternship,
+    Discipline,
+)
+from metis.models.tmp.stages import TmpStudent, TmpMentor, TmpInternship, TmpPlaceData
 from .base import (
     df_to_places,
     find_email_for_name,
-    get_or_create_place,
+    get_or_create_institution,
     get_or_create_user,
     parse_emails,
     parse_phones,
@@ -68,7 +81,7 @@ def load_internships(audio_periods, *, education):
         df["mentor_emails"] = df["mentor_emails"].apply(parse_emails)
         df["mentor_phone_numbers"] = df["mentor_phone_numbers"].apply(parse_phones)
         df["place"] = df.apply(
-            lambda row: get_or_create_place(
+            lambda row: get_or_create_institution(
                 row["place_name"],
                 str(row["place_adress"]),
             ),
@@ -85,6 +98,8 @@ def load_internships(audio_periods, *, education):
         print(f"Number of rows in df: {len(df)} for {data.project_name}-{data.block_name}-Periode{data.period}")
 
         for _, row in df.iterrows():
+            student_email = str(row["student_email"]).strip().lower()
+
             student, _ = TmpStudent.objects.get_or_create(
                 project=project,
                 block=block,
@@ -96,7 +111,7 @@ def load_internships(audio_periods, *, education):
             internship, _ = TmpInternship.objects.get_or_create(
                 project=project,
                 place=row["place"],
-                student=student,
+                student=student if student_email != "nan" else None,
                 project_name=data.project_name,
                 block_name=data.block_name,
                 period=data.period,
@@ -125,15 +140,57 @@ def load_internships(audio_periods, *, education):
 
     # move data to the real tables
 
+    tmp_students_map = {}
+
     for tmp_student in TmpStudent.objects.all():
-        user = get_or_create_user(name=tmp_student.name, email=tmp_student.email)
-        student, _ = Student.objects.get_or_create(
-            user=user,
-            project=tmp_student.project,
-            block=tmp_student.block,
-        )
+        if tmp_student.email != "nan":
+            user = get_or_create_user(name=tmp_student.name, email=tmp_student.email)
+            student, _ = Student.objects.get_or_create(
+                user=user,
+                project=tmp_student.project,
+                block=tmp_student.block,
+            )
+            tmp_students_map[tmp_student.id] = student
 
     for tmp_mentor in TmpMentor.objects.all():
         user = get_or_create_user(name=tmp_mentor.name, email=tmp_mentor.email)
-        training_place, _ = ProjectPlace.objects.get_or_create(project=tmp_mentor.project, place=tmp_mentor.place)
-        training_place.contacts.add(user)
+        place, _ = Place.objects.get_or_create(project=tmp_mentor.project, institution=tmp_mentor.place)
+        Contact.objects.get_or_create(
+            user=user,
+            place=place,
+            is_mentor=True,
+        )
+
+        try:
+            tmp_place_data = TmpPlaceData.objects.get(institution=tmp_mentor.place)
+            if tmp_place_data.discipline:
+                place.disciplines.add(tmp_place_data.discipline)
+            if tmp_place_data.remarks:
+                Remark.objects.create(content_object=place, text=tmp_place_data.remarks)
+        except TmpPlaceData.DoesNotExist:
+            pass
+
+    for internship in TmpInternship.objects.all():
+        naming_map: Dict[Tuple[str, str], str] = {
+            ("Ba3", "1"): "1A",
+            ("Ma1", "1"): "2A",
+            ("Ma1", "2"): "3A",
+            ("Ma2", "1"): "4A",
+        }
+
+        place, _ = Place.objects.get_or_create(project=internship.project, institution=internship.place)
+        default_discipline = Discipline.objects.get(education=education, name="klinisch")
+
+        internship = Internship(
+            student=tmp_students_map[internship.student.id] if internship.student else None,
+            place=place,
+            program_internship=ProgramInternship.objects.get(
+                block__program_id=1,
+                block__name=internship.block_name,
+                name__contains=naming_map[(internship.block_name, internship.period)],
+            ),
+            track=Track.objects.get(program_id=1, name="Track A"),
+            discipline=place.disciplines.first() if place.disciplines.exists() else default_discipline,
+        )
+        internship.clean()
+        internship.save()

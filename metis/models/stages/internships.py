@@ -53,8 +53,6 @@ def get_remaining_discipline_constraints(obj: "Internship") -> List[dict]:
 
             remaining_constraints.append(remaining_constraint)
 
-    print(remaining_constraints)
-
     return remaining_constraints
 
 

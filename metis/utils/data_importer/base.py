@@ -8,17 +8,16 @@ except ImportError:
 
 from typing import Optional
 
-from metis.models import User, Discipline, Region, Place, Project, ProjectPlace
+from metis.models import User, Discipline, Institution, Region, Project, TmpPlaceData
 from metis.models.rel.addresses import Address
-from metis.models.rel.phone_numbers import PhoneNumber
 from metis.models.rel.remarks import Remark
 from metis.services.mapbox import Mapbox, MapboxFeature
 
 
-def get_or_create_place(name: str, address: str) -> Place:
+def get_or_create_institution(name: str, address: str) -> Institution:
     try:
-        return Place.objects.get(name=name)
-    except Place.DoesNotExist:
+        return Institution.objects.get(name=name)
+    except Institution.DoesNotExist:
         pass
 
     with Mapbox() as mapbox:
@@ -37,18 +36,18 @@ def get_or_create_place(name: str, address: str) -> Place:
                 country=feature.country["short_code"] if feature.country else None,
             )
 
-    place = Place.objects.create(name=name, region=region)
+    institution = Institution.objects.create(name=name, region=region)
 
     if feature:
         Address.objects.create(
-            content_object=place,
+            content_object=institution,
             address=feature.address,
             postcode=feature.postcode,
             city=feature.city,
             country=feature.country["short_code"] if feature.country else None,
         )
 
-    return place
+    return institution
 
 
 def get_or_create_user(*, name: str, email: Optional[str]) -> User:
@@ -106,27 +105,16 @@ def df_to_places(df: pd.DataFrame, *, project: Project):
 
     # create a new place for each row
     for _, row in df.iterrows():
-        place = get_or_create_place(str(row["name"]), str(row["address"]))
-        project_place, _ = ProjectPlace.objects.get_or_create(place=place, project=project)
-
-        # phones
-        if row["phones"]:
-            for phone in row["phones"]:
-                PhoneNumber.objects.create(content_object=place, number=str(phone)[:22], type=PhoneNumber.LANDLINE)
+        institution = get_or_create_institution(str(row["name"]), str(row["address"]))
+        # place, _ = Place.objects.get_or_create(institution=institution, project=project) TODO: use this?
 
         # disciplines
         if row["discipline"]:
             discipline = Discipline.objects.get(code=row["discipline"])
-            project_place.disciplines.add(discipline)
-
-        # remarks
-        if not pd.isna(row["remarks"]):
-            Remark.objects.create(content_object=project_place, text=row["remarks"])
-
-        # mentors
-        for mentor_name in row["mentors"]:
-            email = find_email_for_name(mentor_name, row["email"]) or row["email"][0]
-            user = get_or_create_user(name=mentor_name, email=email)
-            project_place.contacts.add(user)
+            TmpPlaceData.objects.get_or_create(
+                institution=institution,
+                discipline=discipline,
+                remarks=row["remarks"] if not pd.isna(row["remarks"]) else None,
+            )
 
     return df
