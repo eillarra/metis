@@ -3,7 +3,7 @@
     :rows="rows"
     :columns="columns"
     :query-columns="queryColumns"
-    :form-component="PlaceForm"
+    :form-component="ProjectPlaceForm"
     sort-by="name"
   />
 </template>
@@ -13,15 +13,15 @@ import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import DataTable from '@/components/tables/DataTable.vue';
-import PlaceForm from '../forms/PlaceForm.vue';
+import ProjectPlaceForm from '../forms/ProjectPlaceForm.vue';
 
 const { t } = useI18n();
 
 const props = defineProps<{
-  places: Place[];
+  projectPlaces: ProjectPlace[];
 }>();
 
-const { places } = toRefs(props);
+const { projectPlaces } = toRefs(props);
 const queryColumns = ['name', 'region'];
 
 const columns = [
@@ -64,16 +64,12 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return places.value.map((place) => ({
-    _self: place,
-    name: place.institution.name,
-    region: place.institution.region ? place.institution.region.name : '-',
-    type: place.institution.type,
-    mentors: place.contacts
-      .filter((contact) => contact.is_mentor)
-      .map((contact) => contact.user.name)
-      .join(', '),
-    disciplines: place.disciplines,
+  return projectPlaces.value.map((obj) => ({
+    _self: obj,
+    name: obj.place.name,
+    region: obj.place.region ? obj.place.region.name : '-',
+    type: obj.place.type,
+    disciplines: obj.disciplines,
   }));
 });
 </script>

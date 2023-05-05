@@ -4,10 +4,11 @@ interface ProjectTiny {
 }
 
 interface Project extends ProjectTiny {
-  self: string;
+  id: number;
+  self: ApiEndpoint;
   rel_internships: ApiEndpoint;
   rel_places: ApiEndpoint;
   rel_students: ApiEndpoint;
   updated_at: string;
-  updated_by: BasicUser;
+  updated_by: UserTiny;
 }

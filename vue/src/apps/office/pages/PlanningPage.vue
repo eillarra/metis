@@ -41,8 +41,8 @@ const showTable = ref<boolean>(true);
 const selectedBlock = ref<number | null>(null);
 
 const filteredInternships = computed<Internship[]>(() => {
-  return internships.value.filter((internship) =>
-    selectedBlock.value ? internship.program_internship.block.id == selectedBlock.value : true
+  return internships.value.filter((obj) =>
+    selectedBlock.value ? obj.program_internship.block?.id === selectedBlock.value : true
   );
 });
 </script>

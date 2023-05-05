@@ -14,8 +14,7 @@ import UgentLinkList from '@/components/UgentLinkList.vue';
 
 const page = usePage();
 
-const user = computed(() => page.props.django_user);
-const educations = computed(() => page.props.educations);
+const educations = computed<Education[]>(() => page.props.educations as Education[]);
 
 const links = computed(() =>
   educations?.value.map((education) => ({

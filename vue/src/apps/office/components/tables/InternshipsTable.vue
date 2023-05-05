@@ -75,14 +75,14 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return internships.value.map((internship) => ({
-    _self: internship,
-    student_name: internship.student?.name || '-',
-    place_name: internship.place?.institution?.name || '-',
-    block_name: internship.program_internship.block.name,
-    period_name: internship.program_internship.name,
-    track_name: internship.track?.name || '-',
-    disciplines: internship.discipline ? [internship.discipline] : [],
+  return internships.value.map((obj) => ({
+    _self: obj,
+    student_name: obj.student?.name || '-',
+    place_name: obj.place?.name || '-',
+    block_name: obj.program_internship.block?.name,
+    period_name: obj.program_internship.name,
+    track_name: obj.track?.name || '-',
+    disciplines: obj.discipline ? [obj.discipline] : [],
   }));
 });
 </script>

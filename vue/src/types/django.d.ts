@@ -1,5 +1,7 @@
 type ApiEndpoint = string;
 
+type Url = string;
+
 interface DjangoPermission {
   id: number;
   name: string;

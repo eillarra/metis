@@ -56,7 +56,7 @@ const rows = computed(() => {
     _self: user,
     name: user.name,
     email: user.email,
-    blocks: user.student_objects.map((rec) => `${rec.project.name}-${rec.block.name}`).join(', '),
+    blocks: user.student_set.map((rec) => `${rec.project.name}-${rec.block.name}`).join(', '),
   }));
 });
 </script>

@@ -22,8 +22,8 @@ const selectedBlock = ref<number | null>(null);
 const filteredStudents = computed<Student[]>(() => {
   return students.value.filter((user) =>
     selectedBlock.value
-      ? user.student_objects.some((rec) => rec.project.id == project.value?.id && rec.block.id == selectedBlock.value)
-      : user.student_objects.some((rec) => rec.project.id == project.value?.id)
+      ? user.student_set.some((rec) => rec.project.id == project.value?.id && rec.block.id == selectedBlock.value)
+      : user.student_set.some((rec) => rec.project.id == project.value?.id)
   );
 });
 </script>

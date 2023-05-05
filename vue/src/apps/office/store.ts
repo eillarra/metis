@@ -5,10 +5,12 @@ import { api } from '@/axios.ts';
 import { find } from 'lodash-es';
 
 export const useOfficeStore = defineStore('office', () => {
+  const education = ref<Education | null>(null);
+  const educationPlaces = ref<EducationPlace[]>([]);
   const programs = ref<Program[]>([]);
   const projects = ref<Project[]>([]);
   const projectInternships = ref<Internship[]>([]);
-  const projectPlaces = ref<Place[]>([]);
+  const projectPlaces = ref<ProjectPlace[]>([]);
   const projectStudents = ref<Student[]>([]);
 
   const selectedProjectId = ref<number | null>(null);
@@ -17,18 +19,30 @@ export const useOfficeStore = defineStore('office', () => {
     return projects.value?.find((p) => p.id === selectedProjectId.value) || null;
   });
 
+  const placeMapForProject = computed<Map<number, Place>>(() =>
+    // id is here Place.id!
+    projectPlaces.value.reduce((map, obj) => {
+      map.set(obj.place.id, obj.place);
+      return map;
+    }, new Map())
+  );
+
   const contacts = computed<Contact[]>(() => {
     const contacts: Contact[] = [];
 
-    projectPlaces.value.forEach((place) => {
-      place.contacts.forEach((contact) => {
+    educationPlaces.value.forEach((obj) => {
+      if (!obj.contacts || !obj.contacts.length || !placeMapForProject.value.has(obj.place.id)) {
+        return;
+      }
+
+      obj.contacts.forEach((contact) => {
         const existingContact = contacts.find((c) => c.id === contact.id);
         if (existingContact) {
-          existingContact.institutions?.push(place.institution);
+          existingContact.places?.push(obj.place);
         } else {
           contacts.push({
             ...contact,
-            institutions: [place.institution],
+            places: [obj.place],
           });
         }
       });
@@ -42,30 +56,38 @@ export const useOfficeStore = defineStore('office', () => {
       return [];
     }
 
-    const placeMap: Map<number, Place> = projectPlaces.value.reduce((map, place) => {
-      map.set(place.id, place);
-      return map;
-    }, new Map());
-
     const studentMap: Map<number, Student> = projectStudents.value.reduce((map, student) => {
-      const studentObjectId = find(student.student_objects, { project: { id: project.value?.id } })?.id;
+      const studentObjectId = find(student.student_set, { project: { id: project.value?.id } })?.id;
       map.set(studentObjectId, student);
       return map;
     }, new Map());
 
-    return projectInternships.value.map((internship: Internship) => {
+    return projectInternships.value.map((obj: Internship) => {
       return {
-        ...internship,
-        place: placeMap.get(internship.place) || internship.place,
-        student: studentMap.get(internship.student) || internship.student,
+        ...obj,
+        place: placeMapForProject.value.get(obj.place) || obj.place,
+        student: studentMap.get(obj.student) || obj.student,
       };
     });
   });
 
   async function init() {
     await fetchStudents();
-    await fetchPlaces();
+    await fetchEducationPlaces();
+    await fetchProjectPlaces();
     await fetchInternships();
+  }
+
+  async function fetchEducationPlaces() {
+    educationPlaces.value = [];
+
+    if (!education.value) {
+      return;
+    }
+
+    await api.get(education.value.rel_places).then((res) => {
+      educationPlaces.value = res.data;
+    });
   }
 
   async function fetchInternships() {
@@ -80,7 +102,7 @@ export const useOfficeStore = defineStore('office', () => {
     });
   }
 
-  async function fetchPlaces() {
+  async function fetchProjectPlaces() {
     projectPlaces.value = [];
 
     if (!project.value) {
@@ -104,13 +126,11 @@ export const useOfficeStore = defineStore('office', () => {
     });
   }
 
-  function setPrograms(data: Program[]) {
-    programs.value = data;
-  }
-
-  function setProjects(data: Project[]) {
-    projects.value = data;
-    selectedProjectId.value = data[0].id || null;
+  function setData(djangoEducation: Education, djangoPrograms: Program[], djangoProjects: Project[]) {
+    education.value = djangoEducation;
+    programs.value = djangoPrograms;
+    projects.value = djangoProjects;
+    selectedProjectId.value = djangoProjects[0]?.id || null;
   }
 
   watch(selectedProjectId, (id) => {
@@ -121,15 +141,15 @@ export const useOfficeStore = defineStore('office', () => {
 
   return {
     init,
-    setPrograms,
-    setProjects,
+    setData,
+    contacts,
+    internships,
+    places: educationPlaces,
     programs,
     projects,
     project,
+    projectPlaces,
     selectedProjectId,
-    contacts,
-    internships,
-    places: projectPlaces,
     students: projectStudents,
   };
 });

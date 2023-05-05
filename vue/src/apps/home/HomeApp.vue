@@ -30,7 +30,7 @@ import UgentLinkList from '@/components/UgentLinkList.vue';
 const { t } = useI18n();
 const page = usePage();
 
-const user = computed(() => page.props.django_user);
+const user = computed<DjangoAuthenticatedUser>(() => page.props.django_user as DjangoAuthenticatedUser);
 
 const links = [
   {

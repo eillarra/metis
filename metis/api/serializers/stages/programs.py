@@ -13,13 +13,13 @@ class TrackTinySerializer(BaseModelSerializer):
 class TrackSerializer(BaseModelSerializer):
     class Meta:
         model = Track
-        exclude = ()
+        exclude = ("created_at", "created_by")
 
 
 class ProgramInternshipTinySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProgramInternship
-        exclude = ()
+        exclude = ("created_at", "created_by")
 
 
 class ProgramBlockTinySerializer(serializers.ModelSerializer):
@@ -41,7 +41,7 @@ class ProgramInternshipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProgramInternship
-        exclude = ()
+        exclude = ("created_at", "created_by")
 
 
 class ProgramSerializer(BaseModelSerializer):

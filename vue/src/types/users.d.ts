@@ -1,9 +1,9 @@
-interface TinyUser {
+interface UserTiny {
   name: string;
   email: string;
 }
 
-interface BasicUser {
+interface UserTiny {
   username: string;
   name: string;
   email: string;

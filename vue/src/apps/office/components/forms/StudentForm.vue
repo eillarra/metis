@@ -1,8 +1,5 @@
 <template>
-  <dialog-form
-    icon="person"
-    :title="obj?.name"
-  >
+  <dialog-form icon="person" :title="obj?.name">
     <template #tabs>
       <q-tabs v-model="tab" dense shrink>
         <q-tab name="info" label="info"></q-tab>
@@ -14,9 +11,7 @@
         <q-tab-panel name="info" class="q-pa-md">
           {{ obj }}
         </q-tab-panel>
-        <q-tab-panel name="remarks">
-          remarks
-        </q-tab-panel>
+        <q-tab-panel name="remarks"> remarks </q-tab-panel>
       </q-tab-panels>
     </template>
   </dialog-form>

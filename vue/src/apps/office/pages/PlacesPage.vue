@@ -1,9 +1,10 @@
 <template>
-  <div class="row q-col-gutter-sm q-mb-sm">
+  <div class="row q-col-gutter-sm q-mb-sm justify-between">
     <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('place', 9) }}</h3>
     <q-select
       dense
       square
+      oulined
       v-model="selectedRegion"
       :options="regionFilters"
       :label="$t('region')"
@@ -18,7 +19,7 @@
       </template>
     </q-select>
   </div>
-  <places-table v-if="project" :places="filteredPlaces" />
+  <project-places-table v-if="project" :project-places="filteredPlaces" />
 </template>
 
 <script setup lang="ts">
@@ -27,20 +28,20 @@ import { storeToRefs } from 'pinia';
 
 import { useOfficeStore } from '../store';
 
-import PlacesTable from '../components/tables/PlacesTable.vue';
+import ProjectPlacesTable from '../components/tables/ProjectPlacesTable.vue';
 
-const { project, places } = storeToRefs(useOfficeStore());
+const { project, projectPlaces } = storeToRefs(useOfficeStore());
 
 const regionFilters = computed(() => {
-  if (!places.value.length) {
+  if (!projectPlaces.value.length) {
     return [];
   }
 
   const regions: Region[] = [];
 
-  places.value.forEach((place: Place) => {
-    if (place.institution.region && !regions.find((region) => region.id === place.institution.region?.id)) {
-      regions.push(place.institution.region);
+  projectPlaces.value.forEach((obj: ProjectPlace) => {
+    if (obj.place.region && !regions.find((region) => region.id === obj.place.region?.id)) {
+      regions.push(obj.place.region);
     }
   });
 
@@ -56,7 +57,7 @@ const regionFilters = computed(() => {
 
 const selectedRegion = ref<number | null>(null);
 
-const filteredPlaces = computed(() => {
-  return places.value.filter((place) => !selectedRegion.value || place.institution.region?.id === selectedRegion.value);
+const filteredPlaces = computed<ProjectPlace[]>(() => {
+  return projectPlaces.value.filter((obj) => !selectedRegion.value || obj.place.region?.id === selectedRegion.value);
 });
 </script>

@@ -22,11 +22,11 @@ export default {
   program_internship: 'Stage | Stages',
   place: 'Stageplaats | Stageplaatsen',
   place_contact: 'Contact | Contacten',
-  region: 'Region | Regions',
+  region: "Regio | Regio's",
   remark: 'Opmerking | Opmerkingen',
   staff: 'Staff | Staffleden',
   student: 'Student | Studenten',
-  track: 'Baan | Banen',
+  track: 'Traject | Trajecten',
   field: {
     email: 'Email',
     name: 'Naam',

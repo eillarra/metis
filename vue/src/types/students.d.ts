@@ -5,7 +5,7 @@ interface StudentObjects {
   track: number | null;
 }
 
-interface Student extends BasicUser {
+interface Student extends UserTiny {
   id: number;
-  student_objects: StudentObjects[];
+  student_set: StudentObjects[];
 }

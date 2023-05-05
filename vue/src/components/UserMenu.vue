@@ -22,7 +22,7 @@ const props = defineProps<{
   user: DjangoAuthenticatedUser;
 }>();
 
-const displayName = computed(() => {
+const displayName = computed<string>(() => {
   if (props.user) {
     return `${props.user.first_name} ${props.user.last_name}` || props.user.username;
   }

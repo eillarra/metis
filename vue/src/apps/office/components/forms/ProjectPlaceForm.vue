@@ -1,8 +1,5 @@
 <template>
-  <dialog-form
-    icon="business"
-    :title="obj?.institution.name"
-  >
+  <dialog-form icon="business" :title="obj?.place.name">
     <template #tabs>
       <q-tabs v-model="tab" dense shrink>
         <q-tab name="info" label="info"></q-tab>
@@ -14,9 +11,7 @@
         <q-tab-panel name="info" class="q-pa-md">
           {{ obj }}
         </q-tab-panel>
-        <q-tab-panel name="remarks">
-          remarks
-        </q-tab-panel>
+        <q-tab-panel name="remarks"> remarks </q-tab-panel>
       </q-tab-panels>
     </template>
   </dialog-form>
@@ -28,7 +23,7 @@ import { ref } from 'vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 
 defineProps<{
-  obj: Place | null;
+  obj: ProjectPlace | null;
 }>();
 
 const tab = ref('info');

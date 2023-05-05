@@ -29,7 +29,7 @@ class ProjectViewSet(RetrieveModelMixin, GenericViewSet):
     def students(self, request, *args, **kwargs):
         students = (
             User.objects.filter(student_set__project=self.get_object())
-            .prefetch_related("student_set__project", "student_set__block")
+            .prefetch_related("student_set__project", "student_set__block__internships")
             .distinct()
         )
         return Response(StudentSerializer(students, many=True, context={"request": request}).data)

@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ComputedRef } from 'vue';
+import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { usePage } from '@inertiajs/vue3';
 
@@ -41,10 +41,11 @@ import { useOfficeStore } from './store';
 const page = usePage();
 const officeStore = useOfficeStore();
 
-const djangoPrograms: ComputedRef<Program[]> = computed(() => page.props.programs);
-const djangoProjects: ComputedRef<Project[]> = computed(() => page.props.projects);
+const djangoEducation = computed<Education>(() => page.props.education as Education);
+const djangoPrograms = computed<Program[]>(() => page.props.programs as Program[]);
+const djangoProjects = computed<Project[]>(() => page.props.projects as Project[]);
+
 const { projects, project, selectedProjectId } = storeToRefs(officeStore);
 
-officeStore.setPrograms(djangoPrograms.value);
-officeStore.setProjects(djangoProjects.value);
+officeStore.setData(djangoEducation.value, djangoPrograms.value, djangoProjects.value);
 </script>

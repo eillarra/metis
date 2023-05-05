@@ -65,13 +65,13 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return contacts.value.map((contact) => ({
-    _self: contact,
-    name: contact.user.name,
-    is_mentor: contact.is_mentor,
-    is_staff: contact.is_staff,
-    places: contact.institutions?.map((institution) => institution.name).join(', ') || '-',
-    email: contact.user.email,
+  return contacts.value.map((obj) => ({
+    _self: obj,
+    name: obj.user.name,
+    is_mentor: obj.is_mentor,
+    is_staff: obj.is_staff,
+    places: obj.places?.map((place) => place.name).join(', ') || '-',
+    email: obj.user.email,
   }));
 });
 </script>
