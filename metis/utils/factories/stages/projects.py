@@ -1,7 +1,7 @@
 import factory
 
 from metis.models.stages.projects import Project
-from ..faculties import EducationFactory
+from ..educations import EducationFactory
 
 
 class ProjectFactory(factory.django.DjangoModelFactory):

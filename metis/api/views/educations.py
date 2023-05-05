@@ -5,7 +5,13 @@ from rest_framework.viewsets import GenericViewSet
 
 from metis.models import Education, User
 from ..permissions import IsManager
-from ..serializers import EducationSerializer, ProgramSerializer, ProjectSerializer, StudentSerializer
+from ..serializers import (
+    EducationSerializer,
+    EducationPlaceSerializer,
+    ProgramSerializer,
+    ProjectSerializer,
+    StudentSerializer,
+)
 
 
 class EducationViewSet(RetrieveModelMixin, GenericViewSet):
@@ -14,8 +20,13 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
     serializer_class = EducationSerializer
 
     @action(detail=True, pagination_class=None)
+    def places(self, request, *args, **kwargs):
+        places = self.get_object().place_set.prefetch_related("contacts__user", "place__region", "updated_by")
+        return Response(EducationPlaceSerializer(places, many=True, context={"request": request}).data)
+
+    @action(detail=True, pagination_class=None)
     def projects(self, request, *args, **kwargs):
-        projects = self.get_object().projects.prefetch_related("periods", "updated_by")
+        projects = self.get_object().projects.prefetch_related("periods__updated_by", "updated_by")
         return Response(ProjectSerializer(projects, many=True, context={"request": request}).data)
 
     @action(detail=True, pagination_class=None)
@@ -26,8 +37,8 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
     @action(detail=True, pagination_class=None)
     def students(self, request, *args, **kwargs):
         students = (
-            User.objects.filter(student_records__project__education=self.get_object())
-            .prefetch_related("student_records__project", "student_records__block")
+            User.objects.filter(student_set__project__education=self.get_object())
+            .prefetch_related("student_set__project", "student_set__block__internships")
             .distinct()
         )
         return Response(StudentSerializer(students, many=True, context={"request": request}).data)

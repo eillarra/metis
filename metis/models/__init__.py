@@ -3,8 +3,8 @@
 from .rel import *
 
 from .disciplines import *
-from .faculties import *
-from .institutions import *
+from .educations import *
+from .places import *
 from .stages import *
 from .users import *
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from metis.api.serializers.faculties import EducationSerializer
+from metis.api.serializers.educations import EducationSerializer
 from .inertia import InertiaView
 
 

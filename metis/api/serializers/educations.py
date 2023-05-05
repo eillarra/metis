@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from metis.models.faculties import Education, Faculty
+from metis.models.educations import Education, Faculty
 from .base import BaseModelSerializer
 from .disciplines import DisciplineSerializer
 from .users import UserTinySerializer
@@ -23,5 +23,5 @@ class EducationSerializer(BaseModelSerializer):
 
     class Meta:
         model = Education
-        exclude = ("created_at", "created_by")
+        exclude = ("created_at", "created_by", "places")
         depth = 1

@@ -15,8 +15,8 @@ class StudentObjectSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    student_objects = StudentObjectSerializer(many=True)
+    student_set = StudentObjectSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ("username", "name", "email", "last_login", "is_active", "student_objects")
+        fields = ("username", "name", "email", "last_login", "is_active", "student_set")

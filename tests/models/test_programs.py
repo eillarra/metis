@@ -2,14 +2,23 @@ import pytest
 
 from django.core.exceptions import ValidationError
 
-from metis.utils.factories import StudentFactory, InternshipFactory
+from metis.utils.factories import (
+    PlaceFactory,
+    EducationPlaceFactory,
+    ProjectPlaceFactory,
+    StudentFactory,
+    InternshipFactory,
+)
 from metis.utils.fixtures.programs import create_audiology_program
 from metis.models import Discipline, Program, ProgramInternship, Track
 
 
 @pytest.fixture
 def audiology_program():
-    return create_audiology_program()
+    program = create_audiology_program()
+    place = PlaceFactory(name="UZ Gent", type=1)
+    EducationPlaceFactory(education=program.education, place=place)
+    return program
 
 
 @pytest.mark.django_db
@@ -52,12 +61,15 @@ def test_wrong_track_chosen(audiology_program):
 )
 def test_available_disciplines(audiology_program, track_name, internship_name, discipline_code):
     student = StudentFactory()
+    place = audiology_program.education.places.first()
+    ProjectPlaceFactory(project=student.project, place=place)
 
     with pytest.raises(ValidationError):
         InternshipFactory(
             track=Track.objects.get(name=f"Track {track_name}"),
             program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}"),
             student=student,
+            place=place,
             discipline=Discipline.objects.get(education=audiology_program.education, code=discipline_code),
         )
 
@@ -75,12 +87,15 @@ def test_available_disciplines(audiology_program, track_name, internship_name, d
 def test_previously_covered_disciplines(audiology_program, track_name, internships_done, new_internship):
     student = StudentFactory()
     track = Track.objects.get(name=f"Track {track_name}") if track_name else None
+    place = audiology_program.education.places.first()
+    ProjectPlaceFactory(project=student.project, place=place)
 
     for data in internships_done:
         internship = InternshipFactory(
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"),
             student=student,
+            place=place,
             discipline=Discipline.objects.get(education=audiology_program.education, code=data[1]),
         )
         internship.clean()
@@ -90,6 +105,7 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
         track=track,
         program_internship=ProgramInternship.objects.get(name=f"Internship {new_internship[0]}"),
         student=student,
+        place=place,
         discipline=Discipline.objects.get(education=audiology_program.education, code=new_internship[1]),
     )
 
@@ -110,12 +126,15 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
     student = StudentFactory()
     track = Track.objects.get(name=f"Track {track_name}")
     Discipline.objects.create(education=track.program.education, code="not_a_discipline", name="None")
+    place = audiology_program.education.places.first()
+    ProjectPlaceFactory(project=student.project, place=place)
 
     for data in internships_done:
         internship = InternshipFactory(
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"),
             student=student,
+            place=place,
             discipline=Discipline.objects.get(education=audiology_program.education, code=data[1]),
         )
         internship.clean()
@@ -126,6 +145,7 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
             track=track,
             program_internship=ProgramInternship.objects.get(name=f"Internship {failing_internship[0]}"),
             student=student,
+            place=place,
             discipline=Discipline.objects.get(education=audiology_program.education, code=failing_internship[1]),
         )
         new_internship.clean()

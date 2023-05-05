@@ -4,6 +4,9 @@ from django.utils import timezone
 
 
 class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "metis.User"
+
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     email = factory.Faker("email")
@@ -11,9 +14,6 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     username = factory.LazyAttribute(lambda self: self.email.split("@")[0])
     password = factory.PostGenerationMethodCall("set_password", "metis")
-
-    class Meta:
-        model = "metis.User"
 
 
 class AdminFactory(UserFactory):

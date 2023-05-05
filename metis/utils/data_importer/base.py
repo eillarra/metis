@@ -8,16 +8,16 @@ except ImportError:
 
 from typing import Optional
 
-from metis.models import User, Discipline, Institution, Region, Project, TmpPlaceData
+from metis.models import User, Discipline, Region, Place, EducationPlace, Education, TmpPlaceData
 from metis.models.rel.addresses import Address
 from metis.models.rel.remarks import Remark
 from metis.services.mapbox import Mapbox, MapboxFeature
 
 
-def get_or_create_institution(name: str, address: str) -> Institution:
+def get_or_create_place(name: str, address: str) -> Place:
     try:
-        return Institution.objects.get(name=name)
-    except Institution.DoesNotExist:
+        return Place.objects.get(name=name)
+    except Place.DoesNotExist:
         pass
 
     with Mapbox() as mapbox:
@@ -36,18 +36,18 @@ def get_or_create_institution(name: str, address: str) -> Institution:
                 country=feature.country["short_code"] if feature.country else None,
             )
 
-    institution = Institution.objects.create(name=name, region=region)
+    place = Place.objects.create(name=name, region=region)
 
     if feature:
         Address.objects.create(
-            content_object=institution,
+            content_object=place,
             address=feature.address,
             postcode=feature.postcode,
             city=feature.city,
             country=feature.country["short_code"] if feature.country else None,
         )
 
-    return institution
+    return place
 
 
 def get_or_create_user(*, name: str, email: Optional[str]) -> User:
@@ -95,7 +95,7 @@ def parse_mentors(mentors: str) -> list[str]:
     return [mentor.strip() for mentor in re.split(r";|,\s|/", str(mentors))]
 
 
-def df_to_places(df: pd.DataFrame, *, project: Project):
+def df_to_places(df: pd.DataFrame, *, education: Education):
     df["phones"] = df["phones"].apply(parse_phones)
     df["mentors"] = df["mentors"].apply(parse_mentors)
     df["email"] = df["email"].apply(parse_emails)
@@ -105,14 +105,18 @@ def df_to_places(df: pd.DataFrame, *, project: Project):
 
     # create a new place for each row
     for _, row in df.iterrows():
-        institution = get_or_create_institution(str(row["name"]), str(row["address"]))
-        # place, _ = Place.objects.get_or_create(institution=institution, project=project) TODO: use this?
+        place = get_or_create_place(str(row["name"]), str(row["address"]))
+        ed_place, _ = EducationPlace.objects.get_or_create(place=place, education=education, code=place.name)
+
+        # remarks
+        if not pd.isna(row["remarks"]):
+            Remark.objects.create(content_object=ed_place, text=row["remarks"])
 
         # disciplines
         if row["discipline"]:
             discipline = Discipline.objects.get(code=row["discipline"])
             TmpPlaceData.objects.get_or_create(
-                institution=institution,
+                place=place,
                 discipline=discipline,
                 remarks=row["remarks"] if not pd.isna(row["remarks"]) else None,
             )

@@ -1,13 +1,13 @@
 import factory
 
-from metis.models.stages.places import Place
-from ..institutions import InstitutionFactory
+from metis.models.stages.places import ProjectPlace
+from ..places import PlaceFactory
 from .projects import ProjectFactory
 
 
-class PlaceFactory(factory.django.DjangoModelFactory):
+class ProjectPlaceFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Place
+        model = ProjectPlace
 
     project = factory.SubFactory(ProjectFactory)
-    institution = factory.SubFactory(InstitutionFactory)
+    place = factory.SubFactory(PlaceFactory)

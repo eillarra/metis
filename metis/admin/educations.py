@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from metis.models.faculties import Faculty, Education
+from metis.models.educations import Faculty, Education
 from .base import BaseModelAdmin
 from .rel.permissions import ManagersInline
 

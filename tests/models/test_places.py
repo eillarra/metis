@@ -1,12 +1,12 @@
 import pytest
 
-from metis.models import Link, Institution
-from metis.utils.factories import InstitutionFactory
+from metis.models import Link, Place
+from metis.utils.factories import PlaceFactory
 
 
 @pytest.fixture
 def uz():
-    return InstitutionFactory(name="UZ", type=Institution.HOSPITAL)
+    return PlaceFactory(name="UZ", type=Place.HOSPITAL)
 
 
 @pytest.mark.django_db
@@ -25,6 +25,6 @@ def test_institution_website(uz):
 
 @pytest.mark.django_db
 def test_institution_children(uz):
-    InstitutionFactory(name="Ward 1", parent=uz, type=Institution.WARD)
-    InstitutionFactory(name="Ward 2", parent=uz, type=Institution.WARD)
+    PlaceFactory(name="Ward 1", parent=uz, type=Place.WARD)
+    PlaceFactory(name="Ward 2", parent=uz, type=Place.WARD)
     assert uz.children.count() == 2

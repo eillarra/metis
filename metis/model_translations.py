@@ -4,8 +4,8 @@
 from modeltranslation.translator import translator
 
 from .models.disciplines import Discipline, DisciplineTranslationOptions
-from .models.faculties import Faculty, FacultyTranslationOptions, Education, EducationTranslationOptions
-from .models.institutions import Region, RegionTranslationOptions
+from .models.educations import Faculty, FacultyTranslationOptions, Education, EducationTranslationOptions
+from .models.places import Region, RegionTranslationOptions
 from .models.stages.programs import Program, ProgramTranslationOptions
 
 

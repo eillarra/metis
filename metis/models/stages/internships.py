@@ -111,9 +111,12 @@ class Internship(RemarksMixin, BaseModel):
         """
         Things to check:
         - the selected program_internship is part of the selected track (if a track is selected)
+        - the place is one of the places available for the Project (via track)
         - if the student has previous internships in same Track, check if DisciplineConstraint allows it
         - TODO: if Education has place rules, check if the place is allowed
         """
+        if self.student and self.place not in self.student.project.places.all():
+            raise ValidationError("The chosen place is not part of the chosen project.")
         if self.track and not self.track.program_internships.filter(id=self.program_internship.id).count():
             raise ValidationError("The chosen program internship is not part of the chosen track.")
 

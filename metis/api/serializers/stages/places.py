@@ -1,23 +1,13 @@
-from metis.models.stages.places import Place, Contact
+from metis.models.stages.places import ProjectPlace
 from ..base import BaseModelSerializer
 from ..disciplines import DisciplineSerializer
-from ..institutions import InstitutionSerializer
-from ..users import UserTinySerializer
+from ..places import PlaceSerializer
 
 
-class ContactSerializer(BaseModelSerializer):
-    user = UserTinySerializer(read_only=True)
-
-    class Meta:
-        model = Contact
-        fields = ("id", "user", "is_staff", "is_mentor")
-
-
-class PlaceSerializer(BaseModelSerializer):
-    institution = InstitutionSerializer()
-    contacts = ContactSerializer(many=True)
+class ProjectPlaceSerializer(BaseModelSerializer):
+    place = PlaceSerializer()
     disciplines = DisciplineSerializer(many=True)
 
     class Meta:
-        model = Place
+        model = ProjectPlace
         exclude = ("created_at", "created_by")

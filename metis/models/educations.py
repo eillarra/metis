@@ -29,6 +29,8 @@ class Education(PermissionsMixin, BaseModel):
     description = models.TextField(blank=True, null=True)
     office_members = models.ManyToManyField("metis.User", related_name="educations", blank=True)
 
+    places = models.ManyToManyField("metis.Place", through="metis.EducationPlace")
+
     def __str__(self) -> str:
         return self.short_name
 

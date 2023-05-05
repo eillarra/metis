@@ -15,8 +15,9 @@ class Project(BaseModel):
     """
 
     education = models.ForeignKey("metis.Education", null=True, related_name="projects", on_delete=models.SET_NULL)
-    name = models.CharField(max_length=160)
-    institutions = models.ManyToManyField("metis.Institution", through="metis.Place")
+    name = models.CharField(max_length=32)
+
+    places = models.ManyToManyField("metis.Place", through="metis.ProjectPlace")
 
     is_active = models.BooleanField(default=True)
     is_visible_to_planner = models.BooleanField(default=True)

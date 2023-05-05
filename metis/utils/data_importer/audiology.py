@@ -1,12 +1,15 @@
 import pandas as pd
 
+from django.db.utils import IntegrityError
 from typing import Dict, Tuple
 
 from metis.models import (
+    EducationPlace,
     Track,
     ProgramBlock,
     Project,
-    Place,
+    ProjectPlace,
+    ProjectPlace,
     Student,
     Contact,
     Remark,
@@ -18,7 +21,7 @@ from metis.models.tmp.stages import TmpStudent, TmpMentor, TmpInternship, TmpPla
 from .base import (
     df_to_places,
     find_email_for_name,
-    get_or_create_institution,
+    get_or_create_place,
     get_or_create_user,
     parse_emails,
     parse_phones,
@@ -31,7 +34,7 @@ def load_places(project: Project):
     df = pd.read_excel(file_path, sheet_name="Overzicht stageplaatsen", nrows=230)
     df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 
-    # rename columns to match the Place model
+    # rename columns to match the ProjectPlace model
     df.rename(
         columns={
             "Naam": "name",
@@ -48,7 +51,7 @@ def load_places(project: Project):
         inplace=True,
     )
 
-    return df_to_places(df, project=project)
+    return df_to_places(df, education=project.education)
 
 
 def load_internships(audio_periods, *, education):
@@ -81,7 +84,7 @@ def load_internships(audio_periods, *, education):
         df["mentor_emails"] = df["mentor_emails"].apply(parse_emails)
         df["mentor_phone_numbers"] = df["mentor_phone_numbers"].apply(parse_phones)
         df["place"] = df.apply(
-            lambda row: get_or_create_institution(
+            lambda row: get_or_create_place(
                 row["place_name"],
                 str(row["place_adress"]),
             ),
@@ -154,15 +157,27 @@ def load_internships(audio_periods, *, education):
 
     for tmp_mentor in TmpMentor.objects.all():
         user = get_or_create_user(name=tmp_mentor.name, email=tmp_mentor.email)
-        place, _ = Place.objects.get_or_create(project=tmp_mentor.project, institution=tmp_mentor.place)
+        place, _ = ProjectPlace.objects.get_or_create(project=tmp_mentor.project, place=tmp_mentor.place)
+
+        try:
+            ed_place, _ = EducationPlace.objects.get_or_create(
+                education=tmp_mentor.project.education, place=tmp_mentor.place
+            )
+        except IntegrityError:
+            ed_place = EducationPlace.objects.create(
+                education=tmp_mentor.project.education,
+                place=tmp_mentor.place,
+                code=f"{tmp_mentor.place.name}-bis",
+            )
+
         Contact.objects.get_or_create(
             user=user,
-            place=place,
+            place=ed_place,
             is_mentor=True,
         )
 
         try:
-            tmp_place_data = TmpPlaceData.objects.get(institution=tmp_mentor.place)
+            tmp_place_data = TmpPlaceData.objects.get(place=tmp_mentor.place)
             if tmp_place_data.discipline:
                 place.disciplines.add(tmp_place_data.discipline)
             if tmp_place_data.remarks:
@@ -178,12 +193,12 @@ def load_internships(audio_periods, *, education):
             ("Ma2", "1"): "4A",
         }
 
-        place, _ = Place.objects.get_or_create(project=internship.project, institution=internship.place)
+        place, _ = ProjectPlace.objects.get_or_create(project=internship.project, place=internship.place)
         default_discipline = Discipline.objects.get(education=education, name="klinisch")
 
         internship = Internship(
             student=tmp_students_map[internship.student.id] if internship.student else None,
-            place=place,
+            place=internship.place,
             program_internship=ProgramInternship.objects.get(
                 block__program_id=1,
                 block__name=internship.block_name,

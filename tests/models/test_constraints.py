@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 from typing import List
 
 from metis.models.disciplines import Discipline
-from metis.models.faculties import Faculty, Education
+from metis.models.educations import Faculty, Education
 from metis.models.stages.constraints import (
     DisciplineConstraint,
     get_disciplines_from_constraints,
