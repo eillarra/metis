@@ -16,3 +16,25 @@ class BaseModelSerializer(serializers.ModelSerializer):
                     self.fields.pop(field.name)
                 except KeyError:
                     pass
+
+
+class NestedHyperlinkField(serializers.HyperlinkedIdentityField):
+    """
+    A field that returns the absolute URL to an API endpoint.
+    Normally we should use HyperlinkedIdentityField, but it doesn't support
+    nested routes. In this case we pass the view name and the kwargs to
+    have an absolute URL calculated.
+    """
+
+    def __init__(self, view_name: str, nested_lookup: dict, *args, **kwargs):
+        self.nested_lookup = nested_lookup
+        kwargs["read_only"] = True
+        super().__init__(view_name=view_name, *args, **kwargs)
+
+    def get_url(self, obj, view_name, request, format):
+        if hasattr(obj, "pk") and obj.pk in (None, ""):  # pragma: no cover
+            return None
+
+        extra_values = {key: getattr(obj, value) for key, value in self.nested_lookup.items()}
+        kwargs = {self.lookup_url_kwarg: getattr(obj, self.lookup_field)} | extra_values
+        return self.reverse(view_name, kwargs=kwargs, request=request, format=format)

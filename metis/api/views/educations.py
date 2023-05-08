@@ -2,32 +2,23 @@ from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from metis.models import Education, User
-from ..permissions import IsManager
+from metis.models import Education, EducationPlace, User
+from ..permissions import IsManager, IsEducationOfficeMember
 from ..serializers import (
     EducationSerializer,
     EducationPlaceSerializer,
     ProgramSerializer,
-    ProjectSerializer,
     StudentSerializer,
 )
+from .base import BaseModelViewSet
 
 
 class EducationViewSet(RetrieveModelMixin, GenericViewSet):
     queryset = Education.objects.select_related("updated_by", "faculty")
     permission_classes = (IsManager,)
     serializer_class = EducationSerializer
-
-    @action(detail=True, pagination_class=None)
-    def places(self, request, *args, **kwargs):
-        places = self.get_object().place_set.prefetch_related("contacts__user", "place__region", "updated_by")
-        return Response(EducationPlaceSerializer(places, many=True, context={"request": request}).data)
-
-    @action(detail=True, pagination_class=None)
-    def projects(self, request, *args, **kwargs):
-        projects = self.get_object().projects.prefetch_related("periods__updated_by", "updated_by")
-        return Response(ProjectSerializer(projects, many=True, context={"request": request}).data)
 
     @action(detail=True, pagination_class=None)
     def programs(self, request, *args, **kwargs):
@@ -42,3 +33,23 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
             .distinct()
         )
         return Response(StudentSerializer(students, many=True, context={"request": request}).data)
+
+
+class EducationNestedModelViewSet(NestedViewSetMixin, BaseModelViewSet):
+    _education = None
+
+    def get_education(self):
+        if self._education:
+            return self._education
+        self._education = Education.objects.get(id=self.kwargs["parent_lookup_education"])
+        return self._education
+
+    def perform_create(self, serializer):
+        serializer.save(education=self.get_education())
+
+
+class EducationPlaceViewSet(EducationNestedModelViewSet):
+    queryset = EducationPlace.objects.prefetch_related("contacts__user", "place__region", "updated_by")
+    pagination_class = None
+    permission_classes = (IsEducationOfficeMember,)
+    serializer_class = EducationPlaceSerializer

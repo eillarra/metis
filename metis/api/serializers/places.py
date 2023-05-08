@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from metis.models.places import Region, Place, EducationPlace, Contact
+from metis.models.places import Region, Place
 from .base import BaseModelSerializer
-from .users import UserTinySerializer
 
 
 class RegionSerializer(BaseModelSerializer):
@@ -20,21 +19,4 @@ class PlaceSerializer(BaseModelSerializer):
 
     class Meta:
         model = Place
-        exclude = ("created_at", "created_by")
-
-
-class ContactSerializer(BaseModelSerializer):
-    user = UserTinySerializer(read_only=True)
-
-    class Meta:
-        model = Contact
-        fields = ("id", "user", "is_staff", "is_mentor")
-
-
-class EducationPlaceSerializer(BaseModelSerializer):
-    place = PlaceSerializer()
-    contacts = ContactSerializer(many=True)
-
-    class Meta:
-        model = EducationPlace
         exclude = ("created_at", "created_by")

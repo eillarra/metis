@@ -11,7 +11,7 @@ class ProjectPlace(BaseModel):
     """
 
     project = models.ForeignKey("metis.Project", related_name="place_set", on_delete=models.CASCADE)
-    place = models.ForeignKey("metis.Place", related_name="projects", on_delete=models.CASCADE)
+    place = models.ForeignKey("metis.Place", related_name="projects", on_delete=models.PROTECT)
 
     practical_information = models.TextField(blank=True, null=True)
     disciplines = models.ManyToManyField("metis.Discipline", related_name="places")

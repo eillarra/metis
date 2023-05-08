@@ -1,16 +1,16 @@
 from rest_framework.decorators import action
-from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 
 from metis.models import Project, User, Internship
-from ...permissions import IsManager
+from ...permissions import IsEducationOfficeMember
 from ...serializers.stages import InternshipSerializer, ProjectSerializer, ProjectPlaceSerializer, StudentSerializer
+from ..educations import EducationNestedModelViewSet
 
 
-class ProjectViewSet(RetrieveModelMixin, GenericViewSet):
-    queryset = Project.objects.select_related("updated_by", "education")
-    permission_classes = (IsManager,)
+class ProjectViewSet(EducationNestedModelViewSet):
+    queryset = Project.objects.select_related("updated_by", "education").prefetch_related("periods__updated_by")
+    pagination_class = None
+    permission_classes = (IsEducationOfficeMember,)
     serializer_class = ProjectSerializer
 
     @action(detail=True, pagination_class=None)

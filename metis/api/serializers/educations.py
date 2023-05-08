@@ -15,9 +15,13 @@ class FacultySerializer(BaseModelSerializer):
 class EducationSerializer(BaseModelSerializer):
     url = serializers.URLField(source="get_office_url", read_only=True)
     self = serializers.HyperlinkedIdentityField(view_name="v1:education-detail", read_only=True)
-    rel_places = serializers.HyperlinkedIdentityField(view_name="v1:education-places", read_only=True)
+    rel_places = serializers.HyperlinkedIdentityField(
+        view_name="v1:education-place-list", lookup_url_kwarg="parent_lookup_education", read_only=True
+    )
     rel_programs = serializers.HyperlinkedIdentityField(view_name="v1:education-programs", read_only=True)
-    rel_projects = serializers.HyperlinkedIdentityField(view_name="v1:education-projects", read_only=True)
+    rel_projects = serializers.HyperlinkedIdentityField(
+        view_name="v1:education-project-list", lookup_url_kwarg="parent_lookup_education", read_only=True
+    )
     faculty = FacultySerializer(read_only=True)
     office_members = UserTinySerializer(many=True)
     disciplines = DisciplineSerializer(many=True)

@@ -1,7 +1,10 @@
 from rest_framework import serializers
 
 from metis.models.stages.projects import Project
-from ..base import BaseModelSerializer
+from ..base import BaseModelSerializer, NestedHyperlinkField
+
+
+parent_lookup_fields = {"parent_lookup_education": "education_id"}
 
 
 class ProjectTinySerializer(serializers.ModelSerializer):
@@ -11,10 +14,10 @@ class ProjectTinySerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(BaseModelSerializer):
-    self = serializers.HyperlinkedIdentityField(view_name="v1:project-detail", read_only=True)
-    rel_internships = serializers.HyperlinkedIdentityField(view_name="v1:project-internships", read_only=True)
-    rel_places = serializers.HyperlinkedIdentityField(view_name="v1:project-places", read_only=True)
-    rel_students = serializers.HyperlinkedIdentityField(view_name="v1:project-students", read_only=True)
+    self = NestedHyperlinkField("v1:education-project-detail", nested_lookup=parent_lookup_fields)
+    rel_internships = NestedHyperlinkField("v1:education-project-internships", nested_lookup=parent_lookup_fields)
+    rel_places = NestedHyperlinkField("v1:education-project-places", nested_lookup=parent_lookup_fields)
+    rel_students = NestedHyperlinkField("v1:education-project-students", nested_lookup=parent_lookup_fields)
     education = serializers.HyperlinkedRelatedField(view_name="v1:education-detail", read_only=True)
     start_date = serializers.DateField(read_only=True)
     end_date = serializers.DateField(read_only=True)

@@ -9,10 +9,10 @@ from typing import List, Optional, TYPE_CHECKING
 from ..base import BaseModel
 from ..disciplines import Discipline
 from ..rel.remarks import RemarksMixin
+from .projects import Project
 
 if TYPE_CHECKING:
     from .programs import Program
-from .projects import Project
 
 
 def get_remaining_discipline_constraints(obj: "Internship") -> List[dict]:
@@ -99,7 +99,7 @@ class Internship(RemarksMixin, BaseModel):
     track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
 
     student = models.ForeignKey("metis.Student", related_name="internships", null=True, on_delete=models.SET_NULL)
-    place = models.ForeignKey("metis.Place", related_name="internships", on_delete=models.CASCADE)
+    place = models.ForeignKey("metis.Place", related_name="internships", on_delete=models.PROTECT)
     custom_start_date = models.DateField(null=True)  # by default start date is period's start date
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
 

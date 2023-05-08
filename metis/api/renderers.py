@@ -9,7 +9,7 @@ class NoFormBrowsableAPIRenderer(BrowsableAPIRenderer):
     """
 
     def get_rendered_html_form(self, *args, **kwargs):
-        return
+        return  # pragma: no cover
 
     def get_filter_form(self, data, view, request):
-        return
+        return  # pragma: no cover

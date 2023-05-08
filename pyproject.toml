@@ -16,4 +16,10 @@ django_settings_module = "metis.settings"
 
 [tool.pytest.ini_options]
 addopts = "--cov=metis --cov-report=html"
+markers = [
+  "integration: mark a test as an integration test",
+  "unit: mark a test as a unit test",
+  "api: mark a test as an `api` test",
+  "site: mark a test as an `site` test",
+]
 DJANGO_SETTINGS_MODULE = "metis.settings.test"

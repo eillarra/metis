@@ -8,6 +8,7 @@ class RegionFactory(factory.django.DjangoModelFactory):
         model = "metis.Region"
 
     name = factory.Iterator(["Oost-Vlaanderen", "West-Vlaanderen", "Antwerpen", "Brussel"])
+    country = factory.Iterator(["BE", "NL"])
 
 
 class PlaceFactory(factory.django.DjangoModelFactory):

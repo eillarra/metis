@@ -1,6 +1,6 @@
 import factory
 
-from metis.models.stages.places import ProjectPlace
+from metis.models.stages.project_places import ProjectPlace
 from ..places import PlaceFactory
 from .projects import ProjectFactory
 

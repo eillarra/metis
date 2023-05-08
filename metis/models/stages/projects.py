@@ -14,7 +14,7 @@ class Project(BaseModel):
     Projects are created so that the planner can distribute students to places. It is mainly an administrative tool.
     """
 
-    education = models.ForeignKey("metis.Education", null=True, related_name="projects", on_delete=models.SET_NULL)
+    education = models.ForeignKey("metis.Education", related_name="projects", on_delete=models.PROTECT)
     name = models.CharField(max_length=32)
 
     places = models.ManyToManyField("metis.Place", through="metis.ProjectPlace")

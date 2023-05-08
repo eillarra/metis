@@ -10,9 +10,9 @@ class Student(RemarksMixin, BaseModel):
     TODO: This model is used to register students' preferences too.
     """
 
-    user = models.ForeignKey("metis.User", related_name="student_set", on_delete=models.CASCADE)
-    project = models.ForeignKey("metis.Project", related_name="students", on_delete=models.CASCADE)
-    block = models.ForeignKey("metis.ProgramBlock", related_name="students", on_delete=models.CASCADE)
+    user = models.ForeignKey("metis.User", related_name="student_set", on_delete=models.PROTECT)
+    project = models.ForeignKey("metis.Project", related_name="students", on_delete=models.PROTECT)
+    block = models.ForeignKey("metis.ProgramBlock", related_name="students", on_delete=models.PROTECT)
     track = models.ForeignKey("metis.Track", related_name="students", null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:

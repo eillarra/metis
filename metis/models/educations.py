@@ -1,10 +1,13 @@
 from django.db import models
 from django.urls import reverse
 from modeltranslation.translator import TranslationOptions
+from typing import TYPE_CHECKING
 
 from .base import BaseModel
-from .users import User
 from .rel.permissions import PermissionsMixin
+
+if TYPE_CHECKING:
+    from .users import User
 
 
 class Faculty(BaseModel):
@@ -35,7 +38,7 @@ class Education(PermissionsMixin, BaseModel):
         return self.short_name
 
     def can_be_managed_by(self, user: "User") -> bool:
-        return user.is_staff or self.office_members.filter(id=user.id).exists()
+        return user.is_staff or self.office_members.filter(pk=user.pk).exists()
 
     def get_office_url(self) -> str:
         return reverse("office:app", args=[self.code])
