@@ -1,8 +1,5 @@
 <template>
-  <ugent-banner
-    title="Metis"
-    subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-  >
+  <ugent-banner title="Metis" :subtitle="$t('home.presentation')">
     <template #default>
       <ugent-btn v-if="user" :label="$t('user_menu.dashboard')" color="yellow" :href="`/${$i18n.locale}/dashboard/`" />
       <div v-else class="fit column justify-between">

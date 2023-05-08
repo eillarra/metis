@@ -8,6 +8,7 @@ export default {
     logout: 'Afmelden',
   },
   home: {
+    presentation: 'Digitaal platform voor de communicatie, organisatie en evaluatie van stages binnen de faculteit Geneeskunde en Gezondheidswetenschappen',
     oauth_login: 'Aanmelden met UGent account',
     help: {
       no_account: 'Geen UGent account?',

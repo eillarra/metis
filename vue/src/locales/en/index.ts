@@ -8,6 +8,7 @@ export default {
     logout: 'Log out',
   },
   home: {
+    presentation: 'Digital platform for the communication, organization and evaluation of internships within the faculty of Medicine and Health Sciences',
     oauth_login: 'Sign in with UGent account',
     help: {
       no_account: 'No UGent account?',
