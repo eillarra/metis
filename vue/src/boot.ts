@@ -66,7 +66,7 @@ const bootApp = (routes: RouteRecordRaw[]) => {
           integrations: [
             new Sentry.BrowserTracing({
               routingInstrumentation: Sentry.vueRouterInstrumentation(Router),
-              tracePropagationTargets: ['localhost', 'tw06v070.ugent.be', /^\//],
+              tracePropagationTargets: ['localhost', 'metis.ugent.be', /^\//],
             }),
           ],
           tracesSampleRate: 0.1,
