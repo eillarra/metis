@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
+from .base import IsManager
+
 if TYPE_CHECKING:
     from ..views.educations import EducationNestedModelViewSet
-
-from .base import IsManager
 
 
 class IsEducationOfficeMember(IsManager):

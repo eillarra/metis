@@ -5,6 +5,7 @@ from typing import Optional
 
 from .base import BaseModel
 from .rel.addresses import AddressesMixin
+from .rel.contents import ContentsMixin
 from .rel.links import LinksMixin
 from .rel.phone_numbers import PhoneNumbersMixin
 from .rel.remarks import RemarksMixin
@@ -26,7 +27,7 @@ class RegionTranslationOptions(TranslationOptions):
     fields = ("name",)
 
 
-class Place(AddressesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, BaseModel):
+class Place(AddressesMixin, ContentsMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, BaseModel):
     HOSPITAL = "hospital"
     WARD = "ward"
     PRIVATE = "private_center"

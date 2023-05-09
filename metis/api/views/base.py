@@ -6,6 +6,11 @@ from rest_framework.viewsets import ModelViewSet
 
 class BaseModelViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
+        """
+        Try destroying a model instance.
+        If `PROTECT` has been set as `on_delete` for a foreign key,
+        return a `403 Forbidden` response.
+        """
         try:
             return super().destroy(request, *args, **kwargs)
         except ProtectedError as e:

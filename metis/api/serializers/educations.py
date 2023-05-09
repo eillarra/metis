@@ -20,7 +20,7 @@ class EducationSerializer(BaseModelSerializer):
     )
     rel_programs = serializers.HyperlinkedIdentityField(view_name="v1:education-programs", read_only=True)
     rel_projects = serializers.HyperlinkedIdentityField(
-        view_name="v1:education-project-list", lookup_url_kwarg="parent_lookup_education", read_only=True
+        view_name="v1:project-list", lookup_url_kwarg="parent_lookup_education", read_only=True
     )
     faculty = FacultySerializer(read_only=True)
     office_members = UserTinySerializer(many=True)

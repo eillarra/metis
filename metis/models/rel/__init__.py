@@ -1,6 +1,7 @@
 # flake8: noqa
 
 from .addresses import *
+from .contents import *
 from .files import *
 from .links import *
 from .permissions import *

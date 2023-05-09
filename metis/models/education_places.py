@@ -2,14 +2,17 @@ from django.db import models
 from typing import TYPE_CHECKING
 
 from .base import BaseModel
+from .rel.contents import ContentsMixin
+from .rel.files import FilesMixin
 from .rel.phone_numbers import PhoneNumbersMixin
 from .rel.remarks import RemarksMixin
 
 if TYPE_CHECKING:
+    from .rel.files import File
     from .users import User
 
 
-class EducationPlace(RemarksMixin, BaseModel):
+class EducationPlace(ContentsMixin, FilesMixin, RemarksMixin, BaseModel):
     """
     The stagebureau works with a subset of all the places available.
     Contacts or remarks are specific to each Education.
@@ -29,6 +32,10 @@ class EducationPlace(RemarksMixin, BaseModel):
     def can_be_managed_by(self, user: "User") -> bool:
         return self.education.can_be_managed_by(user)
 
+    @property
+    def agreement(self) -> "File":
+        return self.get_file("agreement")
+
 
 class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
     """
@@ -38,14 +45,14 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
     Contacts that are no staff or mentor have limited read-only access to the place information.
     """
 
-    place = models.ForeignKey(EducationPlace, related_name="contacts", on_delete=models.CASCADE)
+    education_place = models.ForeignKey(EducationPlace, related_name="contacts", on_delete=models.CASCADE)
     user = models.ForeignKey("metis.User", related_name="contact_objects", on_delete=models.CASCADE)
     is_staff = models.BooleanField(default=False)
     is_mentor = models.BooleanField(default=True)
 
     class Meta:
         db_table = "metis_education_contacts"
-        unique_together = ("place", "user")
+        unique_together = ("education_place", "user")
 
     def __str__(self) -> str:
-        return f"{self.user} ({self.place.code})"
+        return f"{self.user} ({self.education_place.code})"

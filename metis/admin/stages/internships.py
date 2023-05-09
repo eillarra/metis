@@ -17,7 +17,7 @@ class InternshipAdmin(BaseModelAdmin):
     )
     search_fields = ("student__first_name", "student__last_name")
     # form
-    raw_id_fields = ("program_internship", "student", "place")
+    raw_id_fields = ("program_internship", "student", "project_place")
     inlines = (RemarksInline,)
 
     def student_name(self, obj):

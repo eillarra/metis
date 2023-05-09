@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 
 from ..base import BaseModel
+from ..places import Place
 
 
 class Project(BaseModel):
@@ -17,7 +18,7 @@ class Project(BaseModel):
     education = models.ForeignKey("metis.Education", related_name="projects", on_delete=models.PROTECT)
     name = models.CharField(max_length=32)
 
-    places = models.ManyToManyField("metis.Place", through="metis.ProjectPlace")
+    education_places = models.ManyToManyField("metis.EducationPlace", through="metis.ProjectPlace")
 
     is_active = models.BooleanField(default=True)
     is_visible_to_planner = models.BooleanField(default=True)
@@ -35,6 +36,10 @@ class Project(BaseModel):
 
     def __str__(self) -> str:
         return self.name
+
+    @cached_property
+    def places(self):
+        return Place.objects.filter(education_set__projects__in=[self])
 
     @cached_property
     def start_date(self) -> datetime.date:

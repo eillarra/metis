@@ -22,8 +22,10 @@ class ProjectViewSet(EducationNestedModelViewSet):
 
     @action(detail=True, pagination_class=None)
     def places(self, request, *args, **kwargs):
-        places = self.get_object().place_set.prefetch_related("place__region", "disciplines", "updated_by")
-        return Response(ProjectPlaceSerializer(places, many=True, context={"request": request}).data)
+        project_places = self.get_object().place_set.prefetch_related(
+            "education_place__place__region", "disciplines", "updated_by"
+        )
+        return Response(ProjectPlaceSerializer(project_places, many=True, context={"request": request}).data)
 
     @action(detail=True, pagination_class=None)
     def students(self, request, *args, **kwargs):

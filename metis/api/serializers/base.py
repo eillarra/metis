@@ -35,6 +35,14 @@ class NestedHyperlinkField(serializers.HyperlinkedIdentityField):
         if hasattr(obj, "pk") and obj.pk in (None, ""):  # pragma: no cover
             return None
 
-        extra_values = {key: getattr(obj, value) for key, value in self.nested_lookup.items()}
+        extra_values = {}
+
+        for key, value in self.nested_lookup.items():
+            # get the object attribute respecting "__" as separator
+            current_obj = obj
+            for attr in value.split("__"):
+                current_obj = getattr(current_obj, attr)
+            extra_values[key] = current_obj
+
         kwargs = {self.lookup_url_kwarg: getattr(obj, self.lookup_field)} | extra_values
         return self.reverse(view_name, kwargs=kwargs, request=request, format=format)

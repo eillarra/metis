@@ -1,24 +1,33 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.functional import cached_property
+from typing import TYPE_CHECKING
 
 from ..base import BaseModel
+from ..rel.remarks import RemarksMixin
+
+if TYPE_CHECKING:
+    from ..places import Place
 
 
-class ProjectPlace(BaseModel):
+class ProjectPlace(RemarksMixin, BaseModel):
     """
     The stagebureau works with a subset of all the places availablke for each Project.
     This can be copied from previous project.
     """
 
     project = models.ForeignKey("metis.Project", related_name="place_set", on_delete=models.CASCADE)
-    place = models.ForeignKey("metis.Place", related_name="projects", on_delete=models.PROTECT)
+    education_place = models.ForeignKey("metis.EducationPlace", related_name="projects", on_delete=models.PROTECT)
 
     practical_information = models.TextField(blank=True, null=True)
     disciplines = models.ManyToManyField("metis.Discipline", related_name="places")
 
+    # TODO: planner
+    # is_visible_to_planner = models.BooleanField(default=True)
+
     class Meta:
-        db_table = "metis_project_place"
-        unique_together = ("project", "place")
+        db_table = "metis_project_places"
+        unique_together = ("project", "education_place")
 
     def clean(self) -> None:
         """
@@ -32,6 +41,10 @@ class ProjectPlace(BaseModel):
             raise ValidationError("Disciplines are limited to the disciplines of the education.")
         return super().clean()
 
+    @cached_property
+    def place(self) -> "Place":
+        return self.education_place.place
+
 
 class PlaceCapacity(BaseModel):
     """
@@ -39,6 +52,7 @@ class PlaceCapacity(BaseModel):
     This can be copied from previous project.
     """
 
+    # TODO: change to project_place
     place = models.ForeignKey("metis.ProjectPlace", related_name="capacities", on_delete=models.CASCADE)
     period = models.ForeignKey("metis.Period", related_name="capacities", on_delete=models.CASCADE)
     capacity = models.PositiveSmallIntegerField(default=0)

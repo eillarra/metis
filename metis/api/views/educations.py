@@ -4,11 +4,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from metis.models import Education, EducationPlace, User
-from ..permissions import IsManager, IsEducationOfficeMember
+from metis.models import Education, User
+from ..permissions import IsManager
 from ..serializers import (
     EducationSerializer,
-    EducationPlaceSerializer,
     ProgramSerializer,
     StudentSerializer,
 )
@@ -38,7 +37,7 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
 class EducationNestedModelViewSet(NestedViewSetMixin, BaseModelViewSet):
     _education = None
 
-    def get_education(self):
+    def get_education(self) -> "Education":
         if self._education:
             return self._education
         self._education = Education.objects.get(id=self.kwargs["parent_lookup_education"])
@@ -46,10 +45,3 @@ class EducationNestedModelViewSet(NestedViewSetMixin, BaseModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(education=self.get_education())
-
-
-class EducationPlaceViewSet(EducationNestedModelViewSet):
-    queryset = EducationPlace.objects.prefetch_related("contacts__user", "place__region", "updated_by")
-    pagination_class = None
-    permission_classes = (IsEducationOfficeMember,)
-    serializer_class = EducationPlaceSerializer

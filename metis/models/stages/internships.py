@@ -4,6 +4,7 @@ from collections import Counter
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 from typing import List, Optional, TYPE_CHECKING
 
 from ..base import BaseModel
@@ -12,6 +13,7 @@ from ..rel.remarks import RemarksMixin
 from .projects import Project
 
 if TYPE_CHECKING:
+    from ..places import Place
     from .programs import Program
 
 
@@ -93,13 +95,14 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
+    # TODO: change to Period relation
     program_internship = models.ForeignKey(
         "metis.ProgramInternship", related_name="internships", on_delete=models.CASCADE
     )
     track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
 
     student = models.ForeignKey("metis.Student", related_name="internships", null=True, on_delete=models.SET_NULL)
-    place = models.ForeignKey("metis.Place", related_name="internships", on_delete=models.PROTECT)
+    project_place = models.ForeignKey("metis.ProjectPlace", related_name="internships", on_delete=models.PROTECT)
     custom_start_date = models.DateField(null=True)  # by default start date is period's start date
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
 
@@ -115,13 +118,17 @@ class Internship(RemarksMixin, BaseModel):
         - if the student has previous internships in same Track, check if DisciplineConstraint allows it
         - TODO: if Education has place rules, check if the place is allowed
         """
-        if self.student and self.place not in self.student.project.places.all():
+        if self.student and self.project_place not in self.student.project.place_set.all():
             raise ValidationError("The chosen place is not part of the chosen project.")
         if self.track and not self.track.program_internships.filter(id=self.program_internship.id).count():
             raise ValidationError("The chosen program internship is not part of the chosen track.")
 
         validate_discipline_choice(self)
         return super().clean()
+
+    @cached_property
+    def place(self) -> "Place":
+        return self.project_place.place
 
     @property
     def start_date(self) -> datetime.date:

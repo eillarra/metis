@@ -16,7 +16,7 @@ class Permission(models.Model):
 
     class Meta:
         db_table = "metis_rel_permission"
-        unique_together = ["content_type", "object_id", "user"]
+        unique_together = ("content_type", "object_id", "user")
 
     def __str__(self) -> str:
         return str(self.user)

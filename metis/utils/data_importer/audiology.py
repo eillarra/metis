@@ -96,7 +96,7 @@ def load_internships(audio_periods, *, education):
         project = Project.objects.get(name=data.project_name)
         block = ProgramBlock.objects.get(program__education=education, name=data.block_name)
 
-        # create temp tables
+        # create tmp tables
 
         print(f"Number of rows in df: {len(df)} for {data.project_name}-{data.block_name}-Periode{data.period}")
 
@@ -157,7 +157,6 @@ def load_internships(audio_periods, *, education):
 
     for tmp_mentor in TmpMentor.objects.all():
         user = get_or_create_user(name=tmp_mentor.name, email=tmp_mentor.email)
-        place, _ = ProjectPlace.objects.get_or_create(project=tmp_mentor.project, place=tmp_mentor.place)
 
         try:
             ed_place, _ = EducationPlace.objects.get_or_create(
@@ -172,16 +171,18 @@ def load_internships(audio_periods, *, education):
 
         Contact.objects.get_or_create(
             user=user,
-            place=ed_place,
+            education_place=ed_place,
             is_mentor=True,
         )
+
+        proj_place, _ = ProjectPlace.objects.get_or_create(project=tmp_mentor.project, education_place=ed_place)
 
         try:
             tmp_place_data = TmpPlaceData.objects.get(place=tmp_mentor.place)
             if tmp_place_data.discipline:
-                place.disciplines.add(tmp_place_data.discipline)
+                proj_place.disciplines.add(tmp_place_data.discipline)
             if tmp_place_data.remarks:
-                Remark.objects.create(content_object=place, text=tmp_place_data.remarks)
+                Remark.objects.create(content_object=ed_place, text=tmp_place_data.remarks)
         except TmpPlaceData.DoesNotExist:
             pass
 
@@ -193,19 +194,28 @@ def load_internships(audio_periods, *, education):
             ("Ma2", "1"): "4A",
         }
 
-        place, _ = ProjectPlace.objects.get_or_create(project=internship.project, place=internship.place)
+        try:
+            ed_place = EducationPlace.objects.get(place=internship.place)
+        except EducationPlace.DoesNotExist:
+            ed_place = EducationPlace.objects.create(
+                education=internship.project.education,
+                place=internship.place,
+                code=f"{internship.place.name}-bis",
+            )
+
+        proj_place, _ = ProjectPlace.objects.get_or_create(project=internship.project, education_place=ed_place)
         default_discipline = Discipline.objects.get(education=education, name="klinisch")
 
         internship = Internship(
             student=tmp_students_map[internship.student.id] if internship.student else None,
-            place=internship.place,
+            project_place=proj_place,
             program_internship=ProgramInternship.objects.get(
                 block__program_id=1,
                 block__name=internship.block_name,
                 name__contains=naming_map[(internship.block_name, internship.period)],
             ),
             track=Track.objects.get(program_id=1, name="Track A"),
-            discipline=place.disciplines.first() if place.disciplines.exists() else default_discipline,
+            discipline=proj_place.disciplines.first() if proj_place.disciplines.exists() else default_discipline,
         )
         internship.clean()
         internship.save()
