@@ -42,7 +42,7 @@ class Project(BaseModel):
 
     @cached_property
     def places(self):
-        return Place.objects.filter(education_set__projects__in=[self])
+        return Place.objects.filter(education_place_set__project_place_set__project=self).distinct()
 
     @cached_property
     def start_date(self) -> datetime.date:

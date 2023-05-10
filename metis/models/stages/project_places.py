@@ -18,7 +18,9 @@ class ProjectPlace(ContentsMixin, RemarksMixin, BaseModel):
     """
 
     project = models.ForeignKey("metis.Project", related_name="place_set", on_delete=models.CASCADE)
-    education_place = models.ForeignKey("metis.EducationPlace", related_name="projects", on_delete=models.PROTECT)
+    education_place = models.ForeignKey(
+        "metis.EducationPlace", related_name="project_place_set", on_delete=models.PROTECT
+    )
     disciplines = models.ManyToManyField("metis.Discipline", related_name="places")
 
     # TODO: planner

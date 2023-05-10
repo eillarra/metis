@@ -1,10 +1,15 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from typing import TYPE_CHECKING
 
 from metis.models import Project, User, Internship
 from ...permissions import IsEducationOfficeMember
-from ...serializers.stages import InternshipSerializer, ProjectSerializer, ProjectPlaceSerializer, StudentSerializer
+from ...serializers.stages import InternshipSerializer, ProjectSerializer, StudentSerializer
+from ..base import BaseModelViewSet
 from ..educations import EducationNestedModelViewSet
+
+if TYPE_CHECKING:
+    from metis.models import Education
 
 
 class ProjectViewSet(EducationNestedModelViewSet):
@@ -21,13 +26,6 @@ class ProjectViewSet(EducationNestedModelViewSet):
         return Response(InternshipSerializer(internships, many=True, context={"request": request}).data)
 
     @action(detail=True, pagination_class=None)
-    def places(self, request, *args, **kwargs):
-        project_places = self.get_object().place_set.prefetch_related(
-            "education_place__place__region", "disciplines", "updated_by"
-        )
-        return Response(ProjectPlaceSerializer(project_places, many=True, context={"request": request}).data)
-
-    @action(detail=True, pagination_class=None)
     def students(self, request, *args, **kwargs):
         students = (
             User.objects.filter(student_set__project=self.get_object())
@@ -37,16 +35,19 @@ class ProjectViewSet(EducationNestedModelViewSet):
         return Response(StudentSerializer(students, many=True, context={"request": request}).data)
 
 
-class ProjectNestedModelViewSet(EducationNestedModelViewSet):
+class ProjectNestedModelViewSet(BaseModelViewSet):
     _project = None
 
     def get_queryset(self):
         return super().get_queryset().filter(project=self.get_project())
 
+    def get_education(self) -> "Education":
+        return self.get_project().education
+
     def get_project(self) -> "Project":
         if self._project:
             return self._project
-        self._project = Project.objects.get(id=self.kwargs["parent_lookup_project"])
+        self._project = Project.objects.get(id=self.kwargs["parent_lookup_project_id"])
         return self._project
 
     def perform_create(self, serializer):

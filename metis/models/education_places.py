@@ -18,7 +18,7 @@ class EducationPlace(ContentsMixin, FilesMixin, RemarksMixin, BaseModel):
     """
 
     education = models.ForeignKey("metis.Education", related_name="place_set", on_delete=models.PROTECT)
-    place = models.ForeignKey("metis.Place", on_delete=models.PROTECT)
+    place = models.ForeignKey("metis.Place", related_name="education_place_set", on_delete=models.PROTECT)
     code = models.CharField(max_length=160)
 
     class Meta:

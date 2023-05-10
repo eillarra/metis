@@ -44,5 +44,9 @@ class NestedHyperlinkField(serializers.HyperlinkedIdentityField):
                 current_obj = getattr(current_obj, attr)
             extra_values[key] = current_obj
 
-        kwargs = {self.lookup_url_kwarg: getattr(obj, self.lookup_field)} | extra_values
+        if view_name.endswith("-list"):
+            kwargs = extra_values
+        else:
+            kwargs = {self.lookup_url_kwarg: getattr(obj, self.lookup_field)} | extra_values
+
         return self.reverse(view_name, kwargs=kwargs, request=request, format=format)

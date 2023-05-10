@@ -45,7 +45,6 @@ class ProgramInternshipSerializer(serializers.ModelSerializer):
 
 
 class ProgramSerializer(BaseModelSerializer):
-    education = serializers.HyperlinkedRelatedField(view_name="v1:education-detail", read_only=True)
     blocks = ProgramBlockSerializer(many=True, read_only=True)
     tracks = TrackSerializer(many=True, read_only=True)
 
