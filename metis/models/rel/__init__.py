@@ -4,7 +4,6 @@ from .addresses import *
 from .contents import *
 from .files import *
 from .links import *
-from .permissions import *
 from .phone_numbers import *
 from .remarks import *
 from .snapshots import *

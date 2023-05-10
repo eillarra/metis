@@ -37,6 +37,9 @@ class Project(BaseModel):
     def __str__(self) -> str:
         return self.name
 
+    def can_be_managed_by(self, user) -> bool:
+        return self.education.can_be_managed_by(user)
+
     @cached_property
     def places(self):
         return Place.objects.filter(education_set__projects__in=[self])
@@ -56,9 +59,6 @@ class Project(BaseModel):
     @property
     def is_open(self) -> bool:
         return self.is_active and self.periods.exists() and (self.start_date <= timezone.now().date() <= self.end_date)
-
-    def can_be_managed_by(self, user) -> bool:
-        return self.education.can_be_managed_by(user)
 
 
 class Period(BaseModel):

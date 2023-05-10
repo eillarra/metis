@@ -4,13 +4,14 @@ from django.utils.functional import cached_property
 from typing import TYPE_CHECKING
 
 from ..base import BaseModel
+from ..rel.contents import ContentsMixin
 from ..rel.remarks import RemarksMixin
 
 if TYPE_CHECKING:
     from ..places import Place
 
 
-class ProjectPlace(RemarksMixin, BaseModel):
+class ProjectPlace(ContentsMixin, RemarksMixin, BaseModel):
     """
     The stagebureau works with a subset of all the places availablke for each Project.
     This can be copied from previous project.
@@ -18,8 +19,6 @@ class ProjectPlace(RemarksMixin, BaseModel):
 
     project = models.ForeignKey("metis.Project", related_name="place_set", on_delete=models.CASCADE)
     education_place = models.ForeignKey("metis.EducationPlace", related_name="projects", on_delete=models.PROTECT)
-
-    practical_information = models.TextField(blank=True, null=True)
     disciplines = models.ManyToManyField("metis.Discipline", related_name="places")
 
     # TODO: planner
@@ -40,6 +39,9 @@ class ProjectPlace(RemarksMixin, BaseModel):
         if self.disciplines.filter(education__id__ne=self.project.education.id).exists():
             raise ValidationError("Disciplines are limited to the disciplines of the education.")
         return super().clean()
+
+    def can_be_managed_by(self, user) -> bool:
+        return self.project.can_be_managed_by(user)
 
     @cached_property
     def place(self) -> "Place":

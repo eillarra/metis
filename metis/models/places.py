@@ -48,6 +48,9 @@ class Place(AddressesMixin, ContentsMixin, PhoneNumbersMixin, LinksMixin, Remark
     def __str__(self) -> str:
         return self.name
 
+    def can_be_managed_by(self, user) -> bool:
+        return user.is_authenticated and user.education_set.filter(place_set__place_id__in=[self.pk]).exists()
+
     @property
     def is_hospital(self) -> bool:
         return self.type == self.HOSPITAL

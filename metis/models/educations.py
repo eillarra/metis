@@ -4,7 +4,6 @@ from modeltranslation.translator import TranslationOptions
 from typing import TYPE_CHECKING
 
 from .base import BaseModel
-from .rel.permissions import PermissionsMixin
 
 if TYPE_CHECKING:
     from .users import User
@@ -24,20 +23,20 @@ class FacultyTranslationOptions(TranslationOptions):
     fields = ("name",)
 
 
-class Education(PermissionsMixin, BaseModel):
+class Education(BaseModel):
     faculty = models.ForeignKey(Faculty, related_name="educations", on_delete=models.PROTECT)
     code = models.CharField(max_length=16, unique=True)
     name = models.CharField(max_length=160)
     short_name = models.CharField(max_length=80)
     description = models.TextField(blank=True, null=True)
-    office_members = models.ManyToManyField("metis.User", related_name="educations", blank=True)
+    office_members = models.ManyToManyField("metis.User", related_name="education_set", blank=True)
 
     places = models.ManyToManyField("metis.Place", through="metis.EducationPlace", related_name="education_set")
 
     def __str__(self) -> str:
         return self.short_name
 
-    def can_be_managed_by(self, user: "User") -> bool:
+    def can_be_managed_by(self, user) -> bool:
         return user.is_staff or self.office_members.filter(pk=user.pk).exists()
 
     def get_office_url(self) -> str:

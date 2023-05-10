@@ -2,10 +2,11 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from ..base import BaseModel
 from .snapshots import save_snapshot
 
 
-class Remark(models.Model):
+class Remark(BaseModel):
     """
     Remarks made by administrators.
     A copy of the object is saved here for historical purposes.
@@ -16,10 +17,6 @@ class Remark(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     text = models.TextField()
-
-    created_by = models.ForeignKey("metis.User", related_name="remarks", on_delete=models.SET_NULL, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "metis_rel_remark"

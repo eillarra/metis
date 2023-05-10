@@ -5,7 +5,7 @@ from ..base import BaseModelSerializer, NestedHyperlinkField
 
 
 parent_lookup_fields = {
-    "parent_lookup_education": "education_id",
+    "parent_lookup_education_id": "education_id",
 }
 
 

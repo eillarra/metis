@@ -3,10 +3,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from modeltranslation.translator import TranslationOptions
 
+from ..base import BaseModel
 from .files import FilesMixin
 
 
-class Content(FilesMixin, models.Model):
+class Content(FilesMixin, BaseModel):
     """
     Text contents (information, notes, etc.).
     Files can be attached to the content.

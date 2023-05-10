@@ -8,7 +8,7 @@ from ..educations import EducationNestedModelViewSet
 
 
 class ProjectViewSet(EducationNestedModelViewSet):
-    queryset = Project.objects.select_related("updated_by", "education").prefetch_related("periods__updated_by")
+    queryset = Project.objects.select_related("updated_by").prefetch_related("periods")
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ProjectSerializer
@@ -35,3 +35,19 @@ class ProjectViewSet(EducationNestedModelViewSet):
             .distinct()
         )
         return Response(StudentSerializer(students, many=True, context={"request": request}).data)
+
+
+class ProjectNestedModelViewSet(EducationNestedModelViewSet):
+    _project = None
+
+    def get_queryset(self):
+        return super().get_queryset().filter(project=self.get_project())
+
+    def get_project(self) -> "Project":
+        if self._project:
+            return self._project
+        self._project = Project.objects.get(id=self.kwargs["parent_lookup_project"])
+        return self._project
+
+    def perform_create(self, serializer):
+        serializer.save(project=self.get_project())

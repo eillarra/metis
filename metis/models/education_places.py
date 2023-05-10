@@ -9,7 +9,6 @@ from .rel.remarks import RemarksMixin
 
 if TYPE_CHECKING:
     from .rel.files import File
-    from .users import User
 
 
 class EducationPlace(ContentsMixin, FilesMixin, RemarksMixin, BaseModel):
@@ -29,7 +28,7 @@ class EducationPlace(ContentsMixin, FilesMixin, RemarksMixin, BaseModel):
     def __str__(self) -> str:
         return f"{self.code} ({self.education.code})"
 
-    def can_be_managed_by(self, user: "User") -> bool:
+    def can_be_managed_by(self, user) -> bool:
         return self.education.can_be_managed_by(user)
 
     @property
@@ -46,7 +45,7 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
     """
 
     education_place = models.ForeignKey(EducationPlace, related_name="contacts", on_delete=models.CASCADE)
-    user = models.ForeignKey("metis.User", related_name="contact_objects", on_delete=models.CASCADE)
+    user = models.ForeignKey("metis.User", related_name="contact_set", on_delete=models.CASCADE)
     is_staff = models.BooleanField(default=False)
     is_mentor = models.BooleanField(default=True)
 

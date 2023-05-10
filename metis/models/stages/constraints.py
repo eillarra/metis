@@ -132,7 +132,6 @@ def get_disciplines_from_constraints(constraints: models.QuerySet) -> "QuerySet[
     Returns a set of all disciplines included in the given constraints.
     """
 
-    print(constraints)
     disciplines = Discipline.objects.none()
 
     for constraint in constraints:

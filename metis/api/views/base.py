@@ -5,6 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 
 
 class BaseModelViewSet(ModelViewSet):
+    """Prefetching happens automatically, even for generic relations."""
+
     def destroy(self, request, *args, **kwargs):
         """
         Try destroying a model instance.

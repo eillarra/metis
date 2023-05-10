@@ -30,7 +30,7 @@ def office_member(db, education):
 
 
 @pytest.fixture
-def office_member2(db):
+def office_member_of_other_education(db):
     user = UserFactory()
     education2 = EducationFactory()
     education2.office_members.add(user)  # type: ignore
@@ -117,13 +117,13 @@ class TestForAuthenticated(TestForAnonymous):
         api_client.force_authenticate(user=user)
 
 
-class TestForOtherOfficeMember(TestForAuthenticated):
+class TestForOtherEducationOfficeMember(TestForAuthenticated):
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, office_member2):
-        api_client.force_authenticate(user=office_member2)
+    def setup(self, api_client, office_member_of_other_education):
+        api_client.force_authenticate(user=office_member_of_other_education)
 
 
-class TestForOfficeMember(TestForAnonymous):
+class TestForOfficeMember(TestForAuthenticated):
     """
     Office members can manage their projects and places.
     Exceptions:

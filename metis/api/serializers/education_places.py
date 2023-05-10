@@ -5,15 +5,16 @@ from metis.models.education_places import EducationPlace, Contact
 from metis.models.users import User
 from .base import BaseModelSerializer, NestedHyperlinkField
 from .places import PlaceSerializer
+from .rel.remarks import RemarksMixin
 from .users import UserTinySerializer
 
 
 education_lookup_fields = {
-    "parent_lookup_education": "education_id",
+    "parent_lookup_education_id": "education_id",
 }
 education_place_lookup_fields = {
-    "parent_lookup_education_place__education": "education_place__education_id",
-    "parent_lookup_education_place": "education_place_id",
+    "parent_lookup_education_id": "education_place__education_id",
+    "parent_lookup_education_place_id": "education_place_id",
 }
 
 
@@ -26,7 +27,7 @@ class ContactTinySerializer(BaseModelSerializer):
         fields = ("id", "self", "user", "is_staff", "is_mentor")
 
 
-class EducationPlaceSerializer(BaseModelSerializer):
+class EducationPlaceSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:education-place-detail", nested_lookup=education_lookup_fields)
     education = serializers.HyperlinkedRelatedField(view_name="v1:education-detail", read_only=True)
     place = PlaceSerializer(read_only=True)
@@ -40,9 +41,11 @@ class EducationPlaceSerializer(BaseModelSerializer):
 
 class ContactSerializer(ContactTinySerializer):
     user_id = serializers.PrimaryKeyRelatedField(source="user", queryset=User.objects.all(), write_only=True)
-    education_place = EducationPlaceSerializer(read_only=True)
-    education_place_id = serializers.PrimaryKeyRelatedField(
-        source="education_place", queryset=EducationPlace.objects.all(), write_only=True
+    education_place = NestedHyperlinkField(
+        "v1:education-place-detail",
+        nested_lookup={
+            "parent_lookup_education_id": "education_place__education_id",
+        },
     )
 
     class Meta:

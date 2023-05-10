@@ -2,15 +2,10 @@ from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from metis.models import Education, User
 from ..permissions import IsManager
-from ..serializers import (
-    EducationSerializer,
-    ProgramSerializer,
-    StudentSerializer,
-)
+from ..serializers import EducationSerializer, ProgramSerializer, StudentSerializer
 from .base import BaseModelViewSet
 
 
@@ -34,13 +29,16 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
         return Response(StudentSerializer(students, many=True, context={"request": request}).data)
 
 
-class EducationNestedModelViewSet(NestedViewSetMixin, BaseModelViewSet):
+class EducationNestedModelViewSet(BaseModelViewSet):
     _education = None
+
+    def get_queryset(self):
+        return super().get_queryset().filter(education=self.get_education())
 
     def get_education(self) -> "Education":
         if self._education:
             return self._education
-        self._education = Education.objects.get(id=self.kwargs["parent_lookup_education"])
+        self._education = Education.objects.get(id=self.kwargs["parent_lookup_education_id"])
         return self._education
 
     def perform_create(self, serializer):

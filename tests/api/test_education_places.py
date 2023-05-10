@@ -42,7 +42,7 @@ def office_member(db, education):
 
 
 @pytest.fixture
-def office_member2(db):
+def office_member_of_other_education(db):
     user = UserFactory()
     education2 = EducationFactory()
     education2.office_members.add(user)  # type: ignore
@@ -57,11 +57,11 @@ def user(db):
 @pytest.mark.api
 class TestForAnonymous:
     expected_status_codes: Dict[str, status] = {
-        "places": status.FORBIDDEN,
+        "place_list": status.FORBIDDEN,
         "place_create": status.FORBIDDEN,
         "place_update": status.FORBIDDEN,
         "place_delete": status.FORBIDDEN,
-        "contacts": status.FORBIDDEN,
+        "contact_list": status.FORBIDDEN,
         "contact_create": status.FORBIDDEN,
         "contact_update": status.FORBIDDEN,
         "contact_delete": status.FORBIDDEN,
@@ -79,10 +79,10 @@ class TestForAnonymous:
     def _get_contact_update_data(self):
         return {}
 
-    def test_places(self, api_client, education):
+    def test_list_places(self, api_client, education):
         url = reverse("v1:education-place-list", args=[education.id])
         response = api_client.get(url)
-        assert response.status_code == self.expected_status_codes["places"]
+        assert response.status_code == self.expected_status_codes["place_list"]
 
     def test_create_place(self, api_client, education):
         url = reverse("v1:education-place-list", args=[education.id])
@@ -109,10 +109,10 @@ class TestForAnonymous:
         response = api_client.delete(url)
         assert response.status_code == self.expected_status_codes["place_delete"]
 
-    def test_contacts(self, api_client, education, education_place):
+    def test_list_contacts(self, api_client, education, education_place):
         url = reverse("v1:education-place-contact-list", args=[education.id, education_place.id])
         response = api_client.get(url)
-        assert response.status_code == self.expected_status_codes["contacts"]
+        assert response.status_code == self.expected_status_codes["contact_list"]
 
     def test_create_contact(self, api_client, education, education_place):
         url = reverse("v1:education-place-contact-list", args=[education.id, education_place.id])
@@ -121,12 +121,11 @@ class TestForAnonymous:
         assert response.status_code == self.expected_status_codes["contact_create"]
 
         if data:
-            assert response.data["education_place"]["id"] == data["education_place_id"]
+            assert response.data["user"]["id"] == data["user_id"]
 
     def test_update_contact(self, api_client, education, education_place, contact):
         url = reverse("v1:education-place-contact-detail", args=[education.id, education_place.id, contact.id])
         data = self._get_contact_update_data() | {
-            "education_place_id": contact.education_place_id,
             "user_id": contact.user_id,
         }
         response = api_client.put(url, data)
@@ -149,13 +148,13 @@ class TestForAuthenticated(TestForAnonymous):
         api_client.force_authenticate(user=user)
 
 
-class TestForOtherOfficeMember(TestForAuthenticated):
+class TestForOtherEducationOfficeMember(TestForAuthenticated):
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, office_member2):
-        api_client.force_authenticate(user=office_member2)
+    def setup(self, api_client, office_member_of_other_education):
+        api_client.force_authenticate(user=office_member_of_other_education)
 
 
-class TestForOfficeMember(TestForAnonymous):
+class TestForOfficeMember(TestForAuthenticated):
     """
     Office members can manage the EducationPlace and ProjectPlaces.
     Exceptions:
@@ -163,11 +162,11 @@ class TestForOfficeMember(TestForAnonymous):
     """
 
     expected_status_codes = {
-        "places": status.OK,
+        "place_list": status.OK,
         "place_create": status.CREATED,
         "place_update": status.OK,
         "place_delete": status.NO_CONTENT,
-        "contacts": status.OK,
+        "contact_list": status.OK,
         "contact_create": status.CREATED,
         "contact_update": status.OK,
         "contact_delete": status.NO_CONTENT,
@@ -190,7 +189,6 @@ class TestForOfficeMember(TestForAnonymous):
 
     def _get_contact_create_data(self, education_place):
         return {
-            "education_place_id": education_place.id,
             "user_id": UserFactory().id,  # type: ignore
             "is_staff": True,
         }
