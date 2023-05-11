@@ -31,7 +31,7 @@ SENDFILE_URL = "/-internal"
 
 sentry_sdk.init(
     dsn=os.environ.get("SENTRY_DSN", None),
-    release=os.environ.get("GIT_COMMIT_HASH", None),
+    release=os.environ.get("GIT_REV", None),
     environment="production",
     integrations=[DjangoIntegration(), RedisIntegration()],
     ignore_errors=[DisallowedHost],

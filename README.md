@@ -64,9 +64,9 @@ yarn dev
 
 
 [codecov]: https://app.codecov.io/gh/eillarra/metis
-[codecov-badge]: https://codecov.io/gh/eillarra/metis/branch/master/graph/badge.svg?token=UAQVA8J7YS
+[codecov-badge]: https://codecov.io/gh/eillarra/metis/branch/main/graph/badge.svg?token=xZLoEWNzgu
 [github-tests]: https://github.com/eillarra/metis/actions?query=workflow%3Atests
-[github-tests-badge]: https://github.com/eillarra/metis/workflows/tests/badge.svg
+[github-tests-badge]: https://github.com/eillarra/metis/actions/workflows/tests.yml/badge.svg?branch=main
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 
 [django]: https://www.djangoproject.com/

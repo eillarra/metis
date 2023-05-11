@@ -22,7 +22,7 @@ def render_inertia(request, vue_entry_point: str, *, props: Optional[Dict] = Non
             "django_debug": settings.DEBUG,
             "django_locale": request.LANGUAGE_CODE,
             "django_user": request.user if request.user.is_authenticated else None,
-            "git_commit_hash": os.environ.get("GIT_REV", "None"),
+            "git_commit_hash": os.environ.get("GIT_REV", None),
         }
         | (props or {}),
         template_data={
