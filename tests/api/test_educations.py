@@ -6,7 +6,7 @@ from typing import Dict
 
 from metis.utils.factories import (
     EducationFactory,
-    EducationPlaceFactory,
+    PlaceFactory,
     ProjectFactory,
     ProjectPlaceFactory,
     StudentFactory,
@@ -17,7 +17,7 @@ from metis.utils.factories import (
 @pytest.fixture
 def education(db):
     education = EducationFactory()
-    EducationPlaceFactory(education=education)
+    PlaceFactory(education=education)
     ProjectFactory(education=education)
     return education
 
@@ -120,8 +120,8 @@ class TestForOfficeMember(TestForAuthenticated):
 
     def test_delete_project_with_place(self, api_client, education):
         project = education.projects.first()
-        education_place = education.place_set.first()
-        project.place_set.add(ProjectPlaceFactory(education_place=education_place))
+        place = education.places.first()
+        project.place_set.add(ProjectPlaceFactory(place=place))
         assert project.places.count() == 1
 
         url = reverse("v1:project-detail", args=[education.id, project.id])

@@ -7,9 +7,6 @@ from ..base import BaseModel
 from ..rel.contents import ContentsMixin
 from ..rel.remarks import RemarksMixin
 
-if TYPE_CHECKING:
-    from ..places import Place
-
 
 class ProjectPlace(ContentsMixin, RemarksMixin, BaseModel):
     """
@@ -18,9 +15,7 @@ class ProjectPlace(ContentsMixin, RemarksMixin, BaseModel):
     """
 
     project = models.ForeignKey("metis.Project", related_name="place_set", on_delete=models.CASCADE)
-    education_place = models.ForeignKey(
-        "metis.EducationPlace", related_name="project_place_set", on_delete=models.PROTECT
-    )
+    place = models.ForeignKey("metis.Place", related_name="project_place_set", on_delete=models.PROTECT)
     disciplines = models.ManyToManyField("metis.Discipline", related_name="places")
 
     # TODO: planner
@@ -28,7 +23,7 @@ class ProjectPlace(ContentsMixin, RemarksMixin, BaseModel):
 
     class Meta:
         db_table = "metis_project_places"
-        unique_together = ("project", "education_place")
+        unique_together = ("project", "place")
 
     def clean(self) -> None:
         """
@@ -44,10 +39,6 @@ class ProjectPlace(ContentsMixin, RemarksMixin, BaseModel):
 
     def can_be_managed_by(self, user) -> bool:
         return self.project.can_be_managed_by(user)
-
-    @cached_property
-    def place(self) -> "Place":
-        return self.education_place.place
 
 
 class PlaceCapacity(BaseModel):

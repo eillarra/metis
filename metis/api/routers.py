@@ -15,10 +15,6 @@ class Router(NestedRouterMixin, DefaultRouter):
 
         self.schema_title = f"Metis API {version}"
 
-        # /places/
-
-        self.register("places", views.PlaceViewSet, basename="place")
-
         # /rel/{parent_lookup_content_type_id}/{parent_lookup_object_id}/remarks/
 
         rel_routes_pql = ["content_type_id", "object_id"]
@@ -27,19 +23,19 @@ class Router(NestedRouterMixin, DefaultRouter):
 
         # /educations/
         # /educations/{parent_lookup_education_id}/places/
-        # /educations/{parent_lookup_education_id}/places/{parent_lookup_education_place_id}/contacts/
+        # /educations/{parent_lookup_education_id}/places/{parent_lookup_place_id}/contacts/
         # /educations/{parent_lookup_education_id}/projects/
         # /educations/{parent_lookup_education_id}/projects/{parent_lookup_project_id}/places/
 
         education_routes = self.register("educations", views.EducationViewSet, basename="education")
         education_place_routes = education_routes.register(
-            "places", views.EducationPlaceViewSet, basename="education-place", parents_query_lookups=["education_id"]
+            "places", views.PlaceViewSet, basename="education-place", parents_query_lookups=["education_id"]
         )
         education_place_routes.register(
             "contacts",
             views.ContactViewSet,
             basename="education-place-contact",
-            parents_query_lookups=["education_id", "education_place_id"],
+            parents_query_lookups=["education_id", "place_id"],
         )
         project_routes = education_routes.register(
             "projects", views.ProjectViewSet, basename="project", parents_query_lookups=["education_id"]

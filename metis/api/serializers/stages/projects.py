@@ -30,4 +30,4 @@ class ProjectSerializer(BaseModelSerializer):
 
     class Meta:
         model = Project
-        exclude = ("created_at", "created_by", "education_places")
+        exclude = ("created_at", "created_by", "places")

@@ -31,8 +31,6 @@ class Education(BaseModel):
     description = models.TextField(blank=True, null=True)
     office_members = models.ManyToManyField("metis.User", related_name="education_set", blank=True)
 
-    places = models.ManyToManyField("metis.Place", through="metis.EducationPlace", related_name="education_set")
-
     def __str__(self) -> str:
         return self.short_name
 

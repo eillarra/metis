@@ -16,4 +16,5 @@ class BaseModelViewSet(ModelViewSet):
         try:
             return super().destroy(request, *args, **kwargs)
         except ProtectedError as e:
-            return Response({"detail": str(e)}, status=status.FORBIDDEN)
+            message, _ = e.args
+            return Response({"ProtectedError": [message]}, status=status.FORBIDDEN)

@@ -28,5 +28,4 @@ class EducationSerializer(BaseModelSerializer):
 
     class Meta:
         model = Education
-        exclude = ("created_at", "created_by", "places")
-        depth = 1
+        exclude = ("created_at", "created_by")

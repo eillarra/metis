@@ -8,13 +8,13 @@ except ImportError:
 
 from typing import Optional
 
-from metis.models import User, Discipline, Region, Place, EducationPlace, Education, TmpPlaceData
+from metis.models import User, Discipline, Region, Place, Education, TmpPlaceData
 from metis.models.rel.addresses import Address
 from metis.models.rel.remarks import Remark
 from metis.services.mapbox import Mapbox, MapboxFeature
 
 
-def get_or_create_place(name: str, address: str) -> Place:
+def get_or_create_place(education: Education, name: str, address: str) -> Place:
     try:
         return Place.objects.get(name=name)
     except Place.DoesNotExist:
@@ -36,7 +36,7 @@ def get_or_create_place(name: str, address: str) -> Place:
                 country=feature.country["short_code"] if feature.country else None,
             )
 
-    place = Place.objects.create(name=name, region=region)
+    place = Place.objects.create(education=education, name=name, code=name, region=region)
 
     if feature:
         Address.objects.create(
@@ -105,12 +105,11 @@ def df_to_places(df: pd.DataFrame, *, education: Education):
 
     # create a new place for each row
     for _, row in df.iterrows():
-        place = get_or_create_place(str(row["name"]), str(row["address"]))
-        ed_place, _ = EducationPlace.objects.get_or_create(place=place, education=education, code=place.name)
+        place = get_or_create_place(education, str(row["name"]), str(row["address"]))
 
         # remarks
         if not pd.isna(row["remarks"]):
-            Remark.objects.create(content_object=ed_place, text=row["remarks"])
+            Remark.objects.create(content_object=place, text=row["remarks"])
 
         # disciplines
         if row["discipline"]:

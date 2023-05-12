@@ -5,8 +5,13 @@ from .projects import ProjectNestedModelViewSet
 
 
 class ProjectPlaceViewSet(ProjectNestedModelViewSet):
-    queryset = ProjectPlace.objects.select_related("education_place__place__region", "updated_by").prefetch_related(
-        "disciplines"
+    queryset = ProjectPlace.objects.select_related("place").prefetch_related(
+        "disciplines",
+        "place__contacts__user",
+        "place__contacts__updated_by",
+        "place__education",
+        "place__region",
+        "updated_by",
     )
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)

@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from typing import Dict, Tuple
 
 from metis.models import (
-    EducationPlace,
+    Place,
     Track,
     ProgramBlock,
     Project,
@@ -85,8 +85,9 @@ def load_internships(audio_periods, *, education):
         df["mentor_phone_numbers"] = df["mentor_phone_numbers"].apply(parse_phones)
         df["place"] = df.apply(
             lambda row: get_or_create_place(
-                row["place_name"],
-                str(row["place_adress"]),
+                education=education,
+                name=row["place_name"],
+                address=str(row["place_adress"]),
             ),
             axis=1,
         )
@@ -158,31 +159,20 @@ def load_internships(audio_periods, *, education):
     for tmp_mentor in TmpMentor.objects.all():
         user = get_or_create_user(name=tmp_mentor.name, email=tmp_mentor.email)
 
-        try:
-            ed_place, _ = EducationPlace.objects.get_or_create(
-                education=tmp_mentor.project.education, place=tmp_mentor.place
-            )
-        except IntegrityError:
-            ed_place = EducationPlace.objects.create(
-                education=tmp_mentor.project.education,
-                place=tmp_mentor.place,
-                code=f"{tmp_mentor.place.name}-bis",
-            )
-
         Contact.objects.get_or_create(
             user=user,
-            education_place=ed_place,
+            place=tmp_mentor.place,
             is_mentor=True,
         )
 
-        proj_place, _ = ProjectPlace.objects.get_or_create(project=tmp_mentor.project, education_place=ed_place)
+        proj_place, _ = ProjectPlace.objects.get_or_create(project=tmp_mentor.project, place=tmp_mentor.place)
 
         try:
             tmp_place_data = TmpPlaceData.objects.get(place=tmp_mentor.place)
             if tmp_place_data.discipline:
                 proj_place.disciplines.add(tmp_place_data.discipline)
             if tmp_place_data.remarks:
-                Remark.objects.create(content_object=ed_place, text=tmp_place_data.remarks)
+                Remark.objects.create(content_object=tmp_mentor.place, text=tmp_place_data.remarks)
         except TmpPlaceData.DoesNotExist:
             pass
 
@@ -194,16 +184,7 @@ def load_internships(audio_periods, *, education):
             ("Ma2", "1"): "4A",
         }
 
-        try:
-            ed_place = EducationPlace.objects.get(place=internship.place)
-        except EducationPlace.DoesNotExist:
-            ed_place = EducationPlace.objects.create(
-                education=internship.project.education,
-                place=internship.place,
-                code=f"{internship.place.name}-bis",
-            )
-
-        proj_place, _ = ProjectPlace.objects.get_or_create(project=internship.project, education_place=ed_place)
+        proj_place, _ = ProjectPlace.objects.get_or_create(project=internship.project, place=internship.place)
         default_discipline = Discipline.objects.get(education=education, name="klinisch")
 
         internship = Internship(

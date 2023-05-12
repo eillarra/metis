@@ -18,5 +18,5 @@ class DashboardView(InertiaView):
 
     def get_props(self, request, *args, **kwargs):
         return {
-            "educations": EducationSerializer(request.user.educations, many=True, context={"request": request}).data,
+            "educations": EducationSerializer(request.user.education_set, many=True, context={"request": request}).data,
         }

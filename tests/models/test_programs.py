@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 from metis.utils.factories import (
     PlaceFactory,
-    EducationPlaceFactory,
+    PlaceFactory,
     ProjectPlaceFactory,
     StudentFactory,
     InternshipFactory,
@@ -16,8 +16,7 @@ from metis.models import Discipline, Program, ProgramInternship, Track
 @pytest.fixture
 def audiology_program():
     program = create_audiology_program()
-    place = PlaceFactory(name="UZ Gent", type=1)
-    EducationPlaceFactory(education=program.education, place=place)
+    PlaceFactory(education=program.education, name="UZ Gent", type=1)
     return program
 
 
@@ -61,8 +60,8 @@ def test_wrong_track_chosen(audiology_program):
 )
 def test_available_disciplines(audiology_program, track_name, internship_name, discipline_code):
     student = StudentFactory()
-    education_place = audiology_program.education.place_set.first()
-    project_place = ProjectPlaceFactory(project=student.project, education_place=education_place)
+    place = audiology_program.education.places.first()
+    project_place = ProjectPlaceFactory(project=student.project, place=place)
 
     with pytest.raises(ValidationError):
         InternshipFactory(
@@ -87,8 +86,8 @@ def test_available_disciplines(audiology_program, track_name, internship_name, d
 def test_previously_covered_disciplines(audiology_program, track_name, internships_done, new_internship):
     student = StudentFactory()
     track = Track.objects.get(name=f"Track {track_name}") if track_name else None
-    education_place = audiology_program.education.place_set.first()
-    project_place = ProjectPlaceFactory(project=student.project, education_place=education_place)
+    place = audiology_program.education.places.first()
+    project_place = ProjectPlaceFactory(project=student.project, place=place)
 
     for data in internships_done:
         internship = InternshipFactory(
@@ -126,8 +125,8 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
     student = StudentFactory()
     track = Track.objects.get(name=f"Track {track_name}")
     Discipline.objects.create(education=track.program.education, code="not_a_discipline", name="None")
-    education_place = audiology_program.education.place_set.first()
-    project_place = ProjectPlaceFactory(project=student.project, education_place=education_place)
+    place = audiology_program.education.places.first()
+    project_place = ProjectPlaceFactory(project=student.project, place=place)
 
     for data in internships_done:
         internship = InternshipFactory(

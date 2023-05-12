@@ -3,12 +3,12 @@ import pytest
 from django.db.utils import IntegrityError
 
 from metis.models import File
-from metis.utils.factories import EducationPlaceFactory
+from metis.utils.factories import PlaceFactory
 
 
 @pytest.fixture
 def uz():
-    return EducationPlaceFactory(code="UZ")
+    return PlaceFactory(code="UZ")
 
 
 @pytest.mark.django_db

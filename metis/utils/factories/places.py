@@ -1,6 +1,7 @@
 import factory
 
 from .educations import EducationFactory
+from .users import UserFactory
 
 
 class RegionFactory(factory.django.DjangoModelFactory):
@@ -15,14 +16,15 @@ class PlaceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "metis.Place"
 
+    education = factory.SubFactory(EducationFactory)
     region = factory.SubFactory(RegionFactory)
     name = factory.Sequence(lambda n: f"Place {n}")
+    code = factory.Sequence(lambda n: f"placecode{n}")
 
 
-class EducationPlaceFactory(factory.django.DjangoModelFactory):
+class ContactFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = "metis.EducationPlace"
+        model = "metis.Contact"
 
-    education = factory.SubFactory(EducationFactory)
     place = factory.SubFactory(PlaceFactory)
-    code = factory.Sequence(lambda n: f"EducationPlace code {n}")
+    user = factory.SubFactory(UserFactory)

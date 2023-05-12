@@ -18,12 +18,12 @@ class Project(BaseModel):
     education = models.ForeignKey("metis.Education", related_name="projects", on_delete=models.PROTECT)
     name = models.CharField(max_length=32)
 
-    education_places = models.ManyToManyField("metis.EducationPlace", through="metis.ProjectPlace")
-
     is_active = models.BooleanField(default=True)
     is_visible_to_planner = models.BooleanField(default=True)
     is_visible_to_contacts = models.BooleanField(default=True)
     is_visible_to_students = models.BooleanField(default=False)
+
+    places = models.ManyToManyField("metis.Place", through="metis.ProjectPlace")
 
     # TODO: QUESTION: there are dates in the old database, do we need them or do we use the period/project dates?
 
@@ -39,10 +39,6 @@ class Project(BaseModel):
 
     def can_be_managed_by(self, user) -> bool:
         return self.education.can_be_managed_by(user)
-
-    @cached_property
-    def places(self):
-        return Place.objects.filter(education_place_set__project_place_set__project=self).distinct()
 
     @cached_property
     def start_date(self) -> datetime.date:

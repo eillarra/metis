@@ -7,7 +7,7 @@ from typing import Dict
 from metis.utils.factories import (
     ContactFactory,
     EducationFactory,
-    EducationPlaceFactory,
+    PlaceFactory,
     ProjectFactory,
     ProjectPlaceFactory,
     UserFactory,
@@ -17,10 +17,10 @@ from metis.utils.factories import (
 @pytest.fixture
 def education(db):
     education = EducationFactory()
-    education_place = EducationPlaceFactory(education=education)
-    ContactFactory(education_place=education_place)
+    place = PlaceFactory(education=education)
+    ContactFactory(place=place)
     project = ProjectFactory(education=education)
-    ProjectPlaceFactory(education_place=education_place, project=project)
+    ProjectPlaceFactory(place=place, project=project)
     return education
 
 
@@ -81,11 +81,11 @@ class TestForAnonymous:
         assert response.status_code == self.expected_status_codes["place_create"]
 
         if data:
-            assert response.data["education_place"] == data['education_place_id']
+            assert response.data["place"]["id"] == data["place_id"]
 
     def test_update_place(self, api_client, education, project_place):
         url = reverse("v1:project-place-detail", args=[education.id, project_place.project_id, project_place.id])
-        data = self._get_place_update_data(education) | {"education_place_id": project_place.education_place_id}
+        data = self._get_place_update_data(education) | {"place_id": project_place.place_id}
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["place_update"]
 
@@ -132,12 +132,12 @@ class TestForOfficeMember(TestForAuthenticated):
 
     def _get_place_create_data(self, education):
         return {
-            "education_place_id": EducationPlaceFactory(education=education).id,  # type: ignore
+            "place_id": PlaceFactory(education=education).id,  # type: ignore
         }
 
     def _get_place_update_data(self, education):
         return {
-            "education_place_id": EducationPlaceFactory(education=education).id,  # type: ignore
+            "place_id": PlaceFactory(education=education).id,  # type: ignore
         }
 
     def test_delete_with_no_internships(self, api_client, education, project_place):

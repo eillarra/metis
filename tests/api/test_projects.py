@@ -7,7 +7,7 @@ from typing import Dict
 from metis.utils.factories import (
     ContactFactory,
     EducationFactory,
-    EducationPlaceFactory,
+    PlaceFactory,
     ProjectFactory,
     UserFactory,
 )
@@ -16,8 +16,8 @@ from metis.utils.factories import (
 @pytest.fixture
 def education(db):
     education = EducationFactory()
-    education_place = EducationPlaceFactory(education=education)
-    ContactFactory(education_place=education_place)
+    place = PlaceFactory(education=education)
+    ContactFactory(place=place)
     ProjectFactory(education=education)
     return education
 

@@ -17,3 +17,6 @@ class Student(RemarksMixin, BaseModel):
 
     class Meta:
         ordering = ["project", "block__position"]
+
+    def can_be_managed_by(self, user):
+        return self.project.can_be_managed_by(user)

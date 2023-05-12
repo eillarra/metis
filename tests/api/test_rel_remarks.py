@@ -8,7 +8,7 @@ from typing import Dict
 from metis.models.rel import Remark
 from metis.utils.factories import (
     EducationFactory,
-    EducationPlaceFactory,
+    PlaceFactory,
     ProjectFactory,
     ProjectPlaceFactory,
     UserFactory,
@@ -18,15 +18,15 @@ from metis.utils.factories import (
 @pytest.fixture(autouse=True)
 def education(db):
     education = EducationFactory()
-    education_place = EducationPlaceFactory(education=education)
+    place = PlaceFactory(education=education)
     project = ProjectFactory(education=education)
-    ProjectPlaceFactory(education_place=education_place, project=project)
+    ProjectPlaceFactory(place=place, project=project)
     return education
 
 
 @pytest.fixture
-def education_place(db, education):
-    return education.place_set.first()
+def place(db, education):
+    return education.places.first()
 
 
 @pytest.fixture
@@ -72,33 +72,22 @@ class TestForAnonymous:
     def _get_remark_update_data(self):
         return {}
 
-    def test_list_remarks(self, api_client, education_place):
-        ct = ContentType.objects.get_for_model(education_place)
-        url = reverse("v1:remark-list", args=[ct.id, education_place.id])
+    def test_list_remarks(self, api_client, place):
+        ct = ContentType.objects.get_for_model(place)
+        url = reverse("v1:remark-list", args=[ct.id, place.id])
         response = api_client.get(url)
         assert response.status_code == self.expected_status_codes["remark_list"]
 
-    def test_create_remark_place(self, api_client, education_place):
-        ct = ContentType.objects.get_for_model(education_place.place)
-        url = reverse("v1:remark-list", args=[ct.id, education_place.place.id])
+    def test_create_remark_place(self, api_client, place):
+        ct = ContentType.objects.get_for_model(place)
+        url = reverse("v1:remark-list", args=[ct.id, place.id])
         data = self._get_remark_create_data()
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["remark_create"]
 
         if data:
             assert response.data["text"] == data["text"]
-            assert education_place.place.remarks.count() == 1
-
-    def test_create_remark_education_place(self, api_client, education_place):
-        ct = ContentType.objects.get_for_model(education_place)
-        url = reverse("v1:remark-list", args=[ct.id, education_place.id])
-        data = self._get_remark_create_data()
-        response = api_client.post(url, data)
-        assert response.status_code == self.expected_status_codes["remark_create"]
-
-        if data:
-            assert response.data["text"] == data["text"]
-            assert education_place.remarks.count() == 1
+            assert place.remarks.count() == 1
 
     def test_create_remark_project_place(self, api_client, education):
         project_place = education.projects.first().place_set.first()
@@ -127,7 +116,7 @@ class TestForOtherEducationOfficeMember(TestForAuthenticated):
 
 class TestForOfficeMember(TestForAuthenticated):
     """
-    Office members can add remarks to places, education_places, project_places, students, contacts...
+    Office members can add remarks to places, places, project_places, students, contacts...
     - users can only uopdate or delete their own remarks.
     """
 
@@ -155,18 +144,18 @@ class TestForOfficeMember(TestForAuthenticated):
             "text": "updated remark text",
         }
 
-    def test_update_remark(self, api_client, education_place):
-        ct = ContentType.objects.get_for_model(education_place)
-        remark = Remark.objects.create(content_object=education_place, text="remark text", created_by=self.created_by)
-        url = reverse("v1:remark-detail", args=[ct.id, education_place.id, remark.pk])
+    def test_update_remark(self, api_client, place):
+        ct = ContentType.objects.get_for_model(place)
+        remark = Remark.objects.create(content_object=place, text="remark text", created_by=self.created_by)
+        url = reverse("v1:remark-detail", args=[ct.id, place.id, remark.pk])
         data = self._get_remark_update_data()
         response = api_client.patch(url, data)
         assert response.status_code == self.expected_status_codes["remark_update"]
 
-    def test_delete_remark(self, api_client, education_place):
-        ct = ContentType.objects.get_for_model(education_place)
-        remark = Remark.objects.create(content_object=education_place, text="remark text", created_by=self.created_by)
-        url = reverse("v1:remark-detail", args=[ct.id, education_place.id, remark.pk])
+    def test_delete_remark(self, api_client, place):
+        ct = ContentType.objects.get_for_model(place)
+        remark = Remark.objects.create(content_object=place, text="remark text", created_by=self.created_by)
+        url = reverse("v1:remark-detail", args=[ct.id, place.id, remark.pk])
         data = self._get_remark_update_data()
         response = api_client.delete(url, data)
         assert response.status_code == self.expected_status_codes["remark_delete"]

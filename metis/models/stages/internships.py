@@ -107,8 +107,12 @@ class Internship(RemarksMixin, BaseModel):
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
 
     discipline = models.ForeignKey("metis.Discipline", related_name="internships", null=True, on_delete=models.SET_NULL)
+
     # evaluation_deadline = models.DateField()  # this can be used for cases > reviews
     # mentors
+    # reviewers (beoordelaars)
+
+    is_valid = models.BooleanField(default=True)
 
     def clean(self) -> None:
         """
@@ -125,6 +129,10 @@ class Internship(RemarksMixin, BaseModel):
 
         validate_discipline_choice(self)
         return super().clean()
+
+    def can_be_managed_by(self, user) -> bool:
+        # TODO: change to self.period.project.can_be_managed_by(user) once we switch to period
+        return self.project_place.can_be_managed_by(user)
 
     @cached_property
     def place(self) -> "Place":
@@ -181,6 +189,7 @@ class Internship(RemarksMixin, BaseModel):
         if self.track is None or self.student is None:
             return Discipline.objects.none()
 
+        # TODO: exclude also is_valid=False internships
         past_internships = self.student.internships.exclude(id=self.id).filter(track=self.track)
         return Discipline.objects.filter(internships__in=past_internships)
 

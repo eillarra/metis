@@ -1,4 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from rest_framework.viewsets import ModelViewSet
 
 from ...permissions import IsRelManager
@@ -21,6 +23,18 @@ class RelModelViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         if self.auto_created_by:
-            serializer.save(content_object=self.get_content_object(), created_by=self.request.user)
+            serializer.save(
+                content_object=self.get_content_object(), created_by=self.request.user, updated_by=self.request.user
+            )
         else:
             serializer.save(content_object=self.get_content_object())
+
+    def perform_update(self, serializer):
+        if self.auto_created_by:
+            serializer.save(updated_by=self.request.user)
+        else:
+            serializer.save()
+
+    @method_decorator(never_cache)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

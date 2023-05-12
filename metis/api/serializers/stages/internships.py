@@ -3,10 +3,11 @@ from rest_framework import serializers
 from metis.models.stages.internships import Internship
 from ..base import BaseModelSerializer
 from ..disciplines import DisciplineSerializer
+from ..rel.remarks import RemarksMixin
 from .programs import ProgramInternshipSerializer, TrackTinySerializer
 
 
-class InternshipSerializer(BaseModelSerializer):
+class InternshipSerializer(RemarksMixin, BaseModelSerializer):
     program_internship = ProgramInternshipSerializer(read_only=True)
     track = TrackTinySerializer(read_only=True)
     discipline = DisciplineSerializer()

@@ -7,7 +7,6 @@ from typing import Dict
 from metis.utils.factories import (
     ContactFactory,
     EducationFactory,
-    EducationPlaceFactory,
     PlaceFactory,
     ProjectFactory,
     ProjectPlaceFactory,
@@ -18,20 +17,20 @@ from metis.utils.factories import (
 @pytest.fixture
 def education(db):
     education = EducationFactory()
-    education_place = EducationPlaceFactory(education=education)
-    ContactFactory(education_place=education_place)
+    place = PlaceFactory(education=education)
+    ContactFactory(place=place)
     ProjectFactory(education=education)
     return education
 
 
 @pytest.fixture
-def education_place(db, education):
-    return education.place_set.first()
+def place(db, education):
+    return education.places.first()
 
 
 @pytest.fixture
-def contact(db, education_place):
-    return education_place.contacts.first()
+def contact(db, place):
+    return place.contacts.first()
 
 
 @pytest.fixture
@@ -67,13 +66,13 @@ class TestForAnonymous:
         "contact_delete": status.FORBIDDEN,
     }
 
-    def _get_place_create_data(self):
+    def _get_place_create_data(self, education):
         return {}
 
     def _get_place_update_data(self):
         return {}
 
-    def _get_contact_create_data(self, education_place):
+    def _get_contact_create_data(self):
         return {}
 
     def _get_contact_update_data(self):
@@ -86,58 +85,58 @@ class TestForAnonymous:
 
     def test_create_place(self, api_client, education):
         url = reverse("v1:education-place-list", args=[education.id])
-        data = self._get_place_create_data()
+        data = self._get_place_create_data(education)
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["place_create"]
 
         if data:
-            assert response.data["place"]["id"] == data["place_id"]
+            assert response.data["code"] == data["code"]
 
-    def test_update_place(self, api_client, education, education_place):
-        url = reverse("v1:education-place-detail", args=[education.id, education_place.id])
-        data = self._get_place_update_data() | {"place_id": education_place.place_id}
+    def test_update_place(self, api_client, education, place):
+        url = reverse("v1:education-place-detail", args=[education.id, place.id])
+        data = self._get_place_update_data() | {"education_id": place.education_id}
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["place_update"]
 
-    def test_partial_update_place(self, api_client, education, education_place):
-        url = reverse("v1:education-place-detail", args=[education.id, education_place.id])
+    def test_partial_update_place(self, api_client, education, place):
+        url = reverse("v1:education-place-detail", args=[education.id, place.id])
         response = api_client.patch(url, self._get_place_update_data())
         assert response.status_code == self.expected_status_codes["place_update"]
 
-    def test_delete_place(self, api_client, education, education_place):
-        url = reverse("v1:education-place-detail", args=[education.id, education_place.id])
+    def test_delete_place(self, api_client, education, place):
+        url = reverse("v1:education-place-detail", args=[education.id, place.id])
         response = api_client.delete(url)
         assert response.status_code == self.expected_status_codes["place_delete"]
 
-    def test_list_contacts(self, api_client, education, education_place):
-        url = reverse("v1:education-place-contact-list", args=[education.id, education_place.id])
+    def test_list_contacts(self, api_client, education, place):
+        url = reverse("v1:education-place-contact-list", args=[education.id, place.id])
         response = api_client.get(url)
         assert response.status_code == self.expected_status_codes["contact_list"]
 
-    def test_create_contact(self, api_client, education, education_place):
-        url = reverse("v1:education-place-contact-list", args=[education.id, education_place.id])
-        data = self._get_contact_create_data(education_place)
+    def test_create_contact(self, api_client, education, place):
+        url = reverse("v1:education-place-contact-list", args=[education.id, place.id])
+        data = self._get_contact_create_data()
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["contact_create"]
 
         if data:
             assert response.data["user"]["id"] == data["user_id"]
 
-    def test_update_contact(self, api_client, education, education_place, contact):
-        url = reverse("v1:education-place-contact-detail", args=[education.id, education_place.id, contact.id])
+    def test_update_contact(self, api_client, education, place, contact):
+        url = reverse("v1:education-place-contact-detail", args=[education.id, place.id, contact.id])
         data = self._get_contact_update_data() | {
             "user_id": contact.user_id,
         }
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["contact_update"]
 
-    def test_partial_update_contact(self, api_client, education, education_place, contact):
-        url = reverse("v1:education-place-contact-detail", args=[education.id, education_place.id, contact.id])
+    def test_partial_update_contact(self, api_client, education, place, contact):
+        url = reverse("v1:education-place-contact-detail", args=[education.id, place.id, contact.id])
         response = api_client.patch(url, self._get_contact_update_data())
         assert response.status_code == self.expected_status_codes["contact_update"]
 
-    def test_delete_contact(self, api_client, education, education_place, contact):
-        url = reverse("v1:education-place-contact-detail", args=[education.id, education_place.id, contact.id])
+    def test_delete_contact(self, api_client, education, place, contact):
+        url = reverse("v1:education-place-contact-detail", args=[education.id, place.id, contact.id])
         response = api_client.delete(url)
         assert response.status_code == self.expected_status_codes["contact_delete"]
 
@@ -176,18 +175,20 @@ class TestForOfficeMember(TestForAuthenticated):
     def setup(self, api_client, office_member):
         api_client.force_authenticate(user=office_member)
 
-    def _get_place_create_data(self):
+    def _get_place_create_data(self, education):
         return {
-            "place_id": PlaceFactory().id,  # type: ignore
+            "education_id": education.id,
+            "name": "New place name",
             "code": "New place code",
         }
 
     def _get_place_update_data(self):
         return {
+            "name": "Updated place name",
             "code": "Updated place code",
         }
 
-    def _get_contact_create_data(self, education_place):
+    def _get_contact_create_data(self):
         return {
             "user_id": UserFactory().id,  # type: ignore
             "is_staff": True,
@@ -199,12 +200,12 @@ class TestForOfficeMember(TestForAuthenticated):
             "is_mentor": True,
         }
 
-    def test_delete_used_education_place(self, api_client, education, education_place):
+    def test_delete_used_place(self, api_client, education, place):
         project = education.projects.first()
-        project.place_set.add(ProjectPlaceFactory(education_place=education_place))
+        project.place_set.add(ProjectPlaceFactory(place=place))
         assert project.places.count() == 1
 
-        url = reverse("v1:education-place-detail", args=[education_place.id, project.id])
+        url = reverse("v1:education-place-detail", args=[place.id, project.id])
         response = api_client.delete(url)
         assert response.status_code == status.FORBIDDEN
         assert project.places.count() == 1
