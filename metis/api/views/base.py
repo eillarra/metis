@@ -1,4 +1,6 @@
 from django.db.models.deletion import ProtectedError
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from http import HTTPStatus as status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -18,3 +20,7 @@ class BaseModelViewSet(ModelViewSet):
         except ProtectedError as e:
             message, _ = e.args
             return Response({"ProtectedError": [message]}, status=status.FORBIDDEN)
+
+    @method_decorator(never_cache)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

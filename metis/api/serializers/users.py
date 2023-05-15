@@ -12,4 +12,10 @@ class UserTinySerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
+        fields = ("id", "name", "username", "email", "is_active", "last_login", "date_joined")
+
+
+class AuthenticatedUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
         exclude = ("password",)

@@ -6,6 +6,7 @@ from metis.utils.factories import (
     PlaceFactory,
     PlaceFactory,
     ProjectPlaceFactory,
+    PeriodFactory,
     StudentFactory,
     InternshipFactory,
 )
@@ -62,11 +63,12 @@ def test_available_disciplines(audiology_program, track_name, internship_name, d
     student = StudentFactory()
     place = audiology_program.education.places.first()
     project_place = ProjectPlaceFactory(project=student.project, place=place)
+    period = PeriodFactory(program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}"))
 
     with pytest.raises(ValidationError):
         InternshipFactory(
             track=Track.objects.get(name=f"Track {track_name}"),
-            program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}"),
+            period=period,
             student=student,
             project_place=project_place,
             discipline=Discipline.objects.get(education=audiology_program.education, code=discipline_code),
@@ -90,9 +92,10 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
     project_place = ProjectPlaceFactory(project=student.project, place=place)
 
     for data in internships_done:
+        period = PeriodFactory(program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"))
         internship = InternshipFactory(
             track=track,
-            program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"),
+            period=period,
             student=student,
             project_place=project_place,
             discipline=Discipline.objects.get(education=audiology_program.education, code=data[1]),
@@ -100,9 +103,10 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
         internship.clean()
         internship.save()
 
+    period = PeriodFactory(program_internship=ProgramInternship.objects.get(name=f"Internship {new_internship[0]}"))
     new_internship = InternshipFactory(
         track=track,
-        program_internship=ProgramInternship.objects.get(name=f"Internship {new_internship[0]}"),
+        period=period,
         student=student,
         project_place=project_place,
         discipline=Discipline.objects.get(education=audiology_program.education, code=new_internship[1]),
@@ -129,9 +133,10 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
     project_place = ProjectPlaceFactory(project=student.project, place=place)
 
     for data in internships_done:
+        period = PeriodFactory(program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"))
         internship = InternshipFactory(
             track=track,
-            program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"),
+            period=period,
             student=student,
             project_place=project_place,
             discipline=Discipline.objects.get(education=audiology_program.education, code=data[1]),
@@ -140,9 +145,12 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
         internship.save()
 
     with pytest.raises(ValidationError):
+        period = PeriodFactory(
+            program_internship=ProgramInternship.objects.get(name=f"Internship {failing_internship[0]}")
+        )
         new_internship = InternshipFactory(
             track=track,
-            program_internship=ProgramInternship.objects.get(name=f"Internship {failing_internship[0]}"),
+            period=period,
             student=student,
             project_place=project_place,
             discipline=Discipline.objects.get(education=audiology_program.education, code=failing_internship[1]),

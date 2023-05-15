@@ -18,7 +18,7 @@ class RemarkSerializer(serializers.ModelSerializer):
 
 class RemarksMixin(serializers.ModelSerializer):
     rel_remarks = RelHyperlinkedField(view_name="v1:remark-list")
-    remarks_count = serializers.SerializerMethodField()
+    remark_count = serializers.SerializerMethodField()
 
     _counts = {}
 
@@ -40,6 +40,6 @@ class RemarksMixin(serializers.ModelSerializer):
 
         return self._counts[ct.id]
 
-    def get_remarks_count(self, obj):
+    def get_remark_count(self, obj):
         match = next((i for i in self._get_counts(obj) if i["object_id"] == obj.id), None)
         return match["object_id__count"] if match else 0

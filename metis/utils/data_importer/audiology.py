@@ -1,15 +1,15 @@
+import datetime
 import pandas as pd
 
-from django.db.utils import IntegrityError
 from typing import Dict, Tuple
 
 from metis.models import (
-    Place,
     Track,
     ProgramBlock,
     Project,
     ProjectPlace,
     ProjectPlace,
+    Period,
     Student,
     Contact,
     Remark,
@@ -187,14 +187,22 @@ def load_internships(audio_periods, *, education):
         proj_place, _ = ProjectPlace.objects.get_or_create(project=internship.project, place=internship.place)
         default_discipline = Discipline.objects.get(education=education, name="klinisch")
 
-        internship = Internship(
-            student=tmp_students_map[internship.student.id] if internship.student else None,
-            project_place=proj_place,
+        period, _ = Period.objects.get_or_create(
+            project=internship.project,
             program_internship=ProgramInternship.objects.get(
                 block__program_id=1,
                 block__name=internship.block_name,
                 name__contains=naming_map[(internship.block_name, internship.period)],
             ),
+            name=internship.period,
+            start_date=datetime.date(2020, 1, 1),
+            end_date=datetime.date(2024, 1, 1),
+        )
+
+        internship = Internship(
+            student=tmp_students_map[internship.student.id] if internship.student else None,
+            project_place=proj_place,
+            period=period,
             track=Track.objects.get(program_id=1, name="Track A"),
             discipline=proj_place.disciplines.first() if proj_place.disciplines.exists() else default_discipline,
         )

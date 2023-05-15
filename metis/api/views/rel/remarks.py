@@ -8,4 +8,4 @@ class RemarkViewSet(RelModelViewSet):
     serializer_class = RemarkSerializer
 
     def get_queryset(self):
-        return self.get_content_object().remarks.all()
+        return self.get_content_object().remarks.select_related("updated_by")

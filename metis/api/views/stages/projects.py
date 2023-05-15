@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from metis.models import Project, User, Internship
 from ...permissions import IsEducationOfficeMember
-from ...serializers.stages import InternshipSerializer, ProjectSerializer, StudentSerializer
+from ...serializers.stages import InternshipSerializer, ProjectSerializer, StudentUserSerializer
 from ..base import BaseModelViewSet
 from ..educations import EducationNestedModelViewSet
 
@@ -18,21 +18,14 @@ class ProjectViewSet(EducationNestedModelViewSet):
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ProjectSerializer
 
-    @action(detail=True, pagination_class=None)
-    def internships(self, request, *args, **kwargs):
-        internships = Internship.objects.filter(student__project=self.get_object()).prefetch_related(
-            "program_internship__block", "track", "discipline"
-        )
-        return Response(InternshipSerializer(internships, many=True, context={"request": request}).data)
-
-    @action(detail=True, pagination_class=None)
-    def students(self, request, *args, **kwargs):
+    @action(detail=True, pagination_class=None, url_path="student-users")
+    def student_users(self, request, *args, **kwargs):
         students = (
             User.objects.filter(student_set__project=self.get_object())
             .prefetch_related("student_set__project", "student_set__block__internships")
             .distinct()
         )
-        return Response(StudentSerializer(students, many=True, context={"request": request}).data)
+        return Response(StudentUserSerializer(students, many=True, context={"request": request}).data)
 
 
 class ProjectNestedModelViewSet(BaseModelViewSet):

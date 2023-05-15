@@ -6,7 +6,6 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 
 from ..base import BaseModel
-from ..places import Place
 
 
 class Project(BaseModel):
@@ -73,6 +72,7 @@ class Period(BaseModel):
     class Meta:
         db_table = "metis_project_periods"
         ordering = ["project", "start_date"]
+        unique_together = ["project", "program_internship"]
 
     def clean(self) -> None:
         if self.start_date > self.end_date:

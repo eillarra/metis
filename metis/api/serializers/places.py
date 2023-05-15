@@ -29,14 +29,16 @@ class ContactTinySerializer(RemarksMixin, BaseModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ("id", "self", "rel_remarks", "remarks_count", "user", "is_staff", "is_mentor")
+        fields = ("id", "self", "rel_remarks", "remark_count", "user", "is_staff", "is_mentor")
 
 
 class PlaceSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:education-place-detail", nested_lookup=education_lookup_fields)
     parent = NestedHyperlinkField(view_name="v1:education-place-detail", nested_lookup=education_lookup_fields)
     education = serializers.PrimaryKeyRelatedField(read_only=True)
-    education_id = serializers.PrimaryKeyRelatedField(source="education", queryset=Education.objects.all(), write_only=True)
+    education_id = serializers.PrimaryKeyRelatedField(
+        source="education", queryset=Education.objects.all(), write_only=True
+    )
     region = RegionSerializer(read_only=True)
     contacts = ContactTinySerializer(many=True, read_only=True)
 

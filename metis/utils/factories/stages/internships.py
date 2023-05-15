@@ -2,7 +2,7 @@ import factory
 
 from metis.models.stages.internships import Internship
 from .places import ProjectPlaceFactory
-from .programs import ProgramInternshipFactory
+from .projects import PeriodFactory
 from .students import StudentFactory
 
 
@@ -10,7 +10,7 @@ class InternshipFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Internship
 
-    program_internship = factory.SubFactory(ProgramInternshipFactory)
+    period = factory.SubFactory(PeriodFactory)
     student = factory.SubFactory(StudentFactory)
     project_place = factory.SubFactory(ProjectPlaceFactory)
     custom_start_date = factory.Faker("date_between", start_date="-1y", end_date="today")

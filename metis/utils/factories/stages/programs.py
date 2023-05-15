@@ -42,7 +42,6 @@ class ProgramInternshipFactory(factory.django.DjangoModelFactory):
     position = factory.Sequence(lambda n: n)
     start_week = factory.Sequence(lambda n: n * 4)
     duration = factory.LazyFunction(lambda: timezone.timedelta(weeks=12))
-    required_discipline = factory.SubFactory(DisciplineFactory)
 
 
 class TrackFactory(factory.django.DjangoModelFactory):

@@ -80,7 +80,9 @@ def validate_discipline_choice(obj: "Internship") -> None:
         validate_discipline_choice(my_internship)
     """
     if obj.discipline not in obj.get_available_disciplines():
-        raise ValidationError(f"Chosen discipline is not available for this internship: {obj.program_internship}")
+        raise ValidationError(
+            f"Chosen discipline is not available for this internship: {obj.period.program_internship}"
+        )
 
     if obj.track and obj.get_counter_for_disciplines()[obj.discipline_id] >= obj.track.constraints.first().max_repeat:
         raise ValidationError("Chosen discipline does not meet the remaining constraints for this internship.")
@@ -95,13 +97,10 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
-    # TODO: change to Period relation
-    program_internship = models.ForeignKey(
-        "metis.ProgramInternship", related_name="internships", on_delete=models.CASCADE
-    )
+    period = models.ForeignKey("metis.Period", related_name="internships", on_delete=models.PROTECT)
     track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
 
-    student = models.ForeignKey("metis.Student", related_name="internships", null=True, on_delete=models.SET_NULL)
+    student = models.ForeignKey("metis.Student", related_name="internships", null=True, on_delete=models.PROTECT)
     project_place = models.ForeignKey("metis.ProjectPlace", related_name="internships", on_delete=models.PROTECT)
     custom_start_date = models.DateField(null=True)  # by default start date is period's start date
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
@@ -117,14 +116,14 @@ class Internship(RemarksMixin, BaseModel):
     def clean(self) -> None:
         """
         Things to check:
-        - the selected program_internship is part of the selected track (if a track is selected)
+        - the selected period.program_internship is part of the selected track (if a track is selected)
         - the place is one of the places available for the Project (via track)
         - if the student has previous internships in same Track, check if DisciplineConstraint allows it
         - TODO: if Education has place rules, check if the place is allowed
         """
         if self.student and self.project_place not in self.student.project.place_set.all():
             raise ValidationError("The chosen place is not part of the chosen project.")
-        if self.track and not self.track.program_internships.filter(id=self.program_internship.id).count():
+        if self.track and not self.track.program_internships.filter(id=self.period.program_internship_id).count():
             raise ValidationError("The chosen program internship is not part of the chosen track.")
 
         validate_discipline_choice(self)
@@ -156,7 +155,7 @@ class Internship(RemarksMixin, BaseModel):
 
     @property
     def program(self) -> Optional["Program"]:
-        return self.program_internship.block.program if self.period.program_period else None
+        return self.period.program_internship.block.program if self.period.program_period else None
 
     @property
     def project(self) -> Optional["Project"]:
@@ -172,7 +171,7 @@ class Internship(RemarksMixin, BaseModel):
         Returns:
             QuerySet: A QuerySet of Discipline objects.
         """
-        program_disciplines = self.program_internship.get_available_disciplines()
+        program_disciplines = self.period.program_internship.get_available_disciplines()
 
         if program_disciplines.count() > 0:
             return program_disciplines
@@ -190,7 +189,7 @@ class Internship(RemarksMixin, BaseModel):
             return Discipline.objects.none()
 
         # TODO: exclude also is_valid=False internships
-        past_internships = self.student.internships.exclude(id=self.id).filter(track=self.track)
+        past_internships = self.student.internships.exclude(pk=self.pk).filter(track=self.track)
         return Discipline.objects.filter(internships__in=past_internships)
 
     def get_counter_for_disciplines(self) -> Counter:
