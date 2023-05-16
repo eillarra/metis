@@ -97,7 +97,8 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
-    period = models.ForeignKey("metis.Period", related_name="internships", on_delete=models.PROTECT)
+    project = models.ForeignKey("metis.Project", related_name="internships", on_delete=models.PROTECT)
+    period = models.ForeignKey("metis.Period", related_name="internships", null=True, on_delete=models.SET_NULL)
     track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
 
     student = models.ForeignKey("metis.Student", related_name="internships", null=True, on_delete=models.PROTECT)
@@ -116,15 +117,28 @@ class Internship(RemarksMixin, BaseModel):
     def clean(self) -> None:
         """
         Things to check:
+        - the place is one of the places available for the project
+        - the selected student is part of the selected project
+        - the selected period is part of the selected project
         - the selected period.program_internship is part of the selected track (if a track is selected)
-        - the place is one of the places available for the Project (via track)
+        - the dates are within the selected period, and valid
         - if the student has previous internships in same Track, check if DisciplineConstraint allows it
         - TODO: if Education has place rules, check if the place is allowed
         """
-        if self.student and self.project_place not in self.student.project.place_set.all():
+        if self.student and self.student.project_id != self.project_id:
+            raise ValidationError("The chosen student is not part of the chosen project.")
+        if self.period and self.period.project_id != self.project_id:
+            raise ValidationError("The chosen period is not part of the chosen project.")
+        if self.project_place and self.project_place.project_id != self.project_id:
             raise ValidationError("The chosen place is not part of the chosen project.")
         if self.track and not self.track.program_internships.filter(id=self.period.program_internship_id).count():
             raise ValidationError("The chosen program internship is not part of the chosen track.")
+        if self.custom_start_date and self.custom_start_date < self.period.start_date:
+            raise ValidationError("The chosen start date is before the start of the chosen period.")
+        if self.custom_end_date and self.custom_end_date > self.period.end_date:
+            raise ValidationError("The chosen end date is after the end of the chosen period.")
+        if self.custom_start_date and self.custom_end_date and self.custom_start_date > self.custom_end_date:
+            raise ValidationError("The chosen start date is after the chosen end date.")
 
         validate_discipline_choice(self)
         return super().clean()
@@ -156,10 +170,6 @@ class Internship(RemarksMixin, BaseModel):
     @property
     def program(self) -> Optional["Program"]:
         return self.period.program_internship.block.program if self.period.program_period else None
-
-    @property
-    def project(self) -> Optional["Project"]:
-        return self.student.project if self.student else None
 
     def accepts_cases(self) -> bool:
         raise NotImplementedError

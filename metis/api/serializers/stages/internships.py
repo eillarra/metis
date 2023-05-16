@@ -8,13 +8,14 @@ from .programs import ProgramInternshipSerializer, TrackTinySerializer
 
 
 project_internship_lookup_fields = {
-    "parent_lookup_education_id": "period__project__education_id",
-    "parent_lookup_project_id": "period__project_id",
+    "parent_lookup_education_id": "project__education_id",
+    "parent_lookup_project_id": "project_id",
 }
 
 
 class InternshipSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-internship-detail", nested_lookup=project_internship_lookup_fields)
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     program_internship = ProgramInternshipSerializer(read_only=True)
     track = TrackTinySerializer(read_only=True)
     discipline = DisciplineSerializer()

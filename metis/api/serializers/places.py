@@ -34,7 +34,6 @@ class ContactTinySerializer(RemarksMixin, BaseModelSerializer):
 
 class PlaceSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:education-place-detail", nested_lookup=education_lookup_fields)
-    parent = NestedHyperlinkField(view_name="v1:education-place-detail", nested_lookup=education_lookup_fields)
     education = serializers.PrimaryKeyRelatedField(read_only=True)
     education_id = serializers.PrimaryKeyRelatedField(
         source="education", queryset=Education.objects.all(), write_only=True

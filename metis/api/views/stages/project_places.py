@@ -9,8 +9,8 @@ class ProjectPlaceViewSet(ProjectNestedModelViewSet):
         "disciplines",
         "place__contacts__user",
         "place__contacts__updated_by",
-        "place__education",
         "place__region",
+        "place__updated_by",
         "updated_by",
     )
     pagination_class = None

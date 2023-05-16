@@ -200,6 +200,7 @@ def load_internships(audio_periods, *, education):
         )
 
         internship = Internship(
+            project=internship.project,
             student=tmp_students_map[internship.student.id] if internship.student else None,
             project_place=proj_place,
             period=period,

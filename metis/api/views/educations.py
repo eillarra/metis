@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
@@ -14,12 +16,18 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
     permission_classes = (IsManager,)
     serializer_class = EducationSerializer
 
+    @method_decorator(never_cache)
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
     @action(detail=True, pagination_class=None)
+    @method_decorator(never_cache)
     def programs(self, request, *args, **kwargs):
         programs = self.get_object().programs.prefetch_related("blocks__updated_by", "updated_by")
         return Response(ProgramSerializer(programs, many=True, context={"request": request}).data)
 
     @action(detail=True, pagination_class=None)
+    @method_decorator(never_cache)
     def students(self, request, *args, **kwargs):
         students = (
             User.objects.filter(student_set__project__education=self.get_object())

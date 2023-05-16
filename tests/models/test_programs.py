@@ -63,10 +63,13 @@ def test_available_disciplines(audiology_program, track_name, internship_name, d
     student = StudentFactory()
     place = audiology_program.education.places.first()
     project_place = ProjectPlaceFactory(project=student.project, place=place)
-    period = PeriodFactory(program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}"))
+    period = PeriodFactory(
+        project=student.project, program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}")
+    )
 
     with pytest.raises(ValidationError):
         InternshipFactory(
+            project=student.project,
             track=Track.objects.get(name=f"Track {track_name}"),
             period=period,
             student=student,
@@ -92,8 +95,11 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
     project_place = ProjectPlaceFactory(project=student.project, place=place)
 
     for data in internships_done:
-        period = PeriodFactory(program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"))
+        period = PeriodFactory(
+            project=student.project, program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}")
+        )
         internship = InternshipFactory(
+            project=student.project,
             track=track,
             period=period,
             student=student,
@@ -103,8 +109,12 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
         internship.clean()
         internship.save()
 
-    period = PeriodFactory(program_internship=ProgramInternship.objects.get(name=f"Internship {new_internship[0]}"))
+    period = PeriodFactory(
+        project=student.project,
+        program_internship=ProgramInternship.objects.get(name=f"Internship {new_internship[0]}"),
+    )
     new_internship = InternshipFactory(
+        project=student.project,
         track=track,
         period=period,
         student=student,
@@ -133,8 +143,11 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
     project_place = ProjectPlaceFactory(project=student.project, place=place)
 
     for data in internships_done:
-        period = PeriodFactory(program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}"))
+        period = PeriodFactory(
+            project=student.project, program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}")
+        )
         internship = InternshipFactory(
+            project=student.project,
             track=track,
             period=period,
             student=student,
@@ -149,6 +162,7 @@ def test_validate_discipline_choice(audiology_program, track_name, internships_d
             program_internship=ProgramInternship.objects.get(name=f"Internship {failing_internship[0]}")
         )
         new_internship = InternshipFactory(
+            project=student.project,
             track=track,
             period=period,
             student=student,
