@@ -23,17 +23,15 @@ class RelModelViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         if self.auto_created_by:
-            serializer.save(
-                content_object=self.get_content_object(), created_by=self.request.user, updated_by=self.request.user
-            )
+            serializer.save(content_object=self.get_content_object(), created_by=self.request.user)
         else:
             serializer.save(content_object=self.get_content_object())
 
     def perform_update(self, serializer):
         if self.auto_created_by:
-            serializer.save(updated_by=self.request.user)
+            serializer.save(content_object=self.get_content_object(), updated_by=self.request.user)
         else:
-            serializer.save()
+            serializer.save(content_object=self.get_content_object())
 
     @method_decorator(never_cache)
     def list(self, request, *args, **kwargs):

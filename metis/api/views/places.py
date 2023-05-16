@@ -35,7 +35,10 @@ class PlaceNestedModelViewSet(BaseModelViewSet):
         return self._place
 
     def perform_create(self, serializer):
-        serializer.save(place=self.get_place())
+        serializer.save(place=self.get_place(), created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(place=self.get_place(), updated_by=self.request.user)
 
 
 class ContactViewSet(PlaceNestedModelViewSet):

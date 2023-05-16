@@ -44,4 +44,7 @@ class ProjectNestedModelViewSet(BaseModelViewSet):
         return self._project
 
     def perform_create(self, serializer):
-        serializer.save(project=self.get_project())
+        serializer.save(project=self.get_project(), created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(project=self.get_project(), updated_by=self.request.user)

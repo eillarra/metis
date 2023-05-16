@@ -30,6 +30,8 @@ class BaseModel(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         """TODO: find the best way of always enforcing checks."""
+        if not self.pk and not self.updated_by:
+            self.updated_by = self.created_by
         # self.full_clean()
         super().save(*args, **kwargs)
         save_snapshot(self.__class__, self, user=self.updated_by)

@@ -42,4 +42,7 @@ class EducationNestedModelViewSet(BaseModelViewSet):
         return self._education
 
     def perform_create(self, serializer):
-        serializer.save(education=self.get_education())
+        serializer.save(education=self.get_education(), created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(education=self.get_education(), updated_by=self.request.user)

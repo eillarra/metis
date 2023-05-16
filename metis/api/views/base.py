@@ -9,6 +9,12 @@ from rest_framework.viewsets import ModelViewSet
 class BaseModelViewSet(ModelViewSet):
     """Prefetching happens automatically, even for generic relations."""
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
     def destroy(self, request, *args, **kwargs):
         """
         Try destroying a model instance.
