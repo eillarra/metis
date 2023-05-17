@@ -1,3 +1,5 @@
+from rest_framework.filters import SearchFilter
+
 from metis.models import ProjectPlace
 from ...permissions import IsEducationOfficeMember
 from ...serializers import ProjectPlaceSerializer
@@ -16,3 +18,6 @@ class ProjectPlaceViewSet(ProjectNestedModelViewSet):
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ProjectPlaceSerializer
+
+    filter_backends = (SearchFilter,)
+    search_fields = ("place__name", "place__code")

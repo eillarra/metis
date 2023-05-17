@@ -15,6 +15,10 @@ class Router(NestedRouterMixin, DefaultRouter):
 
         self.schema_title = f"Metis API {version}"
 
+        # /users/
+
+        self.register("users", views.UserViewSet, basename="user")
+
         # /rel/{parent_lookup_content_type_id}/{parent_lookup_object_id}/remarks/
 
         rel_routes_pql = ["content_type_id", "object_id"]

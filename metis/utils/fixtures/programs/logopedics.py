@@ -28,7 +28,10 @@ def create_logopedics_program() -> Program:
     """
 
     # Create Education
-    faculty, _ = Faculty.objects.get_or_create(name="Faculty of Medicine and Health Sciences")
+    faculty, _ = Faculty.objects.get_or_create(
+        name_nl="Faculteit Geneeskunde en Gezondheidswetenschappen",
+        name_en="Faculty of Medicine and Health Sciences",
+    )
     education, _ = Education.objects.get_or_create(
         code="logo",
         faculty=faculty,

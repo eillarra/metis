@@ -12,3 +12,7 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
     @property
     def name(self) -> str:
         return f"{self.first_name} {self.last_name}"
+
+    @property
+    def is_office_member(self) -> bool:
+        return self.education_set.exists()  # type: ignore

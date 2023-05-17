@@ -5,6 +5,15 @@ if TYPE_CHECKING:
     from ..views.rel import RelViewSet
 
 
+class IsOfficeMember(IsAuthenticated):
+    """
+    Only office members can see things like the full list of Metis users (for search purposes).
+    """
+
+    def has_permission(self, request) -> bool:
+        return request.user.is_office_member
+
+
 class IsManager(IsAuthenticated):
     """
     Only managers can update an object.

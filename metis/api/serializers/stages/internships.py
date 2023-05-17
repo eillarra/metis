@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from metis.models.stages.internships import Internship
+from metis.models import Discipline, Internship
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..disciplines import DisciplineSerializer
 from ..rel.remarks import RemarksMixin
@@ -18,11 +18,14 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     program_internship = ProgramInternshipSerializer(read_only=True)
     track = TrackTinySerializer(read_only=True)
-    discipline = DisciplineSerializer()
+    discipline = DisciplineSerializer(read_only=True)
+    discipline_id = serializers.PrimaryKeyRelatedField(
+        source="discipline", queryset=Discipline.objects.all(), write_only=True
+    )
     start_date = serializers.DateField(read_only=True)
     end_date = serializers.DateField(read_only=True)
-    custom_start_date = serializers.DateField(allow_null=True)
-    custom_end_date = serializers.DateField(allow_null=True)
+    custom_start_date = serializers.DateField(allow_null=True, required=False)
+    custom_end_date = serializers.DateField(allow_null=True, required=False)
 
     class Meta:
         model = Internship

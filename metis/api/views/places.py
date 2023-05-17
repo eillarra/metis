@@ -1,3 +1,4 @@
+from rest_framework.filters import SearchFilter
 from typing import TYPE_CHECKING
 
 from metis.models import Place, Contact
@@ -12,11 +13,14 @@ if TYPE_CHECKING:
 
 class PlaceViewSet(EducationNestedModelViewSet):
     queryset = Place.objects.select_related("updated_by").prefetch_related(
-        "contacts__user", "contacts__updated_by", "region"
+        "education", "contacts__user", "contacts__updated_by", "region"
     )
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = PlaceSerializer
+
+    filter_backends = (SearchFilter,)
+    search_fields = ("name", "code")
 
 
 class PlaceNestedModelViewSet(BaseModelViewSet):

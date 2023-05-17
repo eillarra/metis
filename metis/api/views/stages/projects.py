@@ -1,10 +1,12 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from typing import TYPE_CHECKING
 
-from metis.models import Project, User, Internship
+from metis.models import Project, User
 from ...permissions import IsEducationOfficeMember
-from ...serializers.stages import InternshipSerializer, ProjectSerializer, StudentUserSerializer
+from ...serializers.stages import ProjectSerializer, StudentUserSerializer
 from ..base import BaseModelViewSet
 from ..educations import EducationNestedModelViewSet
 
@@ -19,6 +21,7 @@ class ProjectViewSet(EducationNestedModelViewSet):
     serializer_class = ProjectSerializer
 
     @action(detail=True, pagination_class=None, url_path="student-users")
+    @method_decorator(never_cache)
     def student_users(self, request, *args, **kwargs):
         students = (
             User.objects.filter(student_set__project=self.get_object())
