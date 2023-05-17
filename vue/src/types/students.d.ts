@@ -1,11 +1,13 @@
-interface StudentObjects {
-  id: number;
+interface ProjectStudent extends ApiObject {
+  self: ApiEndpoint;
+  rel_remarks: ApiEndpoint;
   project: ProjectTiny;
+  user: number;
   block: ProgramBlockTiny;
   track: number | null;
+  remark_count: number;
 }
 
-interface Student extends UserTiny {
-  id: number;
-  student_set: StudentObjects[];
+interface Student extends User {
+  student_set: ProjectStudent[];
 }

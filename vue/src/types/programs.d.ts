@@ -1,5 +1,4 @@
-interface ProgramBlockTiny {
-  id: number;
+interface ProgramBlockTiny extends ApiObject {
   name: string;
   position: number;
 }
@@ -8,18 +7,18 @@ interface ProgramBlock extends ProgramBlockTiny {
   internships: ProgramInternship[];
 }
 
-interface ProgramInternship {
-  id: number;
+interface ProgramInternship extends ApiObject {
   name: string;
   block: number | ProgramBlockTiny;
+  position: number;
   start_week: number;
   duration: number | null;
   updated_at: string;
   updated_by: UserTiny;
 }
 
-interface Program {
-  id: number;
+interface Program extends ApiObject {
+  education: number | Education;
   name: string;
   blocks: ProgramBlock[];
   tracks: Track[];
@@ -29,8 +28,7 @@ interface Program {
   updated_by: UserTiny;
 }
 
-interface TrackTiny {
-  id: number;
+interface TrackTiny extends ApiObject {
   name: string;
   program: int | Program;
 }

@@ -1,32 +1,36 @@
 <template>
   <q-select
-    dense
-    square
-    outlined
     v-model="model"
-    :options="blockFilters"
-    :label="$t('program_block')"
     clearable
+    dense
+    :rounded="asFilter"
+    :outlined="asFilter"
+    :options="blockOptions"
+    :label="$t('program_block')"
     options-dense
     emit-value
     map-options
+    :bg-color="asFilter && model !== null ? 'blue-1' : 'white'"
   >
-    <template #prepend>
-      <q-icon name="filter_alt" />
+    <template #selected-item="scope">
+      <span class="ellipsis">{{ scope.opt.label }}</span>
     </template>
   </q-select>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+
+const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps<{
   programs: Program[];
+  asFilter?: boolean;
 }>();
 
 const model = ref<number | null>(null);
 
-const blockFilters = computed(() => {
+const blockOptions = computed(() => {
   if (!props.programs) {
     return [];
   }
@@ -42,5 +46,9 @@ const blockFilters = computed(() => {
       }),
     ];
   }, []);
+});
+
+watch(model, (val) => {
+  emit('update:modelValue', val);
 });
 </script>

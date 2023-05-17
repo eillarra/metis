@@ -51,7 +51,7 @@
           <div class="col-12 col-md">
             <p>
               <span v-t="'version'"></span>&nbsp;<a
-                v-if="django_user && django_user.is_staff"
+                v-if="git_commit_hash && django_user && django_user.is_staff"
                 :href="`https://github.ugent.be/eillarra/metis/tree/${git_commit_hash}`"
                 >{{ version }}</a
               ><span v-else>{{ version }}</span>
@@ -89,10 +89,10 @@ const props = defineProps<{
   django_debug: boolean;
   django_locale: string;
   django_user: DjangoAuthenticatedUser | null;
-  git_commit_hash: string;
+  git_commit_hash: string | null;
 }>();
 
-const version = props.git_commit_hash.substring(0, 7);
+const version = props.git_commit_hash?.substring(0, 7) || 'DEV';
 const helpdeskEmail = 'helpdesk.metis@ugent.be';
 const year = new Date().getFullYear();
 

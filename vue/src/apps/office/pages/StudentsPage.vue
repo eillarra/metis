@@ -1,7 +1,8 @@
 <template>
-  <div class="row q-col-gutter-sm q-mb-sm justify-between">
+  <div class="row q-col-gutter-sm q-mb-lg">
     <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('student', 9) }}</h3>
-    <program-block-filter v-if="project" :programs="programs" v-model="selectedBlock" class="col-12 col-md-2" />
+    <div class="col"></div>
+    <program-block-select as-filter v-if="project" :programs="programs" v-model="selectedBlock" class="col-12 col-md-2" />
   </div>
   <students-table v-if="project" :students="filteredStudents" />
 </template>
@@ -12,7 +13,7 @@ import { storeToRefs } from 'pinia';
 
 import { useOfficeStore } from '../store';
 
-import ProgramBlockFilter from '../components/ProgramBlockFilter.vue';
+import ProgramBlockSelect from '../components/ProgramBlockSelect.vue';
 import StudentsTable from '../components/tables/StudentsTable.vue';
 
 const { project, programs, students } = storeToRefs(useOfficeStore());

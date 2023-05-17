@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '',
-    redirect: { name: 'dashboard' },
+    redirect: { name: 'planning' },
     strict: true,
     components: {
       default: () => import('./OfficeApp.vue'),

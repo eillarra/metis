@@ -1,10 +1,11 @@
-interface UserTiny {
+interface UserTiny extends ApiObject {
   name: string;
   email: string;
 }
 
-interface UserTiny {
+interface User extends UserTiny {
   username: string;
-  name: string;
-  email: string;
+  is_active: boolean;
+  last_login: string | null;
+  date_joined: string;
 }

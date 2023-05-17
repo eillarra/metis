@@ -1,36 +1,41 @@
-interface Region {
-  id: number;
+interface Region extends ApiObject {
   name: string;
   country: string;
 }
 
-interface Place {
-  id: number;
+interface Place extends ApiObject {
   self: ApiEndpoint;
-  name: string;
+  rel_contacts: ApiEndpoint;
+  rel_remarks: ApiEndpoint;
+  parent: null | ApiEndpoint;
+  education: number;
   type: string;
-  region: Region | null;
-}
-
-interface EducationPlace {
-  id: number;
-  education: number | Education;
-  place: Place;
+  name: string;
   code: string;
+  region: Region | null;
   contacts: Contact[];
+  updated_at: string;
+  updated_by: UserTiny | null;
+  remark_count: number;
 }
 
-interface ProjectPlace {
-  id: number;
-  project: number | Project;
+interface ProjectPlace extends ApiObject {
+  self: ApiEndpoint;
+  rel_remarks: ApiEndpoint;
+  project: number;
   place: Place;
   disciplines: Discipline[];
+  updated_at: string;
+  updated_by: UserTiny | null;
+  remark_count: number;
 }
 
-interface Contact {
-  id: number;
+interface Contact extends ApiObject {
+  self: ApiEndpoint;
+  rel_remarks: ApiEndpoint;
   user: UserTiny;
   is_staff: boolean;
   is_mentor: boolean;
-  places?: Place[];
+  remark_count: number;
+  place: Place | number;
 }

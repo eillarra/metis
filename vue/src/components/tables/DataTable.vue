@@ -1,4 +1,20 @@
 <style lang="scss">
+.ugent__create-btn .q-btn {
+  padding: 0 !important;
+  min-height: 40px !important;
+
+  .q-icon {
+    font-size: 1em;
+    margin-right: 0.25em;
+    width: 0.75em;
+  }
+
+  &:hover {
+    background-color: #e6f0ff !important;
+    color: white;
+  }
+}
+
 .ugent__data-table {
   .q-table {
     max-width: 100%;
@@ -41,12 +57,9 @@
 <template>
   <div>
     <div class="row q-col-gutter-sm q-mb-lg">
-      <q-input dense square filled type="text" v-model="query" class="col-12 col-md">
+      <q-input v-model="query" clearable dense square filled type="text" class="col-12 col-md">
         <template #prepend>
           <q-icon name="search" />
-        </template>
-        <template #append>
-          <q-icon v-if="query !== ''" name="cancel" @click="query = ''" class="cursor-pointer" color="grey" />
         </template>
       </q-input>
       <q-select
@@ -61,7 +74,7 @@
         option-disable="required"
         option-value="name"
         option-label="label"
-        class="col-12 col-md-2"
+        class="col col-md-2"
         emit-value
         map-options
       >
@@ -69,6 +82,16 @@
           <q-icon name="view_column" />
         </template>
       </q-select>
+      <div v-if="createFormComponent" class="col-6 col-md-1 ugent__create-btn">
+        <q-btn
+          unelevated
+          color="blue-1"
+          :label="$t('form.new')"
+          icon="add"
+          class="text-ugent full-width"
+          @click="createDialogVisible = true"
+        />
+      </div>
     </div>
     <q-table
       class="ugent__data-table q-mb-xl"
@@ -77,7 +100,7 @@
       :rows="queriedRows"
       :columns="extendedColumns"
       :visible-columns="visibleColumns.concat(['edit'])"
-      row-key="name"
+      row-key="_self.id"
       :loading="loading"
       :pagination="initialPagination"
       binary-state-sort
@@ -110,40 +133,41 @@
       <template #body-cell-edit="props">
         <!-- Edit icon -->
         <q-td :props="props" auto-width>
-          <q-icon
-            @click="selectedObj = props.row._self"
-            name="edit"
-            :size="iconSize"
-            color="primary"
-            class="cursor-pointer"
-          />
+          <q-icon @click="selectObj(props.row)" name="edit" :size="iconSize" color="primary" class="cursor-pointer" />
         </q-td>
       </template>
     </q-table>
-    <q-dialog v-if="formComponent" v-model="dialogVisible" position="right" full-height>
-      <component :is="formComponent" :obj="selectedObj"></component>
+    <q-dialog v-if="formComponent" v-model="dialogVisible">
+      <component :is="formComponent" :obj="selectedObj" @delete:obj="() => (selectedObj = null)" />
+    </q-dialog>
+    <q-dialog v-if="createFormComponent" v-model="createDialogVisible">
+      <component :is="createFormComponent" @create:obj="() => (createDialogVisible = false)" />
     </q-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onMounted, ref, watch, ComponentOptions } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { copyToClipboard, Notify } from 'quasar';
+import { cloneDeep } from 'lodash-es';
 
 import { storage } from '@/storage';
 
 const router = useRouter();
+const route = useRoute();
 const { t } = useI18n();
 
 const props = defineProps<{
-  rows: any[];
-  columns: any[];
+  columns: object[];
+  rows: object[];
   queryColumns: string[];
+  hiddenColumns?: string[];
+  formComponent?: ComponentOptions;
+  createFormComponent?: ComponentOptions;
   sortBy?: string;
   loading?: boolean;
-  formComponent?: any;
 }>();
 
 const initialPagination = {
@@ -171,8 +195,10 @@ const extendedColumns = computed(() => {
   return columns;
 });
 
-const query = ref<string>('');
-
+const queryStorageKey = computed<string>(
+  () => `metis.data_table.query.${route.name?.toString()}`
+);
+const query = ref<string>(storage.get(queryStorageKey.value) || route.query.q?.toString() || '');
 const queriedRows = computed(() => {
   if (!query.value) {
     return props.rows;
@@ -199,11 +225,12 @@ const queriedRows = computed(() => {
 });
 
 const visibleColumnsStorageKey = computed<string>(
-  () => `metis.data_table.visible_columns.${router.currentRoute.value.name}`
+  () => `metis.data_table.visible_columns.${route.name?.toString()}`
 );
 const visibleColumns = ref<string[]>(storage.get(visibleColumnsStorageKey.value) || []);
 
-const selectedObj = ref<any | null>(null);
+const createDialogVisible = ref<boolean>(false);
+const selectedObj = ref<object | null>(null);
 const dialogVisible = computed<boolean>({
   get() {
     return !!selectedObj.value;
@@ -224,17 +251,27 @@ function copyText(text: string) {
   });
 }
 
+function selectObj(row: { _self: object }) {
+  selectedObj.value = cloneDeep(row._self);
+}
+
 onMounted(() => {
   if (visibleColumns.value.length === 0) {
-    visibleColumns.value = props.columns.map((column) => column.name);
+    visibleColumns.value = props.columns.filter((c) => !props.hiddenColumns?.includes(c.name)).map((c) => c.name);
   }
 });
 
-/*
-deep watch visibleColumns and save user's selection in local storage
-*/
-watch(visibleColumns, (newVal) => {
-  // TODO: save to user's preferences via API
-  storage.set(visibleColumnsStorageKey.value, newVal);
+watch(query, (newVal) => {
+  router.push({ query: { q: newVal || undefined } });
+  storage.set(queryStorageKey.value, newVal);
 });
+
+watch(visibleColumns, (newVal) => {
+  storage.set(visibleColumnsStorageKey.value, newVal);
+  // TODO: save to user's preferences via API
+});
+
+if (storage.get(queryStorageKey.value)) {
+  router.push({ query: { q: storage.get(queryStorageKey.value) } });
+}
 </script>

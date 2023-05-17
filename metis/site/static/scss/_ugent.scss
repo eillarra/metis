@@ -1,3 +1,5 @@
+$panno-body-font-size: 17px;
+
 @font-face {
   font-family: 'UGent Panno';
   src: url('../fonts/ugentpannotext-normal-web.woff') format('woff');
@@ -23,7 +25,7 @@ body {
   -webkit-font-smoothing: auto;
 
   @media (min-width: 900px) {
-    font-size: 17px;
+    font-size: $panno-body-font-size;
   }
 }
 
@@ -87,7 +89,7 @@ body {
   .text-underline {
     font-family: 'UGent Panno Medium', 'Arial', sans-serif;
     font-size: 20px;
-    line-height: 17px;
+    line-height: $panno-body-font-size;
     color: $ugent-blue;
     text-decoration: underline;
     text-underline-offset: 0.25em;
@@ -135,8 +137,9 @@ body {
   background-color: $ea-color;
 }
 
+.bg-blue-1,
 .bg-tertiary {
-  background-color: $light-blue-color;
+  background-color: $light-blue-color !important;
 }
 
 
@@ -144,11 +147,14 @@ body {
 
 .q-btn {
   font-family: 'UGent Panno Medium', 'Arial', sans-serif;
-  font-size: 17px;
-  line-height: 15px;
-  padding: 12px 15px;
-  border-radius: 0;
   text-transform: none;
+
+  &:not(.q-date *, .q-table__control *) {
+    font-size: $panno-body-font-size;
+    line-height: 15px;
+    padding: 12px 15px;
+    border-radius: 0;
+  }
 
   &.bg-blue {
     background-color: $ugent-blue !important;
@@ -157,6 +163,13 @@ body {
   &.bg-yellow {
     background-color: #fdd200 !important;
   }
+}
+
+
+/* Tables */
+
+.q-table__bottom {
+  padding-top: 20px;
 }
 
 
@@ -203,6 +216,22 @@ h4, h5, h6 {
   line-height: 1.25;
 }
 
+input, textarea,
+.q-field,
+.text-body1 {
+  font-size: $panno-body-font-size !important;
+}
+
 .text-ugent {
-  color: $ugent-blue;
+  color: $ugent-blue !important;
+}
+
+.q-field__label {
+  font-size: 15px !important;
+}
+
+.q-tab__icon {
+  width: $panno-body-font-size;
+  height: $panno-body-font-size;
+  font-size: $panno-body-font-size;
 }

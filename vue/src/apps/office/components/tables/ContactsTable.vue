@@ -1,19 +1,20 @@
 <template>
   <data-table
-    :rows="rows"
     :columns="columns"
+    :rows="rows"
     :query-columns="queryColumns"
     :form-component="ContactForm"
+    :create-form-component="ContactCreateForm"
     sort-by="name"
-  >
-  </data-table>
+  />
 </template>
 
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import DataTable from '@/components/tables/DataTable.vue';
+import ContactCreateForm from '../forms/ContactCreateForm.vue';
 import ContactForm from '../forms/ContactForm.vue';
 
 const { t } = useI18n();
@@ -22,8 +23,7 @@ const props = defineProps<{
   contacts: Contact[];
 }>();
 
-const { contacts } = toRefs(props);
-const queryColumns = ['name', 'email'];
+const queryColumns = ['name', 'email', 'place'];
 
 const columns = [
   {
@@ -38,9 +38,9 @@ const columns = [
     classes: 'sticky-left',
   },
   {
-    name: 'places',
-    field: 'places',
-    label: t('place', 9),
+    name: 'place',
+    field: 'place',
+    label: t('place'),
     align: 'left',
   },
   {
@@ -65,12 +65,12 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return contacts.value.map((obj) => ({
+  return props.contacts.map((obj) => ({
     _self: obj,
     name: obj.user.name,
     is_mentor: obj.is_mentor,
     is_staff: obj.is_staff,
-    places: obj.places?.map((place) => place.name).join(', ') || '-',
+    place: obj.place?.name || '-',
     email: obj.user.email,
   }));
 });

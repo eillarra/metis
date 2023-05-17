@@ -1,18 +1,21 @@
 <template>
   <data-table
-    :rows="rows"
     :columns="columns"
+    :rows="rows"
     :query-columns="queryColumns"
+    :hidden-columns="hiddenColumns"
     :form-component="ProjectPlaceForm"
+    :create-form-component="ProjectPlaceCreateForm"
     sort-by="name"
   />
 </template>
 
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import DataTable from '@/components/tables/DataTable.vue';
+import ProjectPlaceCreateForm from '../forms/ProjectPlaceCreateForm.vue';
 import ProjectPlaceForm from '../forms/ProjectPlaceForm.vue';
 
 const { t } = useI18n();
@@ -21,8 +24,8 @@ const props = defineProps<{
   projectPlaces: ProjectPlace[];
 }>();
 
-const { projectPlaces } = toRefs(props);
-const queryColumns = ['name', 'region'];
+const queryColumns = ['name', 'code'];
+const hiddenColumns = ['code'];
 
 const columns = [
   {
@@ -35,6 +38,14 @@ const columns = [
     sort: (a: string, b: string) => a.localeCompare(b),
     headerClasses: 'sticky-left',
     classes: 'sticky-left',
+  },
+  {
+    name: 'code',
+    field: 'code',
+    label: t('field.code'),
+    align: 'left',
+    sortable: true,
+    sort: (a: string, b: string) => a.localeCompare(b),
   },
   {
     name: 'type',
@@ -64,12 +75,17 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return projectPlaces.value.map((obj) => ({
+  return props.projectPlaces.map((obj: ProjectPlace) => ({
     _self: obj,
     name: obj.place.name,
+    code: obj.place.code,
     region: obj.place.region ? obj.place.region.name : '-',
     type: obj.place.type,
     disciplines: obj.disciplines,
+    mentors: obj.place.contacts
+      .filter((contact) => contact.is_mentor)
+      .map((contact) => contact.user.name)
+      .join(', '),
   }));
 });
 </script>

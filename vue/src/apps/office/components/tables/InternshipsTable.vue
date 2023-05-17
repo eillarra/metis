@@ -1,18 +1,20 @@
 <template>
   <data-table
-    :rows="rows"
     :columns="columns"
+    :rows="rows"
     :query-columns="queryColumns"
     :form-component="InternshipForm"
+    :create-form-component="InternshipCreateForm"
     sort-by="name"
   />
 </template>
 
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import DataTable from '@/components/tables/DataTable.vue';
+import InternshipCreateForm from '../forms/InternshipCreateForm.vue';
 import InternshipForm from '../forms/InternshipForm.vue';
 
 const { t } = useI18n();
@@ -21,7 +23,6 @@ const props = defineProps<{
   internships: Internship[];
 }>();
 
-const { internships } = toRefs(props);
 const queryColumns = ['student_name', 'place_name'];
 
 const columns = [
@@ -55,7 +56,7 @@ const columns = [
   {
     name: 'period_name',
     field: 'period_name',
-    label: t('program_internship'),
+    label: t('period'),
     align: 'left',
     sortable: true,
   },
@@ -75,12 +76,12 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return internships.value.map((obj) => ({
+  return props.internships.map((obj: Internship) => ({
     _self: obj,
     student_name: obj.student?.name || '-',
     place_name: obj.place?.name || '-',
-    block_name: obj.program_internship.block?.name,
-    period_name: obj.program_internship.name,
+    block_name: obj.period?.program_internship?.block?.name || '-',
+    period_name: obj.period?.program_internship ? `P${obj.period.program_internship.position}` : '-',
     track_name: obj.track?.name || '-',
     disciplines: obj.discipline ? [obj.discipline] : [],
   }));

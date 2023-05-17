@@ -1,6 +1,7 @@
 <template>
-  <div class="row q-col-gutter-sm q-mb-sm">
+  <div class="row q-col-gutter-sm q-mb-lg">
     <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('program', 9) }}</h3>
+    <div class="col"></div>
   </div>
   <div class="row q-col-gutter-md">
     <div v-for="program in programs" :key="program.id" class="col-12 col-md-4">
