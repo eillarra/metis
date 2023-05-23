@@ -47,7 +47,7 @@ class TestForAnonymous:
     expected_status_codes: Dict[str, status] = {
         "retrieve": status.FORBIDDEN,
         "programs": status.FORBIDDEN,
-        "students": status.FORBIDDEN,
+        "student_users": status.FORBIDDEN,
     }
 
     def _get_project_create_data(self):
@@ -67,9 +67,9 @@ class TestForAnonymous:
         assert response.status_code == self.expected_status_codes["programs"]
 
     def test_students(self, api_client, education):
-        url = reverse("v1:education-students", args=[education.id])
+        url = reverse("v1:education-student-users", args=[education.id])
         response = api_client.get(url)
-        assert response.status_code == self.expected_status_codes["students"]
+        assert response.status_code == self.expected_status_codes["student_users"]
 
 
 class TestForAuthenticated(TestForAnonymous):
@@ -95,7 +95,7 @@ class TestForOfficeMember(TestForAuthenticated):
     expected_status_codes = {
         "retrieve": status.OK,
         "programs": status.OK,
-        "students": status.OK,
+        "student_users": status.OK,
     }
 
     @pytest.fixture(autouse=True)

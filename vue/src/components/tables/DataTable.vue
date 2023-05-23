@@ -57,7 +57,7 @@
 <template>
   <div>
     <div class="row q-col-gutter-sm q-mb-lg">
-      <q-input v-model="query" clearable dense square filled type="text" class="col-12 col-md">
+      <q-input v-if="queryColumns" v-model="query" clearable dense square filled type="text" class="col-12 col-md">
         <template #prepend>
           <q-icon name="search" />
         </template>
@@ -133,7 +133,7 @@
       <template #body-cell-edit="props">
         <!-- Edit icon -->
         <q-td :props="props" auto-width>
-          <q-icon @click="selectObj(props.row)" name="edit" :size="iconSize" color="primary" class="cursor-pointer" />
+          <q-icon @click="selectObj(props.row)" name="edit" :size="iconSize" color="ugent" class="cursor-pointer" />
         </q-td>
       </template>
     </q-table>
@@ -162,7 +162,7 @@ const { t } = useI18n();
 const props = defineProps<{
   columns: object[];
   rows: object[];
-  queryColumns: string[];
+  queryColumns?: string[];
   hiddenColumns?: string[];
   formComponent?: ComponentOptions;
   createFormComponent?: ComponentOptions;
@@ -195,12 +195,10 @@ const extendedColumns = computed(() => {
   return columns;
 });
 
-const queryStorageKey = computed<string>(
-  () => `metis.data_table.query.${route.name?.toString()}`
-);
+const queryStorageKey = computed<string>(() => `metis.data_table.query.${route.name?.toString()}`);
 const query = ref<string>(storage.get(queryStorageKey.value) || route.query.q?.toString() || '');
 const queriedRows = computed(() => {
-  if (!query.value) {
+  if (!query.value || !props.queryColumns) {
     return props.rows;
   }
 
@@ -213,7 +211,7 @@ const queriedRows = computed(() => {
     let matches = 0;
 
     for (const queryTerm of queryTerms) {
-      for (const column of props.queryColumns) {
+      for (const column of props.queryColumns as string[]) {
         if (row[column]?.toLowerCase().includes(queryTerm)) {
           matches++;
           break;
@@ -224,9 +222,7 @@ const queriedRows = computed(() => {
   });
 });
 
-const visibleColumnsStorageKey = computed<string>(
-  () => `metis.data_table.visible_columns.${route.name?.toString()}`
-);
+const visibleColumnsStorageKey = computed<string>(() => `metis.data_table.visible_columns.${route.name?.toString()}`);
 const visibleColumns = ref<string[]>(storage.get(visibleColumnsStorageKey.value) || []);
 
 const createDialogVisible = ref<boolean>(false);

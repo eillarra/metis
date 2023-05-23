@@ -62,7 +62,7 @@ function search(q: string, update: (arg: () => void) => void, abort: () => void)
 
   api.get(`${props.searchEndpoint}?search=${q}`).then(function (res) {
     update(function () {
-      options.value = props.mapper(('results' in res.data) ? res.data.results: res.data);
+      options.value = props.mapper('results' in res.data ? res.data.results : res.data);
     });
   });
 }
@@ -75,6 +75,6 @@ watch(
   () => props.modelValue,
   function (obj) {
     selection.value = obj;
-  },
+  }
 );
 </script>

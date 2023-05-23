@@ -31,7 +31,7 @@
       <q-drawer
         show-if-above
         v-model="leftDrawer"
-        side="left"
+        :side="$q.screen.lt.md ? 'right' : 'left'"
         :elevated="$q.screen.lt.md"
         class="q-pt-lg text-weight-medium"
         :width="210"
@@ -40,6 +40,14 @@
       </q-drawer>
 
       <q-page-container>
+        <q-btn
+          v-show="$q.screen.lt.md"
+          @click="leftDrawer = !leftDrawer"
+          flat
+          icon="menu"
+          color="ugent"
+          class="float-right q-ml-md"
+        ></q-btn>
         <router-view />
       </q-page-container>
 

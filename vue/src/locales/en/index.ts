@@ -3,8 +3,12 @@ export default {
   ge: 'Faculty of Medicine and Health Sciences',
   version: 'Version',
   loading: 'Loading...',
+  settings: 'Settings',
   user_menu: {
+    account: 'Account',
+    contact_details: 'Contact details',
     dashboard: 'My dashboard',
+    history: 'History',
     login: 'Sign in',
     logout: 'Log out',
   },
@@ -15,6 +19,12 @@ export default {
     help: {
       no_account: 'No UGent account?',
     },
+  },
+  dashboard: {
+    no_results: 'No internships found',
+    educationb_office: 'Internship office',
+    my_internships: 'My internships',
+    place_office: 'Place office',
   },
   contact: 'Contact | Contacts',
   contact_only: 'Only a contact',
@@ -31,8 +41,10 @@ export default {
   place: 'Place | Places',
   region: 'Region | Regions',
   remark: 'Remark | Remarks',
+  signature: 'Signature | Signatures',
   staff: 'Staff | Staff',
   student: 'Student | Students',
+  task: 'Task | Tasks',
   text: 'Text | Texts',
   track: 'Track | Tracks',
   type: 'Type | Types',
@@ -44,12 +56,17 @@ export default {
     place_type: 'Place type',
     start_date: 'Start date',
     end_date: 'End date',
+    title: 'Title | Titles',
+    updated_at: 'Last updated',
+    updated_by: 'Last updated by',
   },
   form: {
+    add: 'Add',
     new: 'New',
     back: 'Back',
     continue: 'Continue',
     skip: 'Skip',
+    update: 'Update',
     invite: 'Invite',
     add_to_place: 'Add to place',
     add_to_project: 'Add to project',
@@ -57,8 +74,10 @@ export default {
       create: {
         new: 'Create a new contact',
         add_existing: 'Add existing user account',
-        search: 'If the contact has an account, you can add it here. If no account is found, you can invite the contact to create one.',
-        invite: 'An email will be sent to the contact to invite them to create an account. They will be added to the project once they have created an account.',
+        search:
+          'If the contact has an account, you can add it here. If no account is found, you can invite the contact to create one.',
+        invite:
+          'An email will be sent to the contact to invite them to create an account. They will be added to the project once they have created an account.',
         success: 'Contact created',
       },
       delete: 'Delete contact',
@@ -66,6 +85,13 @@ export default {
       deleted: 'Contact deleted',
       save: 'Save contact',
       saved: 'Contact information saved',
+    },
+    content: {
+      available_texts: 'Available texts',
+      confirm_delete: 'Are you sure you want to delete this text?',
+      deleted: 'Text deleted',
+      save: 'Save text',
+      delete: 'Delete text',
     },
     internship: {
       create: {
@@ -98,8 +124,10 @@ export default {
       create: {
         new: 'Create a new student',
         add_existing: 'Add existing student',
-        search: 'If the student has an account, you can add it here. If no account is found, you can invite the student to create one.',
-        invite: 'An email will be sent to the student to invite them to create an account. They will be added to the project once they have created an account.',
+        search:
+          'If the student has an account, you can add it here. If no account is found, you can invite the student to create one.',
+        invite:
+          'An email will be sent to the student to invite them to create an account. They will be added to the project once they have created an account.',
         success: 'Student created',
       },
       delete: 'Delete student',

@@ -1,10 +1,8 @@
 <style lang="scss">
 .metis__dialog-layout {
-  width: 600px !important;
-  max-width: 100vw;
-
-  .q-field--dense .q-field__control {
-    height: 44px;
+  .q-dialog__inner--minimized > & {
+    width: 600px !important;
+    max-width: 100vw;
   }
 
   .q-stepper--vertical .q-stepper__tab {
@@ -14,11 +12,12 @@
 </style>
 
 <template>
-  <q-layout view="hHh lpR fFf" container class="bg-white metis__dialog-layout" style="height: 600px">
+  <q-layout view="hHh lpR fFf" container class="bg-white metis__dialog-layout metis__form" style="height: 600px">
     <q-header class="bg-white q-pt-sm">
       <q-toolbar class="text-primary q-pl-lg q-pr-sm">
         <q-icon :name="icon" />
         <q-toolbar-title v-if="title">{{ title }}</q-toolbar-title>
+        <q-space />
         <q-btn flat dense v-close-popup icon="close" style="padding: 8px" />
       </q-toolbar>
       <q-toolbar class="text-dark text-body1 q-px-lg" style="min-height: auto">
@@ -28,9 +27,6 @@
     <q-page-container>
       <q-page>
         <slot name="page"></slot>
-        <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
-          <q-btn fab icon="keyboard_arrow_up" color="accent" />
-        </q-page-scroller>
       </q-page>
     </q-page-container>
     <q-footer class="bg-white">

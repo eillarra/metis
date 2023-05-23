@@ -3,7 +3,7 @@ from django.db import models
 from django.urls import reverse
 from modeltranslation.translator import TranslationOptions
 
-from metis.services.configurator import validate_education_configuration
+from metis.services.configurator import EducationConfig, validate_education_configuration
 from .base import BaseModel
 
 
@@ -45,7 +45,14 @@ class Education(BaseModel):
         return user.is_staff or self.office_members.filter(pk=user.pk).exists()
 
     def get_office_url(self) -> str:
-        return reverse("office:app", args=[self.code])
+        return reverse("education_office", args=[self.code])
+
+    def get_student_area_url(self) -> str:
+        return reverse("student_area", args=[self.code])
+
+    @property
+    def configuration(self) -> dict | None:
+        return EducationConfig(**self.config).dict() if self.config else None
 
 
 class EducationTranslationOptions(TranslationOptions):

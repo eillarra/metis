@@ -9,6 +9,7 @@ class TextEntryType(BaseModel):
 
 
 class EducationConfig(BaseModel):
+    allow_different_blocks_per_user_in_project: bool = True
     project_text_types: list[TextEntryType]
     place_text_types: list[TextEntryType] | None = None
 

@@ -12,6 +12,12 @@ class FacultySerializer(BaseModelSerializer):
         exclude = ("created_at", "created_by")
 
 
+class EducationTinySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Education
+        fields = ("id", "code", "short_name")
+
+
 class EducationSerializer(BaseModelSerializer):
     url = serializers.URLField(source="get_office_url", read_only=True)
     self = serializers.HyperlinkedIdentityField(view_name="v1:education-detail", read_only=True)
@@ -25,7 +31,8 @@ class EducationSerializer(BaseModelSerializer):
     faculty = FacultySerializer(read_only=True)
     office_members = UserTinySerializer(many=True)
     disciplines = DisciplineSerializer(many=True)
+    configuration = serializers.JSONField(read_only=True)
 
     class Meta:
         model = Education
-        exclude = ("created_at", "created_by")
+        exclude = ("config", "created_at", "created_by")

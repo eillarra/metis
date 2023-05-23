@@ -25,7 +25,7 @@ class ProjectViewSet(EducationNestedModelViewSet, InvitationMixin):
     def student_users(self, request, *args, **kwargs):
         students = (
             User.objects.filter(student_set__project=self.get_object())
-            .prefetch_related("student_set__project", "student_set__block__internships")
+            .prefetch_related("student_set__project__education", "student_set__block__internships")
             .distinct()
         )
         return Response(StudentUserSerializer(students, many=True, context={"request": request}).data)

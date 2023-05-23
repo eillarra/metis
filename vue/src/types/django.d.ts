@@ -4,6 +4,12 @@ interface ApiObject {
   id: number;
 }
 
+interface ApiObjectUpdated {
+  id: number;
+  updated_at: string;
+  updated_by: UserTiny | null;
+}
+
 type Url = string;
 
 interface DjangoPermission {

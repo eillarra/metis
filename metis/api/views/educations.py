@@ -26,12 +26,12 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
         programs = self.get_object().programs.prefetch_related("blocks__updated_by", "updated_by")
         return Response(ProgramSerializer(programs, many=True, context={"request": request}).data)
 
-    @action(detail=True, pagination_class=None)
+    @action(detail=True, pagination_class=None, url_path="student-users")
     @method_decorator(never_cache)
-    def students(self, request, *args, **kwargs):
+    def student_users(self, request, *args, **kwargs):
         students = (
             User.objects.filter(student_set__project__education=self.get_object())
-            .prefetch_related("student_set__project", "student_set__block__internships")
+            .prefetch_related("student_set__project__education", "student_set__block__internships")
             .distinct()
         )
         return Response(StudentSerializer(students, many=True, context={"request": request}).data)

@@ -21,9 +21,11 @@ class PeriodSerializer(BaseModelSerializer):
 
 
 class ProjectTinySerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(read_only=True)
+
     class Meta:
         model = Project
-        fields = ("id", "name")
+        fields = ("id", "name", "full_name")
 
 
 class ProjectSerializer(TextEntriesMixin, BaseModelSerializer):
@@ -32,6 +34,7 @@ class ProjectSerializer(TextEntriesMixin, BaseModelSerializer):
     rel_places = NestedHyperlinkField("v1:project-place-list", nested_lookup=project_lookup_fields)
     rel_students = NestedHyperlinkField("v1:project-student-users", nested_lookup=education_lookup_fields)
     education = serializers.PrimaryKeyRelatedField(read_only=True)
+    full_name = serializers.CharField(read_only=True)
     periods = PeriodSerializer(many=True, read_only=True)
     start_date = serializers.DateField(read_only=True)
     end_date = serializers.DateField(read_only=True)

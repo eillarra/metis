@@ -7,6 +7,7 @@ interface Place extends ApiObject {
   self: ApiEndpoint;
   rel_contacts: ApiEndpoint;
   rel_remarks: ApiEndpoint;
+  rel_texts: ApiEndpoint;
   parent: null | ApiEndpoint;
   education: number;
   type: string;
@@ -38,4 +39,6 @@ interface Contact extends ApiObject {
   is_mentor: boolean;
   remark_count: number;
   place: Place | number;
+  updated_at: string;
+  updated_by: UserTiny | null;
 }

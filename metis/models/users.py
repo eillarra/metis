@@ -14,8 +14,16 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
     @property
+    def is_contact(self) -> bool:
+        return self.contact_set.exists()  # type: ignore
+
+    @property
     def is_office_member(self) -> bool:
         return self.education_set.exists()  # type: ignore
+
+    @property
+    def is_student(self) -> bool:
+        return self.student_set.exists()  # type: ignore
 
 
 @receiver(post_save, sender=User)

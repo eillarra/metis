@@ -38,7 +38,7 @@
     <q-list dense>
       <q-item v-for="item in items" :key="item.label" :to="item.to" :href="item.href">
         <q-item-section avatar>
-          <q-icon color="primary" name="east" size="14px" />
+          <q-icon color="ugent" name="east" size="14px" />
         </q-item-section>
         <q-item-section>{{ item.label }}</q-item-section>
       </q-item>

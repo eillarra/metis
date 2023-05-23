@@ -44,7 +44,7 @@
         </template>
       </q-select>
       <div class="q-gutter-md q-mt-md">
-        <q-btn @click="addRemark" unelevated color="primary" label="Add remark" :disable="remarkText == ''" />
+        <q-btn @click="addRemark" unelevated color="ugent" label="Add remark" :disable="remarkText == ''" />
       </div>
     </div>
   </div>
@@ -121,7 +121,6 @@ async function addRemark() {
 }
 
 async function deleteRemark(remark: Remark) {
-  if (!props.apiEndpoints) return;
   await api.delete(remark.self);
   remarks.value.splice(remarks.value.indexOf(remark), 1);
 }

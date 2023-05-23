@@ -41,7 +41,7 @@
           <img src="https://www.ugent.be/nl/@@images/central_subsite_image" />
         </slot>
       </q-responsive>
-      <div class="box">
+      <div v-if="title" class="box">
         <h1>{{ title }}</h1>
         <h2 v-if="subtitle">{{ subtitle }}</h2>
       </div>
@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 defineProps<{
-  title: string;
+  title?: string;
   subtitle?: string;
 }>();
 </script>

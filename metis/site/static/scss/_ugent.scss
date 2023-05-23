@@ -82,17 +82,33 @@ body {
   }
 }
 
-.ugent__submenu__select {
-  padding: 4px 0;
-  display: inline-block;
+.ugent__submenu {
+  font-family: 'UGent Panno Medium', 'Arial', sans-serif;
+  font-size: 20px;
+  line-height: $panno-body-font-size;
+  color: $ugent-blue;
 
-  .text-underline {
+  .q-field {
+    padding: 4px 0;
+    display: inline-block;
+  }
+
+  .menu-item,
+  .q-field .text-underline {
     font-family: 'UGent Panno Medium', 'Arial', sans-serif;
     font-size: 20px;
     line-height: $panno-body-font-size;
     color: $ugent-blue;
     text-decoration: underline;
     text-underline-offset: 0.25em;
+    letter-spacing: 0 !important;
+  }
+
+  .menu-item {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
   }
 
   .q-select__dropdown-icon {
@@ -133,13 +149,13 @@ body {
   background-color: $ugent-blue;
 }
 
-.bg-ea {
-  background-color: $ea-color;
-}
-
 .bg-blue-1,
 .bg-tertiary {
   background-color: $light-blue-color !important;
+}
+
+.text-ge {
+  color: $ge-color !important;
 }
 
 
@@ -149,7 +165,7 @@ body {
   font-family: 'UGent Panno Medium', 'Arial', sans-serif;
   text-transform: none;
 
-  &:not(.q-date *, .q-table__control *) {
+  &:not(.q-date *, .q-table__control *, .q-editor__toolbar-group *, .q-banner *, .use-default-q-btn *) {
     font-size: $panno-body-font-size;
     line-height: 15px;
     padding: 12px 15px;

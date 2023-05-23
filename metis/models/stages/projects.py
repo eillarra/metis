@@ -44,6 +44,10 @@ class Project(TextEntriesMixin, BaseModel):
     def can_be_managed_by(self, user) -> bool:
         return self.education.can_be_managed_by(user)
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.education.name} - {self.name}"
+
     @cached_property
     def start_date(self) -> datetime.date:
         return self.periods.first().start_date
