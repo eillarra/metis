@@ -5,10 +5,9 @@ from django.middleware.csrf import get_token as get_csrf_token
 from django.utils.text import slugify
 from django.views.generic import View
 from inertia import render
-from typing import Dict, Optional
 
 
-def render_inertia(request, vue_entry_point: str, *, props: Optional[Dict] = None, page_title: Optional[str] = None):
+def render_inertia(request, vue_entry_point: str, *, props: dict | None = None, page_title: str | None = None):
     """
     Render a Vue component with Inertia.
     It adds some basic props that can be helpful.
@@ -33,10 +32,10 @@ def render_inertia(request, vue_entry_point: str, *, props: Optional[Dict] = Non
 
 
 class InertiaView(View):
-    page_title: Optional[str] = None
-    vue_entry_point = None
+    page_title: str | None = None
+    vue_entry_point: str | None = None
 
-    def get_page_title(self, request, *args, **kwargs) -> Optional[str]:
+    def get_page_title(self, request, *args, **kwargs) -> str | None:
         return self.page_title
 
     def get_props(self, request, *args, **kwargs):

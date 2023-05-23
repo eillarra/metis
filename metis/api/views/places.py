@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 from metis.models import Place, Contact
 from ..permissions import IsEducationOfficeMember
 from ..serializers import PlaceSerializer, ContactSerializer
-from .base import BaseModelViewSet
+from .base import BaseModelViewSet, InvitationMixin
 from .educations import EducationNestedModelViewSet
 
 if TYPE_CHECKING:
     from metis.models.educations import Education
 
 
-class PlaceViewSet(EducationNestedModelViewSet):
+class PlaceViewSet(EducationNestedModelViewSet, InvitationMixin):
     queryset = Place.objects.select_related("updated_by").prefetch_related(
         "education", "contacts__user", "contacts__updated_by", "region"
     )

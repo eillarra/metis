@@ -3,13 +3,13 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from metis.models import User
-from ..permissions import IsManager
+from ..permissions import IsOfficeMember
 from ..serializers import UserTinySerializer
 
 
 class UserViewSet(ListModelMixin, GenericViewSet):
     queryset = User.objects.all()
-    permission_classes = (IsManager,)
+    permission_classes = (IsOfficeMember,)
     serializer_class = UserTinySerializer
 
     filter_backends = (SearchFilter,)

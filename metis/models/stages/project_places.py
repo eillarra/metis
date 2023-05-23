@@ -1,13 +1,12 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.functional import cached_property
 
 from ..base import BaseModel
-from ..rel.contents import ContentsMixin
+from ..rel.texts import TextEntriesMixin
 from ..rel.remarks import RemarksMixin
 
 
-class ProjectPlace(ContentsMixin, RemarksMixin, BaseModel):
+class ProjectPlace(RemarksMixin, TextEntriesMixin, BaseModel):
     """
     The stagebureau works with a subset of all the places availablke for each Project.
     This can be copied from previous project.
@@ -46,11 +45,10 @@ class PlaceCapacity(BaseModel):
     This can be copied from previous project.
     """
 
-    # TODO: change to project_place
-    place = models.ForeignKey("metis.ProjectPlace", related_name="capacities", on_delete=models.CASCADE)
+    project_place = models.ForeignKey("metis.ProjectPlace", related_name="capacities", on_delete=models.CASCADE)
     period = models.ForeignKey("metis.Period", related_name="capacities", on_delete=models.CASCADE)
     capacity = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         db_table = "metis_project_place_capacities"
-        unique_together = ("place", "period")
+        unique_together = ("project_place", "period")

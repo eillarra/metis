@@ -17,6 +17,10 @@ class Student(RemarksMixin, BaseModel):
 
     class Meta:
         ordering = ["project", "block__position"]
+        unique_together = ("user", "project", "block")
 
     def can_be_managed_by(self, user):
         return self.project.can_be_managed_by(user)
+
+    def has_signed_internship_agreement(self):
+        return self.signatures.filter(content=self.project.internship_agreement).exists()  # type: ignore

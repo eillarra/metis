@@ -8,4 +8,5 @@ from .preferences import *
 from .programs import *
 from .projects import *
 from .project_places import *
+from .signatures import *
 from .students import *

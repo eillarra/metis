@@ -5,19 +5,18 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
-from typing import List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from ..base import BaseModel
 from ..disciplines import Discipline
 from ..rel.remarks import RemarksMixin
-from .projects import Project
 
 if TYPE_CHECKING:
     from ..places import Place
     from .programs import Program
 
 
-def get_remaining_discipline_constraints(obj: "Internship") -> List[dict]:
+def get_remaining_discipline_constraints(obj: "Internship") -> list[dict]:
     """
     Calculate the remaining discipline constraints based on the track constraints.
 

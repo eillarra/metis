@@ -1,21 +1,20 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from typing import TYPE_CHECKING
 
 from metis.models import Project, User
 from ...permissions import IsEducationOfficeMember
 from ...serializers.stages import ProjectSerializer, StudentUserSerializer
-from ..base import BaseModelViewSet
+from ..base import BaseModelViewSet, InvitationMixin
 from ..educations import EducationNestedModelViewSet
 
 if TYPE_CHECKING:
     from metis.models import Education
 
 
-class ProjectViewSet(EducationNestedModelViewSet):
+class ProjectViewSet(EducationNestedModelViewSet, InvitationMixin):
     queryset = Project.objects.select_related("updated_by").prefetch_related("periods")
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)

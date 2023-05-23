@@ -2,7 +2,7 @@ from rest_framework.permissions import IsAuthenticated
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..views.rel import RelViewSet
+    from ..views.rel import RelModelViewSet
 
 
 class IsOfficeMember(IsAuthenticated):
@@ -10,8 +10,10 @@ class IsOfficeMember(IsAuthenticated):
     Only office members can see things like the full list of Metis users (for search purposes).
     """
 
-    def has_permission(self, request) -> bool:
-        return request.user.is_office_member
+    def has_permission(self, request, view) -> bool:
+        return (
+            request.user and request.user.is_authenticated and (request.user.is_office_member or request.user.is_staff)
+        )
 
 
 class IsManager(IsAuthenticated):
@@ -28,10 +30,10 @@ class IsRelManager(IsAuthenticated):
     When dealing with a rel object (ContentType) we check if the content object can be managed by the user.
     """
 
-    def has_permission(self, request, view: "RelViewSet") -> bool:
+    def has_permission(self, request, view: "RelModelViewSet") -> bool:
         return view.get_content_object().can_be_managed_by(request.user)
 
-    def has_object_permission(self, request, view: "RelViewSet", obj) -> bool:
+    def has_object_permission(self, request, view: "RelModelViewSet", obj) -> bool:
         """Only real owner can UPDATE or DELETE a related object."""
         if request.method in ("PUT", "PATCH", "DELETE"):
             return obj.created_by_id == request.user.pk

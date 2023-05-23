@@ -1,12 +1,10 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from modeltranslation.translator import TranslationOptions
-from typing import TYPE_CHECKING
 
+from metis.services.configurator import validate_education_configuration
 from .base import BaseModel
-
-if TYPE_CHECKING:
-    from .users import User
 
 
 class Faculty(BaseModel):
@@ -30,6 +28,15 @@ class Education(BaseModel):
     short_name = models.CharField(max_length=80)
     description = models.TextField(blank=True, null=True)
     office_members = models.ManyToManyField("metis.User", related_name="education_set", blank=True)
+    config = models.JSONField(default=dict)
+
+    def clean(self, *args, **kwargs) -> None:
+        if self.config:
+            try:
+                validate_education_configuration(self.config)
+            except ValueError as e:
+                raise ValidationError({"config": str(e)})
+        return super().clean(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.short_name

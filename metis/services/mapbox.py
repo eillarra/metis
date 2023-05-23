@@ -1,8 +1,6 @@
 import os
 import requests
 
-from typing import Optional
-
 
 class MapboxFeature:
     """
@@ -15,7 +13,7 @@ class MapboxFeature:
     def __str__(self) -> str:
         return self._raw["place_name"]
 
-    def __get_context(self, q: str, *, field: Optional[str] = None):
+    def __get_context(self, q: str, *, field: str | None = None):
         for context in self._raw["context"]:
             if q in context["id"]:
                 return context[field] if field else context
@@ -27,19 +25,19 @@ class MapboxFeature:
         return self._raw["place_name"].split(",")[0]
 
     @property
-    def city(self) -> Optional[str]:
+    def city(self) -> str | None:
         return self.__get_context("place", field="text")
 
     @property
-    def postcode(self) -> Optional[str]:
+    def postcode(self) -> str | None:
         return self.__get_context("postcode", field="text")
 
     @property
-    def region(self) -> Optional[dict]:
+    def region(self) -> dict | None:
         return self.__get_context("region")
 
     @property
-    def country(self) -> Optional[dict]:
+    def country(self) -> dict | None:
         return self.__get_context("country")
 
     @property
@@ -73,7 +71,7 @@ class Mapbox:
     def __exit__(self, exc_type, exc_value, traceback):
         self.session.close()
 
-    def geocode(self, address: str) -> Optional[MapboxFeature]:
+    def geocode(self, address: str) -> MapboxFeature | None:
         try:
             url = f"{self.api_endpoint}/geocoding/{self.api_version}/mapbox.places/{address}.json"
             params = {

@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from metis.models.stages.projects import Project, Period
 from ..base import BaseModelSerializer, NestedHyperlinkField
+from ..rel import TextEntriesMixin
 
 
 education_lookup_fields = {
@@ -25,7 +26,7 @@ class ProjectTinySerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class ProjectSerializer(BaseModelSerializer):
+class ProjectSerializer(TextEntriesMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-detail", nested_lookup=education_lookup_fields)
     rel_internships = NestedHyperlinkField("v1:project-internship-list", nested_lookup=project_lookup_fields)
     rel_places = NestedHyperlinkField("v1:project-place-list", nested_lookup=project_lookup_fields)

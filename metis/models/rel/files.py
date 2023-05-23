@@ -3,7 +3,6 @@ import os
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from typing import Optional
 
 
 def get_upload_path(instance, filename):
@@ -39,7 +38,7 @@ class FilesMixin(models.Model):
     class Meta:
         abstract = True
 
-    def get_file(self, code: str, version: Optional[int] = None) -> File:
+    def get_file(self, code: str, version: int | None = None) -> File:
         if version is not None:
             return self.files.get(code=code, version=version)
         return self.files.get(code=code)

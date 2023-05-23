@@ -4,11 +4,16 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
+from typing import Optional, TYPE_CHECKING
 
 from ..base import BaseModel
+from ..rel import TextEntriesMixin
+
+if TYPE_CHECKING:
+    from ..rel import TextEntry
 
 
-class Project(BaseModel):
+class Project(TextEntriesMixin, BaseModel):
     """
     A project is a collection of internships for an academic year or other period of time.
     Projects are created so that the planner can distribute students to places. It is mainly an administrative tool.
@@ -54,6 +59,10 @@ class Project(BaseModel):
     @property
     def is_open(self) -> bool:
         return self.is_active and self.periods.exists() and (self.start_date <= timezone.now().date() <= self.end_date)
+
+    @property
+    def internship_agreement(self) -> Optional["TextEntry"]:
+        return self.get_text("project.internship_agreement")
 
 
 class Period(BaseModel):

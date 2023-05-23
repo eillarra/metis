@@ -1,15 +1,10 @@
 from django.db import models
 from django_countries.fields import CountryField
 from modeltranslation.translator import TranslationOptions
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .base import BaseModel
-from .rel.addresses import AddressesMixin
-from .rel.contents import ContentsMixin
-from .rel.files import FilesMixin
-from .rel.links import LinksMixin
-from .rel.phone_numbers import PhoneNumbersMixin
-from .rel.remarks import RemarksMixin
+from .rel import AddressesMixin, FilesMixin, LinksMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
 
 if TYPE_CHECKING:
     from .rel.files import File
@@ -31,7 +26,7 @@ class RegionTranslationOptions(TranslationOptions):
     fields = ("name",)
 
 
-class Place(AddressesMixin, ContentsMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, BaseModel):
+class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, TextEntriesMixin, BaseModel):
     """
     The stagebureau works with their own list of places.
     Contacts or remarks are specific to each Education.
@@ -79,10 +74,6 @@ class Place(AddressesMixin, ContentsMixin, FilesMixin, PhoneNumbersMixin, LinksM
     @property
     def is_private(self) -> bool:
         return self.type == self.PRIVATE
-
-    @property
-    def cities(self) -> Optional[str]:
-        return ", ".join([address.city for address in self.addresses.all()])
 
 
 class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):

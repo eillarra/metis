@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-from .rel.addresses import AddressesMixin
-from .rel.links import LinksMixin
-from .rel.phone_numbers import PhoneNumbersMixin
+from .rel import AddressesMixin, LinksMixin, PhoneNumbersMixin
 
 
 class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
@@ -16,3 +16,11 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
     @property
     def is_office_member(self) -> bool:
         return self.education_set.exists()  # type: ignore
+
+
+@receiver(post_save, sender=User)
+def check_invitations(sender, instance, created, **kwargs):
+    if created:
+        from metis.services.inviter import check_user_invitations
+
+        check_user_invitations(instance)

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from metis.models import Region, Place, Contact, User
 from .base import BaseModelSerializer, NestedHyperlinkField
-from .rel.remarks import RemarksMixin
+from .rel import RemarksMixin, TextEntriesMixin
 from .users import UserTinySerializer
 
 
@@ -38,7 +38,7 @@ class ContactSerializer(RemarksMixin, BaseModelSerializer):
         exclude = ("created_at", "created_by")
 
 
-class PlaceSerializer(RemarksMixin, BaseModelSerializer):
+class PlaceSerializer(TextEntriesMixin, RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:education-place-detail", nested_lookup=education_lookup_fields)
     rel_contacts = NestedHyperlinkField("v1:education-place-contact-list", nested_lookup=education_lookup_fields_pk)
     education = serializers.PrimaryKeyRelatedField(read_only=True)

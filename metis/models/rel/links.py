@@ -2,8 +2,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from typing import Optional
-
 
 class Link(models.Model):
     """
@@ -37,7 +35,7 @@ class LinksMixin(models.Model):
     class Meta:
         abstract = True
 
-    def get_link(self, link_type: str) -> Optional[str]:
+    def get_link(self, link_type: str) -> str | None:
         if not self.links_cache:
             self.links_cache = self.links.all()  # noqa
         for link in self.links_cache:
@@ -46,5 +44,5 @@ class LinksMixin(models.Model):
         return None
 
     @property
-    def website(self) -> Optional[str]:
+    def website(self) -> str | None:
         return self.get_link(Link.WEBSITE)

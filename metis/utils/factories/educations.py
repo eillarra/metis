@@ -15,3 +15,8 @@ class EducationFactory(factory.django.DjangoModelFactory):
     faculty = factory.SubFactory(FacultyFactory)
     code = factory.Sequence(lambda n: f"ed{n}")
     name = factory.Sequence(lambda n: f"Education {n}")
+
+    @factory.post_generation
+    def validate_and_save(self, create, extracted, **kwargs):
+        self.clean()
+        self.save()

@@ -12,6 +12,7 @@ class DisciplineFactory(factory.django.DjangoModelFactory):
 
     education = factory.SubFactory(EducationFactory)
     name = factory.Sequence(lambda n: f"Discipline {n}")
+    code = factory.Sequence(lambda n: f"DIS{n}")
 
 
 class ProgramFactory(factory.django.DjangoModelFactory):
