@@ -1,3 +1,5 @@
+from allauth.account.models import EmailAddress
+from allauth.socialaccount.signals import pre_social_login
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -26,9 +28,32 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
         return self.student_set.exists()  # type: ignore
 
 
+def find_user_by_email(email: str, verified: bool = True) -> User | None:
+    try:
+        return EmailAddress.objects.get(email__iexact=email, verified=verified).user
+    except EmailAddress.DoesNotExist:
+        return None
+
+
 @receiver(post_save, sender=User)
 def check_invitations(sender, instance, created, **kwargs):
     if created:
         from metis.services.inviter import check_user_invitations
 
         check_user_invitations(instance)
+
+
+@receiver(pre_social_login)
+def link_to_existing_user(sender, request, sociallogin, **kwargs):
+    if sociallogin.is_existing:
+        return
+
+    # for "ugent" social accounts, we can use the email address to find the user
+    if sociallogin.account.provider == "ugent":
+        try:
+            email = sociallogin.account.extra_data["mail"]
+            user = find_user_by_email(email)
+            if user:
+                sociallogin.connect(request, user)
+        except KeyError:
+            return
