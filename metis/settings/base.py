@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    # "allauth.socialaccount.providers.linkedin_oauth2",
+    "allauth.socialaccount.providers.linkedin_oauth2",
+    "metis.ugent_provider",
     # api
     "corsheaders",
     "rest_framework",
@@ -48,7 +49,6 @@ INSTALLED_APPS = [
     "metis",
     "metis.api",
     "metis.site",
-    "metis.ugent_provider",
     # tasks
     "huey.contrib.djhuey",
     # admin
