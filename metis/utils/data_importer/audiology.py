@@ -94,7 +94,7 @@ def load_internships(audio_periods, *, education):
 
         # link place to project
 
-        project = Project.objects.get(name=data.project_name)
+        project = Project.objects.get(education=education, name=data.project_name)
         block = ProgramBlock.objects.get(program__education=education, name=data.block_name)
 
         # create tmp tables
@@ -146,7 +146,7 @@ def load_internships(audio_periods, *, education):
 
     tmp_students_map = {}
 
-    for tmp_student in TmpStudent.objects.all():
+    for tmp_student in TmpStudent.objects.filter(project__education=education):
         if tmp_student.email != "nan":
             user = get_or_create_user(name=tmp_student.name, email=tmp_student.email)
             student, _ = Student.objects.get_or_create(
@@ -156,7 +156,7 @@ def load_internships(audio_periods, *, education):
             )
             tmp_students_map[tmp_student.id] = student
 
-    for tmp_mentor in TmpMentor.objects.all():
+    for tmp_mentor in TmpMentor.objects.filter(project__education=education):
         user = get_or_create_user(name=tmp_mentor.name, email=tmp_mentor.email)
 
         Contact.objects.get_or_create(
@@ -176,7 +176,7 @@ def load_internships(audio_periods, *, education):
         except TmpPlaceData.DoesNotExist:
             pass
 
-    for internship in TmpInternship.objects.all():
+    for internship in TmpInternship.objects.filter(project__education=education):
         naming_map: Dict[Tuple[str, str], str] = {
             ("Ba3", "1"): "1A",
             ("Ma1", "1"): "2A",
@@ -190,7 +190,7 @@ def load_internships(audio_periods, *, education):
         period, _ = Period.objects.get_or_create(
             project=internship.project,
             program_internship=ProgramInternship.objects.get(
-                block__program_id=1,
+                block__program__education=education,
                 block__name=internship.block_name,
                 name__contains=naming_map[(internship.block_name, internship.period)],
             ),
@@ -204,7 +204,7 @@ def load_internships(audio_periods, *, education):
             student=tmp_students_map[internship.student.id] if internship.student else None,
             project_place=proj_place,
             period=period,
-            track=Track.objects.get(program_id=1, name="Track A"),
+            track=Track.objects.get(program__education=education, name="Track A"),
             discipline=proj_place.disciplines.first() if proj_place.disciplines.exists() else default_discipline,
         )
         internship.clean()

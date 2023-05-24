@@ -5,19 +5,27 @@ from django.core.exceptions import ValidationError
 from metis.utils.factories import (
     PlaceFactory,
     PlaceFactory,
+    ProjectFactory,
     ProjectPlaceFactory,
     PeriodFactory,
     StudentFactory,
     InternshipFactory,
 )
-from metis.utils.fixtures.programs import create_audiology_program
+from metis.utils.fixtures.programs import create_audiology_program, create_logopedics_program
 from metis.models import Discipline, Program, ProgramInternship, Track
 
 
 @pytest.fixture
 def audiology_program():
     program = create_audiology_program()
-    PlaceFactory(education=program.education, name="UZ Gent", type=1)
+    PlaceFactory(education=program.education, name="UZ Gent", type="hospital")
+    return program
+
+
+@pytest.fixture
+def logopedics_program():
+    program = create_logopedics_program()
+    PlaceFactory(education=program.education, name="UZ Gent", type="hospital")
     return program
 
 
@@ -53,73 +61,95 @@ def test_wrong_track_chosen(audiology_program):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "track_name,internship_name,discipline_code",
+    "program,track_name,internship_name,discipline_code",
     [
-        ("B", "1B", "klinisch"),
-        ("B", "2B", "prothetisch"),
+        ("audio", "B", "1B", "klinisch"),
+        ("audio", "B", "2B", "prothetisch"),
+        ("logo", "A", "2B", "logopedie"),
     ],
 )
-def test_available_disciplines(audiology_program, track_name, internship_name, discipline_code):
-    student = StudentFactory()
-    place = audiology_program.education.places.first()
-    project_place = ProjectPlaceFactory(project=student.project, place=place)
+def test_available_disciplines(
+    program,
+    track_name,
+    internship_name,
+    discipline_code,
+    audiology_program,
+    logopedics_program,
+):
+    test_program = audiology_program if program == "audio" else logopedics_program
+    project = ProjectFactory(program=test_program)
+    student = StudentFactory(project=project)
+    place = test_program.education.places.first()
+    project_place = ProjectPlaceFactory(project=project, place=place)
     period = PeriodFactory(
-        project=student.project, program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}")
+        project=project, program_internship=ProgramInternship.objects.get(name=f"Internship {internship_name}")
     )
 
     with pytest.raises(ValidationError):
         InternshipFactory(
-            project=student.project,
-            track=Track.objects.get(name=f"Track {track_name}"),
+            project=project,
+            track=Track.objects.get(program=test_program, name=f"Track {track_name}"),
             period=period,
             student=student,
             project_place=project_place,
-            discipline=Discipline.objects.get(education=audiology_program.education, code=discipline_code),
+            discipline=Discipline.objects.get(education=test_program.education, code=discipline_code),
         )
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "track_name,internships_done,new_internship",
+    "program,track_name,internships_done,new_internship",
     [
-        (None, [], ["1A", "klinisch"]),
-        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "klinisch"]),
-        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"], ["3A", "klinisch"]], ["4A", "klinisch"]),
-        ("A", [["1A", "prothetisch"], ["2A", "klinisch"], ["3A", "klinisch"]], ["4A", "prothetisch"]),
+        ("audio", None, [], ["1A", "klinisch"]),
+        ("audio", "A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "klinisch"]),
+        ("audio", "A", [["1A", "prothetisch"], ["2A", "prothetisch"], ["3A", "klinisch"]], ["4A", "klinisch"]),
+        ("audio", "A", [["1A", "prothetisch"], ["2A", "klinisch"], ["3A", "klinisch"]], ["4A", "prothetisch"]),
+        ("logo", "A", [["1A", "logopedie"], ["2A", "logopedie"]], ["3A", "logopedie"]),
     ],
 )
-def test_previously_covered_disciplines(audiology_program, track_name, internships_done, new_internship):
-    student = StudentFactory()
-    track = Track.objects.get(name=f"Track {track_name}") if track_name else None
-    place = audiology_program.education.places.first()
-    project_place = ProjectPlaceFactory(project=student.project, place=place)
+def test_previously_covered_disciplines(
+    program,
+    track_name,
+    internships_done,
+    new_internship,
+    audiology_program,
+    logopedics_program,
+):
+    test_program = audiology_program if program == "audio" else logopedics_program
+    project = ProjectFactory(program=test_program)
+    student = StudentFactory(project=project)
+    track = Track.objects.get(program=test_program, name=f"Track {track_name}") if track_name else None
+    place = test_program.education.places.first()
+    project_place = ProjectPlaceFactory(project=project, place=place)
 
     for data in internships_done:
-        period = PeriodFactory(
-            project=student.project, program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}")
-        )
+        program_internship = ProgramInternship.objects.get(block__program=test_program, name=f"Internship {data[0]}")
+        period = PeriodFactory(project=project, program_internship=program_internship)
         internship = InternshipFactory(
-            project=student.project,
+            project=project,
             track=track,
             period=period,
             student=student,
             project_place=project_place,
-            discipline=Discipline.objects.get(education=audiology_program.education, code=data[1]),
+            discipline=Discipline.objects.get(education=test_program.education, code=data[1]),
         )
         internship.clean()
         internship.save()
 
+    program_internship = ProgramInternship.objects.get(
+        block__program=test_program, name=f"Internship {new_internship[0]}"
+    )
     period = PeriodFactory(
-        project=student.project,
-        program_internship=ProgramInternship.objects.get(name=f"Internship {new_internship[0]}"),
+        project=project,
+        program_internship=program_internship,
     )
     new_internship = InternshipFactory(
-        project=student.project,
+        project=project,
         track=track,
         period=period,
         student=student,
         project_place=project_place,
-        discipline=Discipline.objects.get(education=audiology_program.education, code=new_internship[1]),
+        discipline=Discipline.objects.get(education=test_program.education, code=new_internship[1]),
     )
 
     assert len(new_internship.get_covered_disciplines()) == len(internships_done)
@@ -127,47 +157,52 @@ def test_previously_covered_disciplines(audiology_program, track_name, internshi
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "track_name,internships_done,failing_internship",
+    "program,track_name,internships_done,failing_internship",
     [
-        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "not_a_discipline"]),
-        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "prothetisch"]),
-        ("A", [["1A", "prothetisch"], ["2A", "prothetisch"], ["3A", "klinisch"]], ["4A", "prothetisch"]),
-        ("A", [["1A", "prothetisch"], ["2A", "klinisch"], ["3A", "klinisch"]], ["4A", "klinisch"]),
+        ("audio", "A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "not_a_discipline"]),
+        ("audio", "A", [["1A", "prothetisch"], ["2A", "prothetisch"]], ["3A", "prothetisch"]),
+        ("audio", "A", [["1A", "prothetisch"], ["2A", "prothetisch"], ["3A", "klinisch"]], ["4A", "prothetisch"]),
+        ("audio", "A", [["1A", "prothetisch"], ["2A", "klinisch"], ["3A", "klinisch"]], ["4A", "klinisch"]),
+        ("logo", "A", [["1A", "logopedie"], ["2A", "logopedie"]], ["3A", "not_a_discipline"]),
     ],
 )
-def test_validate_discipline_choice(audiology_program, track_name, internships_done, failing_internship):
-    student = StudentFactory()
-    track = Track.objects.get(name=f"Track {track_name}")
+def test_validate_discipline_choice(
+    program, track_name, internships_done, failing_internship, audiology_program, logopedics_program
+):
+    test_program = audiology_program if program == "audio" else logopedics_program
+    project = ProjectFactory(program=test_program)
+    student = StudentFactory(project=project)
+    track = Track.objects.get(program=test_program, name=f"Track {track_name}")
     Discipline.objects.create(education=track.program.education, code="not_a_discipline", name="None")
-    place = audiology_program.education.places.first()
-    project_place = ProjectPlaceFactory(project=student.project, place=place)
+    place = test_program.education.places.first()
+    project_place = ProjectPlaceFactory(project=project, place=place)
 
     for data in internships_done:
-        period = PeriodFactory(
-            project=student.project, program_internship=ProgramInternship.objects.get(name=f"Internship {data[0]}")
-        )
+        program_internship = ProgramInternship.objects.get(block__program=test_program, name=f"Internship {data[0]}")
+        period = PeriodFactory(project=project, program_internship=program_internship)
         internship = InternshipFactory(
-            project=student.project,
+            project=project,
             track=track,
             period=period,
             student=student,
             project_place=project_place,
-            discipline=Discipline.objects.get(education=audiology_program.education, code=data[1]),
+            discipline=Discipline.objects.get(education=test_program.education, code=data[1]),
         )
         internship.clean()
         internship.save()
 
     with pytest.raises(ValidationError):
-        period = PeriodFactory(
-            program_internship=ProgramInternship.objects.get(name=f"Internship {failing_internship[0]}")
+        program_internship = ProgramInternship.objects.get(
+            block__program=test_program, name=f"Internship {failing_internship[0]}"
         )
+        period = PeriodFactory(project=project, program_internship=program_internship)
         new_internship = InternshipFactory(
-            project=student.project,
+            project=project,
             track=track,
             period=period,
             student=student,
             project_place=project_place,
-            discipline=Discipline.objects.get(education=audiology_program.education, code=failing_internship[1]),
+            discipline=Discipline.objects.get(education=test_program.education, code=failing_internship[1]),
         )
         new_internship.clean()
         new_internship.save()

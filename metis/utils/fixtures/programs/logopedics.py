@@ -72,7 +72,9 @@ def create_logopedics_program() -> Program:
     # Create Program Internships
     for i, code in enumerate(["1A", "2A", "3A"]):
         block = [ba3, ma1, ma2][i]
-        ProgramInternship.objects.create(block=block, name=f"Internship {code}")
+        ProgramInternship.objects.create(block=block, name=f"Internship {code}", position=1)
+
+    internships = ProgramInternship.objects.filter(block__program=program).order_by("name")
 
     # Create Tracks
     track_a = Track.objects.create(program=program, name="Track A")
@@ -81,7 +83,11 @@ def create_logopedics_program() -> Program:
     track_a.constraints.first().disciplines.set([logopedics])
 
     # Create Track Internships
-    for i, internship in enumerate(ProgramInternship.objects.filter(block__program=program).order_by("name")):
+    for i, internship in enumerate(internships):
         TrackInternship.objects.create(track=track_a, program_internship=internship, position=i)
+
+    # Create internship constraints
+    for internship in internships:
+        internship.add_required_discipline(logopedics)
 
     return program

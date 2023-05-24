@@ -1,4 +1,5 @@
 import datetime
+import math
 
 from collections import Counter
 from django.core.exceptions import ValidationError
@@ -36,8 +37,8 @@ def get_remaining_discipline_constraints(obj: "Internship") -> list[dict]:
         for constraint in obj.track.constraints.all():
             constraint_discipline_ids = list(constraint.disciplines.values_list("id", flat=True))
             remaining_min_count = constraint.min_count
-            remaining_max_count = constraint.max_count
-            remaining_max_repeat = constraint.max_repeat
+            remaining_max_count = constraint.max_count or math.inf
+            remaining_max_repeat = constraint.max_repeat or math.inf
 
             for discipline_id, count in covered_counts.items():
                 if discipline_id in constraint_discipline_ids:
@@ -83,8 +84,12 @@ def validate_discipline_choice(obj: "Internship") -> None:
             f"Chosen discipline is not available for this internship: {obj.period.program_internship}"
         )
 
-    if obj.track and obj.get_counter_for_disciplines()[obj.discipline_id] >= obj.track.constraints.first().max_repeat:
-        raise ValidationError("Chosen discipline does not meet the remaining constraints for this internship.")
+    if obj.track:
+        max_repeat = obj.track.constraints.first().max_repeat
+        if max_repeat and obj.get_counter_for_disciplines()[obj.discipline_id] >= max_repeat:
+            raise ValidationError(
+                f"Chosen discipline does not meet the remaining constraints for this internship: {obj.track}, {obj.student}"
+            )
 
     for constraint in get_remaining_discipline_constraints(obj):
         if constraint["max_count"] == 0:

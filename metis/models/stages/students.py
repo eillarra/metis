@@ -19,6 +19,9 @@ class Student(RemarksMixin, BaseModel):
         ordering = ["project", "block__position"]
         unique_together = ("user", "project", "block")
 
+    def __str__(self):
+        return f"{self.user} ({self.project})"
+
     def can_be_managed_by(self, user):
         return self.project.can_be_managed_by(user)
 

@@ -1,11 +1,15 @@
 import pandas as pd
 import re
+import secrets
 
 try:
     import phonenumbers
 except ImportError:
     phonenumbers = None
 
+from allauth.account.models import EmailAddress
+from datetime import datetime
+from django.contrib.auth.hashers import make_password
 from typing import Optional
 
 from metis.models import User, Discipline, Region, Place, Education, TmpPlaceData
@@ -14,27 +18,31 @@ from metis.models.rel.remarks import Remark
 from metis.services.mapbox import Mapbox, MapboxFeature
 
 
-def get_or_create_place(education: Education, name: str, address: str) -> Place:
+def get_or_create_place(education: Education, name: str, address: str | None = None) -> Place:
     try:
         return Place.objects.get(name=name)
     except Place.DoesNotExist:
         pass
 
-    with Mapbox() as mapbox:
-        feature: Optional[MapboxFeature] = mapbox.geocode(address)
+    feature = None
+    region = None
 
-    if not feature or not feature.region:
-        region = None
-    else:
-        try:
-            region = Region.objects.get(wikidata_id=feature.region["wikidata"])
-        except Region.DoesNotExist:
-            region = Region.objects.create(
-                name_nl=feature.region["text_nl"],
-                name_en=feature.region["text_en"],
-                wikidata_id=feature.region["wikidata"],
-                country=feature.country["short_code"] if feature.country else None,
-            )
+    if address:
+        with Mapbox() as mapbox:
+            feature: Optional[MapboxFeature] = mapbox.geocode(address)
+
+        if not feature or not feature.region:
+            region = None
+        else:
+            try:
+                region = Region.objects.get(wikidata_id=feature.region["wikidata"])
+            except Region.DoesNotExist:
+                region = Region.objects.create(
+                    name_nl=feature.region["text_nl"],
+                    name_en=feature.region["text_en"],
+                    wikidata_id=feature.region["wikidata"],
+                    country=feature.country["short_code"] if feature.country else None,
+                )
 
     place = Place.objects.create(education=education, name=name, code=name, region=region)
 
@@ -58,12 +66,22 @@ def get_or_create_user(*, name: str, email: Optional[str]) -> User:
     try:
         return User.objects.get(username=username)
     except User.DoesNotExist:
-        return User.objects.create(
+        email = email or f"{username}@noreply.be"
+        verified = True
+
+        if User.objects.filter(email=email).exists():
+            email = f"{username}.{int(datetime.now().timestamp())}@noreply.be"
+            verified = False
+
+        user = User.objects.create(
             username=username,
+            password=make_password(secrets.token_urlsafe(16)),
             first_name=first_name,
             last_name=last_name,
-            email=email or f"{username}@ugent.be",
+            email=email,
         )
+        EmailAddress.objects.create(user=user, email=user.email, primary=True, verified=verified)
+        return user
 
 
 def find_email_for_name(name: str, emails: list[str]) -> Optional[str]:

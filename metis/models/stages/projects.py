@@ -20,6 +20,7 @@ class Project(TextEntriesMixin, BaseModel):
     """
 
     education = models.ForeignKey("metis.Education", related_name="projects", on_delete=models.PROTECT)
+    program = models.ForeignKey("metis.Program", related_name="projects", on_delete=models.PROTECT)
     name = models.CharField(max_length=32)
 
     is_active = models.BooleanField(default=True)
@@ -37,6 +38,12 @@ class Project(TextEntriesMixin, BaseModel):
     # min_region_choices
     # max_region_choices
     # dates: select_period,
+
+    def clean(self) -> None:
+        if self.program.education != self.education:
+            raise ValidationError("Choose a program from the same education")
+
+        return super().clean()
 
     def __str__(self) -> str:
         return self.name
@@ -90,6 +97,8 @@ class Period(BaseModel):
     def clean(self) -> None:
         if self.start_date > self.end_date:
             raise ValidationError("Start date must be before end date.")
+        if self.program_internship.block.program != self.project.program:
+            raise ValidationError("Choose a program internship from the project program")
 
         return super().clean()
 

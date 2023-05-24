@@ -1,3 +1,5 @@
+import math
+
 from collections import Counter
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -99,7 +101,7 @@ class DisciplineConstraintsMixin(models.Model):
 
     def _get_count_bounds(self, constraint: DisciplineConstraint) -> Tuple[int, int]:
         min_count = constraint.min_count or 0
-        max_count = constraint.max_count or float("inf")
+        max_count = constraint.max_count or math.inf
 
         return min_count, max_count
 

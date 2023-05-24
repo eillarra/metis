@@ -10,6 +10,7 @@ class ProjectFactory(factory.django.DjangoModelFactory):
         model = Project
 
     education = factory.SubFactory(EducationFactory)
+    program = factory.SubFactory("metis.utils.factories.ProgramFactory")
 
 
 class PeriodFactory(factory.django.DjangoModelFactory):

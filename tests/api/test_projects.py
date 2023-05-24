@@ -8,6 +8,7 @@ from metis.utils.factories import (
     ContactFactory,
     EducationFactory,
     PlaceFactory,
+    ProgramFactory,
     ProjectFactory,
     UserFactory,
 )
@@ -17,8 +18,9 @@ from metis.utils.factories import (
 def education(db):
     education = EducationFactory()
     place = PlaceFactory(education=education)
+    program = ProgramFactory(education=education)
     ContactFactory(place=place)
-    ProjectFactory(education=education)
+    ProjectFactory(education=education, program=program)
     return education
 
 
@@ -56,10 +58,10 @@ class TestForAnonymous:
         "project_delete": status.FORBIDDEN,
     }
 
-    def _get_project_create_data(self):
+    def _get_project_create_data(self, project):
         return {}
 
-    def _get_project_update_data(self):
+    def _get_project_update_data(self, project):
         return {}
 
     def test_list_projects(self, api_client, project):
@@ -69,7 +71,7 @@ class TestForAnonymous:
 
     def test_create_project(self, api_client, project):
         url = reverse("v1:project-list", args=[project.education_id])
-        data = self._get_project_create_data()
+        data = self._get_project_create_data(project)
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["project_create"]
 
@@ -78,13 +80,13 @@ class TestForAnonymous:
 
     def test_update_project(self, api_client, project):
         url = reverse("v1:project-detail", args=[project.education_id, project.id])
-        data = self._get_project_update_data()
+        data = self._get_project_update_data(project)
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["project_update"]
 
     def test_partial_update_project(self, api_client, project):
         url = reverse("v1:project-detail", args=[project.education_id, project.id])
-        response = api_client.patch(url, self._get_project_update_data())
+        response = api_client.patch(url, self._get_project_update_data(project))
         assert response.status_code == self.expected_status_codes["project_update"]
 
     def test_delete_project(self, api_client, project):
@@ -123,14 +125,16 @@ class TestForOfficeMember(TestForAuthenticated):
     def setup(self, api_client, office_member):
         api_client.force_authenticate(user=office_member)
 
-    def _get_project_create_data(self):
+    def _get_project_create_data(self, project):
         return {
             "name": "project name",
+            "program": project.program_id,
         }
 
-    def _get_project_update_data(self):
+    def _get_project_update_data(self, project):
         return {
             "name": "updated project name",
+            "program": project.program_id,
         }
 
     def test_delete_project_when_place_exists(self, api_client, project):

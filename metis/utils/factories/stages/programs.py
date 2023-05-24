@@ -6,15 +6,6 @@ from metis.models.stages.programs import Program, ProgramBlock, ProgramInternshi
 from ..educations import EducationFactory
 
 
-class DisciplineFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = "metis.Discipline"
-
-    education = factory.SubFactory(EducationFactory)
-    name = factory.Sequence(lambda n: f"Discipline {n}")
-    code = factory.Sequence(lambda n: f"DIS{n}")
-
-
 class ProgramFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Program
@@ -30,8 +21,8 @@ class ProgramBlockFactory(factory.django.DjangoModelFactory):
         model = ProgramBlock
 
     program = factory.SubFactory(ProgramFactory)
-    name = factory.Sequence(lambda n: f"Block {n}")
-    position = factory.Sequence(lambda n: n)
+    name = factory.Sequence(lambda n: f"Block {n + 1}")
+    position = factory.Sequence(lambda n: n + 1)
 
 
 class ProgramInternshipFactory(factory.django.DjangoModelFactory):
