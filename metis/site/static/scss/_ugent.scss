@@ -91,6 +91,10 @@ body {
   .q-field {
     padding: 4px 0;
     display: inline-block;
+
+    .q-field__append {
+      padding-left: 2px !important;
+    }
   }
 
   .menu-item,

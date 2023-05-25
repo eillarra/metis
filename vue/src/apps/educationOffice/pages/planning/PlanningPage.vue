@@ -117,7 +117,7 @@ const periodOptions = computed(() => {
   });
 
   return periods.map((period) => ({
-    label: `${period.program_internship.block?.name} / P${period.program_internship?.position}`,
+    label: `${period.program_internship?.block?.name} / P${period.program_internship?.position}`,
     value: period.id,
   }));
 });

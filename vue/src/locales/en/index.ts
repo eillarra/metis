@@ -22,7 +22,7 @@ export default {
   },
   dashboard: {
     no_results: 'No internships found',
-    educationb_office: 'Internship office',
+    education_office: 'Internship office',
     my_internships: 'My internships',
     place_office: 'Place office',
   },

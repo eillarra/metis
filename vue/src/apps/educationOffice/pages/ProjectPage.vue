@@ -1,6 +1,6 @@
 <template>
   <div class="row q-col-gutter-sm q-mb-lg">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('project') }}</h3>
+    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('project') }} {{ project.name }}</h3>
     <div class="col"></div>
   </div>
   <div>

@@ -194,7 +194,9 @@ export const useStore = defineStore('educationOffice', () => {
   function setData(djangoEducation: Education, djangoPrograms: Program[], djangoProjects: Project[]) {
     education.value = djangoEducation;
     programs.value = djangoPrograms;
-    projects.value = djangoProjects;
+    projects.value = djangoProjects.sort((a, b) => {
+      return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
+    });
     selectedProjectId.value = djangoProjects[0]?.id || null;
   }
 

@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 
-from metis.api.serializers import EducationSerializer, ProgramSerializer, ProjectSerializer
+from metis.api.serializers import EducationSerializer, EducationTinySerializer, ProgramSerializer, ProjectSerializer
 from metis.models import Education
 from .inertia import InertiaView
 
@@ -33,6 +33,9 @@ class EducationOfficeView(InertiaView):
 
         return {
             "education": EducationSerializer(self.get_education(), context={"request": request}).data,
+            "educations": (
+                EducationTinySerializer(request.user.education_set, many=True, context={"request": request}).data
+            ),
             "programs": ProgramSerializer(programs, many=True, context={"request": request}).data,
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
         }

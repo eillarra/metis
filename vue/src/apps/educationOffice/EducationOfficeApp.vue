@@ -1,6 +1,29 @@
 <template>
   <div>
-    <div class="row ugent__submenu">
+    <div class="row ugent__submenu q-mb-lg">
+      <div v-if="djangoEducations.length == 1" class="menu-item">
+        <span>Stagebureau {{ djangoEducation.short_name }}</span>
+      </div>
+      <q-select
+        v-else
+        dense
+        borderless
+        square
+        options-dense
+        v-model="selectedEducationId"
+        :options="djangoEducations"
+        option-value="code"
+        option-label="short_name"
+        emit-value
+        map-options
+        hide-bottom-space
+        dropdown-icon="expand_more"
+        popup-content-class="q-menu__square"
+      >
+        <template #selected-item>
+          <span class="text-underline">Stagebureau {{ djangoEducation.short_name }}</span>
+        </template>
+      </q-select>
       <q-select
         v-if="projects.length"
         dense
@@ -15,11 +38,11 @@
         map-options
         hide-bottom-space
         dropdown-icon="expand_more"
-        class="ugent__submenu__select q-mb-lg"
         popup-content-class="q-menu__square"
+        class="q-ml-md"
       >
         <template #selected-item>
-          <span class="text-underline">Stagebureau (project: {{ project?.name }})</span>
+          <span class="text-underline">{{ project?.name }}</span>
         </template>
       </q-select>
       <q-space />
@@ -32,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { usePage } from '@inertiajs/vue3';
 
@@ -41,6 +64,7 @@ import { useStore } from './store';
 const page = usePage();
 const officeStore = useStore();
 
+const djangoEducations = computed<EducationTiny[]>(() => page.props.educations as EducationTiny[]);
 const djangoEducation = computed<Education>(() => page.props.education as Education);
 const djangoPrograms = computed<Program[]>(() => page.props.programs as Program[]);
 const djangoProjects = computed<Project[]>(() => page.props.projects as Project[]);
@@ -48,4 +72,13 @@ const djangoProjects = computed<Project[]>(() => page.props.projects as Project[
 const { projects, project, selectedProjectId } = storeToRefs(officeStore);
 
 officeStore.setData(djangoEducation.value, djangoPrograms.value, djangoProjects.value);
+
+const selectedEducationId = ref((page.props.education as Education).id)
+
+watch(
+  () => selectedEducationId.value,
+  (code) => {
+    window.location.href = `../${code}/`;
+  },
+);
 </script>
