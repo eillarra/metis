@@ -12,14 +12,14 @@
             <api-autocomplete
               v-model="formData.place"
               clearable
-              :search-endpoint="(project as Project).rel_places"
+              :data-source="projectPlaces"
               :mapper="placeMapper"
               :label="$t('place')"
             />
             <api-autocomplete
               v-model="formData.user"
               clearable
-              search-endpoint="/users/"
+              data-source="/users/"
               :mapper="userMapper"
               :label="$t('contact')"
             />
@@ -53,7 +53,7 @@
             <api-autocomplete
               v-model="formData.place"
               clearable
-              :search-endpoint="(project as Project).rel_places"
+              :data-source="(project as Project).rel_places"
               :mapper="placeMapper"
               :label="$t('place')"
             />
@@ -96,7 +96,7 @@ const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
 const officeStore = useStore();
-const { education, project, places } = storeToRefs(officeStore);
+const { project, places, projectPlaces } = storeToRefs(officeStore);
 
 const step = ref(1);
 const formData = ref({

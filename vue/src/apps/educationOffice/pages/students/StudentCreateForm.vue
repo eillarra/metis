@@ -5,12 +5,19 @@
         <q-step :name="1" :title="$t('form.student.create.add_existing')" icon="search" active-icon="search">
           {{ $t('form.student.create.search') }}
           <div class="q-gutter-sm q-mt-sm">
-            <q-input v-if="project" v-model="project.name" :label="$t('project')" readonly class="col-12 col-md" />
+            <q-input
+              v-if="project"
+              v-model="project.name"
+              dense
+              :label="$t('project')"
+              readonly
+              class="col-12 col-md"
+            />
             <program-block-select :programs="programs" v-model="formData.block_id" class="col-12 col-md-2" />
             <api-autocomplete
               v-model="formData.user"
               clearable
-              search-endpoint="/users/"
+              data-source="/users/"
               :mapper="userMapper"
               :label="$t('student')"
             />

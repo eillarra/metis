@@ -8,9 +8,9 @@ from ..serializers import UserTinySerializer
 
 
 class UserViewSet(ListModelMixin, GenericViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.order_by("first_name", "last_name")
     permission_classes = (IsOfficeMember,)
     serializer_class = UserTinySerializer
 
     filter_backends = (SearchFilter,)
-    search_fields = ("first_name", "last_name", "email", "emailaddress__email")
+    search_fields = ("username", "first_name", "last_name", "email", "emailaddress__email")

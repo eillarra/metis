@@ -14,6 +14,7 @@
     @filter="search"
     :multiple="multiple"
     :clearable="clearable"
+    :placeholder="`${$q.lang.label.search}...`"
   >
     <template #no-option>
       <q-item>
@@ -43,7 +44,7 @@ const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps<{
   modelValue: object | null;
-  searchEndpoint: ApiEndpoint;
+  dataSource: ApiEndpoint | ApiObject[];
   mapper: (data: ApiObject[]) => QuasarAutocompleteOption[];
   hint?: string;
   clearable?: boolean;
@@ -54,17 +55,33 @@ const selection = ref(props.modelValue);
 const options = ref<QuasarAutocompleteOption[]>([]);
 
 function search(q: string, update: (arg: () => void) => void, abort: () => void) {
-  if (q == '' || q.length < 3) {
+  if (q == '' || q.length < 2) {
     options.value = [];
     abort();
     return;
   }
 
-  api.get(`${props.searchEndpoint}?search=${q}`).then(function (res) {
+  if (Array.isArray(props.dataSource)) {
+    const mappedData = props.mapper(props.dataSource);
+    const queryTerms = q.toLowerCase().split(' ');
     update(function () {
-      options.value = props.mapper('results' in res.data ? res.data.results : res.data);
+      options.value = mappedData.filter((obj) => {
+        let matches = 0;
+        for (const queryTerm of queryTerms) {
+          if (obj.name.toLowerCase().includes(queryTerm) || obj.caption.toLowerCase().includes(queryTerm)) {
+            matches++;
+          }
+        }
+        return matches === queryTerms.length;
+      });
     });
-  });
+  } else {
+    api.get(`${props.dataSource}?search=${q}`).then(function (res) {
+      update(function () {
+        options.value = props.mapper('results' in res.data ? res.data.results : res.data);
+      });
+    });
+  }
 }
 
 watch(selection, function (obj) {

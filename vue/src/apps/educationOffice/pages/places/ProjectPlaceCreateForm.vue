@@ -8,7 +8,7 @@
             <api-autocomplete
               v-model="found"
               clearable
-              :search-endpoint="(education as Education).rel_places"
+              :data-source="(education as Education).rel_places"
               :mapper="placeMapper"
               :label="$t('place')"
             />
