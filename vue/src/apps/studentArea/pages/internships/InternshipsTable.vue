@@ -1,9 +1,5 @@
 <template>
-  <data-table
-    :columns="columns"
-    :rows="rows"
-    sort-by="name"
-  />
+  <data-table :columns="columns" :rows="rows" sort-by="name" />
 </template>
 
 <script setup lang="ts">

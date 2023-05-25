@@ -1,5 +1,10 @@
 <template>
-  <div class="row q-col-gutter-lg q-mt-lg">
+  <div class="row ugent__submenu q-mb-lg">
+    <div class="menu-item">
+      <span>Dashboard</span>
+    </div>
+  </div>
+  <div class="row q-col-gutter-lg">
     <div v-if="educations.length" class="col-12 col-md-3">
       <ugent-link-list :title="$t('dashboard.education_office')" :items="educationLinks" />
     </div>
@@ -10,8 +15,8 @@
       <ugent-link-list :title="$t('dashboard.my_internships')" :items="studentLinks" />
     </div>
     <div v-if="!educations.length && !student_educations.length && !places.length" class="col-12 col-md-3">
-      <h5>{{ $t('internship', 9) }}</h5>
-      <p>{{ $t('dashboard.no_results') }}</p>
+      <h4 class="q-mt-none q-mb-md">{{ $t('dashboard.my_internships') }}</h4>
+      <p>{{ $t('dashboard.no_results') }}.</p>
     </div>
   </div>
   <ugent-banner>

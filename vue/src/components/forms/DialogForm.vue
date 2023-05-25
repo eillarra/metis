@@ -1,7 +1,7 @@
 <style lang="scss">
 .metis__dialog-layout {
   .q-dialog__inner--minimized > & {
-    width: 600px !important;
+    width: 660px !important;
     max-width: 100vw;
   }
 

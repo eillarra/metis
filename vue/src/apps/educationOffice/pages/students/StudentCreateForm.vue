@@ -94,10 +94,11 @@ function userMapper(data: ApiObject[]) {
     id: obj.id,
     name: (obj as UserTiny).name,
     caption: (obj as UserTiny).email,
-    disable: education.value?.configuration?.allow_different_blocks_per_user_in_project === false
-      ? userIdsUsedByProjectStudents.value.has(obj.id)
-      : userIdsPerBlockUsedByProjectStudents.value.get(formData.value?.block_id as number) === obj.id,
-    }));
+    disable:
+      education.value?.configuration?.allow_different_blocks_per_user_in_project === false
+        ? userIdsUsedByProjectStudents.value.has(obj.id)
+        : userIdsPerBlockUsedByProjectStudents.value.get(formData.value?.block_id as number) === obj.id,
+  }));
 }
 
 function addStudent() {

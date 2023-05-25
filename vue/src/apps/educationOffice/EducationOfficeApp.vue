@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row ugent__submenu q-mb-lg">
-      <div v-if="djangoEducations.length == 1" class="menu-item">
+      <div v-if="djangoEducations.length < 2" class="menu-item">
         <span>Stagebureau {{ djangoEducation.short_name }}</span>
       </div>
       <q-select
@@ -73,12 +73,12 @@ const { projects, project, selectedProjectId } = storeToRefs(officeStore);
 
 officeStore.setData(djangoEducation.value, djangoPrograms.value, djangoProjects.value);
 
-const selectedEducationId = ref((page.props.education as Education).id)
+const selectedEducationId = ref((page.props.education as Education).id);
 
 watch(
   () => selectedEducationId.value,
   (code) => {
     window.location.href = `../${code}/`;
-  },
+  }
 );
 </script>

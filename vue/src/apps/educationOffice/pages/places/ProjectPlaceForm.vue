@@ -42,7 +42,11 @@
           </q-list>
         </q-tab-panel>
         <q-tab-panel v-if="textsEndpoint" name="texts">
-          <texts-view container :api-endpoint="textsEndpoint" :text-types="education?.configuration?.place_text_types" />
+          <texts-view
+            container
+            :api-endpoint="textsEndpoint"
+            :text-types="education?.configuration?.place_text_types"
+          />
         </q-tab-panel>
         <q-tab-panel name="remarks">
           <remarks-view :api-endpoints="remarkEndpoints" />

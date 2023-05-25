@@ -1,7 +1,6 @@
 <style lang="scss">
 .ugent__link-list {
-  h5 {
-    font-size: 20px;
+  h4 {
     margin: 0 0 10px 0;
   }
 
@@ -34,7 +33,7 @@
 
 <template>
   <div class="ugent__link-list">
-    <h5 v-if="title">{{ title }}</h5>
+    <h4 v-if="title">{{ title }}</h4>
     <q-list dense>
       <q-item v-for="item in items" :key="item.label" :to="item.to" :href="item.href">
         <q-item-section avatar>

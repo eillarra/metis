@@ -121,7 +121,9 @@
       <template #body-cell-email="props">
         <!-- Custom email field -->
         <q-td :props="props" auto-width>
-          <a href="mailto:props.row.email" target="_blank" rel="noopener" class="inherit">{{ props.row.email }}</a>
+          <a :href="`mailto:${props.row.email}`" target="_blank" rel="noopener" class="inherit">{{
+            props.row.email
+          }}</a>
           <q-icon
             @click="copyText(props.row.email)"
             name="content_copy"

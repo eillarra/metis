@@ -20,9 +20,7 @@
           >
             <a v-if="django_user && django_user.is_staff" href="/admin/">Admin</a>
             <user-menu v-if="django_user" :user="django_user" />
-            <a v-else href="/u/login/"
-              ><span v-t="'user_menu.login'"></span> <q-icon name="login" size="xxs"></q-icon
-            ></a>
+            <a v-else href="/u/login/">{{ $t('user_menu.login') }} <q-icon name="login" size="xxs"></q-icon></a>
             <locale-menu :locale="django_locale" :csrfToken="django_csrf_token" />
           </div>
         </q-toolbar>
@@ -58,7 +56,7 @@
         <div class="row justify-between text-body2">
           <div class="col-12 col-md">
             <p>
-              <span v-t="'version'"></span>&nbsp;<a
+              {{ $t('version') }}&nbsp;<a
                 v-if="git_commit_hash && django_user && django_user.is_staff"
                 :href="`https://github.ugent.be/eillarra/metis/tree/${git_commit_hash}`"
                 >{{ version }}</a
@@ -73,9 +71,9 @@
               <li :class="{ inline: $q.screen.gt.sm }">
                 <span
                   >&copy; {{ year }}
-                  <a v-t="'ge'" :href="`https://www.ugent.be/ge/${django_locale}`" target="_blank" rel="noopener"></a>,
-                  <span v-t="'ugent'" class="text-no-wrap"></span
-                ></span>
+                  <a :href="`https://www.ugent.be/ge/${django_locale}`" target="_blank" rel="noopener">{{ $t('ge') }}</a
+                  >, <span class="text-no-wrap">{{ $t('ugent') }}</span></span
+                >
               </li>
             </ul>
           </div>
