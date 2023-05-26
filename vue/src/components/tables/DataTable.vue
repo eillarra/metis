@@ -152,9 +152,10 @@
 import { computed, onMounted, ref, watch, ComponentOptions } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { copyToClipboard, Notify } from 'quasar';
+import { copyToClipboard } from 'quasar';
 import { cloneDeep } from 'lodash-es';
 
+import { notify } from '@/notify';
 import { storage } from '@/storage';
 
 const router = useRouter();
@@ -242,10 +243,7 @@ const dialogVisible = computed<boolean>({
 
 function copyText(text: string) {
   copyToClipboard(text).then(() => {
-    Notify.create({
-      message: t('copied_to_clipboard'),
-      icon: 'info',
-    });
+    notify.info(t('copied_to_clipboard'));
   });
 }
 

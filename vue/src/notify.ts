@@ -79,7 +79,6 @@ class Notify {
 
   info(msg: string): void {
     this.create({
-      type: 'info',
       message: msg,
       timeout: 2500,
       icon: 'info',
