@@ -65,7 +65,7 @@
             </q-page>
           </q-page-container>
         {% endblock %}
-        <q-footer class="ugent__footer bg-ugent text-white q-py-lg q-mt-xl full-width q-px-md" :class="{'q-px-lg': $q.screen.gt.sm}">
+        <q-footer class="ugent__footer text-white q-py-lg q-mt-xl full-width q-px-md {% if DJANGO_ENV == 'staging' %}bg-ge{% else %}bg-ugent{% endif %}" :class="{'q-px-lg': $q.screen.gt.sm}">
           <div class="row justify-between text-body2">
             <div class="col-12 col-md">
               <p>{% translate 'Version' %} <version-hash></version-hash></p>

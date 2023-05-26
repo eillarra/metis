@@ -9,8 +9,8 @@
           </a>
         </q-toolbar>
         <q-toolbar
-          class="col-9 col-md-10 bg-ugent text-white q-pl-md q-pb-sm"
-          :class="{ 'q-pl-lg': $q.screen.gt.sm }"
+          class="col-9 col-md-10 text-white q-pl-md q-pb-sm bg-ugent"
+          :class="{ 'q-pl-lg': $q.screen.gt.sm, 'bg-ge': props.django_env == 'staging' }"
           style="align-items: flex-end"
         >
           <h2 class="text-uppercase q-ma-none">Metis</h2>
@@ -51,7 +51,7 @@
 
       <q-footer
         class="ugent__footer bg-ugent text-white q-py-lg q-mt-xl full-width q-px-md"
-        :class="{ 'q-px-lg': $q.screen.gt.sm }"
+        :class="{ 'q-pl-lg': $q.screen.gt.sm, 'bg-ge': props.django_env == 'staging' }"
       >
         <div class="row justify-between text-body2">
           <div class="col-12 col-md">
@@ -93,6 +93,7 @@ import UserMenu from '@/components/UserMenu.vue';
 const props = defineProps<{
   django_csrf_token: string;
   django_debug: boolean;
+  django_env: string;
   django_locale: string;
   django_user: DjangoAuthenticatedUser | null;
   git_commit_hash: string | null;

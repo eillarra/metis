@@ -82,7 +82,7 @@ const bootApp = (routes: RouteRecordRaw[]) => {
           app,
           dsn: 'https://0c8a62299e0b46c9b472cdf6e69e8484@o124046.ingest.sentry.io/4505041367924736',
           release: props.initialPage.props.git_commit_hash,
-          environment: 'production',
+          environment: props.initialPage.props.django_env,
           integrations: [
             new Sentry.BrowserTracing({
               routingInstrumentation: Sentry.vueRouterInstrumentation(Router),

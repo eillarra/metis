@@ -19,6 +19,7 @@ def render_inertia(request, vue_entry_point: str, *, props: dict | None = None, 
         props={
             "django_csrf_token": get_csrf_token(request),
             "django_debug": settings.DEBUG,
+            "django_env": os.environ.get("DJANGO_ENV", "development"),
             "django_locale": request.LANGUAGE_CODE,
             "django_user": request.user if request.user.is_authenticated else None,
             "git_commit_hash": os.environ.get("GIT_REV", None),

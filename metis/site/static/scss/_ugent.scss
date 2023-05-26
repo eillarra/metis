@@ -148,7 +148,6 @@ body {
   }
 }
 
-.ugent__footer,
 .bg-ugent {
   background-color: $ugent-blue;
 }
@@ -156,6 +155,10 @@ body {
 .bg-blue-1,
 .bg-tertiary {
   background-color: $light-blue-color !important;
+}
+
+.bg-ge {
+  background-color: $ge-color !important;
 }
 
 .text-ge {
