@@ -10,10 +10,6 @@ omit = [
   "*urls.py",
   "*wsgi.py",
   "manage.py",
-  # TODO: remove these once we have migrated initial data
-  "*load_real_data.py",
-  "*migratedata.py",
-  "*/data_importer/**",
 ]
 
 [tool.coverage.report]
