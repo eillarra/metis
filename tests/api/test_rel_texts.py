@@ -139,9 +139,7 @@ class TestForOfficeMember(TestForAuthenticated):
 
     def _create_text(self, project):
         return TextEntry.objects.create(
-            content_object=project,
-            **self._get_text_create_data(),
-            created_by=self.created_by
+            content_object=project, **self._get_text_create_data(), created_by=self.created_by
         )
 
     def _get_text_create_data(self):

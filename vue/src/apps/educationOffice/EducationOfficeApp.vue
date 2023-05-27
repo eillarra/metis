@@ -62,16 +62,16 @@ import { usePage } from '@inertiajs/vue3';
 import { useStore } from './store';
 
 const page = usePage();
-const officeStore = useStore();
+const store = useStore();
 
 const djangoEducations = computed<EducationTiny[]>(() => page.props.educations as EducationTiny[]);
 const djangoEducation = computed<Education>(() => page.props.education as Education);
 const djangoPrograms = computed<Program[]>(() => page.props.programs as Program[]);
 const djangoProjects = computed<Project[]>(() => page.props.projects as Project[]);
 
-const { projects, project, selectedProjectId } = storeToRefs(officeStore);
+const { projects, project, selectedProjectId } = storeToRefs(store);
 
-officeStore.setData(djangoEducation.value, djangoPrograms.value, djangoProjects.value);
+store.setData(djangoEducation.value, djangoPrograms.value, djangoProjects.value);
 
 const selectedEducationId = ref((page.props.education as Education).id);
 

@@ -1,7 +1,11 @@
 from django.db import models
+from typing import TYPE_CHECKING
 
 from ..base import BaseModel
 from ..rel.remarks import RemarksMixin
+
+if TYPE_CHECKING:
+    from .programs import ProgramInternship
 
 
 class Student(RemarksMixin, BaseModel):
@@ -25,5 +29,10 @@ class Student(RemarksMixin, BaseModel):
     def can_be_managed_by(self, user):
         return self.project.can_be_managed_by(user)
 
-    def has_signed_internship_agreement(self):
-        return self.signatures.filter(content=self.project.internship_agreement).exists()  # type: ignore
+    def has_signed_required_texts(self) -> bool:
+        return self.signatures.filter(text_entry__in=self.project.required_texts).count() == len(
+            self.project.required_texts
+        )
+
+    def internships(self) -> list["ProgramInternship"]:
+        return self.block.internships.filter(block=self.block)

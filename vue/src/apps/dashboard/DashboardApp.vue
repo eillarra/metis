@@ -23,7 +23,7 @@
     <template #default>
       <div class="fit column justify-between">
         <q-space />
-        <ugent-link-list title="Help" :items="links" />
+        <!--<ugent-link-list title="Help" :items="links" />-->
       </div>
     </template>
     <template #image>

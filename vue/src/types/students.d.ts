@@ -1,4 +1,4 @@
-interface ProjectStudent extends ApiObject {
+interface Student extends ApiObject {
   self: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   project: ProjectTiny;
@@ -8,6 +8,6 @@ interface ProjectStudent extends ApiObject {
   remark_count: number;
 }
 
-interface Student extends User {
-  student_set: ProjectStudent[];
+interface StudentUser extends User {
+  student_set: Student[];
 }

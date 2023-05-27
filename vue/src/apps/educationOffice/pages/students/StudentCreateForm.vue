@@ -85,8 +85,8 @@ import ProgramBlockSelect from '../../components/ProgramBlockSelect.vue';
 const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
-const officeStore = useStore();
-const { education, programs, project, projectStudents } = storeToRefs(officeStore);
+const store = useStore();
+const { education, programs, project, projectStudents } = storeToRefs(store);
 
 const step = ref(1);
 const formData = ref({
@@ -103,8 +103,8 @@ function userMapper(data: ApiObject[]) {
     caption: (obj as UserTiny).email,
     disable:
       education.value?.configuration?.allow_different_blocks_per_user_in_project === false
-        ? userIdsUsedByProjectStudents.value.has(obj.id)
-        : userIdsPerBlockUsedByProjectStudents.value.get(formData.value?.block_id as number) === obj.id,
+        ? userIdsUsedByStudents.value.has(obj.id)
+        : userIdsPerBlockUsedByStudents.value.get(formData.value?.block_id as number) === obj.id,
   }));
 }
 
@@ -117,7 +117,7 @@ function addStudent() {
   };
 
   api.post(`${project.value.self}students/`, data).then((res) => {
-    officeStore.createObj('student', res.data);
+    store.createObj('student', res.data);
     notify.success(t('form.student.create.saved'));
     emit('create:obj');
   });
@@ -143,7 +143,7 @@ function inviteStudent() {
  * Returns a map of block IDs to user IDs used by the project students.
  * @returns {Map<number, number>}
  */
-const userIdsPerBlockUsedByProjectStudents = computed<Map<number, number>>(() => {
+const userIdsPerBlockUsedByStudents = computed<Map<number, number>>(() => {
   return projectStudents.value.reduce((map, obj) => {
     map.set(obj.block.id, obj.user);
     return map;
@@ -154,7 +154,7 @@ const userIdsPerBlockUsedByProjectStudents = computed<Map<number, number>>(() =>
  * Returns a set of user IDs used by the students of the current project.
  * @returns {Set<number>}
  */
-const userIdsUsedByProjectStudents = computed<Set<number>>(() => {
+const userIdsUsedByStudents = computed<Set<number>>(() => {
   return projectStudents.value.reduce((set, obj) => {
     set.add(obj.user);
     return set;

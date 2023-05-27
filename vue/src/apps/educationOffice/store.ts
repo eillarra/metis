@@ -57,7 +57,7 @@ export const useStore = defineStore('educationOffice', () => {
     return selectedProject;
   });
 
-  const projectStudents = computed<ProjectStudent[]>(() => {
+  const projectStudents = computed<Student[]>(() => {
     if (!project.value || !students.value.length) {
       return [];
     }
@@ -69,7 +69,7 @@ export const useStore = defineStore('educationOffice', () => {
         }
       });
       return arr;
-    }, [] as ProjectStudent[]);
+    }, [] as Student[]);
   });
 
   const contacts = computed<Contact[]>(() => {

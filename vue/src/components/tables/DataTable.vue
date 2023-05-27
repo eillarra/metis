@@ -56,7 +56,7 @@
 
 <template>
   <div>
-    <div class="row q-col-gutter-sm q-mb-lg">
+    <div v-if="!hideToolbar" class="row q-col-gutter-sm q-mb-lg">
       <q-input v-if="queryColumns" v-model="query" clearable dense square filled type="text" class="col-12 col-md">
         <template #prepend>
           <q-icon name="search" />
@@ -171,6 +171,7 @@ const props = defineProps<{
   createFormComponent?: ComponentOptions;
   sortBy?: string;
   loading?: boolean;
+  hideToolbar?: boolean;
 }>();
 
 const initialPagination = {

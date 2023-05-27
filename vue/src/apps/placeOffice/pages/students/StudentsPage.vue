@@ -21,7 +21,7 @@ import { useStore } from '../../store.js';
 
 import StudentsTable from './StudentsTable.vue';
 
-/*const { project, programs, students } = storeToRefs(useOfficeStore());
+/*const { project, programs, students } = storeToRefs(usestore());
 
 const selectedBlock = ref<number | null>(null);
 

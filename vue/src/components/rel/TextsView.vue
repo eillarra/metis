@@ -106,7 +106,7 @@
             unelevated
             outline
             color="red"
-            :label="$t('form.content.delete')"
+            :label="$t('form.text_entry.delete')"
             :disable="!obj.id"
           />
           <q-space />
@@ -115,7 +115,7 @@
             @click="updateText"
             unelevated
             color="ugent"
-            :label="$t('form.content.save')"
+            :label="$t('form.text_entry.save')"
             :disable="!obj.title_en || !obj.title_nl || !obj.text_en || !obj.text_nl"
           />
           <q-btn
@@ -123,7 +123,7 @@
             @click="createText"
             unelevated
             color="ugent"
-            :label="$t('form.content.save')"
+            :label="$t('form.text_entry.save')"
             :disable="!obj.title_en || !obj.title_nl || !obj.text_en || !obj.text_nl"
           />
         </div>
@@ -206,7 +206,7 @@ async function createText() {
   if (!props.apiEndpoint || !obj.value) return;
   await api.post(props.apiEndpoint, obj.value).then((res) => {
     texts.value.push(res.data);
-    notify.success(t('form.content.create.saved'));
+    notify.success(t('form.text_entry.create.saved'));
     obj.value = null;
   });
 }
@@ -216,17 +216,17 @@ async function updateText() {
   api.put((obj.value as TextEntry).self, obj.value).then((res) => {
     const idx = texts.value.findIndex((c) => c.id === (obj.value as TextEntry).id);
     texts.value.splice(idx, 1, res.data);
-    notify.success(t('form.content.update.saved'));
+    notify.success(t('form.text_entry.update.saved'));
     obj.value = null;
   });
 }
 
 async function deleteText() {
   if (!obj.value) return;
-  confirm(t('form.content.confirm_delete'), () => {
+  confirm(t('form.text_entry.confirm_delete'), () => {
     api.delete((obj.value as TextEntry).self).then(() => {
       texts.value.splice(texts.value.indexOf(obj.value as TextEntry), 1);
-      notify.success(t('form.content.deleted'));
+      notify.success(t('form.text_entry.deleted'));
       obj.value = null;
     });
   });

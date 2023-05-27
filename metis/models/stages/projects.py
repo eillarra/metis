@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from ..base import BaseModel
 from ..rel import TextEntriesMixin
@@ -53,7 +53,14 @@ class Project(TextEntriesMixin, BaseModel):
 
     @property
     def full_name(self) -> str:
-        return f"{self.education.name} - {self.name}"
+        return f"{self.education.short_name} - {self.name}"
+
+    @property
+    def academic_year(self) -> str:
+        try:
+            return f"{self.start_date.year}-{self.end_date.strftime('%y')}"
+        except Exception:
+            return self.name
 
     @cached_property
     def start_date(self) -> datetime.date:
@@ -71,9 +78,10 @@ class Project(TextEntriesMixin, BaseModel):
     def is_open(self) -> bool:
         return self.is_active and self.periods.exists() and (self.start_date <= timezone.now().date() <= self.end_date)
 
-    @property
-    def internship_agreement(self) -> Optional["TextEntry"]:
-        return self.get_text("project.internship_agreement")
+    @cached_property
+    def required_texts(self) -> list["TextEntry"]:
+        required_codes = {text_type["code"] for text_type in self.education.configuration["project_text_types"]}
+        return self.texts.filter(code__in=required_codes)
 
 
 class Period(BaseModel):

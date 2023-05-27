@@ -9,4 +9,6 @@ interface TextEntry extends ApiObject {
   updated_at: string;
   updated_by: UserTiny;
   type?: string;
+  title?: string;
+  text?: string;
 }

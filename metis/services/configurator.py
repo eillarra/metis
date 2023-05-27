@@ -3,15 +3,22 @@ from pydantic import BaseModel, ValidationError, validator
 
 class TextEntryType(BaseModel):
     code: str
-    name_nl: str = ""
-    name_en: str = ""
-    signature_required: bool = False
+    name_nl: str
+    name_en: str
+
+
+class ProjectTextEntryType(TextEntryType):
+    signature_required: bool = True
+
+
+class PlaceTextEntryType(TextEntryType):
+    editable_by_place: bool = True
 
 
 class EducationConfig(BaseModel):
     allow_different_blocks_per_user_in_project: bool = True
-    project_text_types: list[TextEntryType]
-    place_text_types: list[TextEntryType] | None = None
+    project_text_types: list[ProjectTextEntryType]
+    place_text_types: list[PlaceTextEntryType] | None = None
 
     @validator("project_text_types")
     def validate_project_text_types(cls, v):
@@ -19,7 +26,7 @@ class EducationConfig(BaseModel):
         codes = {c.code for c in v}
         for code in required:
             if code not in codes:
-                raise ValueError(f"project_text_types must contain `{code}`")
+                raise ValueError(f"`project_text_types` must contain and entry with code `{code}`")
         return v
 
 

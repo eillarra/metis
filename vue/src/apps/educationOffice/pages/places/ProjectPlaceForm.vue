@@ -97,8 +97,8 @@ const props = defineProps<{
   obj: ProjectPlace;
 }>();
 
-const officeStore = useStore();
-const { education, project, projectPlacesWithInternships } = storeToRefs(officeStore);
+const store = useStore();
+const { education, project, projectPlacesWithInternships } = storeToRefs(store);
 
 const obj = ref<ProjectPlace>(props.obj);
 const tab = ref<string>('info');
@@ -139,7 +139,7 @@ function save() {
         .then((res) => {
           obj.value.updated_at = res.data.updated_at;
           obj.value.updated_by = res.data.updated_by;
-          officeStore.updateObj('projectPlace', obj.value);
+          store.updateObj('projectPlace', obj.value);
           notify.success(t('form.place.saved'));
         });
     });
@@ -148,7 +148,7 @@ function save() {
 function deletePlace() {
   confirm(t('form.student.confirm_delete'), () => {
     api.delete(obj.value.self).then(() => {
-      officeStore.deleteObj('projectPlace', obj.value);
+      store.deleteObj('projectPlace', obj.value);
       notify.success(t('form.place.deleted'));
       emit('delete:obj');
     });
@@ -159,7 +159,7 @@ function deleteContact(contact: Contact) {
   confirm(t('form.contact.confirm_delete'), () => {
     api.delete(contact.self).then(() => {
       obj.value.place.contacts = obj.value.place.contacts.filter((c) => c.id !== contact.id);
-      officeStore.updateObj('projectPlace', obj.value);
+      store.updateObj('projectPlace', obj.value);
       notify.success(t('form.contact.deleted'));
     });
   });

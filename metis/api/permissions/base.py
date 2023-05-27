@@ -31,6 +31,7 @@ class IsRelManager(IsAuthenticated):
     When it is shared, anybody can update or delete the object.
     Not shared objects can only be updated or deleted by the user who created it.
     """
+
     shared = False
 
     def has_permission(self, request, view: "RelModelViewSet") -> bool:

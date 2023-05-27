@@ -1,9 +1,10 @@
 <template>
-  <data-table :columns="columns" :rows="rows" :query-columns="queryColumns" sort-by="name" />
+  <data-table :columns="columns" :rows="rows" sort-by="name" hide-toolbar />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { date } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
 import DataTable from '@/components/tables/DataTable.vue';
@@ -11,44 +12,37 @@ import DataTable from '@/components/tables/DataTable.vue';
 const { t } = useI18n();
 
 const props = defineProps<{
-  students: StudentUser[];
+  signatures: Signature[];
+  texts: TextEntry[];
 }>();
-
-const queryColumns = ['name', 'email'];
 
 const columns = [
   {
     name: 'name',
     field: 'name',
     required: true,
-    label: t('field.name'),
+    label: t('text'),
     align: 'left',
-    sortable: true,
     sort: (a: string, b: string) => a.localeCompare(b),
     headerClasses: 'sticky-left',
     classes: 'sticky-left',
   },
   {
-    name: 'blocks',
-    field: 'blocks',
-    label: t('program_block', 9),
-    align: 'left',
-  },
-  {
-    name: 'email',
-    field: 'email',
-    label: t('field.email'),
+    name: 'date',
+    field: 'date',
+    label: t('field.date'),
     align: 'left',
     sortable: true,
+    sort: (a: string, b: string) => a.localeCompare(b),
+    classes: 'q-table--col-auto-width',
   },
 ];
 
 const rows = computed(() => {
-  return props.students.map((obj: StudentUser) => ({
+  return props.signatures.map((obj: Signature) => ({
     _self: obj,
-    name: obj.name,
-    email: obj.email,
-    blocks: obj.student_set.map((rec) => `${rec.project.name}-${rec.block.name}`).join(', '),
+    name: props.texts.find((text) => text.id === obj.text_entry)?.title_nl ?? '',
+    date: date.formatDate(obj.created_at, 'YYYY-MM-DD HH:mm'),
   }));
 });
 </script>

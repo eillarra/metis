@@ -18,6 +18,16 @@ from metis.services.configurator import validate_education_configuration
                 }
             ]
         },
+        {
+            "project_text_types": [
+                {
+                    "code": "project.internship_agreement",
+                },
+                {
+                    "code": "project.privacy_agreement",
+                },
+            ]
+        },
     ],
 )
 def test_config_is_invalid(config):

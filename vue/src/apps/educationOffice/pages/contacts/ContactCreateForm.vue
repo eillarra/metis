@@ -95,8 +95,8 @@ import DialogForm from '@/components/forms/DialogForm.vue';
 const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
-const officeStore = useStore();
-const { project, places, projectPlaces } = storeToRefs(officeStore);
+const store = useStore();
+const { project, places, projectPlaces } = storeToRefs(store);
 
 const step = ref(1);
 const formData = ref({
@@ -142,7 +142,7 @@ function addContact() {
   };
 
   api.post(selectedPlace.value.rel_contacts, data).then((res) => {
-    officeStore.createObj('contact', res.data);
+    store.createObj('contact', res.data);
     notify.success(t('form.contact.create.saved'));
     emit('create:obj');
   });

@@ -30,7 +30,9 @@ class Router(NestedRouterMixin, DefaultRouter):
         # /educations/{parent_lookup_education_id}/places/
         # /educations/{parent_lookup_education_id}/places/{parent_lookup_place_id}/contacts/
         # /educations/{parent_lookup_education_id}/projects/
+        # /educations/{parent_lookup_education_id}/projects/{parent_lookup_project_id}/internships/
         # /educations/{parent_lookup_education_id}/projects/{parent_lookup_project_id}/places/
+        # /educations/{parent_lookup_education_id}/projects/{parent_lookup_project_id}/students/
 
         education_routes = self.register("educations", views.EducationViewSet, basename="education")
         education_place_routes = education_routes.register(
@@ -63,3 +65,18 @@ class Router(NestedRouterMixin, DefaultRouter):
             basename="project-student",
             parents_query_lookups=["education_id", "project_id"],
         )
+
+        # /user/
+        # /user/contact/places/
+        # /user/mentor/evaluations/
+        # /user/mentor/internships/
+        # /user/student/internships/
+        # /user/student/projects/
+        # /user/student/signatures/
+
+        self.register("user", views.AuthUserViewSet, basename="auth-user")
+        self.register("user/tmp", views.AuthUserTmpOasisViewSet, basename="auth-user-tmp")
+        # self.register("user/contact/places", views.PlaceViewSet, basename="contact-place")
+        # self.register("user/student/internships", views.PlaceViewSet, basename="student-internship")
+        self.register("user/student/projects", views.AuthStudentViewSet, basename="student-set")
+        self.register("user/student/signatures", views.AuthStudentSignatureViewSet, basename="student-signature")

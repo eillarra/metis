@@ -1,20 +1,36 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 
+import { api } from '@/axios.ts';
+
 export const useStore = defineStore('studentArea', () => {
-  const education = ref<EducationTiny | null>(null);
-  const projectStudents = ref<ProjectStudent[]>([]);
+  const education = ref<EducationTiny | undefined>(undefined);
+  const signatures = ref<Signature[] | undefined>(undefined);
+  const students = ref<Student[]>([]);
 
-  async function init() {}
+  async function init() {
+    await fetchSignatures();
+  }
 
-  function setData(djangoEducation: EducationTiny, djangoProjectStudents: ProjectStudent[]) {
+  async function fetchSignatures() {
+    signatures.value = undefined;
+
+    await api.get('/user/student/signatures/').then((res) => {
+      signatures.value = res.data;
+    });
+  }
+
+  function setData(djangoEducation: EducationTiny, djangoStudents: Student[]) {
     education.value = djangoEducation;
-    projectStudents.value = djangoProjectStudents;
+    students.value = djangoStudents;
   }
 
   return {
     init,
     setData,
-    projectStudents,
+    fetchSignatures,
+    education,
+    signatures,
+    students,
   };
 });

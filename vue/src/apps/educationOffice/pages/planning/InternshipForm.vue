@@ -97,8 +97,8 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const officeStore = useStore();
-const { education, project } = storeToRefs(officeStore);
+const store = useStore();
+const { education, project } = storeToRefs(store);
 
 const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');
@@ -120,7 +120,7 @@ function save() {
     .then((res) => {
       obj.value.updated_at = res.data.updated_at;
       obj.value.updated_by = res.data.updated_by;
-      officeStore.updateObj('projectInternship', obj.value);
+      store.updateObj('projectInternship', obj.value);
       notify.success(t('form.internship.saved'));
     });
 }
@@ -128,7 +128,7 @@ function save() {
 function deleteInternship() {
   confirm(t('form.internship.confirm_delete'), () => {
     api.delete(obj.value.self).then(() => {
-      officeStore.deleteObj('projectInternship', obj.value);
+      store.deleteObj('projectInternship', obj.value);
       notify.success(t('form.internship.deleted'));
       emit('delete:obj');
     });
@@ -139,7 +139,7 @@ function deleteStudent() {
   confirm(t('form.internship.confirm_delete_student'), () => {
     api.patch(obj.value.self, { student: null }).then(() => {
       obj.value.student = null;
-      officeStore.updateObj('projectInternship', obj.value);
+      store.updateObj('projectInternship', obj.value);
       notify.success(t('form.internship.deleted_student'));
     });
   });

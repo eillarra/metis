@@ -87,8 +87,8 @@ import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
-const officeStore = useStore();
-const { education, project, projectPlaces } = storeToRefs(officeStore);
+const store = useStore();
+const { education, project, projectPlaces } = storeToRefs(store);
 
 const step = ref(1);
 const found = ref(null);
@@ -114,7 +114,7 @@ function addProjectPlace() {
   };
 
   api.post(project.value.rel_places, data).then((res) => {
-    officeStore.createObj('projectPlace', res.data);
+    store.createObj('projectPlace', res.data);
     notify.success(t('form.place.create.saved'));
     emit('create:obj');
   });
@@ -128,7 +128,7 @@ function createPlace() {
         discipline_ids: disciplines.value.map((obj) => obj.id),
       })
       .then((res) => {
-        officeStore.createObj('projectPlace', res.data);
+        store.createObj('projectPlace', res.data);
         notify.success(t('form.place.create.saved'));
         emit('create:obj');
       });

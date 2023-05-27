@@ -63,18 +63,16 @@ const props = defineProps<{
   obj: Student;
 }>();
 
-const officeStore = useStore();
-const { project, projectStudentsWithInternships } = storeToRefs(officeStore);
+const store = useStore();
+const { project, projectStudentsWithInternships } = storeToRefs(store);
 
 const student = ref<Student>(props.obj);
-const obj = ref<ProjectStudent>(
-  props.obj.student_set.find((obj) => obj.project.id == project.value?.id) as ProjectStudent
-);
+const obj = ref<Student>(props.obj.student_set.find((obj) => obj.project.id == project.value?.id) as Student);
 const tab = ref<string>('info');
 
 const remarkCount = computed<number>(() => {
   if (!props.obj) return 0;
-  return props.obj.student_set.reduce((acc, projectStudent: ProjectStudent) => {
+  return props.obj.student_set.reduce((acc, projectStudent: Student) => {
     return acc + projectStudent.remark_count;
   }, 0);
 });
@@ -83,7 +81,7 @@ const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
   if (!props.obj) return null;
 
   let acc: Record<string, ApiEndpoint> = {};
-  return props.obj.student_set.reduce((acc, projectStudent: ProjectStudent) => {
+  return props.obj.student_set.reduce((acc, projectStudent: Student) => {
     acc[projectStudent.project.name] = projectStudent.rel_remarks;
     return acc;
   }, acc);
@@ -94,7 +92,7 @@ function deleteStudent() {
     api.delete(obj.value.self).then(() => {
       // we remove the whole student/user from the store, because the student is deleted from the project
       // when we change projects, the student might be loaded again for the other project
-      officeStore.deleteObj('student', student.value);
+      store.deleteObj('student', student.value);
       notify.success(t('form.student.deleted'));
       emit('delete:obj');
     });

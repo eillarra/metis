@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 
-from metis.api.serializers import EducationTinySerializer, StudentSerializer
+from metis.api.serializers import EducationTinySerializer, AuthStudentSerializer
 from metis.models import Education
 from .inertia import InertiaView
 
@@ -33,12 +33,31 @@ class StudentAreaView(InertiaView):
         return self.student_set
 
     def get_props(self, request, *args, **kwargs):
-        return {
+        base = {
             "education": EducationTinySerializer(self.get_education()).data,
-            "student_set": StudentSerializer(
+            "student_set": AuthStudentSerializer(
                 self.get_student_set(request.user), many=True, context={"request": request}
             ).data,
         }
+
+        # --------------
+        # PROVISIONAL
+        # --------------
+        from metis.api.serializers import AuthUserSerializer, ProjectTinySerializer, TextEntrySerializer
+        from metis.models import Project
+
+        project = Project.objects.get(education=self.get_education(), name="AJ23-24")
+        temp_props = {
+            "academic_year": project.academic_year,
+            "project": ProjectTinySerializer(project).data,
+            "user": AuthUserSerializer(request.user).data,
+            "student": AuthStudentSerializer(self.get_student_set(request.user).get(project=project)).data,
+            "required_texts": TextEntrySerializer(project.required_texts, many=True, context={"request": request}).data,
+        }
+        # --------------
+        # --------------
+
+        return {**base, **temp_props}
 
     def get_page_title(self, request, *args, **kwargs) -> str:
         return f"{self.get_education().short_name} - Stages"

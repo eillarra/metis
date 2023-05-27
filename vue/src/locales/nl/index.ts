@@ -68,6 +68,7 @@ export default {
     skip: 'Overslaan',
     update: 'Bijwerken',
     invite: 'Uitnodigen',
+    sign: 'Ondertekenen',
     add_to_place: 'Voeg toe aan stageplaats',
     add_to_project: 'Voeg toe aan project',
     contact: {
@@ -100,13 +101,6 @@ export default {
       save: 'Stage opslaan',
       saved: 'Stage informatie opgeslagen',
     },
-    content: {
-      available_texts: 'Beschikbare teksten',
-      confirm_delete: 'Ben je zeker dat je deze tekst wil verwijderen?',
-      deleted: 'Tekst verwijderd',
-      save: 'Tekst opslaan',
-      delete: 'Tekst verwijderen',
-    },
     place: {
       create: {
         new: 'Nieuwe stageplaats aanmaken',
@@ -138,6 +132,18 @@ export default {
       save: 'Student opslaan',
       saved: 'Student informatie opgeslagen',
     },
+    text_entry: {
+      available_texts: 'Beschikbare teksten',
+      delete: 'Tekst verwijderen',
+      confirm_delete: 'Ben je zeker dat je deze tekst wil verwijderen?',
+      deleted: 'Tekst verwijderd',
+      save: 'Tekst opslaan',
+      saved: 'Tekst informatie opgeslagen',
+      signed: 'Tekst ondertekend',
+    },
+    deleted: 'Verwijderd',
+    saved: 'Opgeslagen',
+    updated: 'Bijgewerkt',
   },
   copied_to_clipboard: 'Gekopieerd naar het klembord',
 };

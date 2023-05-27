@@ -45,6 +45,7 @@
           icon="menu"
           color="ugent"
           class="float-right q-ml-md"
+          size="13px"
         ></q-btn>
         <router-view />
       </q-page-container>

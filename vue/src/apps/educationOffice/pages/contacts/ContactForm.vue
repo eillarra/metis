@@ -60,7 +60,7 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const officeStore = useStore();
+const store = useStore();
 
 const tab = ref<string>('info');
 const obj = ref<Contact>(props.obj);
@@ -81,7 +81,7 @@ function save() {
     .then((res) => {
       obj.value.updated_at = res.data.updated_at;
       obj.value.updated_by = res.data.updated_by;
-      officeStore.updateObj('contact', obj.value);
+      store.updateObj('contact', obj.value);
       notify.success('Contact info saved');
     });
 }
@@ -89,7 +89,7 @@ function save() {
 function removeContact() {
   confirm(t('form.contact.confirm_delete'), () => {
     api.delete(obj.value.self).then(() => {
-      officeStore.deleteObj('contact', obj.value);
+      store.deleteObj('contact', obj.value);
       notify.success(t('form.contact.deleted'));
       emit('delete:obj');
     });

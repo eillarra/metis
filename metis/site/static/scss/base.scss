@@ -103,6 +103,15 @@ a {
       text-decoration: underline;
     }
   }
+
+  &.disabled {
+    cursor: not-allowed;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
 
 code, kbd, pre, samp,

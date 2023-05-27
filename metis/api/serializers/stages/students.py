@@ -4,7 +4,7 @@ from metis.models import ProgramBlock, User, Student
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel.remarks import RemarksMixin
 from .projects import ProjectTinySerializer
-from .programs import ProgramBlockSerializer
+from .programs import ProgramBlockSerializer, ProgramInternshipTinySerializer
 
 
 project_student_lookup_fields = {

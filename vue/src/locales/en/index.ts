@@ -68,6 +68,7 @@ export default {
     skip: 'Skip',
     update: 'Update',
     invite: 'Invite',
+    sign: 'Sign',
     add_to_place: 'Add to place',
     add_to_project: 'Add to project',
     contact: {
@@ -85,13 +86,6 @@ export default {
       deleted: 'Contact deleted',
       save: 'Save contact',
       saved: 'Contact information saved',
-    },
-    content: {
-      available_texts: 'Available texts',
-      confirm_delete: 'Are you sure you want to delete this text?',
-      deleted: 'Text deleted',
-      save: 'Save text',
-      delete: 'Delete text',
     },
     internship: {
       create: {
@@ -136,6 +130,18 @@ export default {
       save: 'Save student',
       saved: 'Student information saved',
     },
+    text_entry: {
+      available_texts: 'Available texts',
+      delete: 'Delete text',
+      confirm_delete: 'Are you sure you want to delete this text?',
+      deleted: 'Text deleted',
+      save: 'Save text',
+      saved: 'Text saved',
+      signed: 'Text signed',
+    },
+    deleted: 'Deleted',
+    saved: 'Saved',
+    updated: 'Updated',
   },
   copied_to_clipboard: 'Copied to the clipboard',
 };

@@ -4,10 +4,6 @@
       <div class="menu-item">
         <span>{{ $t('internship', 9) }} {{ djangoEducation.short_name }}</span>
       </div>
-      <q-space />
-      <!--<q-tabs class="ugent__submenu">
-        <q-tab label="Dashboard" />
-      </q-tabs>-->
     </div>
     <router-view />
   </div>
@@ -20,10 +16,11 @@ import { usePage } from '@inertiajs/vue3';
 import { useStore } from './store';
 
 const page = usePage();
-const officeStore = useStore();
+const store = useStore();
 
 const djangoEducation = computed<EducationTiny>(() => page.props.education as EducationTiny);
-const djangoProjectStudents = computed<ProjectStudent[]>(() => page.props.student_set as ProjectStudent[]);
+const djangoStudents = computed<Student[]>(() => page.props.student_set as Student[]);
 
-officeStore.setData(djangoEducation.value, djangoProjectStudents.value);
+store.setData(djangoEducation.value, djangoStudents.value);
+store.init();
 </script>

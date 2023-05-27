@@ -68,8 +68,8 @@ import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
-const officeStore = useStore();
-const { education, project, students } = storeToRefs(officeStore);
+const store = useStore();
+const { education, project, students } = storeToRefs(store);
 
 const step = ref(1);
 const obj = ref({
@@ -106,7 +106,7 @@ function createInternship() {
       discipline_id: obj.value.discipline?.id,
     })
     .then((res) => {
-      officeStore.createObj('projectInternship', res.data);
+      store.createObj('projectInternship', res.data);
       notify.success(t('form.internship.create.saved'));
       emit('create:obj');
     });
