@@ -13,6 +13,12 @@ class RegionAdmin(BaseModelAdmin):
 
 @admin.register(Place)
 class PlaceAdmin(BaseModelAdmin):
-    list_filter = ("type",)
+    search_fields = ("code", "name")
+    list_display = ("id", "code", "name", "education")
+    list_filter = ("type", "education")
     # form
     inlines = (RemarksInline,)
+    raw_id_fields = ("parent",)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("education")
