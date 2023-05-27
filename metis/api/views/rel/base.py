@@ -4,9 +4,10 @@ from django.views.decorators.cache import never_cache
 from rest_framework.viewsets import ModelViewSet
 
 from ...permissions import IsRelManager
+from ..base import ProtectedMixin
 
 
-class RelModelViewSet(ModelViewSet):
+class RelModelViewSet(ProtectedMixin, ModelViewSet):
     _content_object = None
     auto_created_by = False
     permission_classes = (IsRelManager,)

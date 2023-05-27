@@ -35,7 +35,7 @@ class Notify {
     let msg = '';
 
     // 400 Bad Request || 403 Forbidden
-    if (res.status == 400 || res.status == 403) {
+    if (res.status == 400) {
       const errors: string[] = [];
       Object.keys(res.data).forEach((k) => {
         errors.push('<strong>' + k + '</strong>: ' + res.data[k].join(' '));
@@ -44,7 +44,7 @@ class Notify {
     }
 
     // 500 Internal Server Error
-    if (res.status == 500) {
+    if (res.status == 500 || res.status == 403) {
       msg = res.data.detail || '';
     }
 

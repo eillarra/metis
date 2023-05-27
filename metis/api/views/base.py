@@ -10,15 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 from metis.models.rel.invitations import Invitation
 
 
-class BaseModelViewSet(ModelViewSet):
-    """Prefetching happens automatically, even for generic relations."""
-
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
-
-    def perform_update(self, serializer):
-        serializer.save(updated_by=self.request.user)
-
+class ProtectedMixin:
     def destroy(self, request, *args, **kwargs):
         """
         Try destroying a model instance.
@@ -26,10 +18,20 @@ class BaseModelViewSet(ModelViewSet):
         return a `403 Forbidden` response.
         """
         try:
-            return super().destroy(request, *args, **kwargs)
+            return super().destroy(request, *args, **kwargs)  # type: ignore
         except ProtectedError as e:
             message, _ = e.args
             return Response({"ProtectedError": [message]}, status=status.FORBIDDEN)
+
+
+class BaseModelViewSet(ProtectedMixin, ModelViewSet):
+    """Prefetching happens automatically, even for generic relations."""
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
 
     @method_decorator(never_cache)
     def list(self, request, *args, **kwargs):
