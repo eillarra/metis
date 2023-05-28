@@ -4,7 +4,7 @@ import os
 def app(request):
     return {
         "DJANGO_ENV": os.environ.get("DJANGO_ENV", "development"),
-        "CONTACT_EMAIL": "metis@ugent.be",
+        "CONTACT_EMAIL": "helpdesk.metis@ugent.be",
         "HELPDESK_EMAIL": "helpdesk.metis@ugent.be",
     }
 
