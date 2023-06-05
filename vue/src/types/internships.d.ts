@@ -2,8 +2,8 @@ interface Internship extends ApiObject {
   self: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   student: Student | number | null;
-  period: Period | number;
-  track: TrackTiny | null;
+  period: Period | number | null;
+  track: Track | number | null;
   discipline: Discipline | null;
   start_date: string;
   end_date: string;

@@ -21,7 +21,7 @@ class ProtectedMixin:
             return super().destroy(request, *args, **kwargs)  # type: ignore
         except ProtectedError as e:
             message, _ = e.args
-            return Response({"ProtectedError": [message]}, status=status.FORBIDDEN)
+            return Response({"protected": [message]}, status=status.FORBIDDEN)
 
 
 class BaseModelViewSet(ProtectedMixin, ModelViewSet):

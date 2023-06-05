@@ -5,15 +5,9 @@
         <q-step :name="1" :title="$t('form.student.create.add_existing')" icon="search" active-icon="search">
           {{ $t('form.student.create.search') }}
           <div class="q-gutter-sm q-mt-sm">
-            <q-input
-              v-if="project"
-              v-model="project.name"
-              dense
-              :label="$t('project')"
-              readonly
-              class="col-12 col-md"
-            />
-            <program-block-select :programs="programs" v-model="formData.block_id" class="col-12 col-md-2" />
+            <readonly-field v-if="project" :label="$t('project')" :value="project.name" class="col-12 col-md" />
+            <track-select :programs="programs" v-model="formData.track" class="col-12 col-md-2" />
+            <program-block-select :programs="programs" v-model="formData.block" class="col-12 col-md-2" />
             <api-autocomplete
               v-model="formData.user"
               clearable
@@ -37,15 +31,16 @@
               @click="addStudent"
               color="ugent"
               :label="$t('form.add_to_project')"
-              :disable="!formData.user || !formData.block_id"
+              :disable="!formData.user || !formData.block"
             />
           </q-stepper-navigation>
         </q-step>
         <q-step :name="2" :title="$t('form.student.create.new')" icon="mail_outline" active-icon="mail_outline">
           {{ $t('form.student.create.invite') }}
           <div class="q-gutter-sm q-mt-sm">
-            <q-input v-if="project" v-model="project.name" :label="$t('project')" readonly class="col-12 col-md" />
-            <program-block-select :programs="programs" v-model="formData.block_id" class="col-12 col-md-2" />
+            <readonly-field v-if="project" :label="$t('project')" :value="project.name" class="col-12 col-md" />
+            <track-select :programs="programs" v-model="formData.track" class="col-12 col-md-2" />
+            <program-block-select :programs="programs" v-model="formData.block" class="col-12 col-md-2" />
             <q-input v-model="formData.name" dense :label="$t('field.name')" type="text" />
             <q-input v-model="formData.email" dense :label="$t('field.email')" type="email" />
           </div>
@@ -61,7 +56,7 @@
           @click="inviteStudent"
           color="ugent"
           :label="$t('form.invite')"
-          :disable="!formData.name || !formData.email || !formData.block_id"
+          :disable="!formData.name || !formData.email || !formData.block"
         />
       </div>
     </template>
@@ -80,7 +75,9 @@ import { useStore } from '../../store.js';
 
 import ApiAutocomplete from '@/components/forms/ApiAutocomplete.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
+import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import ProgramBlockSelect from '../../components/ProgramBlockSelect.vue';
+import TrackSelect from '../../components/TrackSelect.vue';
 
 const emit = defineEmits(['create:obj']);
 
@@ -91,7 +88,8 @@ const { education, programs, project, projectStudents } = storeToRefs(store);
 const step = ref(1);
 const formData = ref({
   user: null as QuasarAutocompleteOption | null,
-  block_id: null as number | null,
+  track: null as number | null,
+  block: null as number | null,
   name: null as string | null,
   email: null as string | null,
 });
@@ -104,7 +102,7 @@ function userMapper(data: ApiObject[]) {
     disable:
       education.value?.configuration?.allow_different_blocks_per_user_in_project === false
         ? userIdsUsedByStudents.value.has(obj.id)
-        : userIdsPerBlockUsedByStudents.value.get(formData.value?.block_id as number) === obj.id,
+        : userIdsPerBlockUsedByStudents.value.get(formData.value?.block as number) === obj.id,
   }));
 }
 
@@ -113,7 +111,8 @@ function addStudent() {
 
   const data = {
     user_id: formData.value.user.id,
-    block_id: formData.value.block_id,
+    track: formData.value.track,
+    block: formData.value.block,
   };
 
   api.post(`${project.value.self}students/`, data).then((res) => {
@@ -129,7 +128,8 @@ function inviteStudent() {
     name: formData.value.name,
     email: formData.value.email,
     data: {
-      block_id: formData.value.block_id,
+      track_id: formData.value.track,
+      block_id: formData.value.block,
     },
   };
 
@@ -145,7 +145,7 @@ function inviteStudent() {
  */
 const userIdsPerBlockUsedByStudents = computed<Map<number, number>>(() => {
   return projectStudents.value.reduce((map, obj) => {
-    map.set(obj.block.id, obj.user);
+    map.set(obj.block.id, (obj.user as User).id);
     return map;
   }, new Map());
 });
@@ -156,7 +156,7 @@ const userIdsPerBlockUsedByStudents = computed<Map<number, number>>(() => {
  */
 const userIdsUsedByStudents = computed<Set<number>>(() => {
   return projectStudents.value.reduce((set, obj) => {
-    set.add(obj.user);
+    set.add((obj.user as User).id);
     return set;
   }, new Set<number>());
 });

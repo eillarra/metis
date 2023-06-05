@@ -47,6 +47,13 @@ const columns = [
     sort: (a: string, b: string) => a.localeCompare(b),
   },
   {
+    name: 'track_name',
+    field: 'track_name',
+    label: t('track'),
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'block_name',
     field: 'block_name',
     label: t('program_block'),
@@ -61,13 +68,6 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'track_name',
-    field: 'track_name',
-    label: t('track'),
-    align: 'left',
-    sortable: true,
-  },
-  {
     name: 'disciplines',
     field: 'disciplines',
     label: t('discipline'),
@@ -78,11 +78,13 @@ const columns = [
 const rows = computed(() => {
   return props.internships.map((obj: Internship) => ({
     _self: obj,
-    student_name: obj.student?.name || '-',
+    student_name: ((obj.student as Student)?.user as User)?.name || '-',
     place_name: obj.place?.name || '-',
-    block_name: obj.period?.program_internship?.block?.name || '-',
-    period_name: obj.period?.program_internship ? `P${obj.period.program_internship.position}` : '-',
-    track_name: obj.track?.name || '-',
+    block_name: (((obj.period as Period)?.program_internship as ProgramInternship)?.block as ProgramBlock)?.name || '-',
+    period_name: (obj.period as Period)?.program_internship
+      ? `P${((obj.period as Period).program_internship as ProgramInternship).position}`
+      : '-',
+    track_name: (obj.track as Track)?.name || '-',
     disciplines: obj.discipline ? [obj.discipline] : [],
   }));
 });

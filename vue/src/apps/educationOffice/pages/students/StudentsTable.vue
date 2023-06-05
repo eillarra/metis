@@ -20,7 +20,7 @@ import StudentForm from './StudentForm.vue';
 const { t } = useI18n();
 
 const props = defineProps<{
-  students: Student[];
+  students: StudentUser[];
 }>();
 
 const queryColumns = ['name', 'email'];
@@ -38,6 +38,12 @@ const columns = [
     classes: 'sticky-left',
   },
   {
+    name: 'track',
+    field: 'track',
+    label: t('track'),
+    align: 'left',
+  },
+  {
     name: 'blocks',
     field: 'blocks',
     label: t('program_block', 9),
@@ -53,11 +59,14 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return props.students.map((obj: Student) => ({
-    _self: obj,
-    name: obj.name,
-    email: obj.email,
-    blocks: obj.student_set.map((rec) => `${rec.project.name}-${rec.block.name}`).join(', '),
-  }));
+  return props.students.map((obj: StudentUser) => {
+    return {
+      _self: obj,
+      name: obj.name,
+      email: obj.email,
+      track: (obj.student_set[0].track as Track)?.name || '-',
+      blocks: obj.student_set.map((stu) => `${(stu.project as Project)?.name}-${stu.block?.name}`).join(', '),
+    };
+  });
 });
 </script>

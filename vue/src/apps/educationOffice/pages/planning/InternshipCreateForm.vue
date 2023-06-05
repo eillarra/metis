@@ -15,16 +15,11 @@
             <api-autocomplete
               v-model="obj.student"
               clearable
-              :data-source="students"
+              :data-source="projectStudents"
               :mapper="studentMapper"
               :label="$t('student')"
             />
-            <discipline-select
-              v-if="education"
-              v-model="obj.discipline"
-              :disciplines="education.disciplines"
-              :label="$t('period')"
-            />
+            <period-select v-model="obj.period" :periods="filteredPeriods" :label="$t('period')" />
             <discipline-select
               v-if="education"
               v-model="obj.discipline"
@@ -44,7 +39,7 @@
           @click="createInternship"
           color="ugent"
           :label="$t('form.add_to_project')"
-          :disable="!obj.project_place || !obj.student || !obj.discipline || obj.period"
+          :disable="!obj.project_place || !obj.student || !obj.discipline"
         />
       </div>
     </template>
@@ -64,20 +59,38 @@ import { useStore } from '../../store.js';
 import ApiAutocomplete from '@/components/forms/ApiAutocomplete.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
+import PeriodSelect from '../../components/PeriodSelect.vue';
 
 const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
 const store = useStore();
-const { education, project, students } = storeToRefs(store);
+const { education, project, projectStudents, trackMap } = storeToRefs(store);
 
 const step = ref(1);
 const obj = ref({
   project_place: null as ProjectPlace | null,
   student: null as Student | null,
+  period: null as Period | null,
   discipline: null as Discipline | null,
 });
 const projectName = computed<string>(() => (project.value ? project.value.name : ''));
+
+const filteredPeriods = computed(() => {
+  // we only show the periods for students with a Track, and only for their blocks
+  if (!project.value) return [];
+
+  // for each program in programs, find the track of the student
+  const studentTrack = trackMap.value.get(((obj.value.student as Student)?.track as Track)?.id as number);
+
+  // period.program_internship should be in track.program_internships
+  return (project.value as Project).periods.filter((period) => {
+    return (
+      obj.value.student?.block?.id == ((period.program_internship as ProgramInternship).block as ProgramBlock)?.id &&
+      studentTrack?.program_internships.includes((period.program_internship as ProgramInternship)?.id)
+    );
+  });
+});
 
 function placeMapper(data: ApiObject[]) {
   return data.map((obj) => {
@@ -91,18 +104,25 @@ function placeMapper(data: ApiObject[]) {
 }
 
 function studentMapper(data: ApiObject[]) {
-  return data.map((obj) => ({
-    id: obj.id,
-    name: (obj as Student).name,
-    caption: (obj as Student).email,
-  }));
+  return data.map((obj) => {
+    const student: Student = obj as Student;
+    return {
+      id: student.id,
+      name: (student.user as User).name,
+      caption: `${(student.project as Project)?.name}-${student.block?.name} / ${(student.user as User).email}`,
+      track: student.track,
+      block: student.block,
+    };
+  });
 }
 
 function createInternship() {
   api
-    .post(project.value?.rel_internships, {
+    .post((project.value as Project).rel_internships, {
       student: obj.value.student?.id,
       project_place: obj.value.project_place?.id,
+      period: obj.value.period,
+      track: (obj.value.student?.track as Track)?.id,
       discipline_id: obj.value.discipline?.id,
     })
     .then((res) => {

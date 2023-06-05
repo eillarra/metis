@@ -3,7 +3,6 @@ import { defineStore } from 'pinia';
 import { cloneDeep } from 'lodash-es';
 
 import { api } from '@/axios.ts';
-import { find } from 'lodash-es';
 
 export const useStore = defineStore('educationOffice', () => {
   const education = ref<Education | null>(null);
@@ -11,7 +10,7 @@ export const useStore = defineStore('educationOffice', () => {
   const projects = ref<Project[]>([]);
   const projectInternships = ref<Internship[]>([]);
   const projectPlaces = ref<ProjectPlace[]>([]);
-  const students = ref<Student[]>([]);
+  const students = ref<StudentUser[]>([]);
 
   const selectedProjectId = ref<number | null>(null);
 
@@ -58,16 +57,22 @@ export const useStore = defineStore('educationOffice', () => {
   });
 
   const projectStudents = computed<Student[]>(() => {
-    if (!project.value || !students.value.length) {
+    if (!selectedProjectId.value || !students.value.length) {
       return [];
     }
 
-    return students.value.reduce((arr, student) => {
-      student.student_set.forEach((obj) => {
-        if (obj.project.id === project.value?.id) {
-          arr.push(obj);
-        }
-      });
+    return students.value.reduce((arr, studentUser) => {
+      studentUser.student_set
+        .filter((student) => (student.project as Project).id === selectedProjectId.value)
+        .forEach((student) => {
+          arr.push({
+            ...student,
+            user: {
+              ...studentUser,
+              student_set: [], // just make the object smaller
+            } as StudentUser,
+          });
+        });
       return arr;
     }, [] as Student[]);
   });
@@ -111,7 +116,7 @@ export const useStore = defineStore('educationOffice', () => {
 
   const projectStudentsWithInternships = computed<Set<number>>(() => {
     return projectInternships.value.reduce((set, obj) => {
-      set.add(obj.student);
+      set.add(obj.student as number);
       return set;
     }, new Set<number>());
   });
@@ -123,28 +128,71 @@ export const useStore = defineStore('educationOffice', () => {
     }, new Map())
   );
 
+  const blockMap = computed<Map<number, Track>>(() =>
+    programs.value.reduce((map, program) => {
+      program.blocks.forEach((block) => {
+        map.set(block.id, block);
+      });
+      return map;
+    }, new Map())
+  );
+
+  const trackMap = computed<Map<number, Track>>(() =>
+    programs.value.reduce((map, program) => {
+      program.tracks.forEach((track) => {
+        map.set(track.id, track);
+      });
+      return map;
+    }, new Map())
+  );
+
+  const periodMap = computed<Map<number, Period>>(() => {
+    if (!project.value) {
+      return new Map();
+    }
+
+    return project.value.periods.reduce((map, period) => {
+      map.set(period.id, period);
+      return map;
+    }, new Map());
+  });
+
+  const projectMap = computed<Map<number, Project>>(() =>
+    projects.value.reduce((map, project) => {
+      map.set(project.id, project);
+      return map;
+    }, new Map())
+  );
+
+  const studentMap = computed<Map<number, Student>>(() =>
+    students.value.reduce((map, studentUser) => {
+      studentUser.student_set
+        .filter((student) => (student.project as Project).id === selectedProjectId.value)
+        .forEach((student) => {
+          map.set(student.id, {
+            ...student,
+            user: {
+              ...studentUser,
+              student_set: [], // just make the object smaller
+            },
+          } as Student);
+        });
+      return map;
+    }, new Map())
+  );
+
   const internships = computed<Internship[]>(() => {
     if (!project.value || !projectPlaces.value.length || !students.value.length) {
       return [];
     }
 
-    const periodMap: Map<number, Period> = project.value.periods.reduce((map, period) => {
-      map.set(period.id, period);
-      return map;
-    }, new Map());
-
-    const studentMap: Map<number, Student> = students.value.reduce((map, student) => {
-      const studentObjectId = find(student.student_set, { project: { id: project.value?.id } })?.id;
-      map.set(studentObjectId, student);
-      return map;
-    }, new Map());
-
     return projectInternships.value.map((obj: Internship) => {
       return {
         ...obj,
-        period: periodMap.get(obj.period) || obj.period,
+        track: trackMap.value.get(obj.track as number) || obj.track,
+        period: periodMap.value.get(obj.period as number) || obj.period,
         place: projectPlaceMap.value.get(obj.project_place),
-        student: studentMap.get(obj.student) || obj.student,
+        student: studentMap.value.get(obj.student as number) || obj.student,
       };
     });
   });
@@ -186,8 +234,29 @@ export const useStore = defineStore('educationOffice', () => {
       return;
     }
 
+    const projectIds = projects.value.reduce((set, project) => {
+      set.add(project.id);
+      return set;
+    }, new Set<number>());
+
     await api.get(project.value.rel_students).then((res) => {
-      students.value = res.data;
+      students.value = res.data.map(
+        (obj: StudentUser) =>
+          ({
+            ...obj,
+            student_set: obj.student_set
+              .filter((student: Student) => projectIds.has(student.project as number))
+              .map(
+                (student: Student) =>
+                  ({
+                    ...student,
+                    block: blockMap.value.get(student.block as number),
+                    project: projectMap.value.get(student.project as number),
+                    track: trackMap.value.get(student.track as number),
+                  } as Student)
+              ),
+          } as StudentUser)
+      );
     });
   }
 
@@ -220,7 +289,7 @@ export const useStore = defineStore('educationOffice', () => {
           fetchStudents();
           return;
         }
-        collection = students.value as Student[];
+        collection = students.value as StudentUser[];
         break;
       default:
         break;
@@ -280,5 +349,8 @@ export const useStore = defineStore('educationOffice', () => {
     projectStudentsWithInternships,
     selectedProjectId,
     students,
+    blockMap,
+    projectMap,
+    trackMap,
   };
 });

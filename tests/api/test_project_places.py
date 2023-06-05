@@ -152,9 +152,3 @@ class TestForOfficeMember(TestForAuthenticated):
 
         project.refresh_from_db()
         assert project.places.count() == 0
-
-    @pytest.mark.skip(reason="TODO")
-    def test_delete_with_internships(self, api_client, education, project_place):
-        """When the place has been used in an internshiop, it cannot be deleted anymore."""
-        # assert response.status_code == status.FORBIDDEN
-        pass

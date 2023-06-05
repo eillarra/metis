@@ -90,9 +90,7 @@ class Period(BaseModel):
     """
 
     project = models.ForeignKey(Project, related_name="periods", on_delete=models.CASCADE)
-    program_internship = models.ForeignKey(
-        "metis.ProgramInternship", null=True, related_name="periods", on_delete=models.SET_NULL
-    )
+    program_internship = models.ForeignKey("metis.ProgramInternship", related_name="periods", on_delete=models.PROTECT)
     name = models.CharField(max_length=240)
     start_date = models.DateField()
     end_date = models.DateField()

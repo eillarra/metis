@@ -1,5 +1,5 @@
 <template>
-  <dialog-form icon="person" :title="student.name">
+  <dialog-form icon="person" :title="studentUser.name">
     <template #tabs>
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
         <q-tab name="info" label="Info" icon="info_outline" />
@@ -12,11 +12,12 @@
         <q-tab-panel name="info">
           <div class="q-gutter-xs">
             <div class="row q-col-gutter-lg q-pl-xs">
-              <q-input v-model="obj.project.name" dense :label="$t('project')" readonly class="col-12 col-md" />
-              <q-input v-model="obj.block.name" dense :label="$t('program_block')" readonly class="col-12 col-md" />
+              <readonly-field :label="$t('project')" :value="(obj.project as Project).name" class="col-12 col-md" />
+              <readonly-field :label="$t('track')" :value="(obj.track as Track)?.name || '-'" class="col-12 col-md" />
+              <readonly-field :label="$t('program_block')" :value="obj.block.name" class="col-12 col-md" />
             </div>
-            <q-input v-model="student.name" dense :label="$t('student')" readonly />
-            <q-input v-model="student.email" dense :label="$t('field.email')" readonly />
+            <readonly-field :label="$t('student')" :value="studentUser.name" />
+            <readonly-field :label="$t('field.email')" :value="studentUser.email" />
           </div>
         </q-tab-panel>
         <q-tab-panel name="internships"> - TODO: Show internship info </q-tab-panel>
@@ -54,20 +55,23 @@ import { notify } from '@/notify';
 import { useStore } from '../../store.js';
 
 import DialogForm from '@/components/forms/DialogForm.vue';
+import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 
 const { t } = useI18n();
 const emit = defineEmits(['delete:obj']);
 
 const props = defineProps<{
-  obj: Student;
+  obj: StudentUser;
 }>();
 
 const store = useStore();
 const { project, projectStudentsWithInternships } = storeToRefs(store);
 
-const student = ref<Student>(props.obj);
-const obj = ref<Student>(props.obj.student_set.find((obj) => obj.project.id == project.value?.id) as Student);
+const studentUser = ref<StudentUser>(props.obj);
+const obj = ref<Student>(
+  props.obj.student_set.find((obj) => (obj.project as Project).id == project.value?.id) as Student
+);
 const tab = ref<string>('info');
 
 const remarkCount = computed<number>(() => {
@@ -82,7 +86,7 @@ const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
 
   let acc: Record<string, ApiEndpoint> = {};
   return props.obj.student_set.reduce((acc, projectStudent: Student) => {
-    acc[projectStudent.project.name] = projectStudent.rel_remarks;
+    acc[(projectStudent.project as Project).name] = projectStudent.rel_remarks;
     return acc;
   }, acc);
 });
@@ -92,7 +96,7 @@ function deleteStudent() {
     api.delete(obj.value.self).then(() => {
       // we remove the whole student/user from the store, because the student is deleted from the project
       // when we change projects, the student might be loaded again for the other project
-      store.deleteObj('student', student.value);
+      store.deleteObj('student', studentUser.value);
       notify.success(t('form.student.deleted'));
       emit('delete:obj');
     });

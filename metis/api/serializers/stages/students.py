@@ -1,10 +1,8 @@
 from rest_framework import serializers
 
-from metis.models import ProgramBlock, User, Student
+from metis.models import User, Student
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel.remarks import RemarksMixin
-from .projects import ProjectTinySerializer
-from .programs import ProgramBlockSerializer, ProgramInternshipTinySerializer
 
 
 project_student_lookup_fields = {
@@ -15,11 +13,9 @@ project_student_lookup_fields = {
 
 class StudentSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-student-detail", nested_lookup=project_student_lookup_fields)
-    project = ProjectTinySerializer(read_only=True)
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(source="user", queryset=User.objects.all(), write_only=True)
-    block = ProgramBlockSerializer(read_only=True)
-    block_id = serializers.PrimaryKeyRelatedField(source="block", queryset=ProgramBlock.objects.all(), write_only=True)
 
     class Meta:
         model = Student

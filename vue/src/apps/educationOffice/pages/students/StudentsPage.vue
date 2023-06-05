@@ -9,6 +9,7 @@
       v-model="selectedBlock"
       class="col-12 col-md-2"
     />
+    <track-select v-if="project" as-filter :programs="programs" v-model="selectedTrack" class="col-12 col-md-2" />
   </div>
   <students-table v-if="project" :students="filteredStudents" />
 </template>
@@ -20,17 +21,25 @@ import { storeToRefs } from 'pinia';
 import { useStore } from '../../store.js';
 
 import ProgramBlockSelect from '../../components/ProgramBlockSelect.vue';
+import TrackSelect from '../../components/TrackSelect.vue';
 import StudentsTable from './StudentsTable.vue';
 
 const { project, programs, students } = storeToRefs(useStore());
 
 const selectedBlock = ref<number | null>(null);
+const selectedTrack = ref<number | null>(null);
 
-const filteredStudents = computed<Student[]>(() => {
-  return students.value.filter((user) =>
-    selectedBlock.value
-      ? user.student_set.some((rec) => rec.project.id == project.value?.id && rec.block.id == selectedBlock.value)
-      : user.student_set.some((rec) => rec.project.id == project.value?.id)
-  );
+const filteredStudents = computed<StudentUser[]>(() => {
+  return students.value
+    .filter((user) =>
+      selectedBlock.value
+        ? user.student_set.some(
+            (st) => (st.project as Project).id == project.value?.id && st.block.id == selectedBlock.value
+          )
+        : user.student_set.some((st) => (st.project as Project).id == project.value?.id)
+    )
+    .filter((user) =>
+      selectedTrack.value ? user.student_set.some((st) => (st.track as Track)?.id == selectedTrack.value) : true
+    );
 });
 </script>

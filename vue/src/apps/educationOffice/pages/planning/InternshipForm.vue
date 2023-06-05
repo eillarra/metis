@@ -1,5 +1,5 @@
 <template>
-  <dialog-form icon="calendar_month" :title="obj.track?.name">
+  <dialog-form icon="calendar_month" :title="(obj.track as Track)?.name">
     <template #tabs>
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
         <q-tab name="info" label="Info" icon="info_outline" />
@@ -15,16 +15,8 @@
       <q-tab-panels v-model="tab" class="q-px-sm">
         <q-tab-panel name="info">
           <div class="q-gutter-sm">
-            <q-input v-model="projectName" dense :label="$t('project')" readonly />
-            <q-input v-if="obj.student" v-model="obj.student.name" dense :label="$t('student')" readonly />
-            <q-field v-else dense value="-" :label="$t('student')" readonly stack-label>
-              <template #control>
-                <span>-</span>
-              </template>
-              <!--<template #append>
-                <q-btn unelevated color="ugent" label="Add student" size="xs" />
-              </template>-->
-            </q-field>
+            <readonly-field :label="$t('project')" :value="projectName" />
+            <readonly-field :label="$t('student')" :value="((obj.student as Student)?.user as User)?.name || '-'" />
             <discipline-select
               v-if="education"
               v-model="obj.discipline"
@@ -87,6 +79,7 @@ import { useStore } from '../../store.js';
 import DateSelect from '@/components/forms/DateSelect.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
+import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 
