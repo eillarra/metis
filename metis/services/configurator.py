@@ -1,10 +1,18 @@
-from pydantic import BaseModel, ValidationError, validator
+from pydantic import BaseModel, Extra, ValidationError, validator
+
+
+class Translation(BaseModel):
+    nl: str
+    en: str
 
 
 class TextEntryType(BaseModel):
     code: str
-    name_nl: str
-    name_en: str
+    title: Translation
+
+    class Config:
+        extra = Extra.forbid
+        anystr_strip_whitespace = True
 
 
 class ProjectTextEntryType(TextEntryType):
@@ -18,7 +26,12 @@ class PlaceTextEntryType(TextEntryType):
 class EducationConfig(BaseModel):
     allow_different_blocks_per_user_in_project: bool = True
     project_text_types: list[ProjectTextEntryType]
-    place_text_types: list[PlaceTextEntryType] | None = None
+    place_text_types: list[PlaceTextEntryType] = []
+    place_set_disciplines_per_block: bool = False
+
+    class Config:
+        extra = Extra.forbid
+        validate_all = True
 
     @validator("project_text_types")
     def validate_project_text_types(cls, v):
@@ -31,15 +44,6 @@ class EducationConfig(BaseModel):
 
 
 def validate_education_configuration(config):
-    """
-    Validates the education configuration.
-
-    Args:
-        config (dict): A dictionary containing the education configuration to be validated.
-
-    Raises:
-        ValueError: If the configuration is invalid.
-    """
     try:
         EducationConfig(**config)
     except (TypeError, ValidationError) as e:

@@ -28,6 +28,19 @@ from metis.services.configurator import validate_education_configuration
                 },
             ]
         },
+        {
+            "unknown_key": "unknown_value",
+            "project_text_types": [
+                {
+                    "code": "project.internship_agreement",
+                    "name": {"nl": "Stageovereenkomst", "en": "Internship agreement"},
+                },
+                {
+                    "code": "project.privacy_agreement",
+                    "name": {"nl": "Privacy verklaring", "en": "Privacy agreement"},
+                },
+            ],
+        },
     ],
 )
 def test_config_is_invalid(config):
@@ -42,13 +55,11 @@ def test_config_is_invalid(config):
             "project_text_types": [
                 {
                     "code": "project.internship_agreement",
-                    "name_nl": "Stageovereenkomst",
-                    "name_en": "Internship agreement",
+                    "title": {"nl": "Stageovereenkomst", "en": "Internship agreement"},
                 },
                 {
                     "code": "project.privacy_agreement",
-                    "name_nl": "Privacy verklaring",
-                    "name_en": "Privacy agreement",
+                    "title": {"nl": "Privacy verklaring", "en": "Privacy agreement"},
                 },
             ]
         },

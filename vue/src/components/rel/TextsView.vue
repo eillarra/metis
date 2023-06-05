@@ -67,7 +67,7 @@
       <q-header class="bg-white q-pt-sm">
         <q-toolbar class="text-primary q-pl-lg q-pr-sm">
           <q-icon name="notes" />
-          <q-toolbar-title>{{ selectedTextType?.name }}</q-toolbar-title>
+          <q-toolbar-title>{{ selectedTextType?.title[locale] }}</q-toolbar-title>
           <q-space />
           <q-btn flat dense v-close-popup icon="close" style="padding: 8px" />
         </q-toolbar>
@@ -147,7 +147,7 @@ const { t, locale } = useI18n();
 
 const props = defineProps<{
   apiEndpoint: ApiEndpoint | null;
-  textTypes?: TextEntryType[];
+  textTypes: TextEntryType[];
   container?: boolean;
 }>();
 
@@ -155,16 +155,10 @@ const tab = ref<string>('nl');
 const obj = ref<TextEntry | object | null>(null);
 const loading = ref<boolean>(true);
 const texts = ref<TextEntry[]>([]);
-const textTypes = computed<TextEntryType[]>(
-  () =>
-    props.textTypes?.map((obj) => ({
-      ...obj,
-      name: locale.value === 'en' ? obj.name_en : obj.name_nl,
-    })) || []
-);
+
 const selectedTextType = computed<TextEntryType | null>(() => {
   if (!obj.value) return null;
-  return textTypes.value.find((c) => c.code === (obj.value as TextEntry).code) || null;
+  return props.textTypes.find((c) => c.code === (obj.value as TextEntry).code) || null;
 });
 
 const dialogVisible = computed<boolean>({
@@ -181,7 +175,7 @@ const dialogVisible = computed<boolean>({
 const pendingTexts = computed<TextEntryType[]>(() => {
   if (!texts.value || !props.textTypes?.length) return [];
   // check what content types are not yet in the texts, via code
-  return textTypes.value.filter((c) => !texts.value.find((d) => d.code === c.code));
+  return props.textTypes.filter((c) => !texts.value.find((d) => d.code === c.code));
 });
 
 async function fetchTexts() {
@@ -195,8 +189,8 @@ async function fetchTexts() {
 async function addText(textType: TextEntryType) {
   obj.value = {
     code: textType.code,
-    title_en: textType.name_en,
-    title_nl: textType.name_nl,
+    title_en: textType.title['en'],
+    title_nl: textType.title['nl'],
     text_en: '',
     text_nl: '',
   };
