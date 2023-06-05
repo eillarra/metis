@@ -21,7 +21,11 @@
         @click="addText(textType)"
       >
         <template #default>
-          <span class="text-body1"><q-icon name="post_add" class="q-mr-sm" />{{ textType.name }}</span>
+          <span class="text-body1"
+            ><q-icon name="post_add" class="q-mr-sm" />{{
+              locale === 'en' ? textType.title.en : textType.title.nl
+            }}</span
+          >
         </template>
         <template #action>
           <q-btn unelevated flat color="ugent" :label="$t('form.add')" no-caps></q-btn>
@@ -67,7 +71,9 @@
       <q-header class="bg-white q-pt-sm">
         <q-toolbar class="text-primary q-pl-lg q-pr-sm">
           <q-icon name="notes" />
-          <q-toolbar-title>{{ selectedTextType?.title[locale] }}</q-toolbar-title>
+          <q-toolbar-title v-if="selectedTextType">{{
+            locale === 'en' ? selectedTextType.title.en : selectedTextType.title.nl
+          }}</q-toolbar-title>
           <q-space />
           <q-btn flat dense v-close-popup icon="close" style="padding: 8px" />
         </q-toolbar>
@@ -152,7 +158,7 @@ const props = defineProps<{
 }>();
 
 const tab = ref<string>('nl');
-const obj = ref<TextEntry | object | null>(null);
+const obj = ref<TextEntry | null>(null);
 const loading = ref<boolean>(true);
 const texts = ref<TextEntry[]>([]);
 
@@ -187,7 +193,7 @@ async function fetchTexts() {
 }
 
 async function addText(textType: TextEntryType) {
-  obj.value = {
+  obj.value = <TextEntry>{
     code: textType.code,
     title_en: textType.title['en'],
     title_nl: textType.title['nl'],
