@@ -107,7 +107,7 @@
     >
       <template #body-cell="props">
         <!-- Custom boolean field -->
-        <q-td :props="props" :auto-width="props.col.name.startsWith('is_')">
+        <q-td :props="props" :auto-width="props.col.name.startsWith('is_')" :class="props.row._class || ''">
           <span v-if="props.col.name.startsWith('is_')">
             <q-icon v-if="props.value" name="check_circle" color="green" :size="iconSize" />
             <q-icon v-else name="highlight_off" color="red" :size="iconSize" />

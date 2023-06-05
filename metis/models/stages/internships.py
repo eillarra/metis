@@ -101,6 +101,19 @@ class Internship(RemarksMixin, BaseModel):
     An internship by a student.
     """
 
+    PREPLANNING = "preplanning"
+    CONCEPT = "concept"
+    DEFINITIVE = "definitive"
+    CANCELLED = "cancelled"
+    UNSUCCESSFUL = "unsuccessful"
+    STATUS_CHOICES = [
+        (PREPLANNING, "Preplanning"),
+        (CONCEPT, "Concept"),
+        (DEFINITIVE, "Definitive"),
+        (CANCELLED, "Cancelled"),
+        (UNSUCCESSFUL, "Unsuccessful"),
+    ]
+
     project = models.ForeignKey("metis.Project", related_name="internships", on_delete=models.PROTECT)
     period = models.ForeignKey("metis.Period", related_name="internships", null=True, on_delete=models.SET_NULL)
     track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
@@ -111,12 +124,11 @@ class Internship(RemarksMixin, BaseModel):
     custom_end_date = models.DateField(null=True)  # by default end date is period's end date
 
     discipline = models.ForeignKey("metis.Discipline", related_name="internships", null=True, on_delete=models.SET_NULL)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=CONCEPT)
 
     # evaluation_deadline = models.DateField()  # this can be used for cases > reviews
     # mentors
     # reviewers (beoordelaars)
-
-    is_valid = models.BooleanField(default=True)
 
     def clean(self) -> None:
         """
@@ -202,8 +214,10 @@ class Internship(RemarksMixin, BaseModel):
         if self.track is None or self.student is None:
             return Discipline.objects.none()
 
-        # TODO: exclude also is_valid=False internships
-        past_internships = self.student.internships.exclude(pk=self.pk).filter(track=self.track)
+        skip = {self.CANCELLED, self.UNSUCCESSFUL}
+        past_internships = (
+            self.student.internships.exclude(pk=self.pk).exclude(status__in=skip).filter(track=self.track)
+        )
         return Discipline.objects.filter(internships__in=past_internships)
 
     def get_counter_for_disciplines(self) -> Counter:

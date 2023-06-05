@@ -73,11 +73,19 @@ const columns = [
     label: t('discipline'),
     align: 'left',
   },
+  {
+    name: 'status',
+    field: 'status',
+    label: t('field.status'),
+    align: 'left',
+    sortable: true,
+  },
 ];
 
 const rows = computed(() => {
   return props.internships.map((obj: Internship) => ({
     _self: obj,
+    _class: obj.status === 'cancelled' ? 'bg-red-1' : obj.status === 'unsuccessful' ? 'bg-orange-1' : '',
     student_name: ((obj.student as Student)?.user as User)?.name || '-',
     place_name: obj.place?.name || '-',
     block_name: (((obj.period as Period)?.program_internship as ProgramInternship)?.block as ProgramBlock)?.name || '-',
@@ -86,6 +94,7 @@ const rows = computed(() => {
       : '-',
     track_name: (obj.track as Track)?.name || '-',
     disciplines: obj.discipline ? [obj.discipline] : [],
+    status: t(`internship_status.${obj.status}`),
   }));
 });
 </script>
