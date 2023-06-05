@@ -34,12 +34,12 @@ const filteredStudents = computed<StudentUser[]>(() => {
     .filter((user) =>
       selectedBlock.value
         ? user.student_set.some(
-            (st) => (st.project as Project).id == project.value?.id && st.block.id == selectedBlock.value
+            (student) => student.project == project.value?.id && student.block == selectedBlock.value
           )
-        : user.student_set.some((st) => (st.project as Project).id == project.value?.id)
+        : user.student_set.some((student) => student.project == project.value?.id)
     )
     .filter((user) =>
-      selectedTrack.value ? user.student_set.some((st) => (st.track as Track)?.id == selectedTrack.value) : true
+      selectedTrack.value ? user.student_set.some((student) => student.track == selectedTrack.value) : true
     );
 });
 </script>

@@ -9,12 +9,14 @@ interface ProgramBlock extends ProgramBlockTiny {
 
 interface ProgramInternship extends ApiObject {
   name: string;
-  block: number | ProgramBlockTiny;
+  block: number;
   position: number;
   start_week: number;
   duration: number | null;
   updated_at: string;
   updated_by: UserTiny;
+  // -----
+  Block?: ProgramBlockTiny;
 }
 
 interface Program extends ApiObject {

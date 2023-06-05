@@ -1,9 +1,8 @@
 from rest_framework import serializers
 
-from metis.models import Discipline, Place, ProjectPlace
+from metis.models import Place, ProjectPlace
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..places import PlaceSerializer
-from ..disciplines import DisciplineSerializer
 from ..rel.remarks import RemarksMixin
 
 
@@ -21,10 +20,6 @@ class ProjectPlaceSerializer(RemarksMixin, BaseModelSerializer):
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     place = PlaceSerializer(read_only=True)
     place_id = serializers.PrimaryKeyRelatedField(source="place", queryset=Place.objects.all(), write_only=True)
-    disciplines = DisciplineSerializer(many=True, read_only=True)
-    discipline_ids = serializers.PrimaryKeyRelatedField(
-        source="disciplines", queryset=Discipline.objects.all(), write_only=True, many=True, required=False
-    )
 
     class Meta:
         model = ProjectPlace

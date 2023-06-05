@@ -6,14 +6,14 @@
           <div class="q-gutter-sm">
             <q-input v-model="projectName" dense :label="$t('project')" readonly />
             <api-autocomplete
-              v-model="obj.project_place"
+              v-model="obj.ProjectPlace"
               clearable
               :data-source="(project as Project).rel_places"
               :mapper="placeMapper"
               :label="$t('place')"
             />
             <api-autocomplete
-              v-model="obj.student"
+              v-model="obj.Student"
               clearable
               :data-source="projectStudents"
               :mapper="studentMapper"
@@ -39,7 +39,7 @@
           @click="createInternship"
           color="ugent"
           :label="$t('form.add_to_project')"
-          :disable="!obj.project_place || !obj.student || !obj.discipline"
+          :disable="!obj.ProjectPlace || !obj.Student || !obj.discipline"
         />
       </div>
     </template>
@@ -65,29 +65,27 @@ const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
 const store = useStore();
-const { education, project, projectStudents, trackMap } = storeToRefs(store);
+const { education, project, projectStudents } = storeToRefs(store);
 
 const step = ref(1);
 const obj = ref({
-  project_place: null as ProjectPlace | null,
-  student: null as Student | null,
-  period: null as Period | null,
-  discipline: null as Discipline | null,
+  project_place: null as number | null,
+  student: null as number | null,
+  period: null as number | null,
+  discipline: null as number | null,
+  Student: null as Student | null,
+  ProjectPlace: null as ProjectPlace | null,
 });
 const projectName = computed<string>(() => (project.value ? project.value.name : ''));
 
 const filteredPeriods = computed(() => {
-  // we only show the periods for students with a Track, and only for their blocks
   if (!project.value) return [];
+  if (!obj.value.Student?.Track) return project.value.periods;
 
-  // for each program in programs, find the track of the student
-  const studentTrack = trackMap.value.get(((obj.value.student as Student)?.track as Track)?.id as number);
-
-  // period.program_internship should be in track.program_internships
-  return (project.value as Project).periods.filter((period) => {
+  return project.value.periods.filter((period) => {
     return (
-      obj.value.student?.block?.id == ((period.program_internship as ProgramInternship).block as ProgramBlock)?.id &&
-      studentTrack?.program_internships.includes((period.program_internship as ProgramInternship)?.id)
+      obj.value.Student?.Block?.id == period.ProgramInternship?.block &&
+      obj.value.Student?.Track?.program_internships.includes(period.program_internship)
     );
   });
 });
@@ -108,10 +106,10 @@ function studentMapper(data: ApiObject[]) {
     const student: Student = obj as Student;
     return {
       id: student.id,
-      name: (student.user as User).name,
-      caption: `${(student.project as Project)?.name}-${student.block?.name} / ${(student.user as User).email}`,
-      track: student.track,
-      block: student.block,
+      name: (student.User as StudentUser).name,
+      caption: `${student.Project?.name}-${student.Block?.name} / ${student.User?.email}`,
+      Track: student.Track,
+      Block: student.Block,
     };
   });
 }
@@ -119,15 +117,15 @@ function studentMapper(data: ApiObject[]) {
 function createInternship() {
   api
     .post((project.value as Project).rel_internships, {
-      student: obj.value.student?.id,
-      project_place: obj.value.project_place?.id,
+      student: obj.value.Student?.id,
+      project_place: obj.value.ProjectPlace?.id,
       period: obj.value.period,
-      track: (obj.value.student?.track as Track)?.id,
-      discipline_id: obj.value.discipline?.id,
+      track: obj.value.Student?.Track?.id,
+      discipline: obj.value.discipline,
     })
     .then((res) => {
       store.createObj('projectInternship', res.data);
-      notify.success(t('form.internship.create.saved'));
+      notify.success(t('form.internship.create.success'));
       emit('create:obj');
     });
 }

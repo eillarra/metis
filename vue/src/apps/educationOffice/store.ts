@@ -30,7 +30,7 @@ export const useStore = defineStore('educationOffice', () => {
           if (!internships.has(internship.id)) {
             internships.set(internship.id, {
               ...internship,
-              block: block,
+              Block: block,
             });
           }
         });
@@ -48,8 +48,7 @@ export const useStore = defineStore('educationOffice', () => {
     }
 
     selectedProject.periods = selectedProject.periods.map((period) => {
-      period.program_internship =
-        programInternshipMap.value.get(period.program_internship as number) || period.program_internship;
+      period.ProgramInternship = programInternshipMap.value.get(period.program_internship);
       return period;
     });
 
@@ -63,11 +62,11 @@ export const useStore = defineStore('educationOffice', () => {
 
     return students.value.reduce((arr, studentUser) => {
       studentUser.student_set
-        .filter((student) => (student.project as Project).id === selectedProjectId.value)
+        .filter((student) => student.project === selectedProjectId.value)
         .forEach((student) => {
           arr.push({
             ...student,
-            user: {
+            User: {
               ...studentUser,
               student_set: [], // just make the object smaller
             } as StudentUser,
@@ -91,7 +90,7 @@ export const useStore = defineStore('educationOffice', () => {
           ids.add(contact.id);
           output.push({
             ...contact,
-            place: {
+            Place: {
               ...obj,
               contacts: [], // just make the object smaller
             },
@@ -126,6 +125,14 @@ export const useStore = defineStore('educationOffice', () => {
       map.set(obj.id, obj.place);
       return map;
     }, new Map())
+  );
+
+  const disciplineMap = computed<Map<number, Discipline>>(
+    () =>
+      education.value?.disciplines.reduce((map, discipline) => {
+        map.set(discipline.id, discipline);
+        return map;
+      }, new Map()) || new Map()
   );
 
   const blockMap = computed<Map<number, Track>>(() =>
@@ -167,14 +174,14 @@ export const useStore = defineStore('educationOffice', () => {
   const studentMap = computed<Map<number, Student>>(() =>
     students.value.reduce((map, studentUser) => {
       studentUser.student_set
-        .filter((student) => (student.project as Project).id === selectedProjectId.value)
+        .filter((student) => student.project === selectedProjectId.value)
         .forEach((student) => {
           map.set(student.id, {
             ...student,
-            user: {
+            User: {
               ...studentUser,
               student_set: [], // just make the object smaller
-            },
+            } as StudentUser,
           } as Student);
         });
       return map;
@@ -186,15 +193,14 @@ export const useStore = defineStore('educationOffice', () => {
       return [];
     }
 
-    return projectInternships.value.map((obj: Internship) => {
-      return {
-        ...obj,
-        track: trackMap.value.get(obj.track as number) || obj.track,
-        period: periodMap.value.get(obj.period as number) || obj.period,
-        place: projectPlaceMap.value.get(obj.project_place),
-        student: studentMap.value.get(obj.student as number) || obj.student,
-      };
-    });
+    return projectInternships.value.map((obj: Internship) => ({
+      ...obj,
+      Student: studentMap.value.get(obj.student as number) || undefined,
+      Track: trackMap.value.get(obj.track as number) || undefined,
+      Period: periodMap.value.get(obj.period as number) || undefined,
+      Discipline: disciplineMap.value.get(obj.discipline as number) || undefined,
+      Place: projectPlaceMap.value.get(obj.project_place) || undefined,
+    }));
   });
 
   async function init() {
@@ -223,7 +229,10 @@ export const useStore = defineStore('educationOffice', () => {
     }
 
     await api.get(project.value.rel_places).then((res) => {
-      projectPlaces.value = res.data;
+      projectPlaces.value = res.data.map((obj: ProjectPlace) => ({
+        ...obj,
+        Disciplines: obj.disciplines.map((id: number) => disciplineMap.value.get(id)),
+      }));
     });
   }
 
@@ -250,9 +259,9 @@ export const useStore = defineStore('educationOffice', () => {
                 (student: Student) =>
                   ({
                     ...student,
-                    block: blockMap.value.get(student.block as number),
-                    project: projectMap.value.get(student.project as number),
-                    track: trackMap.value.get(student.track as number),
+                    Project: projectMap.value.get(student.project as number),
+                    Track: trackMap.value.get(student.track as number),
+                    Block: blockMap.value.get(student.block as number),
                   } as Student)
               ),
           } as StudentUser)
@@ -274,9 +283,7 @@ export const useStore = defineStore('educationOffice', () => {
 
     switch (type) {
       case 'contact':
-        const placeId =
-          typeof (obj as Contact).place === 'number' ? (obj as Contact).place : ((obj as Contact).place as Place).id;
-        collection = places.value.find((row) => row.id === placeId)?.contacts as Contact[];
+        collection = places.value.find((row) => row.id === (obj as Contact).place)?.contacts as Contact[];
         break;
       case 'projectInternship':
         collection = projectInternships.value as Internship[];
@@ -350,6 +357,7 @@ export const useStore = defineStore('educationOffice', () => {
     selectedProjectId,
     students,
     blockMap,
+    disciplineMap,
     projectMap,
     trackMap,
   };

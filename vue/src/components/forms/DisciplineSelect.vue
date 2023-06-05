@@ -9,6 +9,8 @@
     options-dense
     option-value="id"
     option-label="name"
+    emit-value
+    map-options
   />
 </template>
 

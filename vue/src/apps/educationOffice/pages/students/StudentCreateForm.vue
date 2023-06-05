@@ -117,7 +117,7 @@ function addStudent() {
 
   api.post(`${project.value.self}students/`, data).then((res) => {
     store.createObj('student', res.data);
-    notify.success(t('form.student.create.saved'));
+    notify.success(t('form.student.create.success'));
     emit('create:obj');
   });
 }
@@ -145,7 +145,7 @@ function inviteStudent() {
  */
 const userIdsPerBlockUsedByStudents = computed<Map<number, number>>(() => {
   return projectStudents.value.reduce((map, obj) => {
-    map.set(obj.block.id, (obj.user as User).id);
+    map.set(obj.block, obj.user);
     return map;
   }, new Map());
 });
@@ -156,7 +156,7 @@ const userIdsPerBlockUsedByStudents = computed<Map<number, number>>(() => {
  */
 const userIdsUsedByStudents = computed<Set<number>>(() => {
   return projectStudents.value.reduce((set, obj) => {
-    set.add((obj.user as User).id);
+    set.add(obj.user);
     return set;
   }, new Set<number>());
 });

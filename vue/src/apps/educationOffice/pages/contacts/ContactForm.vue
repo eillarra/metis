@@ -14,7 +14,7 @@
       <q-tab-panels v-model="tab" class="q-px-sm">
         <q-tab-panel name="info">
           <div class="q-gutter-sm">
-            <q-input v-model="(obj.place as Place).name" dense :label="$t('place')" readonly />
+            <readonly-field v-if="obj.Place" :label="$t('place')" :value="obj.Place?.name" />
             <div class="row q-col-gutter-lg q-pt-sm">
               <q-checkbox v-model="obj.is_mentor" :label="t('mentor')" class="col-6 col-md-2" />
               <q-checkbox v-model="obj.is_staff" :label="t('staff')" class="col-6 col-md-2" />
@@ -50,6 +50,7 @@ import { notify } from '@/notify';
 import { useStore } from '../../store.js';
 
 import DialogForm from '@/components/forms/DialogForm.vue';
+import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 

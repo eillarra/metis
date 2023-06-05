@@ -25,10 +25,12 @@ interface ProjectPlace extends ApiObject {
   rel_remarks: ApiEndpoint;
   project: number;
   place: Place;
-  disciplines: Discipline[];
+  disciplines: number[];
   updated_at: string;
   updated_by: UserTiny | null;
   remark_count: number;
+  // -----
+  Disciplines?: Discipline[];
 }
 
 interface Contact extends ApiObject {
@@ -38,7 +40,9 @@ interface Contact extends ApiObject {
   is_staff: boolean;
   is_mentor: boolean;
   remark_count: number;
-  place: Place | number;
+  place: number;
   updated_at: string;
   updated_by: UserTiny | null;
+  // -----
+  Place?: Place;
 }

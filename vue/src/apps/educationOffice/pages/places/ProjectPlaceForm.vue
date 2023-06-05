@@ -45,7 +45,7 @@
           <texts-view
             container
             :api-endpoint="textsEndpoint"
-            :text-types="education?.configuration?.place_text_types"
+            :text-types="education?.configuration?.place_text_types as TextEntryType[]"
           />
         </q-tab-panel>
         <q-tab-panel name="remarks">
@@ -67,7 +67,13 @@
           :disable="projectPlacesWithInternships.has(obj.id)"
         />
         <q-space />
-        <q-btn @click="save" unelevated color="ugent" :label="$t('form.place.save')" />
+        <q-btn
+          @click="save"
+          unelevated
+          color="ugent"
+          :label="$t('form.place.save')"
+          :disable="!obj.place.name || !obj.place.code || !obj.disciplines.length"
+        />
       </div>
     </template>
   </dialog-form>
@@ -98,7 +104,7 @@ const props = defineProps<{
 }>();
 
 const store = useStore();
-const { education, project, projectPlacesWithInternships } = storeToRefs(store);
+const { education, project, projectPlacesWithInternships, disciplineMap } = storeToRefs(store);
 
 const obj = ref<ProjectPlace>(props.obj);
 const tab = ref<string>('info');
@@ -133,10 +139,10 @@ function save() {
       api
         .put(obj.value.self, {
           ...obj.value,
-          discipline_ids: obj.value.disciplines.map((d) => d.id),
           place_id: obj.value.place.id,
         })
         .then((res) => {
+          obj.value.Disciplines = res.data.disciplines.map((id: number) => disciplineMap.value.get(id));
           obj.value.updated_at = res.data.updated_at;
           obj.value.updated_by = res.data.updated_by;
           store.updateObj('projectPlace', obj.value);
@@ -146,7 +152,7 @@ function save() {
 }
 
 function deletePlace() {
-  confirm(t('form.student.confirm_delete'), () => {
+  confirm(t('form.place.confirm_delete'), () => {
     api.delete(obj.value.self).then(() => {
       store.deleteObj('projectPlace', obj.value);
       notify.success(t('form.place.deleted'));

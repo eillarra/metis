@@ -1,6 +1,6 @@
 <template>
   <div class="row q-col-gutter-sm q-mb-lg">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('project') }} {{ project.name }}</h3>
+    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('project') }} {{ project?.name }}</h3>
     <div class="col"></div>
   </div>
   <div>
@@ -17,7 +17,10 @@
     <q-tab-panels v-model="tab">
       <q-tab-panel name="info" class="q-px-none"> - </q-tab-panel>
       <q-tab-panel name="texts" class="q-px-none">
-        <texts-view :api-endpoint="textsEndpoint" :text-types="education?.configuration?.project_text_types" />
+        <texts-view
+          :api-endpoint="textsEndpoint"
+          :text-types="education?.configuration?.project_text_types as TextEntryType[]"
+        />
       </q-tab-panel>
       <q-tab-panel name="updated_by" class="q-px-none">
         <updated-by-view v-if="project" :obj="project" />

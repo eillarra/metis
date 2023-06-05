@@ -62,7 +62,7 @@ const disciplineOptions = computed(() => {
   const disciplines: Discipline[] = [];
 
   projectPlaces.value.forEach((obj: ProjectPlace) => {
-    obj.disciplines.forEach((discipline) => {
+    (obj.Disciplines as Discipline[]).forEach((discipline) => {
       if (!ids.has(discipline.id)) {
         ids.add(discipline.id);
         disciplines.push(discipline);
@@ -98,12 +98,11 @@ const regionOptions = computed(() => {
 });
 
 const filteredPlaces = computed<ProjectPlace[]>(() => {
-  // if selectedDiscipline is false, then fiter empty arrays of disciplines
   return projectPlaces.value
     .filter((obj) =>
       selectedDiscipline.value === 0
         ? !obj.disciplines.length
-        : !selectedDiscipline.value || obj.disciplines.some((discipline) => discipline.id === selectedDiscipline.value)
+        : !selectedDiscipline.value || obj.disciplines.some((id: number) => id === selectedDiscipline.value)
     )
     .filter((obj) => !selectedRegion.value || obj.place.region?.id === selectedRegion.value);
 });

@@ -1,5 +1,5 @@
 <template>
-  <dialog-form icon="calendar_month" :title="(obj.track as Track)?.name">
+  <dialog-form icon="calendar_month" :title="obj.Track?.name">
     <template #tabs>
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
         <q-tab name="info" label="Info" icon="info_outline" />
@@ -16,7 +16,8 @@
         <q-tab-panel name="info">
           <div class="q-gutter-sm">
             <readonly-field :label="$t('project')" :value="projectName" />
-            <readonly-field :label="$t('student')" :value="((obj.student as Student)?.user as User)?.name || '-'" />
+            <readonly-field :label="$t('student')" :value="obj.Student?.User?.name || '-'" />
+            <period-select v-model="obj.period" :periods="filteredPeriods" :label="$t('period')" />
             <discipline-select
               v-if="education"
               v-model="obj.discipline"
@@ -82,6 +83,7 @@ import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
+import PeriodSelect from '../../components/PeriodSelect.vue';
 
 const emit = defineEmits(['delete:obj']);
 
@@ -97,6 +99,18 @@ const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');
 const projectName = computed<string>(() => (project.value ? project.value.name : ''));
 
+const filteredPeriods = computed(() => {
+  if (!project.value) return [];
+  if (!obj.value.Student?.Track) return (project.value as Project).periods;
+
+  return (project.value as Project).periods.filter((period) => {
+    return (
+      obj.value.Student?.block == period.ProgramInternship?.block &&
+      obj.value.Student?.Track?.program_internships.includes(period.program_internship)
+    );
+  });
+});
+
 const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
   if (!props.obj) return null;
   return {
@@ -108,7 +122,8 @@ function save() {
   api
     .put(obj.value.self, {
       ...obj.value,
-      discipline_id: obj.value.discipline?.id,
+      student: obj.value.Student?.id,
+      track: obj.value.Track?.id,
     })
     .then((res) => {
       obj.value.updated_at = res.data.updated_at;
@@ -132,6 +147,7 @@ function deleteStudent() {
   confirm(t('form.internship.confirm_delete_student'), () => {
     api.patch(obj.value.self, { student: null }).then(() => {
       obj.value.student = null;
+      obj.value.Student = undefined;
       store.updateObj('projectInternship', obj.value);
       notify.success(t('form.internship.deleted_student'));
     });

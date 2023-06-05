@@ -6,6 +6,7 @@ from typing import Dict
 
 from metis.utils.factories import (
     ContactFactory,
+    DisciplineFactory,
     EducationFactory,
     PlaceFactory,
     ProjectFactory,
@@ -17,6 +18,7 @@ from metis.utils.factories import (
 @pytest.fixture
 def education(db):
     education = EducationFactory()
+    DisciplineFactory(education=education)
     place = PlaceFactory(education=education)
     ContactFactory(place=place)
     project = ProjectFactory(education=education)
@@ -133,11 +135,13 @@ class TestForOfficeMember(TestForAuthenticated):
     def _get_place_create_data(self, education):
         return {
             "place_id": PlaceFactory(education=education).id,  # type: ignore
+            "disciplines": list(education.disciplines.values_list("id", flat=True)),
         }
 
     def _get_place_update_data(self, education):
         return {
             "place_id": PlaceFactory(education=education).id,  # type: ignore
+            "disciplines": list(education.disciplines.values_list("id", flat=True)),
         }
 
     def test_delete_with_no_internships(self, api_client, education, project_place):

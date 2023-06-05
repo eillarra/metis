@@ -1,11 +1,16 @@
 interface Student extends ApiObject {
   self: ApiEndpoint;
   rel_remarks: ApiEndpoint;
-  project: Project | number;
-  user: User | number;
-  block: Block | number;
-  track: Track | number | null;
+  project: number;
+  user: number;
+  block: number;
+  track: number | null;
   remark_count: number;
+  // -----
+  Project?: Project;
+  User?: StudentUser;
+  Block?: Block;
+  Track?: Track;
 }
 
 interface StudentUser extends User {

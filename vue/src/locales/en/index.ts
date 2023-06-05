@@ -29,7 +29,7 @@ export default {
   contact: 'Contact | Contacts',
   contact_only: 'Only a contact',
   discipline: 'Discipline | Disciplines',
-  mentor: 'Mentor | Mentors',
+  history: 'History',
   internship: 'Internship | Internships',
   internship_status: {
     preplanning: 'Preplanning',
@@ -38,6 +38,7 @@ export default {
     cancelled: 'Cancelled',
     unsuccessful: 'Unsuccessful',
   },
+  mentor: 'Mentor | Mentors',
   period: 'Period | Periods',
   planning: 'Planning',
   profile: 'Profile | Profiles',

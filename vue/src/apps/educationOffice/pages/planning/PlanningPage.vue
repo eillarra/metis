@@ -69,9 +69,9 @@ const disciplineOptions = computed(() => {
   const disciplines: Discipline[] = [];
 
   internships.value.forEach((obj: Internship) => {
-    if (obj.discipline && !ids.has(obj.discipline.id)) {
-      ids.add(obj.discipline.id);
-      disciplines.push(obj.discipline);
+    if (obj.discipline && !ids.has(obj.discipline)) {
+      ids.add(obj.discipline);
+      disciplines.push(obj.Discipline as Discipline);
     }
   });
 
@@ -84,9 +84,9 @@ const periodOptions = computed(() => {
   const periods: Period[] = [];
 
   internships.value.forEach((obj: Internship) => {
-    if (obj.period && !ids.has(obj.period.id)) {
-      ids.add(obj.period.id);
-      periods.push(obj.period);
+    if (obj.period && !ids.has(obj.period)) {
+      ids.add(obj.period);
+      periods.push(obj.Period as Period);
     }
   });
 
@@ -95,10 +95,10 @@ const periodOptions = computed(() => {
 
 const filteredInternships = computed<Internship[]>(() => {
   return internships.value
-    .filter((obj) => (selectedBlock.value ? obj.period.program_internship.block?.id === selectedBlock.value : true))
-    .filter((obj) => (selectedPeriod.value ? obj.period?.id === selectedPeriod.value : true))
-    .filter((obj) => (selectedDiscipline.value ? obj.discipline?.id === selectedDiscipline.value : true))
-    .filter((obj) => (selectedTrack.value ? obj.track?.id === selectedTrack.value : true))
+    .filter((obj) => (selectedBlock.value ? obj.Period?.ProgramInternship?.block === selectedBlock.value : true))
+    .filter((obj) => (selectedPeriod.value ? obj.period === selectedPeriod.value : true))
+    .filter((obj) => (selectedDiscipline.value ? obj.discipline === selectedDiscipline.value : true))
+    .filter((obj) => (selectedTrack.value ? obj.track === selectedTrack.value : true))
     .filter((obj) => {
       if (!selectedDateRange.value) return true;
 

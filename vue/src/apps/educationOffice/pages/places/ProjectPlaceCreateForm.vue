@@ -88,11 +88,11 @@ const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
 const store = useStore();
-const { education, project, projectPlaces } = storeToRefs(store);
+const { education, project, projectPlaces, disciplineMap } = storeToRefs(store);
 
 const step = ref(1);
 const found = ref(null);
-const disciplines = ref([]);
+const disciplines = ref<number[]>([]);
 const obj = ref({
   name: '',
   code: '',
@@ -108,28 +108,33 @@ function placeMapper(data: ApiObject[]) {
 }
 
 function addProjectPlace() {
+  if (!project.value || !found.value || !disciplines.value.length) {
+    return;
+  }
+
   const data = {
-    place_id: found.value.id,
-    discipline_ids: disciplines.value.map((obj) => obj.id),
+    place_id: (found.value as Place).id,
+    disciplines: disciplines.value,
   };
 
   api.post(project.value.rel_places, data).then((res) => {
+    res.data.Disciplines = disciplines.value.map((id: number) => disciplineMap.value.get(id));
     store.createObj('projectPlace', res.data);
-    notify.success(t('form.place.create.saved'));
+    notify.success(t('form.place.create.success'));
     emit('create:obj');
   });
 }
 
 function createPlace() {
-  api.post(education.value.rel_places, obj.value).then((res) => {
+  api.post((education.value as Education).rel_places, obj.value).then((res) => {
     api
-      .post(project.value.rel_places, {
+      .post((project.value as Project).rel_places, {
         place_id: res.data.id,
-        discipline_ids: disciplines.value.map((obj) => obj.id),
       })
       .then((res) => {
+        res.data.Disciplines = disciplines.value.map((id: number) => disciplineMap.value.get(id));
         store.createObj('projectPlace', res.data);
-        notify.success(t('form.place.create.saved'));
+        notify.success(t('form.place.create.success'));
         emit('create:obj');
       });
   });

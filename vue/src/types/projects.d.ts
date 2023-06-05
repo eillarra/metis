@@ -9,19 +9,23 @@ interface Project extends ProjectTiny {
   rel_places: ApiEndpoint;
   rel_students: ApiEndpoint;
   rel_texts: ApiEndpoint;
-  education: Education | number;
+  education: number;
   periods: Period[];
   start_date: string;
   end_date: string;
   updated_at: string;
   updated_by: UserTiny;
+  // -----
+  Education?: Education;
 }
 
 interface Period extends ApiObject {
-  program_internship: ProgramInternship | number;
+  program_internship: number;
   name: string;
   start_date: string;
   end_date: string;
   updated_at: string;
   updated_by: UserTiny;
+  // -----
+  ProgramInternship?: ProgramInternship;
 }

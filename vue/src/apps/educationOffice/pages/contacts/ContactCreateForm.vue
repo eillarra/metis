@@ -143,7 +143,7 @@ function addContact() {
 
   api.post(selectedPlace.value.rel_contacts, data).then((res) => {
     store.createObj('contact', res.data);
-    notify.success(t('form.contact.create.saved'));
+    notify.success(t('form.contact.create.success'));
     emit('create:obj');
   });
 }

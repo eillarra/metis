@@ -81,7 +81,7 @@ const rows = computed(() => {
     code: obj.place.code,
     region: obj.place.region ? obj.place.region.name : '-',
     type: obj.place.type,
-    disciplines: obj.disciplines,
+    disciplines: obj.Disciplines,
     mentors:
       obj.place.contacts
         .filter((contact) => contact.is_mentor)

@@ -12,9 +12,14 @@
         <q-tab-panel name="info">
           <div class="q-gutter-xs">
             <div class="row q-col-gutter-lg q-pl-xs">
-              <readonly-field :label="$t('project')" :value="(obj.project as Project).name" class="col-12 col-md" />
-              <readonly-field :label="$t('track')" :value="(obj.track as Track)?.name || '-'" class="col-12 col-md" />
-              <readonly-field :label="$t('program_block')" :value="obj.block.name" class="col-12 col-md" />
+              <readonly-field
+                v-if="obj.Project"
+                :label="$t('project')"
+                :value="obj.Project?.name"
+                class="col-12 col-md"
+              />
+              <readonly-field :label="$t('track')" :value="obj.Track?.name || '-'" class="col-12 col-md" />
+              <readonly-field :label="$t('program_block')" :value="obj.Block?.name" class="col-12 col-md" />
             </div>
             <readonly-field :label="$t('student')" :value="studentUser.name" />
             <readonly-field :label="$t('field.email')" :value="studentUser.email" />
@@ -69,9 +74,7 @@ const store = useStore();
 const { project, projectStudentsWithInternships } = storeToRefs(store);
 
 const studentUser = ref<StudentUser>(props.obj);
-const obj = ref<Student>(
-  props.obj.student_set.find((obj) => (obj.project as Project).id == project.value?.id) as Student
-);
+const obj = ref<Student>(props.obj.student_set.find((obj) => obj.project == project.value?.id) as Student);
 const tab = ref<string>('info');
 
 const remarkCount = computed<number>(() => {
@@ -86,7 +89,7 @@ const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
 
   let acc: Record<string, ApiEndpoint> = {};
   return props.obj.student_set.reduce((acc, projectStudent: Student) => {
-    acc[(projectStudent.project as Project).name] = projectStudent.rel_remarks;
+    acc[(projectStudent.Project as Project).name] = projectStudent.rel_remarks;
     return acc;
   }, acc);
 });

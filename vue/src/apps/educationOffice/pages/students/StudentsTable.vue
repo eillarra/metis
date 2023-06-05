@@ -64,8 +64,8 @@ const rows = computed(() => {
       _self: obj,
       name: obj.name,
       email: obj.email,
-      track: (obj.student_set[0].track as Track)?.name || '-',
-      blocks: obj.student_set.map((stu) => `${(stu.project as Project)?.name}-${stu.block?.name}`).join(', '),
+      track: obj.student_set[0].Track?.name || '-',
+      blocks: obj.student_set.map((student) => `${student.Project?.name}-${student.Block?.name}`).join(', '),
     };
   });
 });

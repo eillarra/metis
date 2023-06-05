@@ -70,7 +70,7 @@ const rows = computed(() => {
     name: obj.user.name,
     is_mentor: obj.is_mentor,
     is_staff: obj.is_staff,
-    place: (obj.place as Place)?.name || '-',
+    place: obj.Place?.name || '-',
     email: obj.user.email,
   }));
 });

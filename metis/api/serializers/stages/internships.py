@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from metis.models import Discipline, Internship
+from metis.models import Internship
 from ..base import BaseModelSerializer, NestedHyperlinkField
-from ..disciplines import DisciplineSerializer
 from ..rel.remarks import RemarksMixin
 from .programs import ProgramInternshipSerializer
 
@@ -17,10 +16,6 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-internship-detail", nested_lookup=project_internship_lookup_fields)
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     program_internship = ProgramInternshipSerializer(read_only=True)
-    discipline = DisciplineSerializer(read_only=True)
-    discipline_id = serializers.PrimaryKeyRelatedField(
-        source="discipline", queryset=Discipline.objects.all(), write_only=True
-    )
     start_date = serializers.DateField(read_only=True)
     end_date = serializers.DateField(read_only=True)
     custom_start_date = serializers.DateField(allow_null=True, required=False)

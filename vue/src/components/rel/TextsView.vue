@@ -206,7 +206,7 @@ async function createText() {
   if (!props.apiEndpoint || !obj.value) return;
   await api.post(props.apiEndpoint, obj.value).then((res) => {
     texts.value.push(res.data);
-    notify.success(t('form.text_entry.create.saved'));
+    notify.success(t('form.text_entry.create.success'));
     obj.value = null;
   });
 }
