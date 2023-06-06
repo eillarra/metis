@@ -35,3 +35,16 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # https://django-compressor.readthedocs.io/en/stable/settings/
 
 COMPRESS_ENABLED = False
+
+
+# https://github.com/MrBin99/django-vite
+
+DJANGO_VITE_DEV_MODE = True
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
