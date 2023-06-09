@@ -29,17 +29,26 @@ SENDFILE_URL = "/-internal"
 
 # https://docs.sentry.io/platforms/python/guides/django/
 
+
+def set_user_id(event, hint):
+    if "request" in event and event["request"].user.is_authenticated:
+        event["user"] = {"id": event["request"].user.id}
+    return event
+
+
 sentry_sdk.init(
     dsn=os.environ.get("SENTRY_DSN", None),
     release=os.environ.get("GIT_REV", None),
     environment=os.environ.get("DJANGO_ENV", "production"),
     integrations=[DjangoIntegration(), RedisIntegration()],
     ignore_errors=[DisallowedHost],
-    send_default_pii=True,
     traces_sample_rate=0.1,
     _experiments={
         "profiles_sample_rate": 0.1,
     },
+    # pii
+    send_default_pii=False,
+    before_send=set_user_id,
 )
 
 

@@ -94,6 +94,13 @@ const bootApp = (routes: RouteRecordRaw[]) => {
           // - ResizeObserver loop errors
           ignoreErrors: ['ResizeObserver loop'],
         });
+
+        // send user id
+        if (props.initialPage.props.django_user) {
+          Sentry.setUser({
+            id: (props.initialPage.props.django_user as DjangoAuthenticatedUser).id.toString(),
+          });
+        }
       }
 
       // mount
