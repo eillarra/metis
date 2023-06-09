@@ -7,7 +7,13 @@
           <div class="q-gutter-sm q-mt-sm">
             <div class="row q-col-gutter-lg q-pt-sm">
               <q-checkbox v-model="formData.is_mentor" :label="t('mentor')" class="col-6 col-md-3" />
-              <q-checkbox v-model="formData.is_staff" :label="t('staff')" class="col-6 col-md-3" />
+              <q-checkbox
+                v-if="education?.configuration?.place_contact_is_staff"
+                v-model="formData.is_staff"
+                :label="t('staff')"
+                class="col-6 col-md-3"
+              />
+              <q-checkbox v-model="formData.is_admin" :label="t('admin')" class="col-6 col-md-3" />
             </div>
             <api-autocomplete
               v-model="formData.place"
@@ -48,7 +54,13 @@
           <div class="q-gutter-sm q-mt-sm">
             <div class="row q-col-gutter-lg q-pt-sm">
               <q-checkbox v-model="formData.is_mentor" :label="t('mentor')" class="col-6 col-md-3" />
-              <q-checkbox v-model="formData.is_staff" :label="t('staff')" class="col-6 col-md-3" />
+              <q-checkbox
+                v-if="education?.configuration?.place_contact_is_staff"
+                v-model="formData.is_staff"
+                :label="t('staff')"
+                class="col-6 col-md-3"
+              />
+              <q-checkbox v-model="formData.is_admin" :label="t('admin')" class="col-6 col-md-3" />
             </div>
             <api-autocomplete
               v-model="formData.place"
@@ -96,7 +108,7 @@ const emit = defineEmits(['create:obj']);
 
 const { t } = useI18n();
 const store = useStore();
-const { project, places, projectPlaces } = storeToRefs(store);
+const { education, project, places, projectPlaces } = storeToRefs(store);
 
 const step = ref(1);
 const formData = ref({
@@ -106,6 +118,7 @@ const formData = ref({
   email: null as string | null,
   is_mentor: false,
   is_staff: false,
+  is_admin: false,
 });
 
 const selectedPlace = computed<Place | null>(() => {
@@ -158,6 +171,7 @@ function inviteContact() {
     data: {
       is_mentor: formData.value.is_mentor,
       is_staff: formData.value.is_staff,
+      is_admin: formData.value.is_admin,
     },
   };
 

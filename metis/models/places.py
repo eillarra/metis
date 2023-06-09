@@ -86,6 +86,7 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
 
     place = models.ForeignKey(Place, related_name="contacts", on_delete=models.CASCADE)
     user = models.ForeignKey("metis.User", related_name="contact_set", on_delete=models.CASCADE)
+    is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_mentor = models.BooleanField(default=True)
 
@@ -95,6 +96,11 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
 
     def __str__(self) -> str:
         return f"{self.user} ({self.place.code})"
+
+    def save(self, *args, **kwargs) -> None:
+        if self.is_admin:
+            self.is_staff = True
+        return super().save(*args, **kwargs)
 
     def can_be_managed_by(self, user) -> bool:
         return self.place.can_be_managed_by(user)

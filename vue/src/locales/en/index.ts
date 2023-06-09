@@ -38,6 +38,7 @@ export default {
     cancelled: 'Cancelled',
     unsuccessful: 'Unsuccessful',
   },
+  admin: 'Admin | Admins',
   mentor: 'Mentor | Mentors',
   period: 'Period | Periods',
   planning: 'Planning',

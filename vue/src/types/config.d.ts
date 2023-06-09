@@ -20,4 +20,5 @@ interface EducationConfig {
   allow_different_blocks_per_user_in_project: boolean;
   project_text_types: ProjectTextEntryType[];
   place_text_types: PlaceTextEntryType[];
+  place_contact_is_staff: boolean;
 }

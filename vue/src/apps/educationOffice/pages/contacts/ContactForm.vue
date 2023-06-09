@@ -17,7 +17,13 @@
             <readonly-field v-if="obj.Place" :label="$t('place')" :value="obj.Place?.name" />
             <div class="row q-col-gutter-lg q-pt-sm">
               <q-checkbox v-model="obj.is_mentor" :label="t('mentor')" class="col-6 col-md-2" />
-              <q-checkbox v-model="obj.is_staff" :label="t('staff')" class="col-6 col-md-2" />
+              <q-checkbox
+                v-if="education?.configuration?.place_contact_is_staff"
+                v-model="obj.is_staff"
+                :label="t('staff')"
+                class="col-6 col-md-2"
+              />
+              <q-checkbox v-model="obj.is_admin" :label="t('admin')" class="col-6 col-md-2" />
             </div>
           </div>
         </q-tab-panel>
@@ -41,6 +47,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios';
@@ -62,6 +69,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const store = useStore();
+const { education } = storeToRefs(store);
 
 const tab = ref<string>('info');
 const obj = ref<Contact>(props.obj);

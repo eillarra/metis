@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Extra, ValidationError, validator
+from pydantic import BaseModel, Field, Extra, ValidationError, validator
 
 
 class Translation(BaseModel):
@@ -24,10 +24,20 @@ class PlaceTextEntryType(TextEntryType):
 
 
 class EducationConfig(BaseModel):
-    allow_different_blocks_per_user_in_project: bool = True
+    allow_different_blocks_per_user_in_project: bool = Field(
+        default=True,
+        description="Whether a user can be in different Blocks for the same Project",
+    )
     project_text_types: list[ProjectTextEntryType]
     place_text_types: list[PlaceTextEntryType] = []
-    place_set_disciplines_per_block: bool = False
+    place_set_disciplines_per_block: bool = Field(
+        default=False,
+        description="Whether the disciplines for a place are set per Block (e.g. Ba3, Ma1, Ma2), or for the Project",
+    )
+    place_contact_is_staff: bool = Field(
+        default=False,
+        description="Whether staff level contacts are allowed, or just a simple contact > mentor > admin hierarchy",
+    )
 
     class Config:
         extra = Extra.forbid

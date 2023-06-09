@@ -110,7 +110,7 @@
         <q-td :props="props" :auto-width="props.col.name.startsWith('is_')" :class="props.row._class || ''">
           <span v-if="props.col.name.startsWith('is_')">
             <q-icon v-if="props.value" name="check_circle" color="green" :size="iconSize" />
-            <q-icon v-else name="highlight_off" color="red" :size="iconSize" />
+            <q-icon v-else name="block" color="grey" :size="iconSize" />
           </span>
           <span v-else-if="props.col.name == 'disciplines'" class="q-gutter-x-xs">
             <q-badge outline v-for="d in props.value" :key="d.code" :label="d.name" color="dark" />

@@ -37,6 +37,7 @@ interface Contact extends ApiObject {
   self: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   user: UserTiny;
+  is_admin: boolean;
   is_staff: boolean;
   is_mentor: boolean;
   remark_count: number;
