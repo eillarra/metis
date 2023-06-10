@@ -6,6 +6,8 @@ from http import HTTPStatus as status
 from metis.utils.factories import (
     EducationFactory,
     ProjectFactory,
+    PlaceFactory,
+    ContactFactory,
     StudentFactory,
     UserFactory,
 )
@@ -23,6 +25,12 @@ def office_member(db, education):
     user = UserFactory()
     education.office_members.add(user)
     return user
+
+
+@pytest.fixture
+def contact(db, education):
+    place = PlaceFactory(education=education)
+    return ContactFactory(place=place)
 
 
 @pytest.fixture
@@ -78,6 +86,12 @@ class TestForOfficeMember(TestForAuthenticated):
     @pytest.fixture(autouse=True)
     def setup(self, client, office_member):
         client.force_login(user=office_member)
+
+
+class TestForContact(TestForAuthenticated):
+    @pytest.fixture(autouse=True)
+    def setup(self, client, contact):
+        client.force_login(user=contact.user)
 
 
 class TestForStudent(TestForAuthenticated):

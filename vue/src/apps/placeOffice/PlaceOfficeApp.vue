@@ -1,6 +1,10 @@
 <template>
   <div>
-    {{ djangoPlace }}
+    <div class="row ugent__submenu q-mb-lg">
+      <div class="menu-item">
+        <span>Stageplaats {{ place.name }}</span>
+      </div>
+    </div>
     <router-view />
   </div>
 </template>
@@ -11,5 +15,5 @@ import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
 
-const djangoPlace = computed<Place>(() => page.props.place as Place);
+const place = computed<Place>(() => page.props.place as Place);
 </script>

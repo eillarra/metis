@@ -20,7 +20,7 @@ export default {
     },
   },
   dashboard: {
-    no_results: 'Geen stages gevonden',
+    no_results: 'Je hebt nog geen toegang tot Metis. Heb je een uitnodiging ontvangen? Probeer dan opnieuw op de uitnodigingslink te klikken.',
     education_office: 'Stagebureau',
     my_internships: 'Mijn stages',
     place_office: 'Stageplaats bureau',
@@ -78,6 +78,7 @@ export default {
     update: 'Bijwerken',
     invite: 'Uitnodigen',
     sign: 'Ondertekenen',
+    send_email: 'Email versturen',
     add_to_place: 'Voeg toe aan stageplaats',
     add_to_project: 'Voeg toe aan project',
     contact: {

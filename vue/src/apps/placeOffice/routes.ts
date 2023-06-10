@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '',
-    redirect: { name: 'students' },
+    redirect: { name: 'dashboard' },
     strict: true,
     components: {
       default: () => import('./PlaceOfficeApp.vue'),
@@ -11,10 +11,10 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'students/',
-        name: 'students',
+        path: 'dashboard/',
+        name: 'dashboard',
         strict: true,
-        component: () => import('./pages/students/StudentsPage.vue'),
+        component: () => import('./pages/DashboardPage.vue'),
       },
     ],
   },

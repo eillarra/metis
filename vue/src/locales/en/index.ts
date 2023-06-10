@@ -21,7 +21,7 @@ export default {
     },
   },
   dashboard: {
-    no_results: 'No internships found',
+    no_results: 'You don\'t have access to Metis yet. Did you receive an invitation email? Try clicking the invitation link again.',
     education_office: 'Internship office',
     my_internships: 'My internships',
     place_office: 'Place office',
@@ -79,6 +79,7 @@ export default {
     update: 'Update',
     invite: 'Invite',
     sign: 'Sign',
+    send_email: 'Send email',
     add_to_place: 'Add to place',
     add_to_project: 'Add to project',
     contact: {

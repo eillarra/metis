@@ -6,7 +6,36 @@ from markdown import markdown
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from metis.models import Education, EmailTemplate, Invitation
+    from metis.models import User, Education, EmailTemplate, Invitation
+
+
+def send_raw_email(
+    *,
+    from_email: str = "Metis <metis@ugent.be>",
+    to: list[str],
+    subject: str,
+    text_content: str,
+    bcc: list[str] = [],
+    reply_to: list[str] = [],
+    log_template: Optional["EmailTemplate"] = None,
+    log_user: Optional["User"] = None,
+):
+    html_content = markdown(text_content)
+    msg = EmailMultiAlternatives(subject, text_content, from_email=from_email, to=to, bcc=bcc, reply_to=reply_to)
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+    from metis.models.emails import EmailLog
+
+    EmailLog.objects.create(
+        template=log_template,
+        user=log_user,
+        to=", ".join(to),
+        bcc=", ".join(bcc) if bcc else None,
+        reply_to=", ".join(reply_to) if reply_to else None,
+        subject=subject,
+        body=text_content,
+    )
 
 
 def send_email(
@@ -17,13 +46,11 @@ def send_email(
     template: str,
     context_data: dict,
     bcc: list[str] = [],
-    reply_to: str | None = None,
+    reply_to: list[str] = [],
 ):
     text_content = render_to_string(template, context_data)
     html_content = markdown(text_content)
-    msg = EmailMultiAlternatives(
-        subject, text_content, from_email=from_email, to=to, bcc=bcc, reply_to=[reply_to] if reply_to else None
-    )
+    msg = EmailMultiAlternatives(subject, text_content, from_email=from_email, to=to, bcc=bcc, reply_to=reply_to)
     msg.attach_alternative(html_content, "text/html")
     msg.send()
 

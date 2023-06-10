@@ -76,7 +76,7 @@ class Router(NestedRouterMixin, DefaultRouter):
 
         self.register("user", views.AuthUserViewSet, basename="auth-user")
         self.register("user/tmp", views.AuthUserTmpOasisViewSet, basename="auth-user-tmp")
-        # self.register("user/contact/places", views.PlaceViewSet, basename="contact-place")
+        self.register("user/contact/places", views.ContactPlaceViewSet, basename="contact-place")
         # self.register("user/student/internships", views.PlaceViewSet, basename="student-internship")
         self.register("user/student/projects", views.AuthStudentViewSet, basename="student-set")
         self.register("user/student/signatures", views.AuthStudentSignatureViewSet, basename="student-signature")

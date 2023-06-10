@@ -15,8 +15,8 @@
       <ugent-link-list :title="$t('dashboard.my_internships')" :items="studentLinks" />
     </div>
     <div v-if="!educations.length && !student_educations.length && !places.length" class="col-12 col-md-3">
-      <h4 class="q-mt-none q-mb-md">{{ $t('dashboard.my_internships') }}</h4>
-      <p>{{ $t('dashboard.no_results') }}.</p>
+      <p>{{ $t('dashboard.no_results') }}</p>
+      <p class="text-grey-4 text-h2 text-mono q-mt-xl">\(^Д^)/</p>
     </div>
   </div>
   <ugent-banner>
