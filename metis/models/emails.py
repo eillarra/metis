@@ -1,6 +1,6 @@
 from django.db import models
 
-from .base import BaseModel
+from .base import BaseModel, NonEditableMixin
 
 
 class EmailTemplate(BaseModel):
@@ -44,7 +44,7 @@ class EmailTemplate(BaseModel):
         return [self.education.office_email] if self.education and self.education.office_email else [self.NO_REPLY]
 
 
-class EmailLog(models.Model):
+class EmailLog(NonEditableMixin, models.Model):
     """
     Log of sent emails.
     """

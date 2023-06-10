@@ -4,6 +4,18 @@ from django.contrib.contenttypes.fields import GenericRelation
 from .rel.snapshots import Snapshot, save_snapshot
 
 
+class NonEditableMixin(models.Model):
+    """Models with this mixin can only be created, never edited."""
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs) -> None:
+        if self.pk:
+            raise ValueError("This model is not editable.")
+        super().save(*args, **kwargs)
+
+
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(

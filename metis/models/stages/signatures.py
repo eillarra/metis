@@ -1,7 +1,9 @@
 from django.db import models
 
+from ..base import NonEditableMixin
 
-class Signature(models.Model):
+
+class Signature(NonEditableMixin, models.Model):
     student = models.ForeignKey("metis.Student", related_name="signatures", on_delete=models.PROTECT)
     text_entry = models.ForeignKey("metis.TextEntry", related_name="signatures", on_delete=models.PROTECT)
     signed_text = models.TextField()
