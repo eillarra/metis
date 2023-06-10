@@ -1,8 +1,7 @@
-import os
-
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from pathlib import Path
 
 
 def get_upload_path(instance, filename):
@@ -27,9 +26,13 @@ class File(models.Model):
         unique_together = ("content_type", "object_id", "code", "version")
 
     def delete(self, *args, **kwargs):
-        if os.path.isfile(self.file.path):
-            os.remove(self.file.path)
+        if self.path.exists() and self.path.is_file():
+            self.path.unlink()
         super().delete(*args, **kwargs)
+
+    @property
+    def path(self) -> Path:
+        return Path(self.file.path)
 
 
 class FilesMixin(models.Model):
