@@ -2,7 +2,6 @@ import pytest
 
 from django.urls import reverse
 from http import HTTPStatus as status
-from typing import Dict
 
 from metis.utils.factories import (
     EducationFactory,
@@ -44,7 +43,7 @@ def user(db):
 
 @pytest.mark.api
 class TestForAnonymous:
-    expected_status_codes: Dict[str, status] = {
+    expected_status_codes: dict[str, status] = {
         "retrieve": status.FORBIDDEN,
         "programs": status.FORBIDDEN,
         "student_users": status.FORBIDDEN,

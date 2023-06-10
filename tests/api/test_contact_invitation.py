@@ -2,7 +2,6 @@ import pytest
 
 from django.urls import reverse
 from http import HTTPStatus as status
-from typing import Dict
 
 from metis.models.rel.invitations import Invitation
 from metis.utils.factories import (
@@ -42,7 +41,7 @@ def user(db):
 
 @pytest.mark.api
 class TestForAnonymous:
-    expected_status_codes: Dict[str, status] = {
+    expected_status_codes: dict[str, status] = {
         "place_invite": status.FORBIDDEN,
     }
 

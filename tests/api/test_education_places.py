@@ -2,7 +2,6 @@ import pytest
 
 from django.urls import reverse
 from http import HTTPStatus as status
-from typing import Dict
 
 from metis.utils.factories import (
     ContactFactory,
@@ -55,7 +54,7 @@ def user(db):
 
 @pytest.mark.api
 class TestForAnonymous:
-    expected_status_codes: Dict[str, status] = {
+    expected_status_codes: dict[str, status] = {
         "place_list": status.FORBIDDEN,
         "place_create": status.FORBIDDEN,
         "place_update": status.FORBIDDEN,

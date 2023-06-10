@@ -2,7 +2,6 @@ import pytest
 
 from django.urls import reverse
 from http import HTTPStatus as status
-from typing import Dict
 
 from metis.utils.factories import (
     EducationFactory,
@@ -38,7 +37,7 @@ def user(db):
 
 @pytest.mark.site
 class TestForAnonymous:
-    expected_status_codes: Dict[str, status] = {
+    expected_status_codes: dict[str, status] = {
         "homepage": status.OK,
         "dashboard": status.FOUND,
         "education_office": status.FOUND,
@@ -57,8 +56,8 @@ class TestForAnonymous:
         assert response.status_code == self.expected_status_codes["education_office"]
 
 
-class TestAuthenticated(TestForAnonymous):
-    expected_status_codes: Dict[str, status] = {
+class TestForAuthenticated(TestForAnonymous):
+    expected_status_codes: dict[str, status] = {
         "homepage": status.OK,
         "dashboard": status.OK,
         "education_office": status.FORBIDDEN,
@@ -69,8 +68,8 @@ class TestAuthenticated(TestForAnonymous):
         client.force_login(user=user)
 
 
-class TestOfficeMember(TestAuthenticated):
-    expected_status_codes: Dict[str, status] = {
+class TestForOfficeMember(TestForAuthenticated):
+    expected_status_codes: dict[str, status] = {
         "homepage": status.OK,
         "dashboard": status.OK,
         "education_office": status.OK,
@@ -81,7 +80,7 @@ class TestOfficeMember(TestAuthenticated):
         client.force_login(user=office_member)
 
 
-class TestStudent(TestAuthenticated):
+class TestForStudent(TestForAuthenticated):
     @pytest.fixture(autouse=True)
     def setup(self, client, student):
         client.force_login(user=student.user)

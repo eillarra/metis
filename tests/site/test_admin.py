@@ -2,7 +2,6 @@ import pytest
 
 from django.urls import reverse
 from http import HTTPStatus as status
-from typing import Dict
 
 from metis.utils.factories import UserFactory
 
@@ -24,7 +23,7 @@ def user(db):
 
 @pytest.mark.site
 class TestForAnonymous:
-    expected_status_codes: Dict[str, status] = {
+    expected_status_codes: dict[str, status] = {
         "admin_index": status.FOUND,
     }
 
@@ -33,8 +32,8 @@ class TestForAnonymous:
         assert response.status_code == self.expected_status_codes["admin_index"]
 
 
-class TestAuthenticated(TestForAnonymous):
-    expected_status_codes: Dict[str, status] = {
+class TestForAuthenticated(TestForAnonymous):
+    expected_status_codes: dict[str, status] = {
         "admin_index": status.FOUND,
     }
 
@@ -43,8 +42,8 @@ class TestAuthenticated(TestForAnonymous):
         client.force_login(user=user)
 
 
-class TestAdmin(TestAuthenticated):
-    expected_status_codes: Dict[str, status] = {
+class TestForAdmin(TestForAuthenticated):
+    expected_status_codes: dict[str, status] = {
         "admin_index": status.OK,
         "admin_pages": status.FORBIDDEN,
     }
@@ -72,8 +71,8 @@ class TestAdmin(TestAuthenticated):
         assert response.status_code == self.expected_status_codes["admin_pages"]
 
 
-class TestSuperuser(TestAdmin):
-    expected_status_codes: Dict[str, status] = {
+class TestForSuperuser(TestForAdmin):
+    expected_status_codes: dict[str, status] = {
         "admin_index": status.OK,
         "admin_pages": status.OK,
     }

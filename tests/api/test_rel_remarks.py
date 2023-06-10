@@ -3,7 +3,6 @@ import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from http import HTTPStatus as status
-from typing import Dict
 
 from metis.models.rel import Remark
 from metis.utils.factories import (
@@ -58,7 +57,7 @@ def user(db):
 
 @pytest.mark.api
 class TestForAnonymous:
-    expected_status_codes: Dict[str, status] = {
+    expected_status_codes: dict[str, status] = {
         "remark_list": status.FORBIDDEN,
         "remark_detail": status.FORBIDDEN,
         "remark_create": status.FORBIDDEN,
