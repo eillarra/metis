@@ -39,19 +39,34 @@ class BaseModelViewSet(ProtectedMixin, ModelViewSet):
 
 
 class InvitationMixin:
+    valid_invitation_types: set = set()
+
     def get_object(self):
         raise NotImplementedError
+
+    def get_invitation_defaults(self) -> dict:
+        return {}
 
     @action(detail=True, methods=["post"])
     def invite(self, request, *args, **kwargs):
         try:
+            defaults = self.get_invitation_defaults()
+            invitation_type = request.data.get("type") or defaults.get("type")
+
+            if invitation_type not in self.valid_invitation_types:
+                return Response(
+                    {"type": ["Invalid invitation type"]}, status=status.BAD_REQUEST
+                )
+
             Invitation.objects.create(
                 content_object=self.get_object(),
-                type=request.data.get("type"),
-                name=request.data.get("name"),
-                email=request.data.get("email"),
-                data=request.data.get("data"),
+                type=invitation_type,
+                name=request.data.get("name") or defaults.get("name"),
+                email=request.data.get("email") or defaults.get("email"),
+                data=request.data.get("data") or defaults.get("data"),
             )
+
             return Response(status=status.CREATED)
+
         except IntegrityError as e:
             return Response({"ValueError": [str(e)]}, status=status.BAD_REQUEST)

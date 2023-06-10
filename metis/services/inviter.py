@@ -8,16 +8,31 @@ def check_user_invitations(user: User):
     invitations = Invitation.objects.filter(email=user.email)
 
     for invitation in invitations:
-        processor = {
-            "contact": process_contact_invitation,
-            "student": process_student_invitation,
-        }
+        process_invitation(invitation, user)
 
-        try:
-            processor[invitation.type](invitation, user)
-            invitation.delete()
-        except Exception:
-            send_mail_to_admins("Invitation failed", f"Invitation {invitation} failed for user {user}")
+
+def process_invitation(invitation: Invitation, user: User):
+    processor = {
+        "existing_contact": process_existing_contact_invitation,
+        "contact": process_contact_invitation,
+        "student": process_student_invitation,
+    }
+
+    try:
+        processor[invitation.type](invitation, user)
+        invitation.delete()
+    except Exception:
+        send_mail_to_admins("Invitation failed", f"Invitation {invitation} failed for user {user}")
+
+
+def process_existing_contact_invitation(invitation: Invitation, user: User):
+    try:
+        contact: Contact = invitation.content_object  # type: ignore
+        contact.user = user
+        contact.save()
+    except ValidationError as e:
+        raise ValueError(str(e))
+    pass
 
 
 def process_contact_invitation(invitation: Invitation, user: User):
@@ -25,11 +40,10 @@ def process_contact_invitation(invitation: Invitation, user: User):
         raise ValueError("Invitation data is empty")
 
     try:
-        if invitation.data:
-            place: Place = invitation.content_object  # type: ignore
-            Contact.objects.create(
-                place=place, user=user, is_staff=invitation.data["is_staff"], is_mentor=invitation.data["is_mentor"]
-            )
+        place: Place = invitation.content_object  # type: ignore
+        Contact.objects.create(
+            place=place, user=user, is_staff=invitation.data["is_staff"], is_mentor=invitation.data["is_mentor"]
+        )
     except (KeyError, ValidationError) as e:
         raise ValueError(str(e))
 

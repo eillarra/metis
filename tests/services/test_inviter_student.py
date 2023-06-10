@@ -25,6 +25,6 @@ def user(db):
     ],
 )
 def test_invitation_data_is_invalid(data, project, user):
-    invitation = Invitation.objects.create(content_object=project, data=data)
+    invitation = Invitation.objects.create(content_object=project, name=user.name, email=user.email, data=data)
     with pytest.raises(ValueError):
         process_student_invitation(invitation, user)

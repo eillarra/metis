@@ -20,6 +20,8 @@ class ProjectViewSet(EducationNestedModelViewSet, InvitationMixin):
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ProjectSerializer
 
+    valid_invitation_types = {"student"}
+
     @action(detail=True, pagination_class=None, url_path="student-users")
     @method_decorator(never_cache)
     def student_users(self, request, *args, **kwargs):

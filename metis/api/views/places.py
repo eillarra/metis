@@ -21,6 +21,7 @@ class PlaceViewSet(EducationNestedModelViewSet, InvitationMixin):
 
     filter_backends = (SearchFilter,)
     search_fields = ("name", "code")
+    valid_invitation_types = {"contact"}
 
 
 class PlaceNestedModelViewSet(BaseModelViewSet):
@@ -45,8 +46,19 @@ class PlaceNestedModelViewSet(BaseModelViewSet):
         serializer.save(place=self.get_place(), updated_by=self.request.user)
 
 
-class ContactViewSet(PlaceNestedModelViewSet):
+class ContactViewSet(PlaceNestedModelViewSet, InvitationMixin):
     queryset = Contact.objects.select_related("user")
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ContactSerializer
+
+    valid_invitation_types = {"existing_contact"}
+
+    def get_invitation_defaults(self) -> dict:
+        user = self.get_object().user
+        return {
+            "type": "existing_contact",
+            "name": user.name,
+            "email": user.email,
+            "data": {},
+        }

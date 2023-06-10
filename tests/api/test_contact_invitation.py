@@ -43,6 +43,7 @@ def user(db):
 class TestForAnonymous:
     expected_status_codes: dict[str, status] = {
         "place_invite": status.FORBIDDEN,
+        "existing_contact_invite": status.FORBIDDEN,
     }
 
     def _get_contact_invite_data(self, place):
@@ -65,6 +66,7 @@ class TestForAuthenticated(TestForAnonymous):
 class TestForOfficeMember(TestForAuthenticated):
     expected_status_codes = {
         "place_invite": status.CREATED,
+        "existing_contact_invite": status.CREATED,
     }
 
     @pytest.fixture(autouse=True)
@@ -81,6 +83,13 @@ class TestForOfficeMember(TestForAuthenticated):
                 "is_staff": False,
             },
         }
+
+    def test_invite_existing_contact(self, api_client, education, place):
+        contact = place.contacts.first()
+        url = reverse("v1:education-place-contact-invite", args=[education.id, place.id, contact.id])
+        response = api_client.post(url)
+        assert response.status_code == self.expected_status_codes["existing_contact_invite"]
+        assert Invitation.objects.count() == 1
 
     def test_invite_contact_bad_request(self, api_client, education, place):
         url = reverse("v1:education-place-invite", args=[education.id, place.id])
