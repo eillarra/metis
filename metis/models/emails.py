@@ -49,7 +49,7 @@ class EmailLog(NonEditableMixin, models.Model):
     Log of sent emails.
     """
 
-    template = models.ForeignKey(EmailTemplate, related_name="logs", on_delete=models.PROTECT)
+    template = models.ForeignKey(EmailTemplate, related_name="logs", on_delete=models.PROTECT, null=True, blank=True)
     user = models.ForeignKey("metis.User", related_name="email_logs", on_delete=models.PROTECT, null=True, blank=True)
     to = models.CharField(max_length=255)
     bcc = models.CharField(max_length=255, null=True, blank=True)
