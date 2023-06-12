@@ -130,6 +130,7 @@ function createPlace() {
     api
       .post((project.value as Project).rel_places, {
         place_id: res.data.id,
+        disciplines: disciplines.value,
       })
       .then((res) => {
         res.data.Disciplines = disciplines.value.map((id: number) => disciplineMap.value.get(id));
