@@ -19,24 +19,12 @@
       <p class="text-grey-4 text-h2 text-mono q-mt-xl">\(^Д^)/</p>
     </div>
   </div>
-  <ugent-banner>
-    <template #default>
-      <div class="fit column justify-between">
-        <q-space />
-        <!--<ugent-link-list title="Help" :items="links" />-->
-      </div>
-    </template>
-    <template #image>
-      <img src="@/assets/uzgent.jpg" />
-    </template>
-  </ugent-banner>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
-import UgentBanner from '@/components/UgentBanner.vue';
 import UgentLinkList from '@/components/UgentLinkList.vue';
 
 const page = usePage();

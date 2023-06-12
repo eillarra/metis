@@ -21,7 +21,8 @@ export default {
     },
   },
   dashboard: {
-    no_results: 'You don\'t have access to Metis yet. Did you receive an invitation email? Try clicking the invitation link again.',
+    no_results:
+      "You don't have access to Metis yet. Did you receive an invitation email? Try clicking the invitation link again.",
     education_office: 'Internship office',
     my_internships: 'My internships',
     place_office: 'Place office',
