@@ -7,6 +7,7 @@ from .base import BaseModel
 from .rel import AddressesMixin, FilesMixin, LinksMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
 
 if TYPE_CHECKING:
+    from .educations import Education
     from .rel.files import File
 
 
@@ -104,3 +105,7 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
 
     def can_be_managed_by(self, user) -> bool:
         return self.place.can_be_managed_by(user)
+
+    @property
+    def education(self) -> "Education":
+        return self.place.education

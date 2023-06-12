@@ -54,9 +54,7 @@ class InvitationMixin:
             invitation_type = request.data.get("type") or defaults.get("type")
 
             if invitation_type not in self.valid_invitation_types:
-                return Response(
-                    {"type": ["Invalid invitation type"]}, status=status.BAD_REQUEST
-                )
+                return Response({"type": ["Invalid invitation type"]}, status=status.BAD_REQUEST)
 
             Invitation.objects.create(
                 content_object=self.get_object(),

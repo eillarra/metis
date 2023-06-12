@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 
 from metis.models import User, Invitation, Place, Project, Contact, Student
-from .mailer import send_mail_to_admins
+from .mailer import send_email_to_admins
 
 
 def check_user_invitations(user: User):
@@ -22,7 +22,7 @@ def process_invitation(invitation: Invitation, user: User):
         processor[invitation.type](invitation, user)
         invitation.delete()
     except Exception:
-        send_mail_to_admins("Invitation failed", f"Invitation {invitation} failed for user {user}")
+        send_email_to_admins("Invitation failed", f"Invitation {invitation} failed for user {user}")
 
 
 def process_existing_contact_invitation(invitation: Invitation, user: User):

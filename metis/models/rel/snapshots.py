@@ -4,7 +4,7 @@ from django.core.serializers import serialize
 from django.db import models
 from typing import Optional, Type, TYPE_CHECKING
 
-from metis.services.mailer import send_mail_to_admins
+from metis.services.mailer import send_email_to_admins
 
 if TYPE_CHECKING:
     from metis.models.base import BaseModel
@@ -57,7 +57,7 @@ def save_snapshot(sender: Type["BaseModel"], instance: models.Model, *, user: Op
     try:
         snapshot.data = serialize("json", [instance])
     except Exception as e:
-        send_mail_to_admins("Snapshot Error", f"Error while serializing {type(instance).__name__} #{instance.id}: {e}")
+        send_email_to_admins("Snapshot Error", f"Error while serializing {type(instance).__name__} #{instance.id}: {e}")
         snapshot.data = None
 
     snapshot.save()
