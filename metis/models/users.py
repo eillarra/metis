@@ -30,7 +30,7 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
         return self.student_set.exists()  # type: ignore
 
 
-def find_user_by_email(email: str, verified: bool = True) -> User | None:
+def find_user_by_email(email: str, *, verified: bool = True) -> User | None:
     try:
         return EmailAddress.objects.get(email__iexact=email, verified=verified).user
     except EmailAddress.DoesNotExist:
@@ -50,15 +50,14 @@ def link_to_existing_user(sender, request, sociallogin, **kwargs):
     if sociallogin.is_existing:
         return
 
-    # for "ugent" social accounts, we can use the email address to find the user
-    if sociallogin.account.provider == "ugent":
-        try:
-            email = sociallogin.account.extra_data["mail"]
-            user = find_user_by_email(email)
-            if user:
-                sociallogin.connect(request, user)
-        except KeyError:
-            return
+    # for social accounts, we can use the email address to find the user, if email is verified
+    try:
+        email = sociallogin.account.extra_data["mail"]
+        user = find_user_by_email(email, verified=True)
+        if user:
+            sociallogin.connect(request, user)
+    except KeyError:
+        return
 
 
 class TmpData(BaseModel):
