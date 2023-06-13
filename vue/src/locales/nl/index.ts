@@ -69,6 +69,7 @@ export default {
     status: 'Status | Statussen',
     updated_at: 'Laatst bijgewerkt',
     updated_by: 'Laatst bijgewerkt door',
+    last_login: 'Laatste aanmelding',
   },
   form: {
     add: 'Toevoegen',

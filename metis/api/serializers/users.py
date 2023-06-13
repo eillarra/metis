@@ -9,6 +9,12 @@ class UserTinySerializer(serializers.ModelSerializer):
         fields = ("id", "name", "email")
 
 
+class UserLastLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "name", "email", "last_login")
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

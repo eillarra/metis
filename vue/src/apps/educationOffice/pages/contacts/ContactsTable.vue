@@ -73,9 +73,16 @@ const allColumns = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'last_login',
+    field: 'last_login',
+    label: t('field.last_login'),
+    align: 'left',
+    sortable: true,
+  },
 ];
 
-const columnsWithoutStaff = [...allColumns.slice(0, 3), ...allColumns.slice(4, 6)];
+const columnsWithoutStaff = [...allColumns.slice(0, 3), ...allColumns.slice(4, 7)];
 
 const columns = computed(() => {
   if (education.value?.configuration?.place_contact_is_staff === false) {
@@ -93,6 +100,7 @@ const rows = computed(() => {
     is_admin: obj.is_admin,
     place: obj.Place?.name || '-',
     email: obj.user.email,
+    last_login: obj.user.last_login || '-',
   }));
 });
 </script>

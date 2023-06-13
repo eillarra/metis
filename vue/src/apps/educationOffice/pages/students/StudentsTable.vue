@@ -56,6 +56,13 @@ const columns = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'last_login',
+    field: 'last_login',
+    label: t('field.last_login'),
+    align: 'left',
+    sortable: true,
+  },
 ];
 
 const rows = computed(() => {
@@ -66,6 +73,7 @@ const rows = computed(() => {
       email: obj.email,
       track: obj.student_set[0].Track?.name || '-',
       blocks: obj.student_set.map((student) => `${student.Project?.name}-${student.Block?.name}`).join(', '),
+      last_login: obj.last_login || '-',
     };
   });
 });

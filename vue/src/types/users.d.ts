@@ -3,9 +3,12 @@ interface UserTiny extends ApiObject {
   email: string;
 }
 
-interface User extends UserTiny {
+interface UserLastLogin extends UserTiny {
+  last_login: string | null;
+}
+
+interface User extends UserLastLogin {
   username: string;
   is_active: boolean;
-  last_login: string | null;
   date_joined: string;
 }

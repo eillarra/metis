@@ -70,6 +70,7 @@ export default {
     status: 'Status | Statuses',
     updated_at: 'Last updated',
     updated_by: 'Last updated by',
+    last_login: 'Last login',
   },
   form: {
     add: 'Add',

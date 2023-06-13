@@ -36,7 +36,7 @@ interface ProjectPlace extends ApiObject {
 interface Contact extends ApiObject {
   self: ApiEndpoint;
   rel_remarks: ApiEndpoint;
-  user: UserTiny;
+  user: UserLastLogin;
   is_admin: boolean;
   is_staff: boolean;
   is_mentor: boolean;

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from metis.models import Region, Place, Contact, User
 from .base import BaseModelSerializer, NestedHyperlinkField
 from .rel import RemarksMixin, TextEntriesMixin
-from .users import UserTinySerializer
+from .users import UserLastLoginSerializer
 
 
 education_lookup_fields = {
@@ -29,7 +29,7 @@ class RegionSerializer(BaseModelSerializer):
 
 class ContactSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:education-place-contact-detail", nested_lookup=education_place_lookup_fields)
-    user = UserTinySerializer(read_only=True)
+    user = UserLastLoginSerializer(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(source="user", queryset=User.objects.all(), write_only=True)
     place = serializers.PrimaryKeyRelatedField(read_only=True)
 
