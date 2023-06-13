@@ -143,6 +143,8 @@ export default {
       deleted: 'Student verwijderd',
       save: 'Student opslaan',
       saved: 'Student informatie opgeslagen',
+      make_not_active: 'Niet actief maken',
+      make_active: 'Actief maken',
     },
     text_entry: {
       available_texts: 'Beschikbare teksten',

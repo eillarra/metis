@@ -142,6 +142,8 @@ export default {
       deleted: 'Student deleted',
       save: 'Save student',
       saved: 'Student information saved',
+      make_not_active: 'Make not active',
+      make_active: 'Make active',
     },
     text_entry: {
       available_texts: 'Available texts',

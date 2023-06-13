@@ -35,14 +35,20 @@
       <div v-if="tab == 'info'" class="flex q-gutter-sm q-pa-lg">
         <q-btn
           @click="deleteStudent"
-          unelevated
           outline
           color="red"
           :label="$t('form.student.delete')"
           :disable="projectStudentsWithInternships.has(obj.id)"
         />
         <q-space />
-        <!--<q-btn @click="save" unelevated color="ugent" :label="$t('form.student.save')" />-->
+        <q-btn
+          v-if="!obj.is_active"
+          @click="makeActive(true)"
+          unelevated
+          color="ugent"
+          :label="$t('form.student.make_active')"
+        />
+        <q-btn v-else @click="makeActive(false)" outline color="ugent" :label="$t('form.student.make_not_active')" />
       </div>
     </template>
   </dialog-form>
@@ -93,6 +99,18 @@ const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
     return acc;
   }, acc);
 });
+
+function makeActive(active: boolean) {
+  api
+    .patch(obj.value.self, {
+      is_active: active,
+    })
+    .then(() => {
+      notify.success(t('form.student.saved'));
+      obj.value.is_active = active;
+      store.updateObj('student', obj.value);
+    });
+}
 
 function deleteStudent() {
   confirm(t('form.student.confirm_delete'), () => {

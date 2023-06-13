@@ -37,9 +37,9 @@
     </template>
     <template #footer>
       <div v-if="tab == 'info'" class="flex q-gutter-sm q-pa-lg">
-        <q-btn @click="removeContact" unelevated outline color="red" :label="$t('form.contact.delete')" />
+        <q-btn @click="removeContact" outline color="red" :label="$t('form.contact.delete')" />
         <q-space />
-        <q-btn @click="inviteContact" unelevated outline color="ugent" :label="$t('form.invite')" />
+        <q-btn @click="inviteContact" outline color="ugent" :label="$t('form.invite')" />
         <q-btn @click="save" unelevated color="ugent" :label="$t('form.contact.save')" />
       </div>
     </template>

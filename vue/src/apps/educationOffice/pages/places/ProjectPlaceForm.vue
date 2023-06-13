@@ -60,7 +60,6 @@
       <div v-if="tab == 'info'" class="flex q-gutter-sm q-pa-lg">
         <q-btn
           @click="deletePlace"
-          unelevated
           outline
           color="red"
           :label="$t('form.place.delete')"

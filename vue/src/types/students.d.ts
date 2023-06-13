@@ -5,6 +5,7 @@ interface Student extends ApiObject {
   user: number;
   block: number;
   track: number | null;
+  is_active: boolean;
   remark_count: number;
   // -----
   Project?: Project;

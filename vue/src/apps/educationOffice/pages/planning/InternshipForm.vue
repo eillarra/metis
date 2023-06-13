@@ -50,15 +50,8 @@
     </template>
     <template #footer>
       <div v-if="tab == 'info'" class="flex q-gutter-sm q-pa-lg">
-        <q-btn @click="deleteInternship" unelevated outline color="red" :label="$t('form.internship.delete')" />
-        <q-btn
-          v-if="obj.student"
-          @click="deleteStudent"
-          unelevated
-          outline
-          color="red"
-          :label="$t('form.student.delete')"
-        />
+        <q-btn @click="deleteInternship" outline color="red" :label="$t('form.internship.delete')" />
+        <q-btn v-if="obj.student" @click="deleteStudent" outline color="red" :label="$t('form.student.delete')" />
         <q-space />
         <q-btn @click="save" unelevated color="ugent" :label="$t('form.internship.save')" />
       </div>

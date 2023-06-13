@@ -11,13 +11,17 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+
+import { useStore } from '../../store.js';
 
 import DataTable from '@/components/tables/DataTable.vue';
 import StudentCreateForm from './StudentCreateForm.vue';
 import StudentForm from './StudentForm.vue';
 
 const { t } = useI18n();
+const { project } = storeToRefs(useStore());
 
 const props = defineProps<{
   students: StudentUser[];
@@ -67,8 +71,11 @@ const columns = [
 
 const rows = computed(() => {
   return props.students.map((obj: StudentUser) => {
+    const currentStudent = obj.student_set.find((student) => student.Project?.id === (project.value as Project).id);
+
     return {
       _self: obj,
+      _class: currentStudent?.is_active ? '' : 'bg-red-1',
       name: obj.name,
       email: obj.email,
       track: obj.student_set[0].Track?.name || '-',

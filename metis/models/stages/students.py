@@ -19,6 +19,8 @@ class Student(RemarksMixin, BaseModel):
     block = models.ForeignKey("metis.ProgramBlock", related_name="students", on_delete=models.PROTECT)
     track = models.ForeignKey("metis.Track", related_name="students", null=True, blank=True, on_delete=models.SET_NULL)
 
+    is_active = models.BooleanField(default=True)
+
     class Meta:
         ordering = ["project", "block__position"]
         unique_together = ("user", "project", "block")
