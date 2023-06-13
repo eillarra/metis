@@ -14,5 +14,5 @@ def clear_expired_sessions():
 
 @db_periodic_task(crontab(hour="*/4", minute="5"))
 def clear_expired_invitations():
-    two_days_ago = now() - timedelta(days=2)
-    return Invitation.objects.filter(created_at__lt=two_days_ago).delete()
+    one_week_ago = now() - timedelta(days=7)
+    return Invitation.objects.filter(created_at__lt=one_week_ago).delete()
