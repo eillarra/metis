@@ -4,7 +4,7 @@ import { Notify as QuasarNotify, QNotifyCreateOptions } from 'quasar';
 type StatusMap = { [key: number]: string };
 
 class Notify {
-  create(opts: QNotifyCreateOptions | string): void {
+  create(opts: QNotifyCreateOptions): void {
     QuasarNotify.create({
       ...opts,
       position: 'top',
@@ -38,7 +38,13 @@ class Notify {
     if (res.status == 400 || res.status == 403) {
       const errors: string[] = [];
       Object.keys(res.data).forEach((k) => {
-        errors.push('<strong>' + k + '</strong>: ' + res.data[k].join(' '));
+        if (typeof res.data[k] == 'string') {
+          errors.push(`<strong>${k}</strong>: ${res.data[k]}`);
+        } else {
+          res.data[k].forEach((v: string) => {
+            errors.push(`<strong>${k}</strong>: ${v}`);
+          });
+        }
       });
       msg = errors.join('<br>') || '';
     }

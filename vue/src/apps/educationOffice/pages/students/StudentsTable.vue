@@ -12,6 +12,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
+import { date } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
 import { useStore } from '../../store.js';
@@ -80,7 +81,7 @@ const rows = computed(() => {
       email: obj.email,
       track: obj.student_set[0].Track?.name || '-',
       blocks: obj.student_set.map((student) => `${student.Project?.name}-${student.Block?.name}`).join(', '),
-      last_login: obj.last_login || '-',
+      last_login: obj.last_login ? date.formatDate(obj.last_login, 'YYYY-MM-DD HH:mm') : '-',
     };
   });
 });
