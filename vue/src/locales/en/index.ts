@@ -82,6 +82,7 @@ export default {
     invite: 'Invite',
     sign: 'Sign',
     send_email: 'Send email',
+    send_email_to: 'Mail to {email}',
     add_to_place: 'Add to place',
     add_to_project: 'Add to project',
     contact: {

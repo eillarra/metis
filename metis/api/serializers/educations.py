@@ -15,7 +15,7 @@ class FacultySerializer(BaseModelSerializer):
 class EducationTinySerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
-        fields = ("id", "code", "short_name")
+        fields = ("id", "code", "short_name", "office_email")
 
 
 class EducationSerializer(BaseModelSerializer):

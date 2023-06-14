@@ -102,12 +102,17 @@
       :visible-columns="visibleColumns.concat(['edit'])"
       row-key="_self.id"
       :loading="loading"
+      :hide-pagination="hidePagination"
       :pagination="initialPagination"
       binary-state-sort
     >
       <template #body-cell="props">
         <!-- Custom boolean field -->
-        <q-td :props="props" :auto-width="props.col.name.startsWith('is_')" :class="props.row._class || ''">
+        <q-td
+          :props="props"
+          :auto-width="props.col.name.startsWith('is_') || props.col.name == 'last_login'"
+          :class="props.row._class || ''"
+        >
           <span v-if="props.col.name.startsWith('is_')">
             <q-icon v-if="props.value" name="check_circle" color="green" :size="iconSize" />
             <q-icon v-else name="block" color="grey" :size="iconSize" />
@@ -172,6 +177,7 @@ const props = defineProps<{
   sortBy?: string;
   loading?: boolean;
   hideToolbar?: boolean;
+  hidePagination?: boolean;
 }>();
 
 const initialPagination = {

@@ -47,3 +47,8 @@ interface Contact extends ApiObject {
   // -----
   Place?: Place;
 }
+
+interface ContactPlace {
+  id: number;
+  name: string;
+}

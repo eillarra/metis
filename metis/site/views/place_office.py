@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 
-from metis.api.serializers import PlaceSerializer
+from metis.api.serializers import EducationTinySerializer, PlaceSerializer
 from metis.models import Place
 from .inertia import InertiaView
 
@@ -14,7 +14,7 @@ class PlaceOfficeView(InertiaView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not self.get_object().contacts.filter(user_id=request.user.id).exists():
+        if not self.get_object().contacts.filter(user=request.user).exists():
             messages.error(
                 request,
                 "You don't have the necessary permissions to access this page.",
@@ -28,8 +28,15 @@ class PlaceOfficeView(InertiaView):
         return self.object
 
     def get_props(self, request, *args, **kwargs):
+        place = self.get_object()
+
         return {
-            "place": PlaceSerializer(self.get_object(), context={"request": request}).data,
+            "education": EducationTinySerializer(place.education).data,
+            "place": PlaceSerializer(place, context={"request": request}).data,
+            "places": [{
+                "id": place.id,
+                "name": f"{place.education.short_name}: {place.name}",
+            } for place in Place.objects.filter(contacts__user_id=request.user.id).select_related("education")],
         }
 
     def get_page_title(self, request, *args, **kwargs) -> str:

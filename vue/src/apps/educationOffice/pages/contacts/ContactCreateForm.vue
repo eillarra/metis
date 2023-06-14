@@ -152,6 +152,9 @@ function addContact() {
   const data = {
     place_id: selectedPlace.value.id,
     user_id: formData.value.user.id,
+    is_mentor: formData.value.is_mentor,
+    is_staff: formData.value.is_staff,
+    is_admin: formData.value.is_admin,
   };
 
   api.post(selectedPlace.value.rel_contacts, data).then((res) => {

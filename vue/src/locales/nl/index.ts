@@ -58,7 +58,7 @@ export default {
   track: 'Traject | Trajecten',
   type: 'Type | Types',
   field: {
-    email: 'Email | Emails',
+    email: 'E-mail | E-mails',
     name: 'Naam | Namen',
     code: 'Interne code | Interne codes',
     date: 'Datum | Data',
@@ -80,7 +80,8 @@ export default {
     update: 'Bijwerken',
     invite: 'Uitnodigen',
     sign: 'Ondertekenen',
-    send_email: 'Email versturen',
+    send_email: 'E-mail versturen',
+    send_email_to: 'Mailen naar {email}',
     add_to_place: 'Voeg toe aan stageplaats',
     add_to_project: 'Voeg toe aan project',
     contact: {

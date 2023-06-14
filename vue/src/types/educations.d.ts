@@ -5,6 +5,7 @@ interface Faculty extends ApiObject {
 interface EducationTiny extends ApiObject {
   code: string;
   short_name: string;
+  office_email?: string;
 }
 
 interface Education extends EducationTiny {
