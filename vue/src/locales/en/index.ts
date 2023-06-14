@@ -78,6 +78,8 @@ export default {
     back: 'Back',
     continue: 'Continue',
     skip: 'Skip',
+    save: 'Save',
+    create: 'Create',
     update: 'Update',
     invite: 'Invite',
     sign: 'Sign',
@@ -158,6 +160,18 @@ export default {
     deleted: 'Deleted',
     saved: 'Saved',
     updated: 'Updated',
+  },
+  tasks: {
+    place: {
+      project_place_capacity: {
+        text: 'Place capacity',
+        btn_label: 'Update place capacity',
+      },
+      project_place_information: {
+        text: 'Please check the place information and update if necessary.',
+        btn_label: 'Update place information',
+      },
+    },
   },
   copied_to_clipboard: 'Copied to the clipboard',
 };

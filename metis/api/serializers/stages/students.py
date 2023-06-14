@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from metis.models import User, Student
 from ..base import BaseModelSerializer, NestedHyperlinkField
+from ..rel.forms import CustomFormResponsesMixin
 from ..rel.remarks import RemarksMixin
 
 
@@ -11,7 +12,7 @@ project_student_lookup_fields = {
 }
 
 
-class StudentSerializer(RemarksMixin, BaseModelSerializer):
+class StudentSerializer(CustomFormResponsesMixin, RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-student-detail", nested_lookup=project_student_lookup_fields)
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)

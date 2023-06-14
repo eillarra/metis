@@ -15,7 +15,9 @@ if TYPE_CHECKING:
 
 
 class ProjectViewSet(EducationNestedModelViewSet, InvitationMixin):
-    queryset = Project.objects.select_related("updated_by").prefetch_related("periods__updated_by")
+    queryset = Project.objects.select_related("updated_by").prefetch_related(
+        "periods__updated_by", "important_dates__updated_by"
+    )
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ProjectSerializer

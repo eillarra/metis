@@ -10,6 +10,10 @@ def clone_project(project: Project, name: str) -> Project:
     - projects students, if they are not already at the end of their tracks (check block position for this)
     """
 
+    """
+    TODO: clone related placeforms, studentforms
+    """
+
     new_project = Project.objects.get(pk=project.pk)
     new_project.name = name
     new_project.pk = None

@@ -2,13 +2,14 @@ from django.db import models
 from typing import TYPE_CHECKING
 
 from ..base import BaseModel
+from ..rel.forms import CustomFormResponsesMixin
 from ..rel.remarks import RemarksMixin
 
 if TYPE_CHECKING:
     from .programs import ProgramInternship
 
 
-class Student(RemarksMixin, BaseModel):
+class Student(CustomFormResponsesMixin, RemarksMixin, BaseModel):
     """
     A Student is a User that is linked to a Project.
     TODO: This model is used to register students' preferences too.

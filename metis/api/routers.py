@@ -23,6 +23,12 @@ class Router(NestedRouterMixin, DefaultRouter):
 
         rel_routes_pql = ["content_type_id", "object_id"]
         rel_routes = self.register(r"rel/(?P<parent_lookup_content_type_id>\d+)", DummyViewSet, basename="rel")
+        rel_routes.register(
+            "form-responses",
+            views.CustomFormResponseViewSet,
+            basename="form-response",
+            parents_query_lookups=rel_routes_pql,
+        )
         rel_routes.register("texts", views.TextEntryViewSet, basename="text", parents_query_lookups=rel_routes_pql)
         rel_routes.register("remarks", views.RemarkViewSet, basename="remark", parents_query_lookups=rel_routes_pql)
 

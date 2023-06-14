@@ -11,6 +11,7 @@ interface Project extends ProjectTiny {
   rel_texts: ApiEndpoint;
   education: number;
   periods: Period[];
+  important_dates: ImportantDate[];
   start_date: string;
   end_date: string;
   updated_at: string;
@@ -28,4 +29,17 @@ interface Period extends ApiObject {
   updated_by: UserTiny;
   // -----
   ProgramInternship?: ProgramInternship;
+}
+
+interface ImportantDate extends ApiObject {
+  type: string;
+  start_at: string;
+  end_at: string;
+  is_active: boolean;
+  period: number;
+  form: CustomForm;
+  updated_at: string;
+  updated_by: UserTiny;
+  // -----
+  Period?: Period;
 }

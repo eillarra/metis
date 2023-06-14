@@ -4,7 +4,12 @@
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
         <q-tab name="info" label="Info" icon="info_outline" />
         <q-tab name="contacts" :label="$t('contact', 9)" icon="portrait" />
-        <q-tab name="texts" :label="$t('text', 9)" icon="notes" />
+        <q-tab
+          v-if="education?.configuration?.place_text_types.length"
+          name="texts"
+          :label="$t('text', 9)"
+          icon="notes"
+        />
         <q-tab name="remarks" :label="`${$t('remark', 9)} (${remarkCount})`" icon="chat_bubble_outline" />
       </q-tabs>
       <q-space />
@@ -41,8 +46,9 @@
             </q-item>
           </q-list>
         </q-tab-panel>
-        <q-tab-panel v-if="textsEndpoint" name="texts">
+        <q-tab-panel name="texts">
           <texts-view
+            v-if="textsEndpoint"
             container
             :api-endpoint="textsEndpoint"
             :text-types="education?.configuration?.place_text_types as TextEntryType[]"

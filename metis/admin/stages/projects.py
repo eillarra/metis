@@ -5,15 +5,19 @@ from django.utils.html import format_html
 
 from metis.models.stages.projects import Project, Period
 from ..base import BaseModelAdmin
+from .dates import ImportantDatesInline
 
 
 @admin.register(Period)
 class PeriodAdmin(BaseModelAdmin):
+    list_display = ("id", "project", "program_internship", "start_date", "end_date")
+    list_filter = (("program_internship__block__program__education", admin.RelatedOnlyFieldListFilter),)
+
     def has_module_permission(self, request) -> bool:
         return False
 
 
-class PeriodInline(admin.TabularInline):
+class PeriodsInline(admin.TabularInline):
     model = Period
     extra = 0
 
@@ -24,7 +28,7 @@ class ProjectAdmin(BaseModelAdmin):
     list_filter = (("education", admin.RelatedOnlyFieldListFilter), "is_active")
     # form
     raw_id_fields = ("education",)
-    inlines = (PeriodInline,)
+    inlines = (PeriodsInline, ImportantDatesInline)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(Count("internships", distinct=True))

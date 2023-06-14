@@ -2,11 +2,12 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from ..base import BaseModel
-from ..rel.texts import TextEntriesMixin
+from ..rel.forms import CustomFormResponsesMixin
 from ..rel.remarks import RemarksMixin
+from ..rel.texts import TextEntriesMixin
 
 
-class ProjectPlace(RemarksMixin, TextEntriesMixin, BaseModel):
+class ProjectPlace(CustomFormResponsesMixin, RemarksMixin, TextEntriesMixin, BaseModel):
     """
     The stagebureau works with a subset of all the places availablke for each Project.
     This can be copied from previous project.
@@ -36,7 +37,7 @@ class ProjectPlace(RemarksMixin, TextEntriesMixin, BaseModel):
         return super().clean()
 
     def can_be_managed_by(self, user) -> bool:
-        return self.project.can_be_managed_by(user)
+        return self.project.can_be_managed_by(user) or self.place.contacts.filter(user=user, is_admin=True).exists()
 
 
 class PlaceCapacity(BaseModel):

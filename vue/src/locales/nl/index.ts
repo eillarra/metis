@@ -77,6 +77,8 @@ export default {
     back: 'Terug',
     continue: 'Verdergaan',
     skip: 'Overslaan',
+    save: 'Opslaan',
+    create: 'Aanmaken',
     update: 'Bijwerken',
     invite: 'Uitnodigen',
     sign: 'Ondertekenen',
@@ -159,6 +161,18 @@ export default {
     deleted: 'Verwijderd',
     saved: 'Opgeslagen',
     updated: 'Bijgewerkt',
+  },
+  tasks: {
+    place: {
+      project_place_capacity: {
+        text: 'Place capacity',
+        btn_label: 'Update place capacity',
+      },
+      project_place_information: {
+        text: 'Please check the place information and update if necessary.',
+        btn_label: 'Update place information',
+      },
+    },
   },
   copied_to_clipboard: 'Gekopieerd naar het klembord',
 };

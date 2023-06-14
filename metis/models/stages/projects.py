@@ -10,7 +10,23 @@ from ..base import BaseModel
 from ..rel import TextEntriesMixin
 
 if TYPE_CHECKING:
+    from ..places import Place
     from ..rel import TextEntry
+
+
+class ProjectManager(models.Manager):
+    def get_queryset(self, *, prefetch_related: bool = False):
+        if prefetch_related:
+            return (
+                super()
+                .get_queryset()
+                .filter(is_active=True)
+                .prefetch_related("updated_by", "periods__updated_by", "important_dates__updated_by")
+            )
+        return super().get_queryset().filter(is_active=True)
+
+    def filter_by_place(self, place: "Place", *, prefetch_related: bool = False):
+        return self.get_queryset(prefetch_related=prefetch_related).filter(place_set__place=place)
 
 
 class Project(TextEntriesMixin, BaseModel):
@@ -29,6 +45,8 @@ class Project(TextEntriesMixin, BaseModel):
     is_visible_to_students = models.BooleanField(default=False)
 
     places = models.ManyToManyField("metis.Place", through="metis.ProjectPlace")
+
+    objects = ProjectManager()
 
     # TODO: QUESTION: there are dates in the old database, do we need them or do we use the period/project dates?
 
@@ -53,7 +71,7 @@ class Project(TextEntriesMixin, BaseModel):
 
     @property
     def full_name(self) -> str:
-        return f"{self.education.short_name} - {self.name}"
+        return f"{self.education.short_name} / {self.name}"
 
     @property
     def academic_year(self) -> str:
@@ -107,6 +125,9 @@ class Period(BaseModel):
             raise ValidationError("Choose a program internship from the project program")
 
         return super().clean()
+
+    def __str__(self) -> str:
+        return f"{self.program_internship.block} / {self.name}"
 
     @property
     def is_open(self) -> bool:

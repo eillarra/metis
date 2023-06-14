@@ -31,16 +31,6 @@ class TextEntry(FilesMixin, BaseModel):
         db_table = "metis_rel_text"
         unique_together = ("content_type", "object_id", "code", "version")
 
-    @classmethod
-    def duplicate(cls, code: str) -> "TextEntry":
-        content = cls.objects.filter(code=code).order_by("-version").first()
-        if content is None:
-            raise cls.DoesNotExist
-        content.pk = None
-        content.version += 1
-        content.save()
-        return content
-
 
 class TextEntryTranslationOptions(TranslationOptions):
     fields = ("title", "text")

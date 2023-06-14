@@ -20,17 +20,24 @@ interface Place extends ApiObject {
   remark_count: number;
 }
 
-interface ProjectPlace extends ApiObject {
+interface ProjectPlaceTiny extends ApiObject {
   self: ApiEndpoint;
+  rel_form_responses: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   project: number;
-  place: Place;
+  place: number;
   disciplines: number[];
   updated_at: string;
   updated_by: UserTiny | null;
   remark_count: number;
   // -----
   Disciplines?: Discipline[];
+  Place?: Place;
+  Project?: Project;
+}
+
+interface ProjectPlace extends ProjectPlaceTiny {
+  place: Place;
 }
 
 interface Contact extends ApiObject {

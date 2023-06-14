@@ -1,13 +1,15 @@
 <template>
-  <div v-if="place">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-xl">{{ $t('place') }}</h3>
-    <p>
-      U bent aangemeld als contactpersoon voor de stageplaats <strong>{{ place.name }}</strong
-      >.
-    </p>
+  <div class="q-mb-xl">
+    <h3 class="text-ugent col-12 col-md-3 q-mb-lg">{{ $t('task', 9) }}</h3>
+    <task-box
+      v-if="userIsAdmin && hasActiveDates"
+      :project="(project as Project)"
+      :project-place="(projectPlace as ProjectPlaceTiny)"
+      class="q-mb-lg"
+    />
     <p>In METIS zijn volgende personen gekend voor deze stageplaats:</p>
     <ul>
-      <li v-for="contact in place.contacts" :key="contact.id">
+      <li v-for="contact in (place as Place).contacts" :key="contact.id">
         {{ contact.user.name }}, &lt;{{ contact.user.email }}&gt;
         <q-badge v-if="contact.is_mentor" outline color="ugent" class="q-ml-sm">Mentor</q-badge>
         <q-badge v-if="contact.is_admin" color="ugent" class="q-ml-sm">Admin</q-badge>
@@ -31,9 +33,9 @@
       />
       <div class="row q-col-gutter-xl q-mb-xl">
         <div class="col-12 col-md">
-          <h5 class="q-mb-md">Wat is een admin?</h5>
+          <h5 class="q-mb-md">Wat is een <span class="text-lowercase">{{ $t('admin') }}</span>?</h5>
           <p>
-            De admin (één person) kan de informatie van de stageplaats (kledij, patiëntenpopulatie, bereikbaarheid,
+            De <span class="text-lowercase">{{ $t('admin') }}</span> (één person) kan de informatie van de stageplaats (kledij, patiëntenpopulatie, bereikbaarheid,
             werkrooster, …) rechtstreeks in METIS aanpassen. Dus niet meer op papier en via e-mail zoals voorheen.
           </p>
         </div>
@@ -56,9 +58,11 @@ import { storeToRefs } from 'pinia';
 import { api } from '@/axios';
 import { notify } from '@/notify';
 
-import { useStore } from '../store';
+import { useStore } from '../../store.js';
 
-const { place, admins } = storeToRefs(useStore());
+import TaskBox from '@/components/TaskBox.vue';
+
+const { place, admins, userIsAdmin, hasActiveDates, project, projectPlace } = storeToRefs(useStore());
 
 const emailSent = ref<boolean>(false);
 

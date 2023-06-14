@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from metis.models import Internship
+from metis.models.stages.internships import Internship
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel.remarks import RemarksMixin
 from .programs import ProgramInternshipSerializer

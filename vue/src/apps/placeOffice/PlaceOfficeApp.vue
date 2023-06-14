@@ -21,10 +21,15 @@
         popup-content-class="q-menu__square"
       >
         <template #selected-item>
-          <span class="text-underline">Stageplaats {{ (page.props.education as EducationTiny).short_name }}:
-          {{ (page.props.place as Place).name }}</span>
+          <span class="text-underline"
+            >Stageplaats {{ (page.props.education as EducationTiny).short_name }}:
+            {{ (page.props.place as Place).name }}</span
+          >
         </template>
       </q-select>
+      <div v-if="availableProjects.length" class="menu-item q-ml-md">
+        <span>{{ availableProjects[0].label }}</span>
+      </div>
     </div>
     <router-view />
   </div>
@@ -32,6 +37,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { usePage } from '@inertiajs/vue3';
 
 import { useStore } from './store';
@@ -39,12 +45,16 @@ import { useStore } from './store';
 const page = usePage();
 const store = useStore();
 
+const { availableProjects } = storeToRefs(store);
+
 const selectedPlaceId = ref<number>((page.props.place as Place).id);
-const places = computed<ContactPlace[]>(() => page.props.places as ContactPlace[]);
+const places = computed<ContactPlace[]>(() => page.props.contact_places as ContactPlace[]);
 
 store.setData(
   page.props.education as EducationTiny,
+  page.props.projects as Project[],
   page.props.place as Place,
+  page.props.project_places as ProjectPlaceTiny[],
   (page.props.django_user as DjangoAuthenticatedUser).id
 );
 

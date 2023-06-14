@@ -4,20 +4,19 @@
     <contacts-table :contacts="place.contacts" />
     <div class="row q-col-gutter-x-xl q-col-gutter-y-lg q-mb-xl">
       <div class="col-12 col-sm-6 col-md-4">
-        <h5 class="q-mt-none q-mb-md">Wat is een admin?</h5>
+        <h5 class="q-mt-none q-mb-md">Wat is een <span class="text-lowercase">{{ $t('admin') }}</span>?</h5>
         <p>
-          De admin (één person) kan de informatie van de stageplaats (kledij, patiëntenpopulatie, bereikbaarheid,
-          werkrooster, …) rechtstreeks in METIS aanpassen. Dus niet meer op papier en via e-mail zoals voorheen.
+          De <span class="text-lowercase">{{ $t('admin') }}</span> (één person) kan de informatie van de stageplaats (kledij, patiëntenpopulatie, bereikbaarheid, werkrooster, …) rechtstreeks in METIS aanpassen. Dus niet meer op papier en via e-mail zoals voorheen.
         </p>
       </div>
-      <div class="col-12 col-sm-6 col-md-4">
+      <div v-if="userIsAdmin" class="col-12 col-sm-6 col-md-4">
         <h5 class="q-mt-none q-mb-md">Ontbrekende collega's?</h5>
         <p>
           Zijn er nog collega's die ontbreken in bovenstaande lijst. Gelieven hun naam en e-mailadres door te geven. We
           sturen hen dan ook een uitnodiging om een account aan te maken.
         </p>
       </div>
-      <div class="col-12 col-md-4">
+      <div v-if="userIsAdmin" class="col-12 col-md-4">
         <q-btn
           outline
           color="ugent"
@@ -27,7 +26,7 @@
         />
       </div>
     </div>
-    <q-dialog v-model="dialogEmail">
+    <q-dialog v-if="userIsAdmin" v-model="dialogEmail">
       <dialog-form icon="mail_outline" :title="$t('form.send_email_to', { email: education?.office_email })">
         <template #page>
           <div class="q-pa-lg">
@@ -61,7 +60,7 @@ import { useStore } from '../../store.js';
 import ContactsTable from './ContactsTable.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 
-const { education, place, admins } = storeToRefs(useStore());
+const { education, place, admins, userIsAdmin } = storeToRefs(useStore());
 
 const email = ref<string>('');
 const emailSent = ref<boolean>(false);

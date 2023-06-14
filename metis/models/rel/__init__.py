@@ -2,6 +2,7 @@
 
 from .addresses import *
 from .files import *
+from .forms import *
 from .invitations import *
 from .links import *
 from .phone_numbers import *

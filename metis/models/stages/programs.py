@@ -81,7 +81,7 @@ class ProgramInternship(DisciplineConstraintsMixin, BaseModel):
         ordering = ["block__position", "position"]
 
     def __str__(self) -> str:
-        return f"{self.block} - {self.name}"
+        return f"{self.block} / {self.name}"
 
 
 class Track(DisciplineConstraintsMixin, BaseModel):
@@ -97,7 +97,7 @@ class Track(DisciplineConstraintsMixin, BaseModel):
         db_table = "metis_program_tracks"
 
     def __str__(self) -> str:
-        return f"{self.program} - {self.name}"
+        return f"{self.program} / {self.name}"
 
     @property
     def is_available(self) -> bool:

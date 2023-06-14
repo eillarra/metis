@@ -3,6 +3,7 @@ from rest_framework import serializers
 from metis.models import Place, ProjectPlace
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..places import PlaceSerializer
+from ..rel.forms import CustomFormResponsesMixin
 from ..rel.remarks import RemarksMixin
 
 
@@ -15,7 +16,7 @@ project_place_lookup_fields = {
 }
 
 
-class ProjectPlaceSerializer(RemarksMixin, BaseModelSerializer):
+class ProjectPlaceSerializer(CustomFormResponsesMixin, RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-place-detail", nested_lookup=project_place_lookup_fields)
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     place = PlaceSerializer(read_only=True)
@@ -24,3 +25,9 @@ class ProjectPlaceSerializer(RemarksMixin, BaseModelSerializer):
     class Meta:
         model = ProjectPlace
         exclude = ("created_at", "created_by")
+
+
+class ProjectPlaceTinySerializer(ProjectPlaceSerializer):
+    place = serializers.PrimaryKeyRelatedField(read_only=True)
+    place_id = None
+    updated_by = None

@@ -3,13 +3,13 @@ import { RouteRecordRaw } from 'vue-router';
 import { useStore } from './store';
 
 function isPlaceAdmin() {
-  if (!useStore().userIsAdmin) return { name: 'dashboard' };
+  if (!useStore().userIsAdmin) return { name: 'tasks' };
 }
 
 const routes: RouteRecordRaw[] = [
   {
     path: '',
-    redirect: { name: 'dashboard' },
+    redirect: { name: 'tasks' },
     strict: true,
     components: {
       default: () => import('./PlaceOfficeApp.vue'),
@@ -17,10 +17,10 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'dashboard/',
-        name: 'dashboard',
+        path: 'tasks/',
+        name: 'tasks',
         strict: true,
-        component: () => import('./pages/DashboardPage.vue'),
+        component: () => import('./pages/tasks/TasksPage.vue'),
       },
       // --- for is_admin
       {
@@ -35,7 +35,6 @@ const routes: RouteRecordRaw[] = [
         name: 'contacts',
         strict: true,
         component: () => import('./pages/contacts/ContactsPage.vue'),
-        beforeEnter: [isPlaceAdmin],
       },
     ],
   },

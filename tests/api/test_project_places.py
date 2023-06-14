@@ -31,11 +31,6 @@ def project_place(db, education):
 
 
 @pytest.fixture
-def contact(db, project_place):
-    return project_place.contacts.first()
-
-
-@pytest.fixture
 def office_member(db, education):
     user = UserFactory()
     education.office_members.add(user)
