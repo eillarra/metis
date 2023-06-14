@@ -26,7 +26,8 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { date } from 'quasar';
+
+import { formatDate } from '@/utils';
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -36,8 +37,8 @@ const model = ref<QuasarDateRange | null>(null);
 const datesText = computed<string>(() => {
   if (!model.value) return '';
   const { from, to } = model.value;
-  const fromDate = date.formatDate(from, 'D/M');
-  const toDate = date.formatDate(to, 'D/M');
+  const fromDate = formatDate(from, 'D/M');
+  const toDate = formatDate(to, 'D/M');
   return `${fromDate} - ${toDate}`;
 });
 

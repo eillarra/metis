@@ -12,8 +12,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { date } from 'quasar';
 import { useI18n } from 'vue-i18n';
+
+import { formatDate } from '@/utils';
 
 import { useStore } from '../../store.js';
 
@@ -101,7 +102,7 @@ const rows = computed(() => {
     is_admin: obj.is_admin,
     place: obj.Place?.name || '-',
     email: obj.user.email,
-    last_login: obj.user.last_login ? date.formatDate(obj.user.last_login, 'YYYY-MM-DD HH:mm') : '-',
+    last_login: obj.user.last_login ? formatDate(obj.user.last_login) : '-',
   }));
 });
 </script>

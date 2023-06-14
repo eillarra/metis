@@ -4,8 +4,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { date } from 'quasar';
 import { useI18n } from 'vue-i18n';
+
+import { formatDate } from '@/utils';
 
 import DataTable from '@/components/tables/DataTable.vue';
 
@@ -42,7 +43,7 @@ const rows = computed(() => {
   return props.signatures.map((obj: Signature) => ({
     _self: obj,
     name: props.texts.find((text) => text.id === obj.text_entry)?.title_nl ?? '',
-    date: date.formatDate(obj.created_at, 'YYYY-MM-DD HH:mm'),
+    date: formatDate(obj.created_at),
   }));
 });
 </script>

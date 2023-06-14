@@ -16,7 +16,8 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { date } from 'quasar';
+
+import { formatDate } from '@/utils';
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -25,7 +26,7 @@ const model = ref<string | null>(null);
 
 const dateText = computed<string>(() => {
   if (!model.value) return '';
-  return date.formatDate(model.value, 'YYYY-MM-DD');
+  return formatDate(model.value, 'YYYY-MM-DD');
 });
 
 watch(model, (val) => {

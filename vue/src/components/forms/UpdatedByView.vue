@@ -25,14 +25,15 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { date } from 'quasar';
 
 import { biMicrosoftTeams } from '@quasar/extras/bootstrap-icons';
+
+import { formatDate } from '@/utils';
 
 const props = defineProps<{
   obj: object;
 }>();
 
 const obj = ref<ApiObjectUpdated>(props.obj as ApiObjectUpdated);
-const updatedAt = computed(() => date.formatDate(obj.value.updated_at, 'YYYY-MM-DD HH:mm:ss'));
+const updatedAt = computed(() => formatDate(obj.value.updated_at));
 </script>
