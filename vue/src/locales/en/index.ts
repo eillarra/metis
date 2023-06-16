@@ -87,6 +87,7 @@ export default {
     send_email_to: 'Mail to {email}',
     add_to_place: 'Add to place',
     add_to_project: 'Add to project',
+    pending_fields: 'Pending fields',
     contact: {
       create: {
         new: 'Create a new contact',

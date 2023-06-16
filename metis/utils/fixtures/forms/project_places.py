@@ -94,10 +94,11 @@ def get_audiology_place_form() -> dict:
                 "legend": {"nl": "Praktische informatie", "en": "Practical information"},
                 "fields": [
                     {
-                        "type": "text",
-                        "code": "openingsuren",
-                        "label": {"nl": "Openingsuren", "en": "Opening hours"},
-                        "required": True,
+                        "type": "timetable",
+                        "code": "uurroster",
+                        "label": {"nl": "Uurrooster", "en": "Timetable"},
+                        "days": ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"],
+                        "required": True
                     },
                     {
                         "type": "option_group",
@@ -124,6 +125,11 @@ def get_audiology_place_form() -> dict:
                             {"value": "auto_noodzakelijk", "label": {"nl": "Eigen auto noodzakelijk", "en": "Own car required"}},
                             {"value": "fiets", "label": {"nl": "Fiets voorzien", "en": "Bicycle provided"}},
                         ],
+                    },
+                    {
+                        "type": "text",
+                        "code": "treinstation",
+                        "label": {"nl": "Plaats en afstand tot dichtstbijzijnde treinstation", "en": "Location and distance to nearest train station"},
                     },
                     {
                         "type": "text",
@@ -154,7 +160,7 @@ def get_logopedics_place_form() -> dict:
                     {
                         "type": "text",
                         "code": "voorkennis",
-                        "label": {"nl": "Specifieke voorkennis vereist?", "en": "Specific prior knowledge required?"},
+                        "label": {"nl": "Specifiek vereiste voorkennis / bijzondere interesse in", "en": "Specific required prior knowledge / special interest in"},
                     },
                     {
                         "type": "option_group",
@@ -175,9 +181,9 @@ def get_logopedics_place_form() -> dict:
                         "label": {"nl": "Logopedische activiteiten", "en": "Speech therapy activities"},
                         "multiple": True,
                         "options": [
-                            {"value": "ci_fitting", "label": {"nl": "CI-fitting", "en": "CI fitting"}},
-                            {"value": "hoortraining", "label": {"nl": "Hoortraining", "en": "Hearing training"}},
-                            {"value": "lipleestraining", "label": {"nl": "Lipleestraining", "en": "Lip reading training"}},
+                            {"value": "therapeutisch", "label": {"nl": "(Hoofzakelijk) Therapeutische setting", "en": "(Mainly) Therapeutic setting"}},
+                            {"value": "diagnostisch", "label": {"nl": "(Hoofzakelijk) Diagnostische setting", "en": "(Mainly) Diagnostic setting"}},
+                            {"value": "observatie", "label": {"nl": "Observatie van andere disciplines mogelijk", "en": "Observation of other disciplines possible"}},
                         ],
                     },
                     {
@@ -206,10 +212,11 @@ def get_logopedics_place_form() -> dict:
                 "legend": {"nl": "Praktische informatie", "en": "Practical information"},
                 "fields": [
                     {
-                        "type": "text",
-                        "code": "openingsuren",
-                        "label": {"nl": "Openingsuren", "en": "Opening hours"},
-                        "required": True,
+                        "type": "timetable",
+                        "code": "uurroster",
+                        "label": {"nl": "Uurrooster", "en": "Timetable"},
+                        "days": ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"],
+                        "required": True
                     },
                     {
                         "type": "option_group",
@@ -236,6 +243,11 @@ def get_logopedics_place_form() -> dict:
                             {"value": "auto_noodzakelijk", "label": {"nl": "Eigen auto noodzakelijk", "en": "Own car required"}},
                             {"value": "fiets", "label": {"nl": "Fiets voorzien", "en": "Bicycle provided"}},
                         ],
+                    },
+                    {
+                        "type": "text",
+                        "code": "treinstation",
+                        "label": {"nl": "Plaats en afstand tot dichtstbijzijnde treinstation", "en": "Location and distance to nearest train station"},
                     },
                     {
                         "type": "text",

@@ -1,5 +1,16 @@
+from enum import Enum
 from pydantic import BaseModel, Extra, ValidationError, validator
 from typing import Literal, Union
+
+
+class DayOfWeek(Enum):
+    maandag = "maandag"
+    dinsdag = "dinsdag"
+    woensdag = "woensdag"
+    donderdag = "donderdag"
+    vrijdag = "vrijdag"
+    zaterdag = "zaterdag"
+    zondag = "zondag"
 
 
 class Translation(BaseModel):
@@ -49,8 +60,13 @@ class ChoiceField(FormField):
         return v
 
 
+class TimetableField(FormField):
+    type: Literal["timetable"]
+    days: list[DayOfWeek]
+
+
 class Fieldset(BaseModel):
-    fields: list[Union[InputField, ChoiceField]]
+    fields: list[Union[InputField, ChoiceField, TimetableField]]
     legend: Translation | None = None
     description: Translation | None = None
 
@@ -138,6 +154,10 @@ def validate_form_data(form_definition: dict, data: dict) -> dict:
                 other_code = f"{field.code}__{field.other_option}"
                 if other_code not in data or not isinstance(data[other_code], str):
                     raise ValueError(f"Field `{field.code}__{field.other_option}` should be defined, as a string")
+
+        elif field.type in {"timetable"} and field.code in data:
+            if not isinstance(data[field.code], str):
+                raise ValueError(f"Field `{field.code}` should be a list")
 
         elif field.code in data:
             if not isinstance(data[field.code], str):

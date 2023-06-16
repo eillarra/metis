@@ -1,7 +1,7 @@
 <template>
-  <dialog-form title="" icon="list_alt">
+  <dialog-form icon="fact_check" :title="title || 'Form'">
     <template #page>
-      <div v-for="(fieldset, idx) in translatedFormDefinition.fieldsets" :key="idx" class="q-px-lg q-mb-xl">
+      <div v-for="(fieldset, idx) in translatedFormDefinition.fieldsets" :key="idx" class="q-px-lg q-mt-md q-mb-xl">
         <h5 v-if="fieldset.legend" class="text-h6 text-grey-8 text-weight-regular q-mt-none q-mb-lg">
           {{ getTextValue(fieldset.legend) }}
         </h5>
@@ -58,19 +58,47 @@
                 class="q-ml-lg q-mt-sm"
               />
             </div>
+            <div v-else-if="field.type === 'timetable'">
+              <q-field dense borderless :label="getTextValue(field.label)" readonly>
+                <template v-slot:append v-if="field.required">
+                  <q-icon name="emergency" size="xs" color="orange" />
+                </template>
+              </q-field>
+              <div v-for="day in field.days" :key="day" class="row">
+                <div class="col-12 col-sm-6">{{ day }}<q-separator v-show="!$q.screen.lt.sm" /></div>
+                <div v-for="time in ['VM', 'NM', 'N4']" :key="time" class="col-4 col-sm-2 text-right">
+                  <q-checkbox
+                    v-model="mutable[field.code]"
+                    :label="time"
+                    :val="`${day}_${time}`"
+                    dense
+                    class="q-mr-sm"
+                  />
+                  <q-separator />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </template>
     <template #footer>
-      <q-btn
-        @click="save"
-        unelevated
-        color="ugent"
-        :label="existingResponse ? $t('form.update') : $t('form.save')"
-        :disable="!formIsValid"
-        class="float-right q-ma-lg"
-      />
+      <div class="row q-ma-lg">
+        <div v-if="pendingFields.length" class="col-12 col-md text-grey-8">
+          <span class="bg-yellow-2">{{ $t('form.pending_fields') }}:</span><br />
+          {{ pendingFields.join(', ') }}
+        </div>
+        <div class="col-12 col-md">
+          <q-btn
+            @click="save"
+            unelevated
+            color="ugent"
+            :label="existingResponse ? $t('form.update') : $t('form.save')"
+            :disable="!formIsValid"
+            class="float-right"
+          />
+        </div>
+      </div>
     </template>
   </dialog-form>
 </template>
@@ -81,10 +109,11 @@ import { useI18n } from 'vue-i18n';
 import { cloneDeep } from 'lodash-es';
 
 import { api } from '@/axios';
+import { notify } from '@/notify';
 
 import DialogForm from './DialogForm.vue';
 
-const { locale } = useI18n();
+const { t, locale } = useI18n();
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -92,6 +121,7 @@ const props = defineProps<{
   apiEndpoint: ApiEndpoint;
   form: CustomForm;
   modelValue: CustomFormResponse[];
+  title?: string;
 }>();
 
 const responses = ref<CustomFormResponse[]>(props.modelValue);
@@ -102,10 +132,33 @@ const existingResponse = computed<CustomFormResponse | undefined>(() => {
   return responses.value.find((response) => response.form === props.form.id);
 });
 
+const pendingFields = computed<string[]>(() => {
+  return props.form.definition.fieldsets.reduce((acc, fieldset) => {
+    return acc.concat(
+      fieldset.fields.reduce((acc, field) => {
+        if (field.required) {
+          if (
+            (((field.type === 'select' || field.type === 'option_group') && field.multiple) ||
+              field.type === 'timetable') &&
+            !(mutable.value[field.code] as []).length
+          ) {
+            acc.push(getTextValue(field.label));
+          } else if (!mutable.value[field.code]) {
+            acc.push(getTextValue(field.label));
+          }
+        }
+        return acc;
+      }, [] as string[])
+    );
+  }, [] as string[]);
+});
+
 props.form.definition.fieldsets.forEach((fieldset) => {
   fieldset.fields.forEach((field) => {
     if (!mutable.value[field.code]) {
-      if ((field.type === 'select' || field.type === 'option_group') && field.multiple) {
+      if (field.type === 'timetable') {
+        mutable.value[field.code] = [];
+      } else if ((field.type === 'select' || field.type === 'option_group') && field.multiple) {
         mutable.value[field.code] = [];
         if (field.other_option) {
           mutable.value[`${field.code}__other`] = '';
@@ -121,7 +174,10 @@ const formIsValid = computed<boolean>(() => {
   return props.form.definition.fieldsets.every((fieldset) => {
     return fieldset.fields.every((field) => {
       if (field.required) {
-        if ((field.type === 'select' || field.type === 'option_group') && field.multiple) {
+        if (
+          ((field.type === 'select' || field.type === 'option_group') && field.multiple) ||
+          field.type === 'timetable'
+        ) {
           return (mutable.value[field.code] as []).length > 0;
         } else {
           return mutable.value[field.code] !== '';
@@ -132,7 +188,7 @@ const formIsValid = computed<boolean>(() => {
   });
 });
 
-function isInputField(field: ChoiceField | InputField): field is InputField {
+function isInputField(field: InputField | ChoiceField | TimetableField): field is InputField {
   return ['text', 'number', 'date', 'email', 'tel', 'url'].includes(field.type);
 }
 
@@ -164,11 +220,13 @@ function save(): void {
     api.put(existingResponse.value.self, { data: mutable.value, form: existingResponse.value.form }).then((res) => {
       const idx = responses.value.findIndex((r) => r.id === res.data.id);
       responses.value[idx] = res.data;
+      notify.success(t('form.updated'));
       emit('update:modelValue', responses.value);
     });
   } else {
     api.post(props.apiEndpoint, { data: mutable.value, form: props.form.id }).then((res) => {
       responses.value.push(res.data);
+      notify.success(t('form.saved'));
       emit('update:modelValue', responses.value);
     });
   }

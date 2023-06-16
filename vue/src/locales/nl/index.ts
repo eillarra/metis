@@ -86,6 +86,7 @@ export default {
     send_email_to: 'Mailen naar {email}',
     add_to_place: 'Voeg toe aan stageplaats',
     add_to_project: 'Voeg toe aan project',
+    pending_fields: 'Velden die nog ingevuld moeten worden',
     contact: {
       create: {
         new: 'Nieuwe contactpersoon aanmaken',
