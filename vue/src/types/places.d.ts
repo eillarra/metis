@@ -27,6 +27,7 @@ interface ProjectPlaceTiny extends ApiObject {
   project: number;
   place: number;
   disciplines: number[];
+  availability_set: ProjectPlaceAvailability[];
   updated_at: string;
   updated_by: UserTiny | null;
   remark_count: number;
@@ -38,6 +39,14 @@ interface ProjectPlaceTiny extends ApiObject {
 
 interface ProjectPlace extends ProjectPlaceTiny {
   place: Place;
+}
+
+interface ProjectPlaceAvailability extends ApiObject {
+  period: number;
+  min: number;
+  max: number;
+  // -----
+  Period?: Period;
 }
 
 interface Contact extends ApiObject {

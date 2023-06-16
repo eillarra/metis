@@ -4,9 +4,14 @@
     <contacts-table :contacts="place.contacts" />
     <div class="row q-col-gutter-x-xl q-col-gutter-y-lg q-mb-xl">
       <div class="col-12 col-sm-6 col-md-4">
-        <h5 class="q-mt-none q-mb-md">Wat is een <span class="text-lowercase">{{ $t('admin') }}</span>?</h5>
+        <h5 class="q-mt-none q-mb-md">
+          Wat is een <span class="text-lowercase">{{ $t('admin') }}</span
+          >?
+        </h5>
         <p>
-          De <span class="text-lowercase">{{ $t('admin') }}</span> (één person) kan de informatie van de stageplaats (kledij, patiëntenpopulatie, bereikbaarheid, werkrooster, …) rechtstreeks in METIS aanpassen. Dus niet meer op papier en via e-mail zoals voorheen.
+          De <span class="text-lowercase">{{ $t('admin') }}</span> (één person) kan de informatie van de stageplaats
+          (kledij, patiëntenpopulatie, bereikbaarheid, werkrooster, …) rechtstreeks in METIS aanpassen. Dus niet meer op
+          papier en via e-mail zoals voorheen.
         </p>
       </div>
       <div v-if="userIsAdmin" class="col-12 col-sm-6 col-md-4">

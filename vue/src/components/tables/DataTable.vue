@@ -110,10 +110,12 @@
         <!-- Custom boolean field -->
         <q-td
           :props="props"
-          :auto-width="props.col.name.startsWith('is_') || props.col.name == 'last_login'"
+          :auto-width="
+            props.col.name.startsWith('is_') || props.col.name.startsWith('has_') || props.col.name == 'last_login'
+          "
           :class="props.row._class || ''"
         >
-          <span v-if="props.col.name.startsWith('is_')">
+          <span v-if="props.col.name.startsWith('is_') || props.col.name.startsWith('has_')">
             <q-icon v-if="props.value" name="check_circle" color="green" :size="iconSize" />
             <q-icon v-else name="block" color="grey" :size="iconSize" />
           </span>

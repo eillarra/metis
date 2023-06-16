@@ -3,6 +3,7 @@
     <h3 class="text-ugent col-12 col-md-3 q-mb-lg">{{ $t('task', 9) }}</h3>
     <task-box
       v-if="userIsAdmin && hasActiveDates"
+      :education="(education as EducationTiny)"
       :project="(project as Project)"
       :project-place="(projectPlace as ProjectPlaceTiny)"
       class="q-mb-lg"
@@ -33,10 +34,14 @@
       />
       <div class="row q-col-gutter-xl q-mb-xl">
         <div class="col-12 col-md">
-          <h5 class="q-mb-md">Wat is een <span class="text-lowercase">{{ $t('admin') }}</span>?</h5>
+          <h5 class="q-mb-md">
+            Wat is een <span class="text-lowercase">{{ $t('admin') }}</span
+            >?
+          </h5>
           <p>
-            De <span class="text-lowercase">{{ $t('admin') }}</span> (één person) kan de informatie van de stageplaats (kledij, patiëntenpopulatie, bereikbaarheid,
-            werkrooster, …) rechtstreeks in METIS aanpassen. Dus niet meer op papier en via e-mail zoals voorheen.
+            De <span class="text-lowercase">{{ $t('admin') }}</span> (één person) kan de informatie van de stageplaats
+            (kledij, patiëntenpopulatie, bereikbaarheid, werkrooster, …) rechtstreeks in METIS aanpassen. Dus niet meer
+            op papier en via e-mail zoals voorheen.
           </p>
         </div>
         <div class="col-12 col-md">
@@ -62,7 +67,7 @@ import { useStore } from '../../store.js';
 
 import TaskBox from '@/components/TaskBox.vue';
 
-const { place, admins, userIsAdmin, hasActiveDates, project, projectPlace } = storeToRefs(useStore());
+const { education, place, admins, userIsAdmin, hasActiveDates, project, projectPlace } = storeToRefs(useStore());
 
 const emailSent = ref<boolean>(false);
 

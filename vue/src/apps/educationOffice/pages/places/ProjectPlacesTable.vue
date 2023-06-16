@@ -54,6 +54,12 @@ const columns = [
     align: 'left',
   },
   {
+    name: 'has_admins',
+    field: 'has_admins',
+    label: t('admin', 9),
+    align: 'center',
+  },
+  {
     name: 'mentors',
     field: 'mentors',
     label: t('mentor', 9),
@@ -82,6 +88,7 @@ const rows = computed(() => {
     region: obj.place.region ? obj.place.region.name : '-',
     type: obj.place.type,
     disciplines: obj.Disciplines,
+    has_admins: !!obj.place.contacts.filter((contact) => contact.is_admin).length,
     mentors:
       obj.place.contacts
         .filter((contact) => contact.is_mentor)

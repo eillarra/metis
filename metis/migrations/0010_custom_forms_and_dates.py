@@ -65,10 +65,10 @@ class Migration(migrations.Migration):
                     "type",
                     models.CharField(
                         choices=[
+                            ("project_place_availability", "ProjectPlace availability"),
+                            ("project_place_information", "ProjectPlace information"),
                             ("student_information", "Student information"),
                             ("student_preferences", "Student preferences"),
-                            ("project_place_capacity", "ProjectPlace capacity"),
-                            ("project_place_information", "ProjectPlace information"),
                         ],
                         max_length=32,
                     ),

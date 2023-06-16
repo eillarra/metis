@@ -53,10 +53,10 @@ def user(db):
 @pytest.mark.api
 class TestForAnonymous:
     expected_status_codes: dict[str, status] = {
-        "place_list": status.FORBIDDEN,
-        "place_create": status.FORBIDDEN,
-        "place_update": status.FORBIDDEN,
-        "place_delete": status.FORBIDDEN,
+        "project_place_list": status.FORBIDDEN,
+        "project_place_create": status.FORBIDDEN,
+        "project_place_update": status.FORBIDDEN,
+        "project_place_delete": status.FORBIDDEN,
     }
 
     def _get_place_create_data(self, education):
@@ -68,13 +68,13 @@ class TestForAnonymous:
     def test_list_places(self, api_client, education, project_place):
         url = reverse("v1:project-place-list", args=[education.id, project_place.project_id])
         response = api_client.get(url)
-        assert response.status_code == self.expected_status_codes["place_list"]
+        assert response.status_code == self.expected_status_codes["project_place_list"]
 
     def test_create_place(self, api_client, education, project_place):
         url = reverse("v1:project-place-list", args=[education.id, project_place.project_id])
         data = self._get_place_create_data(education)
         response = api_client.post(url, data)
-        assert response.status_code == self.expected_status_codes["place_create"]
+        assert response.status_code == self.expected_status_codes["project_place_create"]
 
         if data:
             assert response.data["place"]["id"] == data["place_id"]
@@ -83,17 +83,17 @@ class TestForAnonymous:
         url = reverse("v1:project-place-detail", args=[education.id, project_place.project_id, project_place.id])
         data = self._get_place_update_data(education) | {"place_id": project_place.place_id}
         response = api_client.put(url, data)
-        assert response.status_code == self.expected_status_codes["place_update"]
+        assert response.status_code == self.expected_status_codes["project_place_update"]
 
     def test_partial_update_place(self, api_client, education, project_place):
         url = reverse("v1:project-place-detail", args=[education.id, project_place.project_id, project_place.id])
         response = api_client.patch(url, self._get_place_update_data(education))
-        assert response.status_code == self.expected_status_codes["place_update"]
+        assert response.status_code == self.expected_status_codes["project_place_update"]
 
     def test_delete_place(self, api_client, education, project_place):
         url = reverse("v1:project-place-detail", args=[education.id, project_place.project_id, project_place.id])
         response = api_client.delete(url)
-        assert response.status_code == self.expected_status_codes["place_delete"]
+        assert response.status_code == self.expected_status_codes["project_place_delete"]
 
 
 class TestForAuthenticated(TestForAnonymous):
@@ -116,10 +116,10 @@ class TestForOfficeMember(TestForAuthenticated):
     """
 
     expected_status_codes = {
-        "place_list": status.OK,
-        "place_create": status.CREATED,
-        "place_update": status.OK,
-        "place_delete": status.NO_CONTENT,
+        "project_place_list": status.OK,
+        "project_place_create": status.CREATED,
+        "project_place_update": status.OK,
+        "project_place_delete": status.NO_CONTENT,
     }
 
     @pytest.fixture(autouse=True)

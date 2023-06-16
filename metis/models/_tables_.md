@@ -62,7 +62,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] FWFieldInfoLinkHS
 - [ ] FWFieldInfoPublish
 - [ ] FWFieldInfoTooltipType
-- [ ] FWForm
+- [x] FWForm: not exactly the same, but we have `CustomForm` and `CustomFormResponse`
 - [ ] FWFormPublish
 - [ ] FWICalLink
 - [ ] FWICalLinkHistory
@@ -71,7 +71,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] FWImportOptie
 - [ ] FWImportTab
 - [x] FWLanguage: `django` alternative
-- [ ] FWMailLog
+- [x] FWMailLog: `EmailLog`
 - [ ] FWMailLogDetail
 - [ ] FWMailLogInhoud
 - [ ] FWModule
@@ -175,11 +175,10 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [x] StandaardWaardeGroep: `django.contrib.auth` alternative
 - [x] StandaardWaardeOptie: `django.contrib.auth` alternative
 - [x] SubmitStudent: `django.contrib.auth` alternative
-- [ ] TermOfAddress
 - [ ] Timesheet
 - [ ] TimesheetAvailabilty
 - [ ] TimesheetType
-- [ ] Training
+- [x] Training: `Internship`
 - [ ] TrainingAbsence: TODO: `Absence`
 - [ ] TrainingAbsenceByMentor
 - [ ] TrainingAbsenceDocument `Absence.files` via `FilesMixin`
@@ -223,9 +222,9 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingPDetail
 - [ ] TrainingPDetailLinkTrainingPeriod
 - [ ] TrainingPDetailRestrictionForDiscipline
-- [ ] TrainingPeriod
-- [ ] TrainingPlace
-- [ ] TrainingPlaceCapacity
+- [x] TrainingPeriod: `Period`
+- [x] TrainingPlace: `ProjectPlace`
+- [x] TrainingPlaceCapacity: `ProjectPlaceAvailability`
 - [ ] TrainingPlaceCluster
 - [ ] TrainingPlaceLevel
 - [ ] TrainingPlaceLinkTrainingDiscipline
@@ -241,13 +240,12 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [x] TrainingProjectTranslation: included in `Project`
 - [ ] TrainingRegion
 - [ ] TrainingRole
-- [ ] TrainingStudent: `Student`
+- [x] TrainingStudent: `Student`
 - [ ] TrainingStudentChange
 - [ ] TrainingStudentField
 - [ ] TrainingStudentGroup
 - [ ] TrainingTitular
 - [ ] TrainingType
-- [ ] TrainingYear
 - [ ] UGentPhonebook
 
 ### Skipped
@@ -290,7 +288,9 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] FWUploadLimit: **skipped**, manage at application level
 - [ ] Organisatie: **skipped**, use `django.contrib.sites` instead?
 - [ ] PublishOutputFormat: **skipped**
+- [ ] TermOfAddress: **skipped**
 - [ ] test: **skipped**
+- [ ] TrainingYear: **skipped**
 - [ ] UploadifyDeletedBestand: **skipped**
 - [ ] UploadifyTempBestand: **skipped**
 

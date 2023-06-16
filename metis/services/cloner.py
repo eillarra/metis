@@ -28,7 +28,7 @@ def clone_project(project: Project, name: str) -> Project:
 
     for project_place in project.place_set.all():
         disciplines = project_place.disciplines.all()
-        capacities = project_place.capacities.all()
+        availability_set = project_place.availability_set.all()
         project_place.pk = None
         project_place.project = new_project
         project_place.save()
@@ -36,12 +36,14 @@ def clone_project(project: Project, name: str) -> Project:
         for discipline in disciplines:
             project_place.disciplines.add(discipline)
 
-        for capacity in capacities:
-            period = capacity.period
-            capacity.pk = None
-            capacity.period = new_project.periods.get(program_internship=period.program_internship, name=period.name)
-            capacity.place = project_place
-            capacity.save()
+        for availability in availability_set:
+            period = availability.period
+            availability.pk = None
+            availability.period = new_project.periods.get(
+                program_internship=period.program_internship, name=period.name
+            )
+            availability.place = project_place
+            availability.save()
 
     last_block = project.program.blocks.last()
 

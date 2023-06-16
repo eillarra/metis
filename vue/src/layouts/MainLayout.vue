@@ -48,6 +48,7 @@
           size="13px"
         ></q-btn>
         <router-view />
+        <div class="q-py-lg" />
       </q-page-container>
 
       <q-footer

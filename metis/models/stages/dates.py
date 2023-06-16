@@ -13,7 +13,7 @@ class ImportantDate(BaseModel):
     TYPE_CHOICES = (
         ("student_information", "Student information"),
         ("student_preferences", "Student preferences"),
-        ("project_place_capacity", "ProjectPlace capacity"),
+        ("project_place_availability", "ProjectPlace availability"),
         ("project_place_information", "ProjectPlace information"),
     )
     TYPES_WITH_FORM = ("student_information", "place_information")

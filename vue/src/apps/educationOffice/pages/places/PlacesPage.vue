@@ -2,6 +2,13 @@
   <div class="row q-col-gutter-sm q-mb-lg">
     <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('place', 9) }}</h3>
     <div class="col"></div>
+    <period-select
+      as-filter
+      :label="$t('availability')"
+      :periods="periodOptions"
+      v-model="selectedPeriod"
+      class="col-6 col-md-2"
+    />
     <q-select
       v-model="selectedDiscipline"
       :disable="!disciplineOptions.length"
@@ -50,11 +57,13 @@ import { storeToRefs } from 'pinia';
 
 import { useStore } from '../../store.js';
 
+import PeriodSelect from '../../components/PeriodSelect.vue';
 import ProjectPlacesTable from './ProjectPlacesTable.vue';
 
 const { project, projectPlaces } = storeToRefs(useStore());
 
 const selectedDiscipline = ref<number | null>(null);
+const selectedPeriod = ref<number | null>(null);
 const selectedRegion = ref<number | null>(null);
 
 const disciplineOptions = computed(() => {
@@ -82,6 +91,31 @@ const disciplineOptions = computed(() => {
   ];
 });
 
+const periodOptions = computed(() => {
+  const ids: Set<number> = new Set();
+
+  // check availability_set for non zero periods
+  projectPlaces.value.forEach((obj: ProjectPlace) => {
+    if (obj.availability_set && obj.availability_set.length) {
+      obj.availability_set.forEach((availability: ProjectPlaceAvailability) => {
+        if (availability.period && availability.period) {
+          ids.add(availability.period);
+        }
+      });
+    }
+  });
+
+  // get full Period value from project
+  const periods: Period[] = [];
+  project.value?.periods.forEach((period: Period) => {
+    if (ids.has(period.id)) {
+      periods.push(period);
+    }
+  });
+
+  return periods;
+});
+
 const regionOptions = computed(() => {
   const ids: Set<number> = new Set();
   const regions: Region[] = [];
@@ -103,6 +137,13 @@ const filteredPlaces = computed<ProjectPlace[]>(() => {
       selectedDiscipline.value === 0
         ? !obj.disciplines.length
         : !selectedDiscipline.value || obj.disciplines.some((id: number) => id === selectedDiscipline.value)
+    )
+    .filter(
+      (obj) =>
+        !selectedPeriod.value ||
+        obj.availability_set.some(
+          (availability) => availability.period === selectedPeriod.value && availability.min > 0
+        )
     )
     .filter((obj) => !selectedRegion.value || obj.place.region?.id === selectedRegion.value);
 });

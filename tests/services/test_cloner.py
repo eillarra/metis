@@ -1,6 +1,6 @@
 import pytest
 
-from metis.models import Discipline, ProgramInternship, PlaceCapacity, Student
+from metis.models import Discipline, ProgramInternship, ProjectPlaceAvailability, Student
 from metis.services.cloner import clone_project
 from metis.utils.factories import (
     DisciplineFactory,
@@ -54,12 +54,12 @@ def test_clone_project(project):
     # Check that the new project has the same places as the original project
     assert new_project.place_set.count() == project.place_set.count()
 
-    # Check that the new project has the same capacities as the original project
+    # Check that the new project has the same availability as the original project
     """for new_place in new_project.place_set.all():
-        for new_capacity in new_place.capacities.all():
-            assert new_capacity.period.start_date.year == period.start_date.year + 1
-            assert new_capacity.period.end_date.year == period.end_date.year + 1
-            assert new_capacity.capacity == capacity.capacity"""
+        for new_availability in new_place.availability_set.all():
+            assert new_availability.period.start_date.year == period.start_date.year + 1
+            assert new_availability.period.end_date.year == period.end_date.year + 1
+            assert new_availability.availability == availability.availability"""
 
     # Check that all students from the first block are in the new project, in the second block
     # Check that all students from the last block are not in the new project

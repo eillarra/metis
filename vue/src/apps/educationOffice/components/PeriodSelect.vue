@@ -6,7 +6,7 @@
     :rounded="asFilter"
     :outlined="asFilter"
     :options="periodOptions"
-    :label="$t('period')"
+    :label="label || $t('period')"
     options-dense
     emit-value
     map-options
@@ -26,6 +26,7 @@ const emit = defineEmits(['update:modelValue']);
 const props = defineProps<{
   periods: Period[];
   asFilter?: boolean;
+  label?: string;
 }>();
 
 const model = ref<number | null>(null);

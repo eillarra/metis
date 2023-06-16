@@ -3,6 +3,7 @@
     <template #tabs>
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
         <q-tab name="info" label="Info" icon="info_outline" />
+        <q-tab name="availability" :label="$t('availability')" icon="tag" />
         <q-tab name="contacts" :label="$t('contact', 9)" icon="portrait" />
         <q-tab
           v-if="education?.configuration?.place_text_types.length"
@@ -30,6 +31,28 @@
               multiple
               :disciplines="education.disciplines"
               :label="$t('discipline', 9)"
+            />
+          </div>
+        </q-tab-panel>
+        <q-tab-panel name="availability">
+          <div v-for="period in project?.periods" :key="period.id" class="row q-col-gutter-md">
+            <div class="col-12 col-md-6">
+              {{ period.ProgramInternship?.Block?.name }} / {{ period.ProgramInternship?.name }}<br />
+              {{ period.start_date }} - {{ period.end_date }}
+            </div>
+            <q-input
+              v-model="availability[String(period.id)].min"
+              dense
+              label="min"
+              type="number"
+              class="col-6 col-md-3"
+            />
+            <q-input
+              v-model="availability[String(period.id)].max"
+              dense
+              label="max"
+              type="number"
+              class="col-6 col-md-3"
             />
           </div>
         </q-tab-panel>
@@ -80,6 +103,10 @@
           :disable="!obj.place.name || !obj.place.code || !obj.disciplines.length"
         />
       </div>
+      <div v-else-if="tab == 'availability'" class="flex q-gutter-sm q-pa-lg">
+        <q-space />
+        <q-btn @click="updateAvailability" unelevated color="ugent" :label="$t('form.update')" />
+      </div>
     </template>
   </dialog-form>
 </template>
@@ -114,6 +141,9 @@ const { education, project, projectPlacesWithInternships, disciplineMap } = stor
 const obj = ref<ProjectPlace>(props.obj);
 const tab = ref<string>('info');
 const projectName = computed<string>(() => (project.value ? project.value.name : ''));
+const availability = ref<Record<string, { min: number; max: number }>>(
+  reformatAvailability(obj.value.availability_set, project.value)
+);
 
 const remarkCount = computed<number>(() => {
   if (!props.obj) return 0;
@@ -135,6 +165,12 @@ const textsEndpoint = computed<null | ApiEndpoint>(() => {
   return props.obj.place.rel_texts;
 });
 
+function syncProjectPlaceInfo(data: ProjectPlace) {
+  data.Disciplines = data.disciplines.map((id: number) => disciplineMap.value.get(id)) as Discipline[];
+  obj.value = data;
+  store.updateObj('projectPlace', obj.value);
+}
+
 function save() {
   api
     .put(obj.value.place.self, {
@@ -147,13 +183,23 @@ function save() {
           place_id: obj.value.place.id,
         })
         .then((res) => {
-          obj.value.Disciplines = res.data.disciplines.map((id: number) => disciplineMap.value.get(id));
-          obj.value.updated_at = res.data.updated_at;
-          obj.value.updated_by = res.data.updated_by;
-          store.updateObj('projectPlace', obj.value);
+          syncProjectPlaceInfo(res.data);
           notify.success(t('form.place.saved'));
         });
     });
+}
+
+function updateAvailability() {
+  const data = Object.keys(availability.value).map((key) => ({
+    period: +key,
+    min: availability.value[key].min,
+    max: availability.value[key].max,
+  }));
+
+  api.put(`${obj.value.self}availability/`, data).then((res) => {
+    syncProjectPlaceInfo(res.data);
+    notify.success(t('form.place.saved'));
+  });
 }
 
 function deletePlace() {
@@ -174,5 +220,23 @@ function deleteContact(contact: Contact) {
       notify.success(t('form.contact.deleted'));
     });
   });
+}
+
+function reformatAvailability(
+  availabilitySet: ProjectPlaceAvailability[],
+  project?: Project
+): Record<string, { min: number; max: number }> {
+  const availability = availabilitySet.reduce((acc, cur) => {
+    acc[cur.period] = { min: cur.min, max: cur.max };
+    return acc;
+  }, {} as Record<string, { min: number; max: number }>);
+
+  project?.periods.forEach((period) => {
+    if (!availability[period.id]) {
+      availability[period.id] = { min: 0, max: 0 };
+    }
+  });
+
+  return availability;
 }
 </script>

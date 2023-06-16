@@ -40,16 +40,29 @@ class ProjectPlace(CustomFormResponsesMixin, RemarksMixin, TextEntriesMixin, Bas
         return self.project.can_be_managed_by(user) or self.place.contacts.filter(user=user, is_admin=True).exists()
 
 
-class PlaceCapacity(BaseModel):
+class ProjectPlaceAvailability(BaseModel):
     """
-    Assigned capacity for a place in a period.
+    Assigned availability for a place in a period.
     This can be copied from previous project.
     """
 
-    project_place = models.ForeignKey("metis.ProjectPlace", related_name="capacities", on_delete=models.CASCADE)
-    period = models.ForeignKey("metis.Period", related_name="capacities", on_delete=models.CASCADE)
-    capacity = models.PositiveSmallIntegerField(default=0)
+    project_place = models.ForeignKey("metis.ProjectPlace", related_name="availability_set", on_delete=models.CASCADE)
+    period = models.ForeignKey("metis.Period", related_name="availability_set", on_delete=models.CASCADE)
+    min = models.PositiveSmallIntegerField(default=0)
+    max = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
-        db_table = "metis_project_place_capacities"
+        db_table = "metis_project_place_availability"
         unique_together = ("project_place", "period")
+
+    def clean(self) -> None:
+        """
+        Things to check:
+        - the period is one of the available periods for the Project
+        - max is greater than min
+        """
+        if self.period not in self.project_place.project.periods.all():
+            raise ValidationError("Period is not available for this project.")
+        if self.max < self.min:
+            raise ValidationError("Max is smaller than min.")
+        return super().clean()

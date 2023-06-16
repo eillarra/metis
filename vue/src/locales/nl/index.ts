@@ -40,6 +40,7 @@ export default {
     unsuccessful: 'Niet geslaagd',
   },
   mentor: 'Mentor | Mentoren',
+  availability: 'Beschikbaarheid',
   period: 'Periode | Periodes',
   planning: 'Stageplanning',
   profile: 'Profiel | Profielen',
@@ -82,6 +83,10 @@ export default {
     update: 'Bijwerken',
     invite: 'Uitnodigen',
     sign: 'Ondertekenen',
+    delete: 'Verwijderen',
+    deleted: 'Verwijderd',
+    saved: 'Opgeslagen',
+    updated: 'Bijgewerkt',
     send_email: 'E-mail versturen',
     send_email_to: 'Mailen naar {email}',
     add_to_place: 'Voeg toe aan stageplaats',
@@ -159,19 +164,18 @@ export default {
       saved: 'Tekst informatie opgeslagen',
       signed: 'Tekst ondertekend',
     },
-    deleted: 'Verwijderd',
-    saved: 'Opgeslagen',
-    updated: 'Bijgewerkt',
   },
   tasks: {
+    intro:
+      'Vriendelijk verzoek om onderstaande taken tijdig uit te voeren. Bij vragen kan u contact opnemen met {email}.',
     place: {
-      project_place_capacity: {
-        text: 'Place capacity',
-        btn_label: 'Update place capacity',
+      project_place_availability: {
+        text: 'Gelieve de beschikbaarheid voor {project_name} aan te vullen.',
+        btn_label: 'Beschikbaarheid bijwerken',
       },
       project_place_information: {
-        text: 'Please check the place information and update if necessary.',
-        btn_label: 'Update place information',
+        text: 'Gelieve de infofiche van de stageplaat te controleren en waar nodig te actualiseren.',
+        btn_label: 'Infofiche bijwerken',
       },
     },
   },
