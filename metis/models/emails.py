@@ -44,19 +44,24 @@ class EmailTemplate(BaseModel):
         return [self.education.office_email] if self.education and self.education.office_email else [self.NO_REPLY]
 
 
-class EmailLog(NonEditableMixin, models.Model):
+class EmailLog(models.Model):
     """
     Log of sent emails.
     """
 
+    education = models.ForeignKey(
+        "metis.Education", related_name="email_logs", on_delete=models.PROTECT, null=True, blank=True
+    )
     template = models.ForeignKey(EmailTemplate, related_name="logs", on_delete=models.PROTECT, null=True, blank=True)
     user = models.ForeignKey("metis.User", related_name="email_logs", on_delete=models.PROTECT, null=True, blank=True)
-    to = models.CharField(max_length=255)
-    bcc = models.CharField(max_length=255, null=True, blank=True)
-    reply_to = models.CharField(max_length=255, null=True, blank=True)
+    from_email = models.CharField(max_length=255)
+    to = models.JSONField(default=list)
+    bcc = models.JSONField(default=list)
+    reply_to = models.JSONField(default=list)
     subject = models.CharField(max_length=255)
     body = models.TextField()
-    sent_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         db_table = "metis_log_email"

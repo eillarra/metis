@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django_countries.fields import CountryField
 from modeltranslation.translator import TranslationOptions
 from typing import TYPE_CHECKING
@@ -59,6 +60,9 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
 
     def can_be_managed_by(self, user) -> bool:
         return self.education.can_be_managed_by(user)
+
+    def get_office_url(self) -> str:
+        return reverse("place_office", args=[self.pk])
 
     @property
     def agreement(self) -> "File":

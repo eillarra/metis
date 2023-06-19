@@ -50,9 +50,9 @@ class Invitation(models.Model):
         process_invitation(self, user)
 
     def send_email(self) -> None:
-        from metis.services.mailer import send_invitation_email
+        from metis.services.mailer import schedule_invitation_email
 
-        send_invitation_email(self, self.education)
+        schedule_invitation_email(self, self.education)
 
     def get_absolute_url(self) -> str:
         return reverse("invitation", kwargs={"uuid": self.uuid, "secret": self.secret})
