@@ -19,18 +19,17 @@ class ContactPlaceViewSet(GenericViewSet):
 
     @action(detail=True, methods=["post"])
     def email(self, request, *args, **kwargs):
-        from metis.services.mailer import send_raw_email
+        from metis.services.mailer import schedule_email
         from rest_framework import status
         from rest_framework.response import Response
 
         place = self.get_object()
 
-        text = ""
-        text += f"name: {request.user.first_name} {request.user.last_name}\n"
+        text = f"from: {request.user.first_name} {request.user.last_name}  \n"
         text += f"email: <{request.user.email}>\n---\n\n"
         text += request.data["text"]
 
-        send_raw_email(
+        schedule_email(
             to=[place.education.office_email] if place.education.office_email else ["helpdesk.metis@ugent.be"],
             subject=f"[METIS] update for {place.name}",
             text_content=text,

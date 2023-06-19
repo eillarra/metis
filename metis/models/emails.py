@@ -1,6 +1,6 @@
 from django.db import models
 
-from .base import BaseModel, NonEditableMixin
+from .base import BaseModel
 
 
 class EmailTemplate(BaseModel):
