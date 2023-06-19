@@ -1,16 +1,5 @@
-from enum import Enum
 from pydantic import BaseModel, Extra, ValidationError, validator
 from typing import Literal, Union
-
-
-class DayOfWeek(Enum):
-    maandag = "maandag"
-    dinsdag = "dinsdag"
-    woensdag = "woensdag"
-    donderdag = "donderdag"
-    vrijdag = "vrijdag"
-    zaterdag = "zaterdag"
-    zondag = "zondag"
 
 
 class Translation(BaseModel):
@@ -60,13 +49,14 @@ class ChoiceField(FormField):
         return v
 
 
-class TimetableField(FormField):
-    type: Literal["timetable"]
-    days: list[DayOfWeek]
+class GridField(FormField):
+    type: Literal["option_grid"]
+    options: list[FieldOption]
+    columns: list[FieldOption]
 
 
 class Fieldset(BaseModel):
-    fields: list[Union[InputField, ChoiceField, TimetableField]]
+    fields: list[Union[InputField, ChoiceField, GridField]]
     legend: Translation | None = None
     description: Translation | None = None
 
@@ -114,7 +104,6 @@ def validate_form_data(form_definition: dict, data: dict) -> dict:
     form = validate_form_definition(form_definition)
     fields = []
     field_codes = set()
-    required_field_codes = set()
 
     if not isinstance(data, dict):
         raise ValueError("Data should be a dict")
@@ -126,15 +115,12 @@ def validate_form_data(form_definition: dict, data: dict) -> dict:
             if type(field) == ChoiceField and field.other_option:
                 field_codes.add(f"{field.code}__{field.other_option}")
             if field.required:
-                required_field_codes.add(field.code)
+                if field.code not in data or not data[field.code]:
+                    raise ValueError(f"Missing required field `{field.code}`")
 
     for field in data:
         if field not in field_codes:
             raise ValueError(f"Unknown field `{field}`")
-
-    missing_fields = required_field_codes - set(data.keys())
-    if missing_fields:
-        raise ValueError(f"Missing required fields: {missing_fields}")
 
     for field in fields:
         if field.type in {"select", "option_group"} and field.code in data:
@@ -155,8 +141,17 @@ def validate_form_data(form_definition: dict, data: dict) -> dict:
                 if other_code not in data or not isinstance(data[other_code], str):
                     raise ValueError(f"Field `{field.code}__{field.other_option}` should be defined, as a string")
 
-        elif field.type in {"timetable"} and field.code in data:
-            if not isinstance(data[field.code], str):
+        elif field.type in {"option_grid"} and field.code in data:
+            all_options = set()
+            for option in field.options:
+                for column in field.columns:
+                    all_options.add(f"{option.value}_{column.value}")
+
+            for value in data[field.code]:
+                if value not in all_options:
+                    raise ValueError(f"Invalid value `{data[field.code]}` for field `{field.code}`")
+
+            if not isinstance(data[field.code], list):
                 raise ValueError(f"Field `{field.code}` should be a list")
 
         elif field.code in data:

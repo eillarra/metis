@@ -34,9 +34,10 @@ interface ChoiceField extends FormField {
   other_option?: 'other';
 }
 
-interface TimetableField extends FormField {
-  type: 'timetable';
-  days: string[];
+interface GridField extends FormField {
+  type: 'option_grid';
+  options: (FieldOption | TranslatedFieldOption)[];
+  columns: (FieldOption | TranslatedFieldOption)[];
 }
 
 interface Fieldset {

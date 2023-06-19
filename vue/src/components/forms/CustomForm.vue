@@ -58,19 +58,19 @@
                 class="q-ml-lg q-mt-sm"
               />
             </div>
-            <div v-else-if="field.type === 'timetable'">
+            <div v-else-if="field.type === 'option_grid'">
               <q-field dense borderless :label="getTextValue(field.label)" readonly>
                 <template v-slot:append v-if="field.required">
                   <q-icon name="emergency" size="xs" color="orange" />
                 </template>
               </q-field>
-              <div v-for="day in field.days" :key="day" class="row">
-                <div class="col-12 col-sm-6">{{ day }}<q-separator v-show="!$q.screen.lt.sm" /></div>
-                <div v-for="time in ['VM', 'NM', 'N4']" :key="time" class="col-4 col-sm-2 text-right">
+              <div v-for="option in field.options" :key="option.value" class="row">
+                <div class="col-12 col-sm-6">{{ option.label }}<q-separator v-show="!$q.screen.lt.sm" /></div>
+                <div v-for="col in field.columns" :key="col.value" class="col-4 col-sm-2 text-right">
                   <q-checkbox
                     v-model="mutable[field.code]"
-                    :label="time"
-                    :val="`${day}_${time}`"
+                    :label="col.label"
+                    :val="`${option.value}_${col.value}`"
                     dense
                     class="q-mr-sm"
                   />
@@ -139,7 +139,7 @@ const pendingFields = computed<string[]>(() => {
         if (field.required) {
           if (
             (((field.type === 'select' || field.type === 'option_group') && field.multiple) ||
-              field.type === 'timetable') &&
+              field.type === 'option_grid') &&
             !(mutable.value[field.code] as []).length
           ) {
             acc.push(getTextValue(field.label));
@@ -156,7 +156,7 @@ const pendingFields = computed<string[]>(() => {
 props.form.definition.fieldsets.forEach((fieldset) => {
   fieldset.fields.forEach((field) => {
     if (!mutable.value[field.code]) {
-      if (field.type === 'timetable') {
+      if (field.type === 'option_grid') {
         mutable.value[field.code] = [];
       } else if ((field.type === 'select' || field.type === 'option_group') && field.multiple) {
         mutable.value[field.code] = [];
@@ -176,7 +176,7 @@ const formIsValid = computed<boolean>(() => {
       if (field.required) {
         if (
           ((field.type === 'select' || field.type === 'option_group') && field.multiple) ||
-          field.type === 'timetable'
+          field.type === 'option_grid'
         ) {
           return (mutable.value[field.code] as []).length > 0;
         } else {
@@ -188,7 +188,7 @@ const formIsValid = computed<boolean>(() => {
   });
 });
 
-function isInputField(field: InputField | ChoiceField | TimetableField): field is InputField {
+function isInputField(field: InputField | ChoiceField | GridField): field is InputField {
   return ['text', 'number', 'date', 'email', 'tel', 'url'].includes(field.type);
 }
 
@@ -201,11 +201,19 @@ const translatedFormDefinition = computed<CustomFormDefinition>(() => {
 
   formDefinition.fieldsets.forEach((fieldset) => {
     fieldset.fields.forEach((field) => {
-      if ((field.type === 'select' || field.type === 'option_group') && field.options) {
+      if (['select', 'option_group', 'option_grid'].includes(field.type) && field.options) {
         field.options = (field.options as FieldOption[]).map((option) => {
           return {
             ...option,
             label: locale.value === 'en' ? option.label.en : option.label.nl,
+          };
+        }) as TranslatedFieldOption[];
+      }
+      if (field.type === 'option_grid' && field.columns) {
+        field.columns = (field.columns as FieldOption[]).map((column) => {
+          return {
+            ...column,
+            label: locale.value === 'en' ? column.label.en : column.label.nl,
           };
         }) as TranslatedFieldOption[];
       }

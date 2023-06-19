@@ -94,11 +94,23 @@ def get_audiology_place_form() -> dict:
                 "legend": {"nl": "Praktische informatie", "en": "Practical information"},
                 "fields": [
                     {
-                        "type": "timetable",
+                        "type": "option_grid",
                         "code": "uurroster",
                         "label": {"nl": "Uurrooster", "en": "Timetable"},
-                        "days": ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"],
-                        "required": True
+                        "options": [
+                            {"value": "maandag", "label": {"nl": "Maandag", "en": "Monday"}},
+                            {"value": "dinsdag", "label": {"nl": "Dinsdag", "en": "Tuesday"}},
+                            {"value": "woensdag", "label": {"nl": "Woensdag", "en": "Wednesday"}},
+                            {"value": "donderdag", "label": {"nl": "Donderdag", "en": "Thursday"}},
+                            {"value": "vrijdag", "label": {"nl": "Vrijdag", "en": "Friday"}},
+                            {"value": "zaterdag", "label": {"nl": "Zaterdag", "en": "Saturday"}},
+                        ],
+                        "columns": [
+                            {"value": "VM", "label": {"nl": "VM", "en": "AM"}},
+                            {"value": "NM", "label": {"nl": "NM", "en": "PM"}},
+                            {"value": "N8", "label": {"nl": "N8", "en": "N8"}},
+                        ],
+                        "required": True,
                     },
                     {
                         "type": "option_group",
@@ -212,10 +224,22 @@ def get_logopedics_place_form() -> dict:
                 "legend": {"nl": "Praktische informatie", "en": "Practical information"},
                 "fields": [
                     {
-                        "type": "timetable",
+                        "type": "option_grid",
                         "code": "uurroster",
                         "label": {"nl": "Uurrooster", "en": "Timetable"},
-                        "days": ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"],
+                        "options": [
+                            {"value": "maandag", "label": {"nl": "Maandag", "en": "Monday"}},
+                            {"value": "dinsdag", "label": {"nl": "Dinsdag", "en": "Tuesday"}},
+                            {"value": "woensdag", "label": {"nl": "Woensdag", "en": "Wednesday"}},
+                            {"value": "donderdag", "label": {"nl": "Donderdag", "en": "Thursday"}},
+                            {"value": "vrijdag", "label": {"nl": "Vrijdag", "en": "Friday"}},
+                            {"value": "zaterdag", "label": {"nl": "Zaterdag", "en": "Saturday"}},
+                        ],
+                        "columns": [
+                            {"value": "VM", "label": {"nl": "VM", "en": "AM"}},
+                            {"value": "NM", "label": {"nl": "NM", "en": "PM"}},
+                            {"value": "N8", "label": {"nl": "N8", "en": "N8"}},
+                        ],
                         "required": True
                     },
                     {
