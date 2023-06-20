@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django_countries.fields import CountryField
@@ -28,23 +29,28 @@ class RegionTranslationOptions(TranslationOptions):
     fields = ("name",)
 
 
+class PlaceType(BaseModel):
+    education = models.ForeignKey("metis.Education", related_name="place_types", on_delete=models.CASCADE)
+    name = models.CharField(max_length=160)
+    position = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        db_table = "metis_education_place_types"
+        ordering = ["education", "position", "name"]
+
+
+class PlaceTypeTranslationOptions(TranslationOptions):
+    fields = ("name",)
+
+
 class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, TextEntriesMixin, BaseModel):
     """
     The stagebureau works with their own list of places.
     Contacts or remarks are specific to each Education.
     """
 
-    HOSPITAL = "hospital"
-    WARD = "ward"
-    PRIVATE = "private_center"
-    TYPES = (
-        (HOSPITAL, "Hospital"),
-        (WARD, "Ward"),
-        (PRIVATE, "Private center"),
-    )
-
     education = models.ForeignKey("metis.Education", related_name="places", on_delete=models.PROTECT)
-    type = models.CharField(max_length=16, choices=TYPES, default=HOSPITAL)
+    type = models.ForeignKey(PlaceType, related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=160)
     code = models.CharField(max_length=160)
     parent = models.ForeignKey("self", related_name="children", on_delete=models.SET_NULL, null=True, blank=True)
@@ -54,6 +60,12 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
         db_table = "metis_education_places"
         ordering = ["education", "code"]
         unique_together = ("education", "code")
+
+    def clean(self):
+        if self.parent and self.parent.education != self.education:
+            raise ValidationError("Parent place must be in the same education.")
+        if self.type and self.type.education != self.education:
+            raise ValidationError("Place type must be in the same education.")
 
     def __str__(self) -> str:
         return self.name
@@ -67,18 +79,6 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
     @property
     def agreement(self) -> "File":
         return self.get_file("agreement")
-
-    @property
-    def is_hospital(self) -> bool:
-        return self.type == self.HOSPITAL
-
-    @property
-    def is_ward(self) -> bool:
-        return self.type == self.WARD
-
-    @property
-    def is_private(self) -> bool:
-        return self.type == self.PRIVATE
 
 
 class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):

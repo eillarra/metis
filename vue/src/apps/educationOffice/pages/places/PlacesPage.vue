@@ -9,6 +9,13 @@
       v-model="selectedPeriod"
       class="col-6 col-md-2"
     />
+    <place-type-select
+      as-filter
+      :label="$t('place_type')"
+      :place-types="(education?.place_types as PlaceType[])"
+      v-model="selectedPlaceType"
+      class="col-6 col-md-2"
+    />
     <q-select
       v-model="selectedDiscipline"
       :disable="!disciplineOptions.length"
@@ -28,25 +35,6 @@
         <span class="ellipsis">{{ scope.opt.label }}</span>
       </template>
     </q-select>
-    <q-select
-      v-model="selectedRegion"
-      :disable="!regionOptions.length"
-      clearable
-      dense
-      rounded
-      outlined
-      :options="regionOptions"
-      :label="$t('region')"
-      options-dense
-      emit-value
-      map-options
-      class="col-6 col-md-2"
-      :bg-color="selectedRegion !== null ? 'blue-1' : 'white'"
-    >
-      <template #selected-item="scope">
-        <span class="ellipsis">{{ scope.opt.label }}</span>
-      </template>
-    </q-select>
   </div>
   <project-places-table v-if="project" :project-places="filteredPlaces" />
 </template>
@@ -58,13 +46,14 @@ import { storeToRefs } from 'pinia';
 import { useStore } from '../../store.js';
 
 import PeriodSelect from '../../components/PeriodSelect.vue';
+import PlaceTypeSelect from '../../components/PlaceTypeSelect.vue';
 import ProjectPlacesTable from './ProjectPlacesTable.vue';
 
-const { project, projectPlaces } = storeToRefs(useStore());
+const { education, project, projectPlaces } = storeToRefs(useStore());
 
 const selectedDiscipline = ref<number | null>(null);
 const selectedPeriod = ref<number | null>(null);
-const selectedRegion = ref<number | null>(null);
+const selectedPlaceType = ref<number | null>(null);
 
 const disciplineOptions = computed(() => {
   const ids: Set<number> = new Set();
@@ -116,21 +105,6 @@ const periodOptions = computed(() => {
   return periods;
 });
 
-const regionOptions = computed(() => {
-  const ids: Set<number> = new Set();
-  const regions: Region[] = [];
-
-  projectPlaces.value.forEach((obj: ProjectPlace) => {
-    if (obj.place.region && !ids.has(obj.place.region.id)) {
-      ids.add(obj.place.region.id);
-      regions.push(obj.place.region);
-    }
-  });
-
-  regions.sort((a, b) => a.name.localeCompare(b.name));
-  return regions.map((region) => ({ label: region.name, value: region.id }));
-});
-
 const filteredPlaces = computed<ProjectPlace[]>(() => {
   return projectPlaces.value
     .filter((obj) =>
@@ -145,6 +119,6 @@ const filteredPlaces = computed<ProjectPlace[]>(() => {
           (availability) => availability.period === selectedPeriod.value && availability.min > 0
         )
     )
-    .filter((obj) => !selectedRegion.value || obj.place.region?.id === selectedRegion.value);
+    .filter((obj) => !selectedPlaceType.value || obj.place.type === selectedPlaceType.value);
 });
 </script>

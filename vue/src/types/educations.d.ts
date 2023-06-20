@@ -20,4 +20,5 @@ interface Education extends EducationTiny {
   disciplines: Discipline[];
   office_members: UserTiny[];
   configuration: EducationConfig | null;
+  place_types: PlaceType[];
 }

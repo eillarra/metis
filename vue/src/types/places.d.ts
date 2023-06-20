@@ -3,6 +3,10 @@ interface Region extends ApiObject {
   country: string;
 }
 
+interface PlaceType extends ApiObject {
+  name: string;
+}
+
 interface Place extends ApiObject {
   self: ApiEndpoint;
   rel_contacts: ApiEndpoint;
@@ -10,7 +14,7 @@ interface Place extends ApiObject {
   rel_texts: ApiEndpoint;
   parent: null | ApiEndpoint;
   education: number;
-  type: string;
+  type: number;
   name: string;
   code: string;
   region: Region | null;
@@ -18,6 +22,8 @@ interface Place extends ApiObject {
   updated_at: string;
   updated_by: UserTiny | null;
   remark_count: number;
+  // -----
+  Type?: PlaceType;
 }
 
 interface ProjectPlaceTiny extends ApiObject {

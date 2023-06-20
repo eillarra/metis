@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from metis.models import Region, Place, Contact, User
-from .base import BaseModelSerializer, NestedHyperlinkField
+from metis.models import Region, Place, PlaceType, Contact, User
+from .base import BaseTranslatedModelSerializer, BaseModelSerializer, NestedHyperlinkField
 from .rel import RemarksMixin, TextEntriesMixin
 from .users import UserLastLoginSerializer
 
@@ -19,9 +19,7 @@ education_place_lookup_fields = {
 }
 
 
-class RegionSerializer(BaseModelSerializer):
-    updated_by = None
-
+class RegionSerializer(BaseTranslatedModelSerializer):
     class Meta:
         model = Region
         fields = ("id", "name", "country")
@@ -48,3 +46,9 @@ class PlaceSerializer(TextEntriesMixin, RemarksMixin, BaseModelSerializer):
     class Meta:
         model = Place
         exclude = ("created_at", "created_by")
+
+
+class PlaceTypeSerializer(BaseTranslatedModelSerializer):
+    class Meta:
+        model = PlaceType
+        fields = ("id", "name")

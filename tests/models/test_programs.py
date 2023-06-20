@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 from metis.utils.factories import (
     PlaceFactory,
-    PlaceFactory,
+    PlaceTypeFactory,
     ProjectFactory,
     ProjectPlaceFactory,
     PeriodFactory,
@@ -18,14 +18,16 @@ from metis.models import Discipline, Program, ProgramInternship, Track
 @pytest.fixture
 def audiology_program():
     program = create_audiology_program()
-    PlaceFactory(education=program.education, name="UZ Gent", type="hospital")
+    hospital = PlaceTypeFactory(name="Hospital", education=program.education)
+    PlaceFactory(education=program.education, name="UZ Gent", type=hospital)
     return program
 
 
 @pytest.fixture
 def logopedics_program():
     program = create_logopedics_program()
-    PlaceFactory(education=program.education, name="UZ Gent", type="hospital")
+    hospital = PlaceTypeFactory(name="Hospital", education=program.education)
+    PlaceFactory(education=program.education, name="UZ Gent", type=hospital)
     return program
 
 

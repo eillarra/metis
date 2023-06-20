@@ -4,9 +4,7 @@ from rest_framework import serializers
 from .users import UserTinySerializer
 
 
-class BaseModelSerializer(serializers.ModelSerializer):
-    updated_by = UserTinySerializer(read_only=True)
-
+class BaseTranslatedModelSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -16,6 +14,10 @@ class BaseModelSerializer(serializers.ModelSerializer):
                     self.fields.pop(field.name)
                 except KeyError:
                     pass
+
+
+class BaseModelSerializer(BaseTranslatedModelSerializer):
+    updated_by = UserTinySerializer(read_only=True)
 
 
 class NestedHyperlinkField(serializers.HyperlinkedIdentityField):

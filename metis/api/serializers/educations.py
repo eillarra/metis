@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
 from metis.models.educations import Education, Faculty
-from .base import BaseModelSerializer
+from .base import BaseTranslatedModelSerializer
 from .disciplines import DisciplineSerializer
+from .places import PlaceTypeSerializer
 from .users import UserTinySerializer
 
 
-class FacultySerializer(BaseModelSerializer):
+class FacultySerializer(BaseTranslatedModelSerializer):
     class Meta:
         model = Faculty
         exclude = ("created_at", "created_by")
@@ -18,7 +19,7 @@ class EducationTinySerializer(serializers.ModelSerializer):
         fields = ("id", "code", "short_name", "office_email")
 
 
-class EducationSerializer(BaseModelSerializer):
+class EducationSerializer(BaseTranslatedModelSerializer):
     url = serializers.URLField(source="get_office_url", read_only=True)
     self = serializers.HyperlinkedIdentityField(view_name="v1:education-detail", read_only=True)
     rel_places = serializers.HyperlinkedIdentityField(
@@ -32,6 +33,7 @@ class EducationSerializer(BaseModelSerializer):
     office_members = UserTinySerializer(many=True)
     disciplines = DisciplineSerializer(many=True)
     configuration = serializers.JSONField(read_only=True)
+    place_types = PlaceTypeSerializer(many=True, read_only=True)
 
     class Meta:
         model = Education

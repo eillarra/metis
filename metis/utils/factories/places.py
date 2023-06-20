@@ -12,6 +12,13 @@ class RegionFactory(factory.django.DjangoModelFactory):
     country = factory.Iterator(["BE", "NL"])
 
 
+class PlaceTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "metis.PlaceType"
+
+    education = factory.SubFactory(EducationFactory)
+
+
 class PlaceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "metis.Place"
@@ -20,6 +27,7 @@ class PlaceFactory(factory.django.DjangoModelFactory):
     region = factory.SubFactory(RegionFactory)
     name = factory.Sequence(lambda n: f"Place {n}")
     code = factory.Sequence(lambda n: f"placecode{n}")
+    type = factory.SubFactory(PlaceTypeFactory)
 
 
 class ContactFactory(factory.django.DjangoModelFactory):

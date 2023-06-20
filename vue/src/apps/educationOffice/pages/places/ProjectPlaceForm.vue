@@ -32,6 +32,12 @@
               :disciplines="education.disciplines"
               :label="$t('discipline', 9)"
             />
+            <place-type-select
+              v-if="education"
+              v-model="obj.place.type"
+              :place-types="education.place_types"
+              :label="$t('place_type')"
+            />
           </div>
         </q-tab-panel>
         <q-tab-panel name="availability">
@@ -127,6 +133,7 @@ import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 import TextsView from '@/components/rel/TextsView.vue';
+import PlaceTypeSelect from '../../components/PlaceTypeSelect.vue';
 
 const { t } = useI18n();
 const emit = defineEmits(['delete:obj']);
@@ -167,6 +174,7 @@ const textsEndpoint = computed<null | ApiEndpoint>(() => {
 
 function syncProjectPlaceInfo(data: ProjectPlace) {
   data.Disciplines = data.disciplines.map((id: number) => disciplineMap.value.get(id)) as Discipline[];
+  data.place.Type = education.value?.place_types.find((type) => type.id === data.place.type) as PlaceType;
   obj.value = data;
   store.updateObj('projectPlace', obj.value);
 }

@@ -50,7 +50,7 @@ const columns = [
   {
     name: 'type',
     field: 'type',
-    label: t('field.place_type'),
+    label: t('place_type'),
     align: 'left',
   },
   {
@@ -86,7 +86,7 @@ const rows = computed(() => {
     name: obj.place.name,
     code: obj.place.code,
     region: obj.place.region ? obj.place.region.name : '-',
-    type: obj.place.type,
+    type: obj.place.Type?.name || '-',
     disciplines: obj.Disciplines,
     has_admins: !!obj.place.contacts.filter((contact) => contact.is_admin).length,
     mentors:

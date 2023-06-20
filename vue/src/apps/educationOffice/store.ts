@@ -228,11 +228,20 @@ export const useStore = defineStore('educationOffice', () => {
       return;
     }
 
+    const placeTypeMap =
+      education.value?.place_types.reduce((map, placeType) => {
+        map.set(placeType.id, placeType);
+        return map;
+      }, new Map()) || new Map();
+
     await api.get(project.value.rel_places).then((res) => {
-      projectPlaces.value = res.data.map((obj: ProjectPlace) => ({
-        ...obj,
-        Disciplines: obj.disciplines.map((id: number) => disciplineMap.value.get(id)),
-      }));
+      projectPlaces.value = res.data.map((obj: ProjectPlace) => {
+        obj.place.Type = placeTypeMap.get(obj.place.type as number) || undefined;
+        return {
+          ...obj,
+          Disciplines: obj.disciplines.map((id: number) => disciplineMap.value.get(id)),
+        };
+      });
     });
   }
 

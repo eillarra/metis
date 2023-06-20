@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from metis.models.places import Region, Place
+from metis.models.places import Region, Place, PlaceType
 from .base import BaseModelAdmin
 from .rel.remarks import RemarksInline
 
@@ -22,3 +22,11 @@ class PlaceAdmin(BaseModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related("education")
+
+
+@admin.register(PlaceType)
+class PlaceTypeAdmin(BaseModelAdmin):
+    list_filter = ("education",)
+
+    def has_module_permission(self, request) -> bool:
+        return False  # pragma: no cover
