@@ -36,7 +36,7 @@ def send_email():
         sleep(26)
 
 
-@db_periodic_task(crontab(hour="9"))
+@db_periodic_task(crontab(hour="8", minute="0"))
 def schedule_important_date_emails():
     active_important_dates = ImportantDate.objects.filter_active()
     senders = {
@@ -70,6 +70,7 @@ def schedule_project_place_information_email(important_date: ImportantDate):
 
             for admin in admins:
                 schedule_template_email(
+                    from_email=f"{place.education.short_name} UGent <metis@ugent.be>",
                     template=email_template,
                     to=[admin.user.email],
                     context={
