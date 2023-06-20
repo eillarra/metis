@@ -44,8 +44,10 @@ def schedule_important_date_emails():
     }
 
     for important_date in active_important_dates:
-        if important_date.type in senders:
+        try:
             senders[important_date.type](important_date)
+        except KeyError:
+            raise Exception(f"Sender for ImportantDate `{important_date.type}` does not exist.")
 
 
 def schedule_project_place_information_email(important_date: ImportantDate):

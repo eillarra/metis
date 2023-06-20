@@ -34,6 +34,7 @@ class ContactPlaceViewSet(GenericViewSet):
             subject=f"[METIS] update for {place.name}",
             text_content=text,
             reply_to=[request.user.email],
+            log_education=place.education,
         )
 
         return Response(status=status.HTTP_204_NO_CONTENT)

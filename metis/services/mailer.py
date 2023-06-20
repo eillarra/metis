@@ -27,19 +27,20 @@ def schedule_email(
     reply_to: list[str] = [],
     log_template: Optional["EmailTemplate"] = None,
     log_user: Optional["User"] = None,
+    log_education: Optional["Education"] = None,
 ):
     from metis.models.emails import EmailLog
 
     EmailLog.objects.create(
         template=log_template,
-        user=log_user,
         from_email=from_email,
         to=to,
+        to_user=log_user,
         bcc=bcc,
         reply_to=reply_to,
         subject=subject,
         body=text_content,
-        education=log_template.education if log_template else None,
+        education=log_template.education if log_template else log_education,
     )
 
 

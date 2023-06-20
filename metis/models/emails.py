@@ -50,12 +50,14 @@ class EmailLog(models.Model):
     """
 
     education = models.ForeignKey(
-        "metis.Education", related_name="email_logs", on_delete=models.PROTECT, null=True, blank=True
+        "metis.Education", related_name="email_logs", on_delete=models.SET_NULL, null=True, blank=True
     )
-    template = models.ForeignKey(EmailTemplate, related_name="logs", on_delete=models.PROTECT, null=True, blank=True)
-    user = models.ForeignKey("metis.User", related_name="email_logs", on_delete=models.PROTECT, null=True, blank=True)
+    template = models.ForeignKey(EmailTemplate, related_name="logs", on_delete=models.SET_NULL, null=True, blank=True)
     from_email = models.CharField(max_length=255)
     to = models.JSONField(default=list)
+    to_user = models.ForeignKey(
+        "metis.User", related_name="email_logs", on_delete=models.SET_NULL, null=True, blank=True
+    )
     bcc = models.JSONField(default=list)
     reply_to = models.JSONField(default=list)
     subject = models.CharField(max_length=255)
@@ -67,4 +69,4 @@ class EmailLog(models.Model):
         db_table = "metis_log_email"
 
     def __str__(self) -> str:
-        return f"{self.template} - {self.user} - {self.sent_at}"
+        return f"{self.from_email} to {','.join(self.to)} - ({self.sent_at})"
