@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from typing import TYPE_CHECKING
 
 from ..base import BaseModel
 from .project_places import ProjectPlace
@@ -46,8 +45,8 @@ class ImportantDate(BaseModel):
         db_table = "metis_project_dates"
 
     def clean(self) -> None:
-        if self.form and self.form.education != self.project.education:
-            raise ValueError("The form must belong to the same education as the project.")
+        if self.form and self.form.project != self.project:
+            raise ValueError("The form must belong to the same project.")
         if not self.form and self.type in self.TYPES_WITH_FORM:
             raise ValueError("This type of date requires a form.")
         return super().clean()

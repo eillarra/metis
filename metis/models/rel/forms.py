@@ -18,14 +18,14 @@ class CustomForm(BaseModel):
         (STUDENT_INFO, "Student information"),
     )
 
-    education = models.ForeignKey("metis.Education", related_name="forms", on_delete=models.PROTECT)
+    project = models.ForeignKey("metis.Project", related_name="forms", on_delete=models.PROTECT)
     code = models.CharField(max_length=32)
     version = models.PositiveSmallIntegerField(default=1)
     definition = models.JSONField(default=dict)
 
     class Meta:
         db_table = "metis_rel_custom_form"
-        unique_together = ("education", "code", "version")
+        unique_together = ("project", "code", "version")
 
     def clean(self) -> None:
         validate_form_definition(self.definition)
@@ -36,8 +36,8 @@ class CustomForm(BaseModel):
         If we already have answers, we don't want to change the definition.
         We should create a new entry with a new version instead.
         """
-        if self.pk and self.entries.exists():
-            raise ValueError("Cannot change form definition if there are already entries.")
+        if self.pk and self.responses.exists():
+            raise ValueError("Cannot change form definition if there are already responses.")
         super().save(*args, **kwargs)
 
 
@@ -51,7 +51,7 @@ class CustomFormResponse(BaseModel):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
-    form = models.ForeignKey(CustomForm, on_delete=models.PROTECT, related_name="entries")
+    form = models.ForeignKey(CustomForm, on_delete=models.PROTECT, related_name="responses")
     data = models.JSONField(default=dict)
 
     class Meta:

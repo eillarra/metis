@@ -7,6 +7,11 @@ from metis.site import views
 
 urlpatterns = [
     # main apps
+    path(
+        "stagebureau/<slug:education_code>/reports/pdf/<int:project_id>/<slug:code>.pdf",
+        views.EducationOfficePdfReportView.as_view(),
+        name="education_office_pdf_report",
+    ),
     path("stagebureau/<slug:education_code>/", views.EducationOfficeView.as_view(), name="education_office"),
     path("stages/<slug:education_code>/", views.StudentAreaView.as_view(), name="student_area"),
     path("places/<int:place_id>/", views.PlaceOfficeView.as_view(), name="place_office"),
