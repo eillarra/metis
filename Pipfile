@@ -39,6 +39,9 @@ tzdata = "*"
 uritemplate = "*"
 whitenoise = "*"
 
+reportlab = "*"
+svglib = "*"
+
 [dev-packages]
 black = "*"
 colorama = "*"
