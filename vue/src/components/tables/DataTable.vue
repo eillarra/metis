@@ -161,6 +161,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { copyToClipboard } from 'quasar';
 import { cloneDeep } from 'lodash-es';
+import { Md5 } from 'ts-md5';
 
 import { notify } from '@/notify';
 import { storage } from '@/storage';
@@ -207,7 +208,8 @@ const extendedColumns = computed(() => {
   return columns;
 });
 
-const queryStorageKey = computed<string>(() => `metis.data_table.query.${route.name?.toString()}`);
+const fullPath = computed<string>(() => `${window.location.href.split('#')[0]}#${route.path}`);
+const queryStorageKey = computed<string>(() => Md5.hashStr(`data_table.query.${fullPath.value}`));
 const query = ref<string>(storage.get(queryStorageKey.value) || route.query.q?.toString() || '');
 const queriedRows = computed(() => {
   if (!query.value || !props.queryColumns) {
@@ -234,7 +236,7 @@ const queriedRows = computed(() => {
   });
 });
 
-const visibleColumnsStorageKey = computed<string>(() => `metis.data_table.visible_columns.${route.name?.toString()}`);
+const visibleColumnsStorageKey = computed<string>(() => Md5.hashStr(`data_table.visible_columns.${fullPath.value}`));
 const visibleColumns = ref<string[]>(storage.get(visibleColumnsStorageKey.value) || []);
 
 const createDialogVisible = ref<boolean>(false);
@@ -273,7 +275,6 @@ watch(query, (newVal) => {
 
 watch(visibleColumns, (newVal) => {
   storage.set(visibleColumnsStorageKey.value, newVal);
-  // TODO: save to user's preferences via API
 });
 
 if (storage.get(queryStorageKey.value)) {

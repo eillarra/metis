@@ -37,12 +37,14 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { usePage } from '@inertiajs/vue3';
 
 import { useStore } from './store';
 
 const page = usePage();
+const route = useRoute();
 const store = useStore();
 
 const { availableProjects } = storeToRefs(store);
@@ -61,7 +63,7 @@ store.setData(
 watch(
   () => selectedPlaceId.value,
   (id) => {
-    window.location.href = `../${id}/`;
+    window.location.href = `../${id}/#${route.path}`;
   }
 );
 </script>
