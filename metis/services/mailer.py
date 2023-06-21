@@ -4,7 +4,7 @@ from django.template import Context, Template
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from metis.models import User, Education, EmailTemplate, Invitation
+    from metis.models import User, Education, EmailTemplate, Invitation, Contact
 
 
 def send_email_to_admins(subject: str, message: str) -> None:
@@ -82,9 +82,16 @@ def schedule_invitation_email(invitation: "Invitation", education: Optional["Edu
         send_email_to_admins("Invitation email template not found", str(invitation))
         return
 
+    if invitation.type == "existing_contact" and invitation.content_object:
+        contact: "Contact" = invitation.content_object
+        invited_user = contact.user
+    else:
+        invited_user = None
+
     schedule_template_email(
         from_email=f"{education.short_name} UGent <metis@ugent.be>" if education else "Metis <metis@ugent.be>",
         to=[invitation.email],
         template=template,
         context={"invitation": invitation},
+        log_user=invited_user,
     )
