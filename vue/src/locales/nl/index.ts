@@ -100,8 +100,9 @@ export default {
           'Als de contactpersoon een account heeft, kan je deze hier toevoegen. Als er geen account gevonden wordt, kan je de contactpersoon uitnodigen om er een aan te maken.',
         invite:
           'Er zal een email verstuurd worden naar de contactpersoon om hen uit te nodigen om een account aan te maken. Ze zullen aan het project toegevoegd worden nadat ze een account hebben aangemaakt.',
-        saved: 'Contactpersoon aangemaakt',
+        success: 'Contactpersoon aangemaakt',
         invited: 'Contactpersoon uitgenodigd',
+        exists_warning: 'Deze contactpersoon heeft al een account',
       },
       delete: 'Contactpersoon verwijderen',
       confirm_delete: 'Ben je zeker dat je deze contactpersoon wil verwijderen?',
@@ -112,7 +113,7 @@ export default {
     internship: {
       create: {
         new: 'Nieuwe stage aanmaken',
-        saved: 'Stage aangemaakt',
+        success: 'Stage aangemaakt',
       },
       delete: 'Stage verwijderen',
       confirm_delete: 'Ben je zeker dat je deze stage wil verwijderen?',
@@ -128,7 +129,7 @@ export default {
         add_existing: 'Bestaande stageplaats toevoegen',
         search:
           'Als de stageplaats eerder is aangemaakt voor een ander project, kan je deze hier toevoegen. Als er geen stageplaats gevonden wordt, kan je een nieuwe stageplaats aanmaken.',
-        saved: 'Stageplaats aangemaakt',
+        success: 'Stageplaats aangemaakt',
       },
       delete: 'Stageplaats verwijderen',
       confirm_delete: 'Ben je zeker dat je deze stageplaats wil verwijderen?',
@@ -144,8 +145,9 @@ export default {
           'Als de student een account heeft, kan je deze hier toevoegen. Als er geen account gevonden wordt, kan je de student uitnodigen om er een aan te maken.',
         invite:
           'Er zal een email verstuurd worden naar de student om hen uit te nodigen om een account aan te maken. Ze zullen aan het project toegevoegd worden nadat ze een account hebben aangemaakt.',
-        saved: 'Student aangemaakt',
+        success: 'Student aangemaakt',
         invited: 'Student uitgenodigd',
+        exists_warning: 'Deze student heeft al een account',
       },
       delete: 'Student verwijderen',
       confirm_delete: 'Ben je zeker dat je deze student wil verwijderen?',

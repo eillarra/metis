@@ -102,6 +102,8 @@ export default {
         invite:
           'An email will be sent to the contact to invite them to create an account. They will be added to the project once they have created an account.',
         success: 'Contact created',
+        invited: 'Contact invited',
+        exists_warning: 'This contact has already an account',
       },
       delete: 'Delete contact',
       confirm_delete: 'Are you sure you want to delete this contact?',
@@ -145,6 +147,8 @@ export default {
         invite:
           'An email will be sent to the student to invite them to create an account. They will be added to the project once they have created an account.',
         success: 'Student created',
+        invited: 'Student invited',
+        exists_warning: 'This student has already an account',
       },
       delete: 'Delete student',
       confirm_delete: 'Are you sure you want to delete this student?',
