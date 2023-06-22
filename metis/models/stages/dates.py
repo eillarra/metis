@@ -45,6 +45,8 @@ class ImportantDate(BaseModel):
         db_table = "metis_project_dates"
 
     def clean(self) -> None:
+        if self.period and self.period.project != self.project:
+            raise ValueError("The period must belong to the same project.")
         if self.form and self.form.project != self.project:
             raise ValueError("The form must belong to the same project.")
         if not self.form and self.type in self.TYPES_WITH_FORM:
