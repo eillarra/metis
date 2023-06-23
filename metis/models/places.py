@@ -54,7 +54,7 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
         return self.name
 
     def can_be_managed_by(self, user) -> bool:
-        return self.education.can_be_managed_by(user)
+        return self.education.can_be_managed_by(user) or self.contacts.filter(user=user, is_admin=True).exists()
 
     def get_office_url(self) -> str:
         return reverse("place_office", args=[self.pk])

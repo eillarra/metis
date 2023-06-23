@@ -37,7 +37,7 @@ class ProjectPlace(CustomFormResponsesMixin, RemarksMixin, TextEntriesMixin, Bas
         return super().clean()
 
     def can_be_managed_by(self, user) -> bool:
-        return self.project.can_be_managed_by(user) or self.place.contacts.filter(user=user, is_admin=True).exists()
+        return self.project.can_be_managed_by(user) or self.place.can_be_managed_by(user)
 
 
 class ProjectPlaceAvailability(BaseModel):
