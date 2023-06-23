@@ -7,7 +7,7 @@ Status:
 
 All `*ViewState` tables are ignored in this list (replaced by `django.contrib.auth`):
 
-- [ ] AcademicYear
+- [x] AcademicYear: `Project` dates
 - [x] Address: `Address` via `AddressesMixin` (in different models)
 - [ ] Assessment
 - [ ] AssessmentDetail
@@ -19,18 +19,17 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] AssessmentScaleDetail
 - [x] Country: `django-countries` alternative
 - [x] DB_Migration: `django` alternative
-- [ ] DossierMerge
 - [x] Education: `Education`
 - [ ] ELOA
-- [ ] Evaluation
-- [ ] EvaluationDetail
-- [ ] EvaluationForm
-- [ ] EvaluationFormDetail
-- [ ] EvaluationFormDetailOption
-- [ ] EvaluationFormType
-- [ ] EvaluationMoment
-- [ ] EvaluationScale
-- [ ] EvaluationScaleDetail
+- [x] Evaluation: `CustomFormResponse`
+- [x] EvaluationDetail: `CustomFormResponse`
+- [x] EvaluationForm: `CustomForm`
+- [x] EvaluationFormDetail: `CustomForm.definition`
+- [x] EvaluationFormDetailOption: `CustomForm.definition`
+- [x] EvaluationFormType: `ImportantDate.form`
+- [x] EvaluationMoment: `ImportantDate.form`
+- [x] EvaluationScale: `CustomForm.definition`
+- [x] EvaluationScaleDetail: `CustomForm.definition`
 - [x] Faculty: `Faculty`
 - [x] FWAccount: `django` alternative
 - [x] FWAccountLinkFWSecurityGroup: `django` alternative
@@ -41,15 +40,12 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [x] FWAccountResetToken: `django` alternative
 - [ ] FWAction
 - [ ] FWBeID
-- [ ] FWBestand
 - [x] FWChangePassword: `django` alternative
-- [ ] FWCopyTable
 - [ ] FWCreateNew
 - [ ] FWDataMerge
 - [ ] FWDefault
 - [ ] FWDefaultOption
 - [ ] FWDirectLink
-- [ ] FWDirectoryService
 - [ ] FWEditTab
 - [ ] FWEditTitle
 - [ ] FWExportStructureKey
@@ -63,7 +59,6 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] FWFieldInfoPublish
 - [ ] FWFieldInfoTooltipType
 - [x] FWForm: not exactly the same, but we have `CustomForm` and `CustomFormResponse`
-- [ ] FWFormPublish
 - [ ] FWICalLink
 - [ ] FWICalLinkHistory
 - [ ] FWImportFieldMapping
@@ -72,8 +67,6 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] FWImportTab
 - [x] FWLanguage: `django` alternative
 - [x] FWMailLog: `EmailLog`
-- [ ] FWMailLogDetail
-- [ ] FWMailLogInhoud
 - [ ] FWModule
 - [ ] FWModuleFWPermissionFWPermission
 - [ ] FWModuleLinkFWForm
@@ -168,7 +161,6 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] OptimizationTitularMerge
 - [ ] OptimizationTransportMode
 - [ ] OptimizationType
-- [ ] OSLORC
 - [ ] ResearchType
 - [x] Role: `django.contrib.auth` alternative
 - [x] StandaardWaarde: `django.contrib.auth` alternative
@@ -187,8 +179,8 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingAbsenceFollowUpType
 - [ ] TrainingAbsenceStatus
 - [ ] TrainingAbsenceType
-- [ ] TrainingAdmin
-- [ ] TrainingAdminLinkEducation
+- [x] TrainingAdmin: `Education.office_members`
+- [x] TrainingAdminLinkEducation: `Education.office_members`
 - [ ] TrainingCalculationQueue
 - [ ] TrainingCalculationQueueStatus
 - [ ] TrainingCase: TODO: `Case`
@@ -200,7 +192,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingCaseType: TODO: `Case.TYPE_CHOICES` (separate model for dates?)
 - [x] TrainingContact: `Contact`
 - [x] TrainingContactLinkTrainingContactRole: `Contact`
-- [x] TrainingContactLinkTrainingPlace: `EducationPlace.contacts`
+- [x] TrainingContactLinkTrainingPlace: `Place.contacts`
 - [x] TrainingContactRole: `Contact` (TODO: check if we cover all roles; some via `Internship.mentors`)
 - [ ] TrainingDGroup
 - [ ] TrainingDiscipline
@@ -223,10 +215,9 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingPDetailLinkTrainingPeriod
 - [ ] TrainingPDetailRestrictionForDiscipline
 - [x] TrainingPeriod: `Period`
-- [x] TrainingPlace: `ProjectPlace`
+- [x] TrainingPlace: `Place` and `ProjectPlace`
 - [x] TrainingPlaceCapacity: `ProjectPlaceAvailability`
-- [ ] TrainingPlaceCluster
-- [ ] TrainingPlaceLevel
+- [x] TrainingPlaceLevel: `PlaceType`
 - [ ] TrainingPlaceLinkTrainingDiscipline
 - [ ] TrainingPreferenceDiscipline
 - [ ] TrainingPreferencePeriod
@@ -242,8 +233,8 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingRole
 - [x] TrainingStudent: `Student`
 - [ ] TrainingStudentChange
-- [ ] TrainingStudentField
-- [ ] TrainingStudentGroup
+- [x] TrainingStudentField: `CustomForm` (?)
+- [x] TrainingStudentGroup: `Student.block` and `Student.track`
 - [ ] TrainingTitular
 - [ ] TrainingType
 - [ ] UGentPhonebook
@@ -256,7 +247,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] DashboardTrainingAdmin: **skipped**
 - [ ] DashboardTrainingContact: **skipped**
 - [ ] DirectoryServiceProtocol: **skipped**
-- [ ] ElementStyle: **skipped**, UI
+- [ ] ElementStyle: **skipped**, UI/Vue
 - [ ] FWAccountMerge: **skipped**
 - [ ] FWAccountWebService: **skipped**
 - [ ] FWAppVersion: **skipped**
@@ -266,45 +257,54 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] FWBadLogonHistoryDetailArchive: **skipped**
 - [ ] FWClickHistory: **skipped**, use Analytics instead?
 - [ ] FWClickHistoryArchive: **skipped**, use Analytics instead?
+- [ ] FWDirectoryService: ???
 - [ ] FWDomainCache: **skipped**
+- [ ] FWFormPublish: ???
 - [ ] FWImportDocument: **skipped**
 - [ ] FWImportDocumentLinkFWForm: **skipped**
-- [ ] FWSort: **skipped**, UI
-- [ ] FWStartPageColumn: **skipped**, UI
-- [ ] FWStartPageLink: **skipped**, UI
-- [ ] FWStartPageTab: **skipped**, UI
-- [ ] FWSupportTab: **skipped**, UI
+- [ ] FWSort: **skipped**, UI/Vue
+- [ ] FWStartPageColumn: **skipped**, UI/Vue
+- [ ] FWStartPageLink: **skipped**, UI/Vue
+- [ ] FWStartPageTab: **skipped**, UI/Vue
+- [ ] FWSupportTab: **skipped**, UI/Vue
 - [ ] FWTest: **skipped**
 - [ ] FWTranslation: **skipped**, managed via locale files, or via models when needed
 - [ ] FWTry: ???
 - [ ] FWTry2: ???
 - [ ] FWTryAfdrukSjabloon: ???
-- [ ] FWTryBestand: ???
 - [ ] FWTryDetail: ???
 - [ ] FWTryLinkDossier: ???
 - [ ] FWTryLinkLVS: ???
 - [ ] FWTryPublish: ???
 - [ ] FWTryWebService: ???
 - [ ] FWUploadLimit: **skipped**, manage at application level
-- [ ] Organisatie: **skipped**, use `django.contrib.sites` instead?
+- [ ] Organisatie: **skipped**, we could use `django.contrib.sites` instead, if needed
+- [ ] OSLORC: ???
 - [ ] PublishOutputFormat: **skipped**
 - [ ] TermOfAddress: **skipped**
 - [ ] test: **skipped**
+- [ ] TrainingPlaceCluster: ???
 - [ ] TrainingYear: **skipped**
 - [ ] UploadifyDeletedBestand: **skipped**
 - [ ] UploadifyTempBestand: **skipped**
 
-### FW legacy tables currently not in use 
+### FW legacy tables currently not in use (schoolonline.be)
 
+- [ ] DossierMerge: ???
 - [ ] FLOA: ???
-- [ ] FWPrintDocument: **not used** in SPARTA
-- [ ] FWPrintDocumentGroup: **not used** in SPARTA
-- [ ] FWPrintDocumentLinkFWPrintDocumentGroup: **not used** in SPARTA
-- [ ] FWPrintQueue: **not used** in SPARTA
-- [ ] FWPrintQueueStatus: **not used** in SPARTA
-- [ ] FWTestType: **not used** in SPARTA
+- [ ] FWBestand: ???
+- [ ] FWCopyTable: ???
+- [x] FWMailLogDetail: `EmailLog`, but it is **not used** in SPARTA
+- [ ] FWMailLogInhoud: ???
+- [ ] FWPrintDocument: ???
+- [ ] FWPrintDocumentGroup: ???
+- [ ] FWPrintDocumentLinkFWPrintDocumentGroup: ???
+- [ ] FWPrintQueue: ???
+- [ ] FWPrintQueueStatus: ???
+- [ ] FWTestType: ???
+- [ ] FWTryBestand: ???
 - [ ] Klant: ???
-- [ ] Location: **not used** in SPARTA, try some Mapbox integration maybe?
+- [ ] Location: **not used** in SPARTA
 - [ ] Photo: **not used** in SPARTA
-- [ ] ReadcommissionerSurvey: **not used** in SPARTA
+- [ ] ReadcommissionerSurvey: ???
 - [ ] Telephone: **not used** in SPARTA
