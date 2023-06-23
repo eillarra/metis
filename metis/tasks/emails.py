@@ -24,7 +24,7 @@ def send_email():
         msg = EmailMultiAlternatives(
             email.subject,
             email.body,
-            from_email="Metis <metis@ugent.be>",
+            from_email=email.from_email,
             to=email.to,
             bcc=email.bcc,
             reply_to=email.reply_to,
