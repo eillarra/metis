@@ -64,20 +64,25 @@
                   @click="geocode"
                   color="ugent"
                   :label="$t('form.search')"
-                  :disable="!obj.address || !obj.postcode || !obj.city"
+                  :disable="!obj.address || !obj.city"
                 />
               </q-stepper-navigation>
             </q-step>
             <q-step :name="2" :title="$t('form.address.create.new')" icon="fmd_good" active-icon="fmd_good">
-              {{ $t('form.address.create.choose_feature') }}
-              <q-list class="q-mt-md">
-                <q-item dense v-for="feature in features" :key="feature.id" tag="label" class="q-pl-none q-py-none">
-                  <q-item-section side>
-                    <q-radio v-model="selectedFeature" :val="(feature as object)" />
-                  </q-item-section>
-                  <q-item-section>{{ feature.place_name_nl }}</q-item-section>
-                </q-item>
-              </q-list>
+              <div v-if="features.length">
+                {{ $t('form.address.create.choose_feature') }}
+                <q-list class="q-mt-md">
+                  <q-item dense v-for="feature in features" :key="feature.id" tag="label" class="q-pl-none q-py-none">
+                    <q-item-section side>
+                      <q-radio v-model="selectedFeature" :val="(feature as object)" />
+                    </q-item-section>
+                    <q-item-section>{{ feature.place_name_nl }}</q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+              <div v-else>
+                {{ $t('form.address.create.no_results') }}
+              </div>
             </q-step>
           </q-stepper>
         </template>
@@ -96,6 +101,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { usePage } from '@inertiajs/vue3';
 
 import { api, axios } from '@/axios';
 import { confirm } from '@/dialog';
@@ -104,13 +110,14 @@ import { notify } from '@/notify';
 import DialogForm from '@/components/forms/DialogForm.vue';
 
 const { t } = useI18n();
+const page = usePage();
 
 const props = defineProps<{
   apiEndpoint: ApiEndpoint;
   inDialog?: boolean;
 }>();
 
-const accessToken = 'pk.eyJ1IjoidHJvcGVsYSIsImEiOiJja3Q0bGRwYXMwM2FqMm5xeXFsbmpiZTZzIn0.SzCyOs0HY8skst7WmFGdUQ';
+const accessToken = computed<string>(() => page.props.mapbox_token as string);
 const loading = ref<boolean>(true);
 const step = ref(1);
 const addresses = ref<Address[]>([]);
@@ -137,20 +144,23 @@ onMounted(() => {
 });
 
 function geocode() {
-  const access_token = 'pk.eyJ1IjoidHJvcGVsYSIsImEiOiJja3Q0bGRwYXMwM2FqMm5xeXFsbmpiZTZzIn0.SzCyOs0HY8skst7WmFGdUQ';
   const q = `${obj.value?.address} ${obj.value?.postcode} ${obj.value?.city}`;
   axios
-    .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${q}.json`, {
+    .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json`, {
       params: {
-        access_token: access_token,
+        access_token: accessToken.value,
         types: 'address',
         language: 'nl,en',
-        limit: 3,
+        limit: 5,
         country: 'BE,NL',
       },
     })
     .then((res) => {
-      features.value = res.data.features.filter((feature) => feature.relevance > 0.7);
+      if (res.data.features.length && res.data.features[0].relevance === 1) {
+        features.value = [res.data.features[0]];
+      } else {
+        features.value = res.data.features;
+      }
       selectedFeature.value = null;
       step.value = 2;
     });
