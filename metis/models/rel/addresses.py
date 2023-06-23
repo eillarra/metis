@@ -25,8 +25,13 @@ class Address(models.Model):
     class Meta:
         db_table = "metis_rel_address"
 
+    @property
     def feature(self) -> MapboxFeature | None:
         return MapboxFeature(self.mapbox_feature) if self.mapbox_feature else None
+
+    @property
+    def full_address(self) -> str:
+        return self.feature.full_address if self.feature else f"{self.address}, {self.postcode} {self.city}"
 
 
 class AddressesMixin(models.Model):

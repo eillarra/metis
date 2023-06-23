@@ -32,6 +32,7 @@ export default {
   contact: 'Contact | Contacts',
   contact_only: 'Only a contact',
   discipline: 'Discipline | Disciplines',
+  document: 'Document | Documents',
   history: 'History',
   internship: 'Internship | Internships',
   internship_status: {

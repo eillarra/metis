@@ -3,23 +3,26 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
+from django.views import View
 
-from metis.api.serializers import EducationTinySerializer, AuthStudentSerializer
-from metis.models import Education
+from metis.api.serializers import EducationTinySerializer, ProjectSerializer, AuthStudentSerializer
+from metis.models import Education, Period
+from metis.services.reporter.pdf import ProjectPlaceInformationReport
 from .inertia import InertiaView
 
 
-class StudentAreaView(InertiaView):
-    vue_entry_point = "apps/studentArea/main.ts"
-
+class StudentAreaFirewallMixin(View):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.student_set.filter(project__education=self.get_education()).exists():  # type: ignore
+        student_set = self.get_student_set(request.user)
+
+        if not student_set.filter(project__education=self.get_education()).exists():  # type: ignore
             messages.error(
                 request,
                 "You don't have the necessary permissions to access this page.",
             )
             raise PermissionDenied
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_education(self) -> Education:
@@ -31,6 +34,10 @@ class StudentAreaView(InertiaView):
         if not hasattr(self, "student_set"):
             self.student_set = user.student_set.filter(project__education=self.get_education())
         return self.student_set
+
+
+class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
+    vue_entry_point = "apps/studentArea/main.ts"
 
     def get_props(self, request, *args, **kwargs):
         base = {
@@ -61,3 +68,27 @@ class StudentAreaView(InertiaView):
 
     def get_page_title(self, request, *args, **kwargs) -> str:
         return f"{self.get_education().short_name} - Stages"
+
+
+class StudentAreaPeriodPdfReportView(StudentAreaFirewallMixin, View):
+    available_reports = {
+        "project_place_information": ProjectPlaceInformationReport
+    }
+
+    def get(self, request, *args, **kwargs):
+        period_id = kwargs.get("period_id")
+
+        try:
+            period = Period.objects.get(id=period_id, project__education=self.get_education())
+        except Period.DoesNotExist:
+            raise PermissionDenied
+
+        if not self.get_student_set(request.user).filter(block=period.program_internship.block).exists():
+            raise PermissionDenied
+
+        try:
+            report = self.available_reports[kwargs.get("code")](period_id)
+        except KeyError:
+            raise PermissionDenied
+
+        return report.get_response()

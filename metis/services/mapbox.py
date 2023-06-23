@@ -24,6 +24,10 @@ class MapboxFeature:
         return self._raw["place_name"].split(",")[0]
 
     @property
+    def full_address(self) -> str:
+        return self._raw["place_name"]
+
+    @property
     def city(self) -> str | None:
         return self.__get_context("place", field="text")
 

@@ -1,14 +1,10 @@
 from django.utils.timezone import now
-from typing import TYPE_CHECKING
-
-from metis.models.rel.forms import CustomFormResponse
 
 from .form_to_pdf import form_to_pdf
 from .pdfwrap import PdfWrap
 from .pdfwrap.django import PdfResponse
 
-if TYPE_CHECKING:
-    from metis.models import ProjectPlace
+from metis.models import ProjectPlace
 
 
 class PdfReport:
@@ -22,31 +18,56 @@ class PdfReport:
 
 
 class ProjectPlaceInformationReport(PdfReport):
-    def __init__(self, project_id: int):
-        self.form_reponses = CustomFormResponse.objects.filter(
-            form__project_id=project_id, form__code="project_place_information"
-        ).prefetch_related("updated_by")
+    def __init__(self, period_id: int):
+        self.period_id = period_id
+        self.project_places = ProjectPlace.objects.filter(
+            availability_set__period_id=period_id,
+            availability_set__min__gt=0,
+        ).order_by("place__name")
 
     def get_pdf(self) -> bytes:
         with PdfWrap() as pdf:
             pdf.add_footer(f"{now()}")
+            form_definition = None
 
-            form_definition = self.form_reponses[0].form.definition
-
-            for form_response in self.form_reponses:
-                if not form_response.content_object:
-                    continue
-                project_place: "ProjectPlace" = form_response.content_object
+            for project_place in self.project_places:
+                form_response = project_place.form_responses.filter(
+                    form__code="project_place_information",
+                ).first()
 
                 pdf.add_paragraph(project_place.place.name, "h2")
-                if form_response.updated_by:
-                    pdf.add_paragraph(f"""
-                        <strong>{form_response.updated_by.name}</strong>
-                        &lt;<a href="mailto:{form_response.updated_by.email}">{form_response.updated_by.email}</a>&gt;<br />
-                        Updated at: {form_response.updated_at}<br />
-                    """
-                    )
-                pdf = form_to_pdf(form_definition, form_response.data, pdf)
+
+                # addresses
+
+                addresses = [address.full_address for address in project_place.place.addresses.all()]
+                if addresses:
+                    pdf.add_paragraph("<br />".join(addresses))
+
+                # form response
+
+                if form_response:
+                    if not form_definition:
+                        form_definition = form_response.form.definition
+
+                    if form_response.updated_by:
+                        email = form_response.updated_by.email.lower()
+                        pdf.add_paragraph(
+                            f"""
+                            <br />
+                            <strong>{form_response.updated_by.name}</strong>
+                            &lt;<a href="mailto:{email}">{email}</a>&gt;<br />
+                            Updated at: {form_response.updated_at}<br />
+                        """
+                        )
+                    pdf.add_separator()
+                    pdf.add_spacer()
+                    pdf = form_to_pdf(form_definition, form_response.data, pdf)
+
+                else:
+                    pdf.add_separator()
+                    pdf.add_spacer()
+                    pdf.add_paragraph("(Geen extra informatie beschikbaar)")
+
                 pdf.add_page_break()
 
             data = pdf.get_data()

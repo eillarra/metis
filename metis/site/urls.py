@@ -7,14 +7,19 @@ from metis.site import views
 
 urlpatterns = [
     # main apps
+    path("places/<int:place_id>/", views.PlaceOfficeView.as_view(), name="place_office"),
+    path("stagebureau/<slug:education_code>/", views.EducationOfficeView.as_view(), name="education_office"),
     path(
-        "stagebureau/<slug:education_code>/reports/pdf/<int:project_id>/<slug:code>.pdf",
-        views.EducationOfficePdfReportView.as_view(),
+        "stagebureau/<slug:education_code>/files/p/<int:period_id>/<slug:code>.pdf",
+        views.EducationOfficePeriodPdfReportView.as_view(),
         name="education_office_pdf_report",
     ),
-    path("stagebureau/<slug:education_code>/", views.EducationOfficeView.as_view(), name="education_office"),
     path("stages/<slug:education_code>/", views.StudentAreaView.as_view(), name="student_area"),
-    path("places/<int:place_id>/", views.PlaceOfficeView.as_view(), name="place_office"),
+    path(
+        "stages/<slug:education_code>/files/p/<int:period_id>/<slug:code>.pdf",
+        views.StudentAreaPeriodPdfReportView.as_view(),
+        name="student_area_pdf_report",
+    ),
     # pages
     path("", views.HomeView.as_view(), name="homepage"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),

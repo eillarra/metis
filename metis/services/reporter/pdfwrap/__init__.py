@@ -1,10 +1,15 @@
 import io
 
+from reportlab.graphics.shapes import Drawing, Line
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph
+from reportlab.lib.units import mm, cm
+from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer
+
 
 from .styles import PDF_STYLES
+
+
+INNER_FRAME_PADDING = 6
 
 
 class PdfWrap:
@@ -19,10 +24,10 @@ class PdfWrap:
         self.doc = SimpleDocTemplate(
             self.buffer,
             pagesize=page_size,
-            topMargin=margins[0] - 6,  # compensate inner Frame padding (6 points)
-            rightMargin=margins[1] - 6,
-            bottomMargin=margins[2] - 6,
-            leftMargin=margins[3] - 6,
+            topMargin=margins[0] - INNER_FRAME_PADDING,  # compensate inner Frame padding
+            rightMargin=margins[1] - INNER_FRAME_PADDING,
+            bottomMargin=margins[2] - INNER_FRAME_PADDING,
+            leftMargin=margins[3] - INNER_FRAME_PADDING,
         )
 
     def __enter__(self):
@@ -51,8 +56,18 @@ class PdfWrap:
         self.footer_style = style
         self.footer_text = text
 
-    def add_paragraph(self, text: str, style: str = "p") -> None:
-        self.parts.append(Paragraph(text, self.styles[style]))
+    def add_paragraph(self, text: str, style: str = "p", *, keep_with_next: bool = False) -> None:
+        p = Paragraph(text, self.styles[style])
+        p.keepWithNext = keep_with_next  # type: ignore
+        self.parts.append(p)
+
+    def add_separator(self) -> None:
+        d = Drawing(self.actual_width, 1)
+        d.add(Line(0, 0, self.actual_width, 0))
+        self.parts.append(d)
+
+    def add_spacer(self, size_in_cm: float = 1) -> None:
+        self.parts.append(Spacer(self.actual_width, size_in_cm * cm))
 
     def add_page_break(self) -> None:
         self.parts.append(PageBreak())
@@ -60,3 +75,7 @@ class PdfWrap:
     def get_data(self) -> bytes:
         self.doc.build(self.parts, onFirstPage=self._first_page, onLaterPages=self._later_pages)
         return self.buffer.getvalue()
+
+    @property
+    def actual_width(self) -> int:
+        return self.doc.width - (INNER_FRAME_PADDING * 2)

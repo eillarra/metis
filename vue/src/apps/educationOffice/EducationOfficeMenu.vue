@@ -27,6 +27,12 @@
           </q-item-section>
           <q-item-section>{{ $t('contact', 9) }}</q-item-section>
         </q-item>
+        <q-item clickable :to="{ name: 'documents' }" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="drive_file_move_outline" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('document', 9) }}</q-item-section>
+        </q-item>
         <q-item-label header>{{ $t('settings') }}</q-item-label>
         <q-item clickable :to="{ name: 'project' }" active-class="bg-ugent text-white">
           <q-item-section avatar>

@@ -31,6 +31,7 @@ export default {
   contact: 'Contact | Contacten',
   contact_only: 'Enkel een contactpersoon',
   discipline: 'Discipline | Disciplines',
+  document: 'Document | Documenten',
   history: 'Historiek',
   internship: 'Stage | Stages',
   internship_status: {
