@@ -36,7 +36,7 @@ def send_email():
         sleep(26)
 
 
-@db_periodic_task(crontab(day_of_week="0-4", hour="8", minute="0"))
+@db_periodic_task(crontab(day_of_week="1-5", hour="8", minute="0"))
 def schedule_important_date_emails():
     active_important_dates = ImportantDate.objects.filter_active()
     senders = {
