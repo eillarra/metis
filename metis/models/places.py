@@ -13,22 +13,6 @@ if TYPE_CHECKING:
     from .rel.files import File
 
 
-class Region(BaseModel):
-    wikidata_id = models.CharField(max_length=16, db_index=True, null=True, blank=True)
-    name = models.CharField(max_length=160)
-    country = CountryField()
-
-    class Meta:
-        ordering = ["country", "name"]
-
-    def __str__(self) -> str:
-        return f"{self.name} ({self.country})"
-
-
-class RegionTranslationOptions(TranslationOptions):
-    fields = ("name",)
-
-
 class PlaceType(BaseModel):
     education = models.ForeignKey("metis.Education", related_name="place_types", on_delete=models.CASCADE)
     name = models.CharField(max_length=160)
@@ -54,7 +38,6 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
     name = models.CharField(max_length=160)
     code = models.CharField(max_length=160)
     parent = models.ForeignKey("self", related_name="children", on_delete=models.SET_NULL, null=True, blank=True)
-    region = models.ForeignKey(Region, related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         db_table = "metis_education_places"
@@ -105,7 +88,7 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
     def save(self, *args, **kwargs) -> None:
         if self.is_admin:
             self.is_staff = True
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def can_be_managed_by(self, user) -> bool:
         return self.place.can_be_managed_by(user)

@@ -8,7 +8,7 @@ from ...serializers import PlaceSerializer
 
 class ContactPlaceViewSet(GenericViewSet):
     queryset = Place.objects.select_related("updated_by").prefetch_related(
-        "education", "contacts__user", "contacts__updated_by", "region"
+        "education", "contacts__user", "contacts__updated_by"
     )
     pagination_class = None
     permission_classes = (IsAuthenticated,)

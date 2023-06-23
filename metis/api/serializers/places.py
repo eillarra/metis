@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from metis.models import Region, Place, PlaceType, Contact, User
+from metis.models import Place, PlaceType, Contact, User
 from .base import BaseTranslatedModelSerializer, BaseModelSerializer, NestedHyperlinkField
-from .rel import RemarksMixin, TextEntriesMixin
+from .rel import AddressesMixin, RemarksMixin, TextEntriesMixin
 from .users import UserLastLoginSerializer
 
 
@@ -19,12 +19,6 @@ education_place_lookup_fields = {
 }
 
 
-class RegionSerializer(BaseTranslatedModelSerializer):
-    class Meta:
-        model = Region
-        fields = ("id", "name", "country")
-
-
 class ContactSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:education-place-contact-detail", nested_lookup=education_place_lookup_fields)
     user = UserLastLoginSerializer(read_only=True)
@@ -36,11 +30,10 @@ class ContactSerializer(RemarksMixin, BaseModelSerializer):
         exclude = ("created_at", "created_by")
 
 
-class PlaceSerializer(TextEntriesMixin, RemarksMixin, BaseModelSerializer):
+class PlaceSerializer(AddressesMixin, RemarksMixin, TextEntriesMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:education-place-detail", nested_lookup=education_lookup_fields)
     rel_contacts = NestedHyperlinkField("v1:education-place-contact-list", nested_lookup=education_lookup_fields_pk)
     education = serializers.PrimaryKeyRelatedField(read_only=True)
-    region = RegionSerializer(read_only=True)
     contacts = ContactSerializer(many=True, read_only=True)
 
     class Meta:

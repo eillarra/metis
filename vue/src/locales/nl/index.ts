@@ -26,6 +26,7 @@ export default {
     my_internships: 'Mijn stages',
     place_office: 'Stageplaats bureau',
   },
+  address: 'Adres | Adressen',
   admin: 'Beheerder | Beheerders',
   contact: 'Contact | Contacten',
   contact_only: 'Enkel een contactpersoon',
@@ -82,6 +83,7 @@ export default {
     create: 'Aanmaken',
     update: 'Bijwerken',
     invite: 'Uitnodigen',
+    search: 'Zoeken',
     sign: 'Ondertekenen',
     delete: 'Verwijderen',
     deleted: 'Verwijderd',
@@ -92,6 +94,27 @@ export default {
     add_to_place: 'Voeg toe aan stageplaats',
     add_to_project: 'Voeg toe aan project',
     pending_fields: 'Velden die nog ingevuld moeten worden',
+    address: {
+      fields: {
+        address: 'Straat en nummer',
+        postcode: 'Postcode',
+        city: 'Gemeente',
+        country: 'Land',
+      },
+      create: {
+        find: 'Zoek adres',
+        new: 'Nieuw adres toevoegen',
+        success: 'Adres toegevoegd',
+        search: 'Vul het adres in.',
+        no_results: 'Geen resultaten gevonden.',
+        choose_feature: 'We hebben de volgende adressen gevonden. Kies het juiste adres.',
+      },
+      delete: 'Adres verwijderen',
+      confirm_delete: 'Ben je zeker dat je dit adres wil verwijderen?',
+      deleted: 'Adres verwijderd',
+      save: 'Adres opslaan',
+      saved: 'Adres opgeslagen',
+    },
     contact: {
       create: {
         new: 'Nieuwe contactpersoon aanmaken',

@@ -10,17 +10,17 @@
           <q-item-section>{{ $t('task', 9) }}</q-item-section>
         </q-item>
         <q-item-label header>{{ $t('place') }}</q-item-label>
-        <!--<q-item clickable v-if="userIsAdmin" :to="{ name: 'address' }" active-class="bg-ugent text-white">
-          <q-item-section avatar>
-            <q-icon name="place" size="xs"></q-icon>
-          </q-item-section>
-          <q-item-section>information</q-item-section>
-        </q-item>-->
         <q-item clickable :to="{ name: 'contacts' }" active-class="bg-ugent text-white">
           <q-item-section avatar>
             <q-icon name="portrait" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('contact', 9) }}</q-item-section>
+        </q-item>
+        <q-item clickable v-if="userIsAdmin" :to="{ name: 'addresses' }" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="map" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('address', 9) }}</q-item-section>
         </q-item>
       </q-list>
     </div>

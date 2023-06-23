@@ -96,7 +96,7 @@ function placeMapper(data: ApiObject[]) {
     return {
       id: obj.id,
       name: place.name,
-      caption: `${place.type} / ${place.region?.name}`,
+      caption: `${place.Type?.name}`,
     };
   });
 }

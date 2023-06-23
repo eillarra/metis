@@ -3,6 +3,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django_countries.fields import CountryField
 
+from metis.services.mapbox import MapboxFeature
+
 
 class Address(models.Model):
     """
@@ -17,9 +19,14 @@ class Address(models.Model):
     city = models.CharField(max_length=40)
     postcode = models.CharField(max_length=16)
     country = CountryField()
+    mapbox_feature = models.JSONField(null=True, blank=True)
+    label = models.CharField(max_length=160, null=True, blank=True)
 
     class Meta:
         db_table = "metis_rel_address"
+
+    def feature(self) -> MapboxFeature | None:
+        return MapboxFeature(self.mapbox_feature) if self.mapbox_feature else None
 
 
 class AddressesMixin(models.Model):

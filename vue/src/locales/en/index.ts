@@ -27,6 +27,7 @@ export default {
     my_internships: 'My internships',
     place_office: 'Place office',
   },
+  address: 'Address | Addresses',
   admin: 'Admin | Admins',
   contact: 'Contact | Contacts',
   contact_only: 'Only a contact',
@@ -83,6 +84,7 @@ export default {
     create: 'Create',
     update: 'Update',
     invite: 'Invite',
+    search: 'Search',
     sign: 'Sign',
     delete: 'Delete',
     deleted: 'Deleted',
@@ -93,6 +95,27 @@ export default {
     add_to_place: 'Add to place',
     add_to_project: 'Add to project',
     pending_fields: 'Pending fields',
+    address: {
+      fields: {
+        address: 'Street and number',
+        city: 'City',
+        postcode: 'Postal code',
+        country: 'Country',
+      },
+      create: {
+        find: 'Find address',
+        new: 'Add a new address',
+        success: 'Address added',
+        search: 'Fill in the fields and search for the address.',
+        no_results: 'No results found.',
+        choose_feature: 'We found the following addresses. Choose the correct one.',
+      },
+      delete: 'Delete address',
+      confirm_delete: 'Are you sure you want to delete this address?',
+      deleted: 'Address deleted',
+      save: 'Save address',
+      saved: 'Address information saved',
+    },
     contact: {
       create: {
         new: 'Create a new contact',

@@ -14,7 +14,6 @@ class Program(BaseModel):
     Choice of disciplines: can be repeated
 
     How many places can the student choose prefernecse
-    How many regions can the student choose preferences
     """
 
     education = models.ForeignKey("metis.Education", related_name="programs", on_delete=models.CASCADE)

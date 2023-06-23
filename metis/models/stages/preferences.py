@@ -14,23 +14,8 @@ class Preference(BaseModel):
 
     student = models.ForeignKey("metis.Student", related_name="preferences", on_delete=models.CASCADE)
     internship = models.ForeignKey("metis.Internship", related_name="preferences", on_delete=models.CASCADE)
-    regions = models.ManyToManyField("metis.Region", through="RegionPreference")
     places = models.ManyToManyField("metis.Place", through="PlacePreference")
     disciplines = models.ManyToManyField("metis.Discipline", through="DisciplinePreference")
-
-
-class RegionPreference(models.Model):
-    """
-    A student's preference for a region.
-    """
-
-    preference = models.ForeignKey(Preference, on_delete=models.CASCADE)
-    region = models.ForeignKey("metis.Region", related_name="preferences", on_delete=models.CASCADE)
-    position = models.PositiveIntegerField()
-
-    class Meta:
-        db_table = "metis_preference_regions"
-        ordering = ["preference", "position"]
 
 
 class PlacePreference(models.Model):

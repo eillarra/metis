@@ -1,14 +1,8 @@
 from django.contrib import admin
 
-from metis.models.places import Region, Place, PlaceType
+from metis.models.places import Place, PlaceType
 from .base import BaseModelAdmin
 from .rel.remarks import RemarksInline
-
-
-@admin.register(Region)
-class RegionAdmin(BaseModelAdmin):
-    def has_module_permission(self, request) -> bool:
-        return False  # pragma: no cover
 
 
 @admin.register(Place)

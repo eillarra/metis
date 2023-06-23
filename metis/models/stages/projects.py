@@ -53,8 +53,6 @@ class Project(TextEntriesMixin, BaseModel):
     # number_of_periods = ???
     # min_place_choices
     # max_place_choices
-    # min_region_choices
-    # max_region_choices
     # dates: select_period,
 
     def clean(self) -> None:

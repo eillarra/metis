@@ -1,6 +1,10 @@
-interface Region extends ApiObject {
-  name: string;
+interface Address extends ApiObject {
+  self: ApiEndpoint;
+  address: string;
+  postcode: string;
+  city: string;
   country: string;
+  mapbox_feature: object;
 }
 
 interface PlaceType extends ApiObject {
@@ -9,6 +13,7 @@ interface PlaceType extends ApiObject {
 
 interface Place extends ApiObject {
   self: ApiEndpoint;
+  rel_addresses: ApiEndpoint;
   rel_contacts: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   rel_texts: ApiEndpoint;
@@ -17,7 +22,6 @@ interface Place extends ApiObject {
   type: number;
   name: string;
   code: string;
-  region: Region | null;
   contacts: Contact[];
   updated_at: string;
   updated_by: UserTiny | null;

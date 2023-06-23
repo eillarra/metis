@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class PlaceViewSet(EducationNestedModelViewSet, InvitationMixin):
     queryset = Place.objects.select_related("updated_by").prefetch_related(
-        "education", "contacts__user", "contacts__updated_by", "region"
+        "education", "contacts__user", "contacts__updated_by"
     )
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)

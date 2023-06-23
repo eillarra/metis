@@ -1,5 +1,7 @@
 <style lang="scss">
 .metis__dialog-layout {
+  height: 600px;
+
   .q-dialog__inner--minimized > & {
     width: 660px !important;
     max-width: 100vw;
@@ -12,7 +14,7 @@
 </style>
 
 <template>
-  <q-layout view="hHh lpR fFf" container class="bg-white metis__dialog-layout metis__form" style="height: 600px">
+  <q-layout view="hHh lpR fFf" container class="bg-white metis__dialog-layout metis__form">
     <q-header class="bg-white q-pt-sm">
       <q-toolbar class="text-primary q-pl-lg q-pr-sm">
         <q-icon :name="icon" />

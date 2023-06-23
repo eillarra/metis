@@ -15,7 +15,6 @@ class ProjectPlaceViewSet(ProjectNestedModelViewSet):
         "place__contacts__user",
         "place__contacts__updated_by",
         "place__education__updated_by",
-        "place__region",
         "place__updated_by",
         "updated_by",
     )

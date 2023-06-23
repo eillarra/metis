@@ -24,10 +24,10 @@ const routes: RouteRecordRaw[] = [
       },
       // --- for is_admin
       {
-        path: 'address/',
-        name: 'address',
+        path: 'addresses/',
+        name: 'addresses',
         strict: true,
-        component: () => import('./pages/AddressPage.vue'),
+        component: () => import('./pages/AddressesPage.vue'),
         beforeEnter: [isPlaceAdmin],
       },
       {

@@ -4,7 +4,7 @@
       <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive>
         <q-step :name="1" :title="$t('form.place.create.add_existing')" icon="search" active-icon="search">
           {{ $t('form.place.create.search') }}
-          <div class="q-gutter-sm">
+          <div class="q-gutter-sm q-mt-sm">
             <api-autocomplete
               v-model="found"
               clearable
@@ -40,7 +40,7 @@
           </q-stepper-navigation>
         </q-step>
         <q-step :name="2" :title="$t('form.place.create.new')" icon="add">
-          <div class="q-gutter-sm">
+          <div class="q-gutter-sm q-mt-sm">
             <q-input v-model="obj.name" dense :label="$t('field.name')" />
             <q-input v-model="obj.code" dense :label="$t('field.code')" />
             <discipline-select
@@ -102,7 +102,7 @@ function placeMapper(data: ApiObject[]) {
   return data.map((obj) => ({
     id: obj.id,
     name: (obj as Place).name,
-    caption: `${(obj as Place).type} / ${(obj as Place).region?.name}`,
+    caption: `${(obj as Place).Type?.name}`,
     disable: placeIdsUsed.value.has(obj.id),
   }));
 }

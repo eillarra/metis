@@ -8,16 +8,15 @@
       :project-place="(projectPlace as ProjectPlaceTiny)"
       class="q-mb-lg"
     />
-    <p>In METIS zijn volgende personen gekend voor deze stageplaats:</p>
-    <ul>
-      <li v-for="contact in (place as Place).contacts" :key="contact.id">
-        {{ contact.user.name }}, &lt;{{ contact.user.email }}&gt;
-        <q-badge v-if="contact.is_mentor" outline color="ugent" class="q-ml-sm">Mentor</q-badge>
-        <q-badge v-if="contact.is_admin" color="ugent" class="q-ml-sm">Admin</q-badge>
-      </li>
-    </ul>
-    <p>Iedereen in deze lijst heeft een e-mail ontvangen met de vraag zich aan te melden.</p>
     <div v-if="!admins.length">
+      <p>In METIS zijn volgende personen gekend voor deze stageplaats:</p>
+      <ul>
+        <li v-for="contact in (place as Place).contacts" :key="contact.id">
+          {{ contact.user.name }}, &lt;{{ contact.user.email }}&gt;
+          <q-badge v-if="contact.is_mentor" outline color="ugent" class="q-ml-sm">Mentor</q-badge>
+          <q-badge v-if="contact.is_admin" color="ugent" class="q-ml-sm">Admin</q-badge>
+        </li>
+      </ul>
       <p class="bg-yellow-2">
         <strong>In een eerste stap</strong> wensen we de accounts voor METIS te actualiseren. Daarom vragen we u
         vriendelijk om onderstaande info aandachtig te lezen, het e-mailbericht aan te vullen en meteen te versturen.

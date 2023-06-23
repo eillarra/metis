@@ -4,10 +4,10 @@ import requests
 
 class MapboxFeature:
     """
-    {'id': 'address.3426848510991968', 'type': 'Feature', 'place_type': ['address'], 'relevance': 1, 'properties': {'accuracy': 'rooftop', 'mapbox_id': 'dXJuOm1ieGFkcjpjZjVhZGNjMS1kNDk3LTQ5ZTEtYjdiYi1jYzU4MjdkOTkyNzk'}, 'text_nl': 'Corneel Heymanslaan', 'place_name_nl': 'Corneel Heymanslaan 10, 9000 Gent, Oost-Vlaanderen, België', 'text': 'Corneel Heymanslaan', 'place_name': 'Corneel Heymanslaan 10, 9000 Gent, Oost-Vlaanderen, België', 'text_en': 'Corneel Heymanslaan', 'place_name_en': 'Corneel Heymanslaan 10, 9000 Ghent, East Flanders, Belgium', 'center': [3.727112, 51.02532], 'geometry': {'type': 'Point', 'coordinates': [3.727112, 51.02532]}, 'address': '10', 'context': [{'id': 'postcode.8474133', 'mapbox_id': 'dXJuOm1ieHBsYzpnVTRW', 'text_nl': '9000', 'text': '9000', 'text_en': '9000'}, {'id': 'locality.4876821', 'mapbox_id': 'dXJuOm1ieHBsYzpTbW9W', 'text_nl': 'Gent Zuid', 'text': 'Gent Zuid', 'text_en': 'Gent Zuid'}, {'id': 'place.1558549', 'wikidata': 'Q1296', 'mapbox_id': 'dXJuOm1ieHBsYzpGOGdW', 'text_nl': 'Gent', 'language_nl': 'nl', 'text': 'Gent', 'language': 'nl', 'text_en': 'Ghent', 'language_en': 'en'}, {'id': 'region.25621', 'short_code': 'BE-VOV', 'wikidata': 'Q1114', 'mapbox_id': 'dXJuOm1ieHBsYzpaQlU', 'text_nl': 'Oost-Vlaanderen', 'language_nl': 'nl', 'text': 'Oost-Vlaanderen', 'language': 'nl', 'text_en': 'East Flanders', 'language_en': 'en'}, {'id': 'country.8725', 'short_code': 'be', 'wikidata': 'Q31', 'mapbox_id': 'dXJuOm1ieHBsYzpJaFU', 'text_nl': 'België', 'language_nl': 'nl', 'text': 'België', 'language': 'nl', 'text_en': 'Belgium', 'language_en': 'en'}]}
+    {'id': 'address.3426848510991968', 'type': 'Feature', 'place_type': ['address'], 'relevance': 1, 'properties': {'accuracy': 'rooftop', 'mapbox_id': 'dXJuOm1ieGFkcjpjZjVhZGNjMS1kNDk3LTQ5ZTEtYjdiYi1jYzU4MjdkOTkyNzk'}, 'text_nl': 'Corneel Heymanslaan', 'place_name_nl': 'Corneel Heymanslaan 10, 9000 Gent, Oost-Vlaanderen, België', 'text': 'Corneel Heymanslaan', 'place_name': 'Corneel Heymanslaan 10, 9000 Gent, Oost-Vlaanderen, België', 'text_en': 'Corneel Heymanslaan', 'place_name_en': 'Corneel Heymanslaan 10, 9000 Ghent, East Flanders, Belgium', 'center': [3.727112, 51.02532], 'geometry': {'type': 'Point', 'coordinates': [3.727112, 51.02532]}, 'address': '10', 'context': [{'id': 'postcode.8474133', 'mapbox_id': 'dXJuOm1ieHBsYzpnVTRW', 'text_nl': '9000', 'text': '9000', 'text_en': '9000'}, {'id': 'locality.4876821', 'mapbox_id': 'dXJuOm1ieHBsYzpTbW9W', 'text_nl': 'Gent Zuid', 'text': 'Gent Zuid', 'text_en': 'Gent Zuid'}, {'id': 'place.1558549', 'wikidata': 'Q1296', 'mapbox_id': 'dXJuOm1ieHBsYzpGOGdW', 'text_nl': 'Gent', 'language_nl': 'nl', 'text': 'Gent', 'language': 'nl', 'text_en': 'Ghent', 'language_en': 'en'}, {'id': 'region.25621', 'short_code': 'BE-VOV', 'wikidata': 'Q1114', 'mapbox_id': 'dXJuOm1ieHBsYzpaQlU', 'text_nl': 'Oost-Vlaanderen', 'language_nl': 'nl', 'text': 'Oost-Vlaanderen', 'language': 'nl', 'text_en': 'East Flanders', 'language_en': 'en'}, {'id': 'country.8725', 'short_code': 'be', 'wikidata': 'Q31', 'mapbox_id': 'dXJuOm1ieHBsYzpJaFU', 'text_nl': 'België', 'language_nl': 'nl', 'text': 'België', 'language': 'nl', 'text_en': 'Belgium', 'language_en': 'en'}]}  # noqa
     """
 
-    def __init__(self, feature):
+    def __init__(self, feature: dict):
         self._raw = feature
 
     def __str__(self) -> str:
@@ -17,7 +17,6 @@ class MapboxFeature:
         for context in self._raw["context"]:
             if q in context["id"]:
                 return context[field] if field else context
-
         return None
 
     @property
@@ -51,6 +50,9 @@ class MapboxFeature:
     @property
     def longitude(self) -> float:
         return self.coordinates[0]
+
+    def to_dict(self) -> dict:
+        return self._raw
 
 
 class Mapbox:
@@ -88,8 +90,8 @@ class Mapbox:
                 return None
 
             data = response.json()
-        except requests.exceptions.HTTPError:
-            return None
+        except requests.exceptions.HTTPError as e:
+            raise Exception(f"Mapbox API error: {e}")
 
         if not data["features"]:
             return None

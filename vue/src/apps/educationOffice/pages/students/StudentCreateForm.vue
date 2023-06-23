@@ -123,33 +123,35 @@ function addStudent() {
 }
 
 function inviteStudent() {
-  api.get('/users/', {
-    params: {
-      search: formData.value.email,
-    },
-  }).then((res) => {
-    if (res.data.results.length > 0) {
-      formData.value.user = res.data.results[0];
-      step.value = 1;
-      notify.warning(t('form.student.create.exists_warning'));
-      return;
-    }
-
-    const data = {
-      type: 'student',
-      name: formData.value.name,
-      email: formData.value.email,
-      data: {
-        track_id: formData.value.track,
-        block_id: formData.value.block,
+  api
+    .get('/users/', {
+      params: {
+        search: formData.value.email,
       },
-    };
+    })
+    .then((res) => {
+      if (res.data.results.length > 0) {
+        formData.value.user = res.data.results[0];
+        step.value = 1;
+        notify.warning(t('form.student.create.exists_warning'));
+        return;
+      }
 
-    api.post(`${project.value?.self}invite/`, data).then(() => {
-      notify.success(t('form.student.create.invited'));
-      emit('create:obj');
+      const data = {
+        type: 'student',
+        name: formData.value.name,
+        email: formData.value.email,
+        data: {
+          track_id: formData.value.track,
+          block_id: formData.value.block,
+        },
+      };
+
+      api.post(`${project.value?.self}invite/`, data).then(() => {
+        notify.success(t('form.student.create.invited'));
+        emit('create:obj');
+      });
     });
-  });
 }
 
 /**

@@ -132,7 +132,7 @@ function placeMapper(data: ApiObject[]) {
     return {
       id: place.id,
       name: place.name,
-      caption: `${place.type} / ${place.region?.name}`,
+      caption: `${place.Type?.name}`,
     };
   });
 }
@@ -167,34 +167,36 @@ function addContact() {
 function inviteContact() {
   if (!selectedPlace.value) return;
 
-  api.get('/users/', {
-    params: {
-      search: formData.value.email,
-    },
-  }).then((res) => {
-    if (res.data.results.length > 0) {
-      formData.value.user = res.data.results[0];
-      step.value = 1;
-      notify.warning(t('form.contact.create.exists_warning'));
-      return;
-    }
-
-    const data = {
-      type: 'contact',
-      name: formData.value.name,
-      email: formData.value.email,
-      data: {
-        is_mentor: formData.value.is_mentor,
-        is_staff: formData.value.is_staff,
-        is_admin: formData.value.is_admin,
+  api
+    .get('/users/', {
+      params: {
+        search: formData.value.email,
       },
-    };
+    })
+    .then((res) => {
+      if (res.data.results.length > 0) {
+        formData.value.user = res.data.results[0];
+        step.value = 1;
+        notify.warning(t('form.contact.create.exists_warning'));
+        return;
+      }
 
-    api.post(`${selectedPlace.value?.self}invite/`, data).then(() => {
-      notify.success(t('form.contact.create.invited'));
-      emit('create:obj');
+      const data = {
+        type: 'contact',
+        name: formData.value.name,
+        email: formData.value.email,
+        data: {
+          is_mentor: formData.value.is_mentor,
+          is_staff: formData.value.is_staff,
+          is_admin: formData.value.is_admin,
+        },
+      };
+
+      api.post(`${selectedPlace.value?.self}invite/`, data).then(() => {
+        notify.success(t('form.contact.create.invited'));
+        emit('create:obj');
+      });
     });
-  });
 }
 
 /**

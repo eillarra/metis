@@ -71,13 +71,6 @@ const columns = [
     label: t('discipline', 9),
     align: 'left',
   },
-  {
-    name: 'region',
-    field: 'region',
-    label: t('region'),
-    align: 'left',
-    sortable: true,
-  },
 ];
 
 const rows = computed(() => {
@@ -85,7 +78,6 @@ const rows = computed(() => {
     _self: obj,
     name: obj.place.name,
     code: obj.place.code,
-    region: obj.place.region ? obj.place.region.name : '-',
     type: obj.place.Type?.name || '-',
     disciplines: obj.Disciplines,
     has_admins: !!obj.place.contacts.filter((contact) => contact.is_admin).length,

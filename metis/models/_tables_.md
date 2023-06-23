@@ -238,7 +238,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingProjectDataCopyValid
 - [ ] TrainingProjectLinkTrainingAdmin
 - [x] TrainingProjectTranslation: included in `Project`
-- [ ] TrainingRegion
+- [x] TrainingRegion: via `Address` and Mapbox data
 - [ ] TrainingRole
 - [x] TrainingStudent: `Student`
 - [ ] TrainingStudentChange
