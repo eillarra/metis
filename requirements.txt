@@ -26,6 +26,7 @@ gevent==22.10.2
 greenlet==2.0.2 ; platform_python_implementation == 'CPython'
 gunicorn==20.1.0
 hiredis==2.2.3
+holidays==0.27.1
 huey==2.4.5
 icalendar==5.0.7 ; python_version >= '3.7'
 idna==3.4 ; python_version >= '3.5'

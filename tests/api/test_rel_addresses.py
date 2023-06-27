@@ -73,9 +73,7 @@ class TestForAnonymous:
     }
 
     def _create_address(self, place):
-        return Address.objects.create(
-            content_object=place, **self._get_address_data()
-        )
+        return Address.objects.create(content_object=place, **self._get_address_data())
 
     def _get_address_data(self):
         return {
@@ -83,7 +81,7 @@ class TestForAnonymous:
             "postcode": "postcode",
             "city": "city",
             "country": "BE",
-            "mapbox_feature": {}
+            "mapbox_feature": {},
         }
 
     def test_list_addresses(self, api_client, place):

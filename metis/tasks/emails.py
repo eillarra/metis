@@ -8,6 +8,7 @@ from time import sleep
 from metis.models.emails import EmailTemplate, EmailLog
 from metis.models.stages.dates import ImportantDate, get_project_places_for_date
 from metis.services.mailer import schedule_template_email
+from metis.utils.dates import remind_deadline
 
 
 @db_periodic_task(crontab(minute="*"))
@@ -36,7 +37,7 @@ def send_email():
         sleep(26)
 
 
-@db_periodic_task(crontab(day_of_week="1-5", hour="8", minute="0"))
+@db_periodic_task(crontab(hour="8", minute="0"))
 def schedule_important_date_emails():
     active_important_dates = ImportantDate.objects.filter_active()
     senders = {
@@ -44,6 +45,9 @@ def schedule_important_date_emails():
     }
 
     for important_date in active_important_dates:
+        if not remind_deadline(now(), important_date.end_at):
+            continue
+
         try:
             senders[important_date.type](important_date)
         except KeyError:
