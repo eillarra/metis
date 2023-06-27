@@ -42,7 +42,11 @@ def process_contact_invitation(invitation: Invitation, user: User):
     try:
         place: Place = invitation.content_object  # type: ignore
         Contact.objects.create(
-            place=place, user=user, is_staff=invitation.data["is_staff"], is_mentor=invitation.data["is_mentor"]
+            place=place,
+            user=user,
+            is_admin=invitation.data["is_admin"],
+            is_staff=invitation.data["is_staff"],
+            is_mentor=invitation.data["is_mentor"],
         )
     except (KeyError, ValidationError) as e:
         raise ValueError(str(e))

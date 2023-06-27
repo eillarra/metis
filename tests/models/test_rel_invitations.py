@@ -31,6 +31,7 @@ def test_invited_contact_makes_acount(place):
         data={
             "is_mentor": True,
             "is_staff": False,
+            "is_admin": False,
         },
     )
     assert Invitation.objects.count() == 1
