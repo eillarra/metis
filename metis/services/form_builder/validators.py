@@ -1,107 +1,30 @@
-from pydantic import BaseModel, Extra, ValidationError, validator
-from typing import Literal, Union
+from pydantic import ValidationError
+from typing import TYPE_CHECKING
+
+from .custom_forms import CustomForm, ChoiceField
+from .tops import TopsForm
+
+if TYPE_CHECKING:
+    from metis.models.stages.projects import Project
 
 
-class Translation(BaseModel):
-    nl: str
-    en: str
-
-
-class FieldOption(BaseModel):
-    value: str | int
-    label: Translation
-
-    class Config:
-        extra = Extra.forbid
-        validate_all = True
-
-
-class FormField(BaseModel):
-    type: str
-    code: str
-    label: Translation
-    required: bool = False
-    collapsed: bool = False
-
-    class Config:
-        validate_all = True
-
-
-class InputField(FormField):
-    type: Literal["text", "number", "date", "email", "tel", "url"]
-    mask: str | None = None
-    placeholder: Translation | None = None
-
-
-class ChoiceField(FormField):
-    type: Literal["select", "option_group"]
-    options: list[FieldOption]
-    multiple: bool = False
-    other_option: str | None = None
-
-    @validator("options")
-    def validate_options(cls, v):
-        values = set()
-        for option in v:
-            if option.value in values:
-                raise ValueError(f"Duplicate option value `{option.value}`")
-            values.add(option.value)
-        return v
-
-
-class GridField(FormField):
-    type: Literal["option_grid"]
-    options: list[FieldOption]
-    columns: list[FieldOption]
-
-
-class Fieldset(BaseModel):
-    fields: list[Union[InputField, ChoiceField, GridField]]
-    legend: Translation | None = None
-    description: Translation | None = None
-
-    class Config:
-        extra = Extra.forbid
-        validate_all = True
-
-
-class Form(BaseModel):
-    fieldsets: list[Fieldset]
-    title: Translation | None = None
-    description: Translation | None = None
-
-    class Config:
-        extra = Extra.forbid
-        validate_all = True
-
-    @validator("fieldsets")
-    def validate_fieldsets(cls, v):
-        codes = set()
-        for fieldset in v:
-            for field in fieldset.fields:
-                if field.code in codes:
-                    raise ValueError(f"Duplicate field code `{field.code}`")
-                codes.add(field.code)
-        return v
-
-
-def validate_form_definition(definition: dict) -> Form:
+def validate_custom_form_definition(definition: dict) -> CustomForm:
     """
     Validate a form definition.
     """
 
     try:
-        return Form(**definition)
+        return CustomForm(**definition)
     except (TypeError, ValidationError) as e:
         raise ValueError(e)
 
 
-def validate_form_data(form_definition: dict, data: dict) -> dict:
+def validate_custom_form_data(form_definition: dict, data: dict) -> dict:
     """
     Validate form data against a form definition.
     """
 
-    form = validate_form_definition(form_definition)
+    form = validate_custom_form_definition(form_definition)
     fields = []
     field_codes = set()
 
@@ -157,5 +80,49 @@ def validate_form_data(form_definition: dict, data: dict) -> dict:
         elif field.code in data:
             if not isinstance(data[field.code], str):
                 raise ValueError(f"Field `{field.code}` should be a string")
+
+    return data
+
+
+def validate_tops_form_definition(definition: dict) -> TopsForm:
+    """
+    Validate a tops form definition.
+    """
+
+    try:
+        return TopsForm(**definition)
+    except (TypeError, ValidationError) as e:
+        raise ValueError(e)
+
+
+def validate_tops_form_data(form_definition: dict, data: dict, project: "Project") -> dict:
+    """
+    Validate form data against a form definition.
+    """
+
+    form = validate_tops_form_definition(form_definition)
+
+    if not isinstance(data, dict):
+        raise ValueError("Data should be a dict")
+
+    if not isinstance(data.get("tops"), list):
+        raise ValueError("Data should contain a list of tops")
+
+    if form.type == "project_places":
+        project_place_ids = set(project.place_set.values_list("id", flat=True))
+        for project_place_id in data["tops"]:
+            if project_place_id not in project_place_ids:
+                raise ValueError(f"Invalid ProjectPlace id `{project_place_id}`")
+        if len(set(data["tops"])) != len(data["tops"]):
+            raise ValueError("Duplicate ProjectPlace ids")
+
+    elif form.type == "regions":
+        raise NotImplementedError("Regions form not implemented")
+
+    try:
+        if len(data["tops"]) != form.num_tops:
+            raise ValueError("Invalid number of tops")
+    except AttributeError:
+        raise ValueError("Missing required field `tops`")
 
     return data

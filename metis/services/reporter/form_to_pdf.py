@@ -1,4 +1,4 @@
-from metis.services.form_builder import Form
+from metis.services.form_builder.custom_forms import CustomForm
 
 
 def _add_text_response(pdf, field, response):
@@ -30,7 +30,7 @@ def _add_grid_response(pdf, field, response):
 
 
 def form_to_pdf(form_definition: dict, response: dict, pdf):
-    form = Form(**form_definition)
+    form = CustomForm(**form_definition)
     question_n = 0
 
     for fieldset in form.fieldsets:

@@ -1,6 +1,6 @@
 import pytest
 
-from metis.services.form_builder import validate_form_definition
+from metis.services.form_builder.validators import validate_custom_form_definition
 from metis.utils.fixtures.forms import get_audiology_place_form, get_logopedics_place_form
 
 
@@ -94,7 +94,7 @@ from metis.utils.fixtures.forms import get_audiology_place_form, get_logopedics_
 )
 def test_definition_is_invalid(definition):
     with pytest.raises(ValueError):
-        validate_form_definition(definition)
+        validate_custom_form_definition(definition)
 
 
 @pytest.mark.parametrize(
@@ -119,4 +119,4 @@ def test_definition_is_invalid(definition):
     ],
 )
 def test_definition_valid(definition):
-    validate_form_definition(definition)
+    validate_custom_form_definition(definition)
