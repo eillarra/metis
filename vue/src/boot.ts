@@ -17,7 +17,7 @@ import { storage } from './storage';
 const bootApp = (routes: RouteRecordRaw[]) => {
   createInertiaApp({
     resolve: () => {
-      return import('./layouts/MainLayout.vue');
+      return import('./layouts/MainLayout.vue' as string);
     },
     setup({ el, App, props, plugin }) {
       // locale
@@ -81,8 +81,8 @@ const bootApp = (routes: RouteRecordRaw[]) => {
         Sentry.init({
           app,
           dsn: 'https://0c8a62299e0b46c9b472cdf6e69e8484@o124046.ingest.sentry.io/4505041367924736',
-          release: props.initialPage.props.git_commit_hash,
-          environment: props.initialPage.props.django_env,
+          release: props.initialPage.props.git_commit_hash as string,
+          environment: props.initialPage.props.django_env as string,
           integrations: [
             new Sentry.BrowserTracing({
               routingInstrumentation: Sentry.vueRouterInstrumentation(Router),

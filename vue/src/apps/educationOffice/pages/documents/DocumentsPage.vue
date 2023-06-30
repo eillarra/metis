@@ -5,7 +5,9 @@
   <h4>{{ $t('place', 9) }}: infofiche</h4>
   <q-list dense>
     <q-item v-for="period in filteredPeriods" :id="period.id">
-      <a :href="`./files/p/${period.id}/project_place_information.pdf`" target="_blank">{{ period.ProgramInternship?.Block?.name }} / P{{ period.name }}</a>
+      <a :href="`./files/p/${period.id}/project_place_information.pdf`" target="_blank"
+        >{{ period.ProgramInternship?.Block?.name }} / P{{ period.name }}</a
+      >
     </q-item>
   </q-list>
 </template>

@@ -23,13 +23,13 @@
         <q-card-actions class="use-default-q-btn q-pa-md">
           <q-btn outline square @click="deleteAddress(address)" color="red" icon="delete_outline" size="sm" />
           <q-space />
-          <q-btn unelevated square @click="(obj = address as Address)" color="ugent" icon="edit" size="sm" />
+          <q-btn unelevated square @click="obj = address" color="ugent" icon="edit" size="sm" />
         </q-card-actions>
       </q-card>
     </div>
     <div class="col-12">
       <div class="row justify-end">
-        <div class="col-6 ugent__create-btn" :class="{'col-md-1': !inDialog, 'col-md-2': inDialog}">
+        <div class="col-6 ugent__create-btn" :class="{ 'col-md-1': !inDialog, 'col-md-2': inDialog }">
           <q-btn
             unelevated
             color="blue-1"
@@ -37,18 +37,18 @@
             icon="add"
             class="text-ugent full-width"
             @click="
-                  obj = {
-                    address: '',
-                    postcode: '',
-                    city: '',
-                  } as Address
-                "
+              obj = {
+                address: '',
+                postcode: '',
+                city: '',
+              }
+            "
           />
         </div>
       </div>
     </div>
     <q-dialog v-model="dialogVisible">
-      <dialog-form :icon="(obj.self) ? 'map' : 'add'" :title="$t('address')" class="metis__dialog-geocode">
+      <dialog-form :icon="obj.self ? 'map' : 'add'" :title="$t('address')" class="metis__dialog-geocode">
         <template #page>
           <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive>
             <q-step :name="1" :title="$t('form.address.create.find')" icon="search" active-icon="search">
@@ -90,7 +90,13 @@
           <div v-if="step == 2" class="flex q-gutter-sm q-pa-lg">
             <q-btn unelevated @click="step = 1" color="blue-1" text-color="ugent" :label="$t('form.back')" />
             <q-space />
-            <q-btn unelevated color="ugent" :label="$t('form.address.save')" @click="save" :disable="!selectedFeature" />
+            <q-btn
+              unelevated
+              color="ugent"
+              :label="$t('form.address.save')"
+              @click="save"
+              :disable="!selectedFeature"
+            />
           </div>
         </template>
       </dialog-form>

@@ -12,7 +12,7 @@
           :label="$t('text', 9)"
           icon="notes"
         />
-        <q-tab name="remarks" :label="`${remarkCount}`" icon="chat_bubble_outline" />
+        <q-tab name="remarks" :label="remarkCount" icon="chat_bubble_outline" />
       </q-tabs>
       <q-space />
       <q-tabs v-model="tab" dense shrink inline-label no-caps>

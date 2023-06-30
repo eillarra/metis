@@ -4,7 +4,8 @@
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
         <q-tab name="info" label="Info" icon="info_outline" />
         <q-tab name="internships" :label="$t('internship', 9)" />
-        <q-tab name="remarks" :label="`${$t('remark', 9)} (${remarkCount})`" icon="chat_bubble_outline" />
+        <q-tab name="addresses" :label="$t('address', 9)" icon="map" />
+        <q-tab name="remarks" :label="remarkCount" icon="chat_bubble_outline" />
       </q-tabs>
     </template>
     <template #page>
@@ -26,6 +27,9 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="internships"> - TODO: Show internship info </q-tab-panel>
+        <q-tab-panel name="addresses">
+          <address-cards :api-endpoint="studentUser.rel_addresses" in-dialog />
+        </q-tab-panel>
         <q-tab-panel name="remarks">
           <remarks-view :api-endpoints="remarkEndpoints" />
         </q-tab-panel>
@@ -67,6 +71,7 @@ import { useStore } from '../../store.js';
 
 import DialogForm from '@/components/forms/DialogForm.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
+import AddressCards from '@/components/rel/AddressCards.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 
 const { t } = useI18n();
