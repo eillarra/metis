@@ -12,6 +12,8 @@ from ..rel import TextEntriesMixin
 if TYPE_CHECKING:
     from ..places import Place
     from ..rel import TextEntry
+    from .project_places import ProjectPlace
+    from .students import Student
 
 
 class ProjectManager(models.Manager):
@@ -62,7 +64,7 @@ class Project(TextEntriesMixin, BaseModel):
         return super().clean()
 
     def __str__(self) -> str:
-        return self.name
+        return f"{self.education} {self.name}"
 
     def can_be_managed_by(self, user) -> bool:
         return self.education.can_be_managed_by(user)
@@ -139,3 +141,17 @@ class Period(BaseModel):
         de stage van een student valt mogelijks niet samen met een blokgrens.)
         """
         return self.is_open or (self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date())
+
+    @property
+    def project_places(self) -> models.QuerySet["ProjectPlace"]:
+        """
+        ProjectPlaces that have availability for this period.
+        """
+        return self.project.place_set.filter(availability_set__period=self, availability_set__min__gt=0)  # type: ignore
+
+    @property
+    def students(self, *, active: bool = True) -> models.QuerySet["Student"]:
+        """
+        Students that are enrolled in this period's Block.
+        """
+        return self.project.students.filter(is_active=active, block=self.program_internship.block)  # type: ignore

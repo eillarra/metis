@@ -19,12 +19,12 @@ class ImportantDate(BaseModel):
     PROJECT_PLACE_AVAILABILITY = "project_place_availability"
     PROJECT_PLACE_INFORMATION = "project_place_information"
     STUDENT_INFORMATION = "student_information"
-    STUDENT_PREFERENCES = "student_preferences"
+    STUDENT_TOPS = "student_tops"
     TYPE_CHOICES = (
         (PROJECT_PLACE_AVAILABILITY, "ProjectPlace availability"),
         (PROJECT_PLACE_INFORMATION, "ProjectPlace information"),
         (STUDENT_INFORMATION, "Student information"),
-        (STUDENT_PREFERENCES, "Student preferences"),
+        (STUDENT_TOPS, "Student preferences"),
     )
     TYPES_WITH_FORM = (PROJECT_PLACE_INFORMATION, STUDENT_INFORMATION)
 
@@ -69,6 +69,6 @@ def get_project_places_for_date(important_date: ImportantDate) -> models.QuerySe
         raise ValueError(f"Invalid type: {important_date.type}")
 
     if not important_date.period:
-        return ProjectPlace.objects.filter(project=important_date.project)
+        return important_date.period.project_places  # type: ignore
 
-    return ProjectPlace.objects.filter(availability_set__period=important_date.period, availability_set__min__gt=0)
+    return important_date.project.place_set
