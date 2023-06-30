@@ -6,9 +6,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from metis.api.serializers import EducationTinySerializer, ProjectSerializer, AuthStudentSerializer
-from metis.models import Education, Period
-from metis.services.reporter.pdf import ProjectPlaceInformationReport
+from metis.models import Education
+from metis.services.reporter.pdf import ProjectPlaceInformationPdf
 from .inertia import InertiaView
+from .reports.periods import PeriodReportMixin
 
 
 class StudentAreaFirewallMixin(View):
@@ -100,25 +101,13 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
         return f"{self.get_education().short_name} - Stages"
 
 
-class StudentAreaPeriodPdfReportView(StudentAreaFirewallMixin, View):
-    available_reports = {
-        "project_place_information": ProjectPlaceInformationReport
-    }
+class StudentAreaPeriodReportView(StudentAreaFirewallMixin, PeriodReportMixin, View):
+    available_reports = {"pdf": {"project_place_information": ProjectPlaceInformationPdf}}
 
     def get(self, request, *args, **kwargs):
-        period_id = kwargs.get("period_id")
-
-        try:
-            period = Period.objects.get(id=period_id, project__education=self.get_education())
-        except Period.DoesNotExist:
-            raise PermissionDenied
+        period = self.get_period()
 
         if not self.get_student_set(request.user).filter(block=period.program_internship.block).exists():
             raise PermissionDenied
 
-        try:
-            report = self.available_reports[kwargs.get("code")](period_id)
-        except KeyError:
-            raise PermissionDenied
-
-        return report.get_response()
+        return super().get(request, *args, **kwargs)

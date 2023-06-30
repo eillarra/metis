@@ -10,15 +10,15 @@ urlpatterns = [
     path("places/<int:place_id>/", views.PlaceOfficeView.as_view(), name="place_office"),
     path("stagebureau/<slug:education_code>/", views.EducationOfficeView.as_view(), name="education_office"),
     path(
-        "stagebureau/<slug:education_code>/files/p/<int:period_id>/<slug:code>.pdf",
-        views.EducationOfficePeriodPdfReportView.as_view(),
-        name="education_office_pdf_report",
+        "stagebureau/<slug:education_code>/files/p/<int:period_id>/<slug:code>.<slug:file_type>",
+        views.EducationOfficePeriodReportView.as_view(),
+        name="education_office_report",
     ),
     path("stages/<slug:education_code>/", views.StudentAreaView.as_view(), name="student_area"),
     path(
-        "stages/<slug:education_code>/files/p/<int:period_id>/<slug:code>.pdf",
-        views.StudentAreaPeriodPdfReportView.as_view(),
-        name="student_area_pdf_report",
+        "stages/<slug:education_code>/files/p/<int:period_id>/<slug:code>.<slug:file_type>",
+        views.StudentAreaPeriodReportView.as_view(),
+        name="student_area_report",
     ),
     # pages
     path("", views.HomeView.as_view(), name="homepage"),

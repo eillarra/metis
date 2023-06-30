@@ -17,7 +17,7 @@ class PdfReport:
         return response
 
 
-class ProjectPlaceInformationReport(PdfReport):
+class ProjectPlaceInformationPdf(PdfReport):
     def __init__(self, period_id: int):
         self.period_id = period_id
         self.project_places = ProjectPlace.objects.filter(

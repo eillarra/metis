@@ -2,14 +2,15 @@
   <div class="row q-col-gutter-sm q-mb-lg">
     <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('document', 9) }}</h3>
   </div>
-  <h4>{{ $t('place', 9) }}: infofiche</h4>
-  <q-list dense>
-    <q-item v-for="period in filteredPeriods" :id="period.id">
-      <a :href="`./files/p/${period.id}/project_place_information.pdf`" target="_blank"
-        >{{ period.ProgramInternship?.Block?.name }} / P{{ period.name }}</a
-      >
-    </q-item>
-  </q-list>
+  <ul>
+    <li v-for="period in filteredPeriods" :key="period.id">
+      <div>
+        <span>{{ period.ProgramInternship?.Block?.name }} / P{{ period.name }}</span>:&nbsp;
+        <a :href="`./files/p/${period.id}/project_place_information.pdf`" target="_blank">Infofiches</a>&nbsp;|&nbsp;
+        <a :href="`./files/p/${period.id}/student_tops.xlxs`">Student tops</a>
+      </div>
+    </li>
+  </ul>
 </template>
 
 <script setup lang="ts">
@@ -38,6 +39,7 @@ const programInternshipsToSkip = computed<Set<number>>(() => {
 });
 
 const filteredPeriods = computed<Period[]>(() => {
+  if (!project.value) return [];
   const ids = programInternshipsToSkip.value;
   return project.value.periods.filter((period) => !ids.has(period.program_internship));
 });
