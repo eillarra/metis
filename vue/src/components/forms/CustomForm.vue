@@ -189,7 +189,7 @@ const formIsValid = computed<boolean>(() => {
 });
 
 function isInputField(field: InputField | ChoiceField | GridField): field is InputField {
-  return ['text', 'number', 'date', 'email', 'tel', 'url'].includes(field.type);
+  return ['text', 'textarea', 'number', 'date', 'email', 'tel', 'url'].includes(field.type);
 }
 
 function getTextValue(translation: Translation): string {

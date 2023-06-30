@@ -5,6 +5,11 @@ def _add_text_response(pdf, field, response):
     pdf.add_paragraph(response[field.code])
 
 
+def _add_textarea_response(pdf, field, response):
+    text = response[field.code].replace("\n", "<br />")
+    pdf.add_paragraph(text)
+
+
 def _add_choice_response(pdf, field, response):
     li = []
     for option in field.options:
@@ -39,7 +44,9 @@ def form_to_pdf(form_definition: dict, response: dict, pdf):
 
             if field.code in response and response[field.code]:
                 pdf.add_paragraph(f"{question_n}. {field.label.nl}", "h6", keep_with_next=True)
-                if field.type == "text":
+                if field.type == "textarea":
+                    _add_textarea_response(pdf, field, response)
+                elif field.type == "text":
                     _add_text_response(pdf, field, response)
                 elif field.type in {"select", "option_group"}:
                     _add_choice_response(pdf, field, response)

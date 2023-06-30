@@ -28,7 +28,7 @@ class FormField(BaseModel):
 
 
 class InputField(FormField):
-    type: Literal["text", "number", "date", "email", "tel", "url"]
+    type: Literal["text", "textarea", "number", "date", "email", "tel", "url"]
     mask: str | None = None
     placeholder: Translation | None = None
 

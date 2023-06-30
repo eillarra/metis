@@ -22,7 +22,7 @@ interface FormField {
 }
 
 interface InputField extends FormField {
-  type: 'text' | 'number' | 'date' | 'email' | 'tel' | 'url';
+  type: 'text' | 'textarea' | 'number' | 'date' | 'email' | 'tel' | 'url';
   mask?: string;
   placeholder?: Translation;
 }
