@@ -1,23 +1,14 @@
 from rest_framework import serializers
 
 from metis.models.stages import Student, Signature
-from metis.models.users import User, TmpData
+from metis.models.users import User
 from .rel.addresses import AddressesMixin
 from .rel.forms import FormResponsesMixin
 from .stages import ProgramBlockSerializer, ProjectTinySerializer
 
 
-class AuthUserTmpDataSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = TmpData
-        exclude = ()
-
-
 class AuthUserSerializer(AddressesMixin, serializers.ModelSerializer):
     name = serializers.CharField(read_only=True)
-    tmp_data = AuthUserTmpDataSerializer(read_only=True)
 
     class Meta:
         model = User

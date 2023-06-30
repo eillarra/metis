@@ -83,6 +83,7 @@ class StudentInformationPdf(PdfReport):
     def get_pdf(self) -> bytes:
         with PdfWrap() as pdf:
             pdf.add_footer(f"{now()}")
+            form_definition = None
 
             for student in self.period.students.order_by("user__first_name", "user__last_name"):
                 tops = student.form_responses.filter(questioning__type="student_tops").first()
@@ -108,58 +109,28 @@ class StudentInformationPdf(PdfReport):
                 else:
                     pdf.add_paragraph("(Geen tops ingevuld)")
 
-                # tmp form
+                # personal information
 
-                tmp_data = student.user.tmp_data
+                form_response = student.form_responses.filter(questioning__type="student_information").first()
 
                 pdf.add_separator()
                 pdf.add_spacer()
 
-                if tmp_data:
-                    pdf.add_paragraph("Rijksregisternummer", "h6")
-                    pdf.add_paragraph(tmp_data.rijksregisternummer)
-                    pdf.add_paragraph("Telefoonnummer", "h6")
-                    pdf.add_paragraph(tmp_data.mobile_phone)
-                    pdf.add_paragraph("Domicilieadres", "h6")
-                    pdf.add_paragraph(
-                        f"""
-                        {tmp_data.address}<br />
-                        {tmp_data.city}<br />
-                    """
-                    )
-                    if tmp_data.address2:
-                        pdf.add_paragraph(
-                            "Logeeradres elders in Belgie dat kan fungeren als uitvalsbasis tijdens stage", "h6"
-                        )
+                if form_response:
+                    if not form_definition:
+                        form_definition = form_response.questioning.form_definition
+
+                    if form_response.updated_by:
+                        email = form_response.updated_by.email.lower()
                         pdf.add_paragraph(
                             f"""
-                            {tmp_data.address2}<br />
-                            {tmp_data.city2}<br />
+                            <br />
+                            Updated at: {form_response.updated_at}<br />
                         """
                         )
-                    pdf.add_paragraph("Kot in Gent", "h6")
-                    pdf.add_paragraph("- Ja" if tmp_data.has_kot else "- Nee")
-                    pdf.add_paragraph("Beschikbaarheid auto", "h6")
-                    pdf.add_paragraph("- Ja" if tmp_data.has_car else "- Nee")
-                    pdf.add_paragraph("Tweetalig en/of voldoende kennis Frans", "h6")
-                    pdf.add_paragraph(
-                        f"- Ja<br/>- {tmp_data.can_speak_details}" if tmp_data.can_speak_french else "- Nee"
-                    )
-                    if tmp_data.has_special_status or tmp_data.is_werkstudent or tmp_data.is_beursstudent:
-                        pdf.add_paragraph("Andere", "h6")
-                        texts = []
-                        if tmp_data.has_special_status:
-                            texts.append("- Bijzonder statuut")
-                        if tmp_data.is_werkstudent:
-                            texts.append("- Werkstudent")
-                        if tmp_data.is_beursstudent:
-                            texts.append("- Beurstudent")
-                        pdf.add_paragraph("<br />".join(texts))
-                    if tmp_data.comments:
-                        text = tmp_data.comments.replace("\n", "<br />")
-                        pdf.add_paragraph("Opmerkingen", "h6")
-                        pdf.add_paragraph(text)
-
+                    pdf.add_separator()
+                    pdf.add_spacer()
+                    pdf = form_to_pdf(form_definition, form_response.data, pdf)
                 else:
                     pdf.add_paragraph("(Geen gegevens ingevuld)")
 

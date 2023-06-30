@@ -1,11 +1,9 @@
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.signals import pre_social_login
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .base import BaseModel
 from .rel import AddressesMixin, LinksMixin, PhoneNumbersMixin
 
 
@@ -61,25 +59,3 @@ def link_to_existing_user(sender, request, sociallogin, **kwargs):
             sociallogin.connect(request, user)
     except KeyError:
         return
-
-
-class TmpData(BaseModel):
-    user = models.OneToOneField("metis.User", related_name="tmp_data", on_delete=models.CASCADE)
-    rijksregisternummer = models.CharField(max_length=160)
-    address = models.CharField(max_length=160)
-    city = models.CharField(max_length=160)
-    has_kot = models.BooleanField(default=False)
-    address2 = models.CharField(max_length=160, blank=True, null=True)
-    city2 = models.CharField(max_length=160, blank=True, null=True)
-    has_car = models.BooleanField(default=False)
-    is_interested_in_foreign = models.BooleanField(default=False)
-    can_speak_french = models.BooleanField(default=False)
-    can_speak_details = models.CharField(max_length=160, blank=True, null=True)
-    has_special_status = models.BooleanField(default=False)
-    is_werkstudent = models.BooleanField(default=False)
-    is_beursstudent = models.BooleanField(default=False)
-    mobile_phone = models.CharField(max_length=160, blank=True, null=True)
-    comments = models.TextField(blank=True, null=True)
-
-    class Meta:
-        db_table = "metis_tmp_user_data"
