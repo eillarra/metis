@@ -20,7 +20,7 @@
           >
             <a v-if="django_user && django_user.is_staff" href="/admin/">Admin</a>
             <user-menu v-if="django_user" :user="django_user" />
-            <a v-else href="/u/login/">{{ $t('user_menu.login') }} <q-icon name="login" size="xxs"></q-icon></a>
+            <a v-else href="/u/ugent/login/">{{ $t('user_menu.login') }} <q-icon name="login" size="xxs"></q-icon></a>
             <locale-menu :locale="django_locale" :csrfToken="django_csrf_token" />
           </div>
         </q-toolbar>

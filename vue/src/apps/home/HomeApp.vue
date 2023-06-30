@@ -4,7 +4,7 @@
       <ugent-btn v-if="user" :label="$t('user_menu.dashboard')" color="yellow" :href="`/${$i18n.locale}/dashboard/`" />
       <div v-else class="fit column justify-between">
         <div class="q-mb-xl">
-          <ugent-btn :label="$t('home.oauth_login')" color="yellow" href="/u/ugent/login/?process=login" />
+          <ugent-btn :label="$t('home.oauth_login')" color="yellow" href="/u/ugent/login/" />
         </div>
         <ugent-link-list title="Help" :items="links" />
       </div>
@@ -31,8 +31,9 @@ const user = computed<DjangoAuthenticatedUser>(() => page.props.django_user as D
 
 const links = [
   {
-    label: t('home.help.no_account'),
-    href: '/u/login/',
+    label: t('home.help.dict'),
+    href: `https://helpdesk.ugent.be/account/${page.props.django_locale == 'en' ? 'en/' : ''}login.php`,
+    target: '_blank',
   },
 ];
 </script>

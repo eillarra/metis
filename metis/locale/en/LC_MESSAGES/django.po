@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 11:20+0200\n"
+"POT-Creation-Date: 2023-07-11 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: metis/models/stages/cases/cases.py:22
 msgctxt "cases.Case.type"
 msgid "Regular"
@@ -47,40 +48,50 @@ msgctxt "cases.Review.status"
 msgid "Unfinished"
 msgstr ""
 
-#: metis/site/templates/account/login.html:14
-#: metis/site/templates/account/login.html:29
-#: metis/site/templates/layout.html:20
-msgid "Sign in"
+#: metis/site/templates/account/logout.html:14
+msgid "Sign out"
 msgstr ""
 
-#: metis/site/templates/account/login.html:17
-#, python-format
+#: metis/site/templates/account/logout.html:15
 msgid ""
-"Please sign in with one\n"
-"of your existing third party accounts. Or, <a href=\"%(signup_url)s\">sign "
-"up</a>\n"
-"for a %(site_name)s account and sign in below:"
+"Confirm that you want to sign out of Metis. You will need to sign in again "
+"to use Metis."
 msgstr ""
 
-#: metis/site/templates/account/login.html:25
-#, python-format
-msgid ""
-"If you have not created an account yet, then please\n"
-"<a href=\"%(signup_url)s\">sign up</a> first."
+#: metis/site/templates/account/logout.html:21
+msgid "Yes, please"
 msgstr ""
 
-#: metis/site/templates/account/login.html:38
-msgid "Forgot Password?"
+#: metis/site/templates/base.html:19 metis/site/templates/base.html:75
+#: metis/site/templates/vue/inertia.html:19
+msgid "Ghent University"
 msgstr ""
 
-#: metis/site/templates/base.html:71
+#: metis/site/templates/base.html:70
 msgid "Version"
 msgstr ""
 
-#: metis/site/templates/base.html:76
+#: metis/site/templates/base.html:75
 msgid "Faculty of Medicine and Health Sciences"
 msgstr ""
 
-#: metis/site/templates/base.html:76
-msgid "Ghent University"
+#: metis/site/templates/layout.html:26
+#: metis/site/templates/socialaccount/login.html:14
+msgid "Sign in"
+msgstr ""
+
+#: metis/site/templates/socialaccount/login.html:15
+msgid "Sign in via UGent"
+msgstr ""
+
+#: metis/site/templates/socialaccount/login.html:18
+msgid "No UGent account?"
+msgstr ""
+
+#: metis/site/templates/socialaccount/login.html:19
+msgid ""
+"Click the button and choose the \"No account? Create one!\" option in the "
+"next step. You can then create an external UGent account (formerly known as "
+"a \"welcome\" account); you can use this same account on Metis and on other "
+"UGent services."
 msgstr ""

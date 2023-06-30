@@ -10,14 +10,14 @@ export default {
     dashboard: 'My dashboard',
     history: 'History',
     login: 'Sign in',
-    logout: 'Log out',
+    logout: 'Sign out',
   },
   home: {
     presentation:
       'Digital platform for the communication, organization and evaluation of internships within the faculty of Medicine and Health Sciences',
-    oauth_login: 'Sign in with UGent account',
+    oauth_login: 'Sign in via UGent',
     help: {
-      no_account: 'No UGent account?',
+      dict: 'Sign in and out with your UGent account',
     },
   },
   dashboard: {

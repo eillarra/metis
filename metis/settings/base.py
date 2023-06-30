@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "allauth.socialaccount.providers.linkedin_oauth2",
     "metis.ugent_provider",
     # api
     "corsheaders",
@@ -142,7 +141,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = "metis.User"
 
-LOGIN_URL = "account_login"
+LOGIN_URL = "ugent_login"
 LOGIN_REDIRECT_URL = "dashboard"
 
 PASSWORD_HASHERS = [

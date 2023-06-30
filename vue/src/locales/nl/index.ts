@@ -14,9 +14,9 @@ export default {
   home: {
     presentation:
       'Digitaal platform voor de communicatie, organisatie en evaluatie van stages binnen de faculteit Geneeskunde en Gezondheidswetenschappen',
-    oauth_login: 'Aanmelden met UGent account',
+    oauth_login: 'Aanmelden via UGent',
     help: {
-      no_account: 'Geen UGent account?',
+      dict: 'Aan- en afmelden met je UGent account',
     },
   },
   dashboard: {

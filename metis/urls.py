@@ -1,9 +1,12 @@
+from allauth.account.views import logout
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import path
 from django.views.i18n import set_language
+
+from metis.ugent_provider.views import oauth2_login, oauth2_callback
 
 
 admin.autodiscover()
@@ -12,7 +15,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("metis.api.urls")),
     path("i18n/setlang/", set_language, name="set_language"),
-    path("u/", include("allauth.urls")),
+    # modified allauth urls to disable regular signup and login and only allow UGent login
+    # https://github.com/pennersr/django-allauth/blob/main/allauth/urls.py
+    path("u/logout/", logout, name="account_logout"),
+    path("u/ugent/login/", oauth2_login, name="ugent_login"),
+    path("u/ugent/login/callback/", oauth2_callback, name="ugent_callback"),
 ]
 
 urlpatterns += i18n_patterns(path("", include("metis.site.urls")))

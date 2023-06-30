@@ -1,24 +1,32 @@
-{% extends 'account/base.html' %}
+{% extends 'layout.html' %}
 
 {% load compress %}
+{% load i18n %}
+{% load static %}
 
 
-{% block head_title %}Thrid party account sign in - {{ block.super }}{% endblock %}
+{% block head_title %}UGent login - {{ block.super }}{% endblock %}
 
-{% block content %}
-  {% if process == 'connect' %}
-    <display-5>Connect with {{ provider.name }}</display-5>
-    <p>You are about to connect a new third party account from {{ provider.name }}.</p>
-  {% else %}
-    <display-5>Sign in via {{ provider.name }}</display-5>
-    <p>You are about to sign in using a third party account from {{ provider.name }}.</p>
-  {% endif %}
-
-  <django-form action="" btn-text="Continue" class="q-mb-lg"></django-form>
+{% block page %}
+  <div class="row q-my-lg q-col-gutter-x-xl" :class="{'q-mt-xl': $q.screen.gt.sm}">
+    <div class="col-12 col-md-2 q-pr-xl"></div>
+    <div class="col-12 col-md-3 q-pr-xl">
+      <h5 class="q-mt-none q-mb-md">{% trans 'Sign in' %}</h5>
+      <django-form action="" btn-text="{% trans 'Sign in via UGent' %}" class="q-mb-lg"></django-form>
+    </div>
+    <div class="col-12 col-md-3 q-pb-xl">
+      <h5 class="q-mt-none q-mb-md">{% trans 'No UGent account?' %}</h5>
+      <p>{% trans 'Click the button and choose the "No account? Create one!" option in the next step. You can then create an external UGent account (formerly known as a "welcome" account); you can use this same account on Metis and on other UGent services.' %}</p>
+    </div>
+    <div class="col-12 col-md">
+      <img src="{% static 'images/no_account.png' %}" class="full-width">
+    </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
+  <script src="{% static 'js/components/django.js' %}"></script>
   <script type="text/javascript">
     var app = Vue.createApp({});
     Metis.utils.registerComponents(app, [DjangoComponents, MetisCommonComponents]);

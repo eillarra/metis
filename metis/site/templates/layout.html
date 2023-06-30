@@ -23,7 +23,7 @@
           {% if user.is_staff %}<a href="/admin/">Admin</a>{% endif %}
           <metis-user-menu display-name="{{ user.name }}" locale="{{ LANGUAGE_CODE }}"></metis-user-menu>
         {% else %}
-          <a href="{% url 'account_login' %}">{% translate 'Sign in' %} <q-icon name="login" size="xxs"></q-icon></a>
+          <a href="{% url 'ugent_login' %}">{% translate 'Sign in' %} <q-icon name="login" size="xxs"></q-icon></a>
         {% endif %}
         <metis-locale-menu action-url="{% url 'set_language' %}" locale="{{ LANGUAGE_CODE }}"></metis-locale-menu>
       </div>

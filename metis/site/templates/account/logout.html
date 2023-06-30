@@ -1,17 +1,25 @@
-{% extends 'account/base.html' %}
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
 
 
-{% block head_title %}Sign out - {{ block.super }}{% endblock %}
+{% block head_title %}UGent login - {{ block.super }}{% endblock %}
 
-{% block content %}
-  <display-5>Sign out</display-5>
-  <p>Are you sure you want to sign out of metis.ugent.be?</p>
-
-  <form method="post" action="{% url 'account_logout' %}">
-    {% csrf_token %}
-    {% if redirect_field_value %}
-      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
-    {% endif %}
-    <q-btn unelevated color="primary" type="submit" class="q-mt-sm">Yes, please</q-btn>
-  </form>
+{% block page %}
+  <div class="row q-my-lg q-col-gutter-x-xl" :class="{'q-mt-xl': $q.screen.gt.sm}">
+    <div class="col-12 col-md-2 q-pr-xl"></div>
+    <div class="col-12 col-md-3 q-pr-xl">
+      <h5 class="q-mt-none q-mb-md">{% trans 'Sign out' %}</h5>
+      <p>{% trans 'Confirm that you want to sign out of Metis. You will need to sign in again to use Metis.' %}</p>
+      <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+        {% endif %}
+        <q-btn unelevated color="primary" type="submit" class="q-mt-sm">{% trans 'Yes, please' %}</q-btn>
+      </form>
+    </div>
+  </div>
 {% endblock %}
