@@ -9,7 +9,7 @@
           </q-item-section>
           <q-item-section>{{ $t('task', 9) }}</q-item-section>
         </q-item>
-        <q-item-label header>{{ $t('user_menu.history') }}</q-item-label>
+        <q-item-label header>{{ $t('history') }}</q-item-label>
         <!--<q-item clickable :to="{ name: 'internships' }" active-class="bg-ugent text-white">-->
         <q-item disabled>
           <q-item-section avatar>

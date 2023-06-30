@@ -29,7 +29,10 @@ export const useStore = defineStore('placeOffice', () => {
     userId.value = djangoUserId;
     education.value = djangoEducation;
     place.value = djangoPlace;
-    projectPlaces.value = djangoProjectPlaces;
+    projectPlaces.value = djangoProjectPlaces.map((projectPlace) => ({
+      ...projectPlace,
+      Place: djangoPlace,
+    }));
     projects.value = djangoProjects.map((project) => {
       const periods = project.periods;
       const important_dates = project.important_dates.map((date) => {
@@ -59,8 +62,26 @@ export const useStore = defineStore('placeOffice', () => {
     return projectPlaces.value.find((pp: ProjectPlaceTiny) => pp.project === selectedProjectId.value);
   });
 
-  const hasActiveDates = computed<boolean>(() => {
-    return project.value?.important_dates.some((date) => date.is_active) ?? false;
+  const projectPlacePeriodIds = computed<number[]>(() => {
+    return (
+      projectPlace.value?.availability_set
+        .filter((availability) => availability.min > 0)
+        .map((availability) => {
+          return availability.period;
+        }) || []
+    );
+  });
+
+  const activeDates = computed<ImportantDate[]>(() => {
+    const validTypes: string[] = ['project_place_availability', 'project_place_information'];
+    return (
+      project.value?.important_dates.filter(
+        (date) =>
+          date.is_active &&
+          validTypes.includes(date.type) &&
+          (!date.period || projectPlacePeriodIds.value.includes(date.period))
+      ) ?? []
+    );
   });
 
   return {
@@ -72,6 +93,6 @@ export const useStore = defineStore('placeOffice', () => {
     admins,
     availableProjects,
     userIsAdmin,
-    hasActiveDates,
+    activeDates,
   };
 });

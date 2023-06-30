@@ -40,8 +40,11 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
     vue_entry_point = "apps/studentArea/main.ts"
 
     def get_props(self, request, *args, **kwargs):
+        projects = self.get_education().projects.filter(students__user=request.user)
+
         base = {
             "education": EducationTinySerializer(self.get_education()).data,
+            "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
             "student_set": AuthStudentSerializer(
                 self.get_student_set(request.user), many=True, context={"request": request}
             ).data,
@@ -53,13 +56,40 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
         from metis.api.serializers import AuthUserSerializer, ProjectTinySerializer, TextEntrySerializer
         from metis.models import Project
 
+        try:
+            previous_project = Project.objects.get(education=self.get_education(), name="AJ22-23")
+            ba3_place_id = (
+                self.get_student_set(request.user)
+                .get(project=previous_project)
+                .internships.first()
+                .project_place.place_id
+            )
+        except Exception:
+            ba3_place_id = None
+
+        period_id = 10 if self.get_education().code == "audio" else 20
         project = Project.objects.get(education=self.get_education(), name="AJ23-24")
+
         temp_props = {
             "academic_year": project.academic_year,
             "project": ProjectTinySerializer(project).data,
-            "user": AuthUserSerializer(request.user).data,
-            "student": AuthStudentSerializer(self.get_student_set(request.user).get(project=project)).data,
+            "user": AuthUserSerializer(request.user, context={"request": request}).data,
+            "student": AuthStudentSerializer(
+                self.get_student_set(request.user).get(project=project), context={"request": request}
+            ).data,
             "required_texts": TextEntrySerializer(project.required_texts, many=True, context={"request": request}).data,
+            "project_place_otions": [
+                {
+                    "place_id": project_place.place_id,
+                    "value": project_place.id,
+                    "label": project_place.place.name,
+                    "disciplines": " ".join(project_place.disciplines.values_list("name", flat=True)) or "",
+                }
+                for project_place in project.place_set.filter(
+                    availability_set__period_id=period_id, availability_set__min__gt=0
+                ).order_by("place__name")
+            ],
+            "ba3_place_id": ba3_place_id,
         }
         # --------------
         # --------------

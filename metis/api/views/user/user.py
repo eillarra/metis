@@ -31,16 +31,16 @@ class AuthUserTmpOasisViewSet(ViewSet):
         return self.get_queryset().first()
 
     def create(self, request, *args, **kwargs):
-        serializer = AuthUserTmpDataSerializer(data=request.data)
+        serializer = AuthUserTmpDataSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user, created_by=request.user)
-        return Response(AuthUserSerializer(request.user).data)
+        return Response(AuthUserSerializer(request.user, context={"request": request}).data)
 
     def put(self, request, *args, **kwargs):
-        serializer = AuthUserTmpDataSerializer(self.get_object(), data=request.data)
+        serializer = AuthUserTmpDataSerializer(self.get_object(), data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user, updated_by=request.user)
-        return Response(AuthUserSerializer(request.user).data)
+        return Response(AuthUserSerializer(request.user, context={"request": request}).data)
 
     def patch(self, request, *args, **kwargs):
         kwargs["partial"] = True

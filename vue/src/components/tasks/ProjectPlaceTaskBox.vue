@@ -22,12 +22,13 @@
         </template>
       </q-banner>
     </div>
-    <q-dialog v-model="dialogForm">
+    <q-dialog v-if="selectedForm && formDataResponses" v-model="dialogForm">
       <custom-form
-        v-if="selectedForm && formDataResponses"
+        v-if="selectedForm.code == 'project_place_information'"
         v-model="formDataResponses"
         :api-endpoint="projectPlace.rel_form_responses"
         :form="selectedForm"
+        :addresses-api-endpoint="props.projectPlace.Place?.rel_addresses || undefined"
       />
       <project-place-availability-form v-else :project="project" />
     </q-dialog>
@@ -35,25 +36,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { api } from '@/axios';
 import { formatDate } from '@/utils';
 
-import CustomForm from '@/components/forms/CustomForm.vue';
-import ProjectPlaceAvailabilityForm from './ProjectPlaceAvailabilityForm.vue';
+import TaskBox from './TaskBox.vue';
+import ProjectPlaceAvailabilityForm from '@/components/custom_forms/ProjectPlaceAvailabilityForm.vue';
+import CustomForm from '@/components/custom_forms/CustomForm.vue';
 
 const props = defineProps<{
   education: EducationTiny;
   project: Project;
   projectPlace: ProjectPlaceTiny;
+  activeDates: ImportantDate[];
 }>();
 
 const dataLoaded = ref<boolean>(false);
 const dialogForm = ref<boolean>(false);
-const activeDates = computed<ImportantDate[]>(() => {
-  return props.project.important_dates.filter((date) => date.is_active);
-});
 
 const selectedForm = ref<CustomForm>();
 const formDataResponses = ref<CustomFormResponse[]>();

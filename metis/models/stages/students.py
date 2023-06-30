@@ -30,7 +30,7 @@ class Student(CustomFormResponsesMixin, RemarksMixin, BaseModel):
         return f"{self.user} ({self.project})"
 
     def can_be_managed_by(self, user):
-        return self.project.can_be_managed_by(user)
+        return self.project.can_be_managed_by(user) or self.user == user
 
     def has_signed_required_texts(self) -> bool:
         return self.signatures.filter(text_entry__in=self.project.required_texts).count() == len(

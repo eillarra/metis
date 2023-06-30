@@ -59,6 +59,13 @@ interface ProjectPlaceAvailability extends ApiObject {
   Period?: Period;
 }
 
+interface ProjectPlaceOption {
+  value: number;
+  label: string;
+  place_id: number;
+  disciplines: string;
+}
+
 interface Contact extends ApiObject {
   self: ApiEndpoint;
   rel_remarks: ApiEndpoint;

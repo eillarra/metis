@@ -1,12 +1,18 @@
 <template>
-  <dialog-form icon="fact_check" :title="title || 'Form'">
+  <dialog-form icon="fact_check" :title="formTitle">
     <template #page>
+      <div v-if="addressesApiEndpoint" class="q-px-lg q-mt-md q-mb-xl">
+        <h5 class="text-h6 text-grey-8 text-weight-regular q-mt-none q-mb-md">
+          {{ $t('address', 9) }}
+        </h5>
+        <address-cards :api-endpoint="addressesApiEndpoint" />
+      </div>
       <div v-for="(fieldset, idx) in translatedFormDefinition.fieldsets" :key="idx" class="q-px-lg q-mt-md q-mb-xl">
-        <h5 v-if="fieldset.legend" class="text-h6 text-grey-8 text-weight-regular q-mt-none q-mb-lg">
+        <h5 v-if="fieldset.legend" class="text-h6 text-grey-8 text-weight-regular q-mt-none q-mb-md">
           {{ getTextValue(fieldset.legend) }}
         </h5>
         <div class="q-gutter-y-sm">
-          <div v-for="field in fieldset.fields" :key="field.code">
+          <div v-for="field in fieldset.fields" :key="field.code || field.component">
             <q-input
               v-if="isInputField(field)"
               v-model="mutable[field.code]"
@@ -97,6 +103,7 @@
             :disable="!formIsValid"
             class="float-right"
           />
+          TOOD: kotadress in same place
         </div>
       </div>
     </template>
@@ -111,7 +118,8 @@ import { cloneDeep } from 'lodash-es';
 import { api } from '@/axios';
 import { notify } from '@/notify';
 
-import DialogForm from './DialogForm.vue';
+import DialogForm from '../forms/DialogForm.vue';
+import AddressCards from '../rel/AddressCards.vue';
 
 const { t, locale } = useI18n();
 
@@ -121,12 +129,19 @@ const props = defineProps<{
   apiEndpoint: ApiEndpoint;
   form: CustomForm;
   modelValue: CustomFormResponse[];
-  title?: string;
+  addressesApiEndpoint?: ApiEndpoint;
 }>();
 
 const responses = ref<CustomFormResponse[]>(props.modelValue);
 const definition = ref<CustomFormDefinition>(props.form.definition);
 const mutable = ref<CustomFormData>(props.modelValue.find((response) => response.form === props.form.id)?.data || {});
+
+const formTitle = computed<string>(() => {
+  if (definition.value.title) {
+    return locale.value === 'en' ? definition.value.title.en : definition.value.title.nl;
+  }
+  return 'Form';
+});
 
 const existingResponse = computed<CustomFormResponse | undefined>(() => {
   return responses.value.find((response) => response.form === props.form.id);

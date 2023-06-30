@@ -13,6 +13,9 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
     def __str__(self) -> str:
         return f"{self.username} ({self.name})"
 
+    def can_be_managed_by(self, user: "User") -> bool:
+        return user.is_superuser or user == self
+
     @property
     def name(self) -> str:
         return f"{self.first_name} {self.last_name}"

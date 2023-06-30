@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from metis.models import User, Student
 from ..base import BaseModelSerializer, NestedHyperlinkField
+from ..rel.addresses import AddressesMixin
 from ..rel.forms import CustomFormResponsesMixin
 from ..rel.remarks import RemarksMixin
 
@@ -23,9 +24,9 @@ class StudentSerializer(CustomFormResponsesMixin, RemarksMixin, BaseModelSeriali
         exclude = ("created_at", "created_by")
 
 
-class StudentUserSerializer(serializers.ModelSerializer):
+class StudentUserSerializer(AddressesMixin, serializers.ModelSerializer):
     student_set = StudentSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ("id", "username", "name", "email", "last_login", "is_active", "student_set")
+        fields = ("id", "rel_addresses", "username", "name", "email", "last_login", "is_active", "student_set")

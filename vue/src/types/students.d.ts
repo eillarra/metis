@@ -1,5 +1,6 @@
 interface Student extends ApiObject {
   self: ApiEndpoint;
+  rel_form_responses: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   project: number;
   user: number;
@@ -15,5 +16,6 @@ interface Student extends ApiObject {
 }
 
 interface StudentUser extends User {
+  rel_addresses: ApiEndpoint;
   student_set: Student[];
 }

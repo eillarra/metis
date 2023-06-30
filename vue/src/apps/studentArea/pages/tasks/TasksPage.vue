@@ -3,7 +3,18 @@
     <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('task', 9) }}</h3>
     <div class="col"></div>
   </div>
-  <div v-show="signatures !== undefined" class="q-mb-xl">
+  <student-task-box
+    v-if="activeDates.length && allSigned"
+    :education="(education as EducationTiny)"
+    :project="(project as Project)"
+    :student="(student as Student)"
+    :active-dates="activeDates"
+    :addresses-api-endpoint="addressesApiEndpoint"
+    :project-place-options="projectPlaceOptions"
+    :skip-place-id="ba3PlaceId"
+    class="q-mb-lg"
+  />
+  <div v-if="signatures !== undefined" class="q-mb-xl">
     Je wenst in het academiejaar {{ academicYear }} je {{ student.block.name }}-stage <strong>wel</strong> op te nemen:
     <ol>
       <li v-for="text in textsToSign" :key="text.id">
@@ -16,7 +27,6 @@
         <a href :class="{ disabled: !allSigned }" @click.prevent="formDialogVisible = allSigned">hier</a>
       </li>
     </ol>
-    Je hebt hiertoe tijd tot zondag 4 juni 2023 23:59.
     <q-separator class="q-my-lg" />
     Je wenst in het academiejaar {{ academicYear }} je {{ student.block.name }}-stage <strong>niet</strong> op te
     nemen.<br />Breng de stagecel hiervan op de hoogte door te mailen naar
@@ -167,17 +177,20 @@ import { notify } from '@/notify';
 
 import { useStore } from '../../store.js';
 
+import StudentTaskBox from '@/components/tasks/StudentTaskBox.vue';
 import MarkdownToastViewer from '@/components/forms/MarkdownToastViewer.vue';
 
 const { t, locale } = useI18n();
 const page = usePage();
 const store = useStore();
 
-const { education, signatures } = storeToRefs(store);
+const { education, project, activeDates, signatures, projectPlaceOptions } = storeToRefs(store);
 
 const academicYear = computed<string>(() => page.props.academic_year as string);
 const student = computed<Student>(() => page.props.student as Student);
 const requiredTexts = computed<TextEntry[]>(() => page.props.required_texts as TextEntry[]);
+const addressesApiEndpoint = computed<string>(() => (page.props.user as AuthenticatedUser)?.rel_addresses);
+const ba3PlaceId = computed<number | null>(() => page.props.ba3_place_id as number | null);
 
 const finalText = ref<string>('');
 

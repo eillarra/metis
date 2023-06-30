@@ -2,7 +2,7 @@
   <div>
     <div class="row ugent__submenu q-mb-lg">
       <div class="menu-item">
-        <span>{{ $t('internship', 9) }} {{ djangoEducation.short_name }}</span>
+        <span>{{ $t('internship', 9) }} {{ education.short_name }}</span>
       </div>
     </div>
     <router-view />
@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
 import { useStore } from './store';
@@ -18,9 +18,13 @@ import { useStore } from './store';
 const page = usePage();
 const store = useStore();
 
-const djangoEducation = computed<EducationTiny>(() => page.props.education as EducationTiny);
-const djangoStudents = computed<Student[]>(() => page.props.student_set as Student[]);
+const education = ref<EducationTiny>(page.props.education as EducationTiny);
 
-store.setData(djangoEducation.value, djangoStudents.value);
+store.setData(
+  page.props.education as EducationTiny,
+  page.props.projects as Project[],
+  page.props.students as Student[],
+  page.props.project_place_otions as ProjectPlaceOption[]
+);
 store.init();
 </script>

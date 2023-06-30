@@ -1,11 +1,12 @@
 <template>
   <div class="q-mb-xl">
     <h3 class="text-ugent col-12 col-md-3 q-mb-lg">{{ $t('task', 9) }}</h3>
-    <task-box
-      v-if="userIsAdmin && hasActiveDates"
+    <project-place-task-box
+      v-if="userIsAdmin && activeDates.length"
       :education="(education as EducationTiny)"
-      :project="(project as Project)"
+      :project="(project as ProjectTiny)"
       :project-place="(projectPlace as ProjectPlaceTiny)"
+      :active-dates="(activeDates as ImportantDate[])"
       class="q-mb-lg"
     />
     <div v-if="!admins.length">
@@ -64,9 +65,9 @@ import { notify } from '@/notify';
 
 import { useStore } from '../../store.js';
 
-import TaskBox from '@/components/TaskBox.vue';
+import ProjectPlaceTaskBox from '@/components/tasks/ProjectPlaceTaskBox.vue';
 
-const { education, place, admins, userIsAdmin, hasActiveDates, project, projectPlace } = storeToRefs(useStore());
+const { education, place, admins, userIsAdmin, activeDates, project, projectPlace } = storeToRefs(useStore());
 
 const emailSent = ref<boolean>(false);
 

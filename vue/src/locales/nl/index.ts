@@ -204,6 +204,16 @@ export default {
         btn_label: 'Infofiche bijwerken',
       },
     },
+    student: {
+      student_information: {
+        text: 'Please check the student info sheet and update if necessary',
+        btn_label: 'Update info sheet',
+      },
+      student_tops: {
+        text: 'Please fill out the TOPS form for {student_name}.',
+        btn_label: 'Update TOPS form',
+      },
+    },
   },
   copied_to_clipboard: 'Gekopieerd naar het klembord',
 };

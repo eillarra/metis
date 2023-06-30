@@ -12,3 +12,7 @@ interface User extends UserLastLogin {
   is_active: boolean;
   date_joined: string;
 }
+
+interface AuthenticatedUser extends User {
+  rel_addresses: ApiEndpoint;
+}
