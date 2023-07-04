@@ -1,2 +1,2 @@
-web: gunicorn -b :5000 --workers=5 --worker-class=gevent metis.wsgi
+web: gunicorn -c gunicorn.config.py metis.wsgi
 worker: python manage.py run_huey
