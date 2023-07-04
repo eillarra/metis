@@ -1,10 +1,10 @@
 from django.utils.timezone import now
 
-from .form_to_pdf import form_to_pdf
+from .form_to_pdf import form_to_pdf, _add_textarea_response
 from .pdfwrap import PdfWrap
 from .pdfwrap.django import PdfResponse
 
-from metis.models import ProjectPlace
+from metis.models import Period, ProjectPlace
 
 
 class PdfReport:
@@ -67,6 +67,97 @@ class ProjectPlaceInformationPdf(PdfReport):
                     pdf.add_separator()
                     pdf.add_spacer()
                     pdf.add_paragraph("(Geen extra informatie beschikbaar)")
+
+                pdf.add_page_break()
+
+            data = pdf.get_data()
+
+        return data
+
+
+class StudentInformationPdf(PdfReport):
+    def __init__(self, period_id: int):
+        self.period = Period.objects.get(id=period_id)
+        self.places_dict = {
+            project_place.id: project_place.place.name for project_place in self.period.project_places
+        }
+
+    def get_pdf(self) -> bytes:
+        with PdfWrap() as pdf:
+            pdf.add_footer(f"{now()}")
+
+            for student in self.period.students.order_by("user__first_name", "user__last_name"):
+                tops = student.form_responses.filter(
+                    form__code="student_tops",
+                ).first()
+
+                email = student.user.email.lower()
+                pdf.add_paragraph(student.user.name, "h2")
+                pdf.add_paragraph(
+                    f"""
+                    <br />
+                    &lt;<a href="mailto:{email}">{email}</a>&gt;<br />
+                """
+                )
+                pdf.add_separator()
+                pdf.add_spacer()
+
+                pdf.add_paragraph("Tops", "h6")
+
+                if tops:
+                    places_list = "<br />".join([f"{idx + 1}. {self.places_dict[place_id]}" for idx, place_id in enumerate(tops.data["tops"])])
+                    pdf.add_paragraph(places_list)
+                else:
+                    pdf.add_paragraph("(Geen tops ingevuld)")
+
+                # tmp form
+
+                tmp_data = student.user.tmp_data
+
+                pdf.add_separator()
+                pdf.add_spacer()
+
+                if tmp_data:
+                    pdf.add_paragraph("Rijksregisternummer", "h6")
+                    pdf.add_paragraph(tmp_data.rijksregisternummer)
+                    pdf.add_paragraph("Telefoonnummer", "h6")
+                    pdf.add_paragraph(tmp_data.mobile_phone)
+                    pdf.add_paragraph("Domicilieadres", "h6")
+                    pdf.add_paragraph(
+                        f"""
+                        {tmp_data.address}<br />
+                        {tmp_data.city}<br />
+                    """)
+                    if tmp_data.address2:
+                        pdf.add_paragraph("Logeeradres elders in Belgie dat kan fungeren als uitvalsbasis tijdens stage", "h6")
+                        pdf.add_paragraph(
+                            f"""
+                            {tmp_data.address2}<br />
+                            {tmp_data.city2}<br />
+                        """)
+                    pdf.add_paragraph("Kot in Gent", "h6")
+                    pdf.add_paragraph("- Ja" if tmp_data.has_kot else "- Nee")
+                    pdf.add_paragraph("Beschikbaarheid auto", "h6")
+                    pdf.add_paragraph("- Ja" if tmp_data.has_car else "- Nee")
+                    pdf.add_paragraph("Tweetalig en/of voldoende kennis Frans", "h6")
+                    pdf.add_paragraph(f"- Ja<br/>- {tmp_data.can_speak_details}" if tmp_data.can_speak_french else "- Nee")
+                    if tmp_data.has_special_status or tmp_data.is_werkstudent or tmp_data.is_beursstudent:
+                        pdf.add_paragraph("Andere", "h6")
+                        texts = []
+                        if tmp_data.has_special_status:
+                            texts.append("- Bijzonder statuut")
+                        if tmp_data.is_werkstudent:
+                            texts.append("- Werkstudent")
+                        if tmp_data.is_beursstudent:
+                            texts.append("- Beurstudent")
+                        pdf.add_paragraph("<br />".join(texts))
+                    if tmp_data.comments:
+                        text = tmp_data.comments.replace("\n", "<br />")
+                        pdf.add_paragraph("Opmerkingen", "h6")
+                        pdf.add_paragraph(text)
+
+                else:
+                    pdf.add_paragraph("(Geen gegevens ingevuld)")
 
                 pdf.add_page_break()
 

@@ -8,7 +8,7 @@ from django.views import View
 from metis.api.serializers import EducationSerializer, EducationTinySerializer, ProgramSerializer, ProjectSerializer
 from metis.models import Education
 from metis.services.reporter.excel import StudentTopsExcel
-from metis.services.reporter.pdf import ProjectPlaceInformationPdf
+from metis.services.reporter.pdf import ProjectPlaceInformationPdf, StudentInformationPdf
 from .inertia import InertiaView
 from .reports.periods import PeriodReportMixin
 
@@ -53,6 +53,6 @@ class EducationOfficeView(EducationOfficeFirewallMixin, InertiaView):
 
 class EducationOfficePeriodReportView(EducationOfficeFirewallMixin, PeriodReportMixin, View):
     available_reports = {
-        "pdf": {"project_place_information": ProjectPlaceInformationPdf},
+        "pdf": {"project_place_information": ProjectPlaceInformationPdf, "student_information": StudentInformationPdf},
         "xlxs": {"student_tops": StudentTopsExcel},
     }
