@@ -86,7 +86,7 @@ WSGI_APPLICATION = "metis.wsgi.application"
 db = urlparse(os.environ.get("DATABASE_URL"))
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "mysql.connector.django",
         "NAME": db.path[1:],
         "USER": db.username,
         "PASSWORD": db.password,
