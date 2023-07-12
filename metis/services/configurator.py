@@ -12,7 +12,7 @@ class TextEntryType(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        anystr_strip_whitespace = True
+        str_strip_whitespace = True
 
 
 class ProjectTextEntryType(TextEntryType):
@@ -41,7 +41,7 @@ class EducationConfig(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        validate_all = True
+        validate_default = True
 
     @validator("project_text_types")
     def validate_project_text_types(cls, v):

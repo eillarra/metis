@@ -13,7 +13,7 @@ class FieldOption(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        validate_all = True
+        validate_default = True
 
 
 class FormField(BaseModel):
@@ -24,7 +24,7 @@ class FormField(BaseModel):
     collapsed: bool = False
 
     class Config:
-        validate_all = True
+        validate_default = True
 
 
 class InputField(FormField):
@@ -62,7 +62,7 @@ class Fieldset(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        validate_all = True
+        validate_default = True
 
 
 class CustomForm(BaseModel):
@@ -72,7 +72,7 @@ class CustomForm(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        validate_all = True
+        validate_default = True
 
     @validator("fieldsets")
     def validate_fieldsets(cls, v):
