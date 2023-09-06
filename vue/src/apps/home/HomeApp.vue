@@ -3,9 +3,10 @@
     <template #default>
       <ugent-btn v-if="user" :label="$t('user_menu.dashboard')" color="yellow" :href="`/${$i18n.locale}/dashboard/`" />
       <div v-else class="fit column justify-between">
-        <div class="q-mb-xl">
-          <ugent-btn :label="$t('home.oauth_login')" color="yellow" href="/u/ugent/login/" />
-        </div>
+        <form method="post" action="/u/ugent/login/" class="q-mb-xl">
+          <input type="hidden" name="csrfmiddlewaretoken" :value="csrfToken">
+          <ugent-btn :label="$t('home.oauth_login')" color="yellow" type="submit" />
+        </form>
         <ugent-link-list title="Help" :items="links" />
       </div>
     </template>
@@ -28,6 +29,7 @@ const { t } = useI18n();
 const page = usePage();
 
 const user = computed<DjangoAuthenticatedUser>(() => page.props.django_user as DjangoAuthenticatedUser);
+const csrfToken = computed<string>(() => page.props.django_csrf_token as string);
 
 const links = [
   {

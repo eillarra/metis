@@ -8,18 +8,22 @@
 {% block head_title %}UGent login - {{ block.super }}{% endblock %}
 
 {% block page %}
-  <div class="row q-my-lg q-col-gutter-x-xl" :class="{'q-mt-xl': $q.screen.gt.sm}">
-    <div class="col-12 col-md-2 q-pr-xl"></div>
-    <div class="col-12 col-md-3 q-pr-xl">
-      <h5 class="q-mt-none q-mb-md">{% trans 'Sign in' %}</h5>
-      <django-form action="" btn-text="{% trans 'Sign in via UGent' %}" class="q-mb-lg"></django-form>
-    </div>
-    <div class="col-12 col-md-3 q-pb-xl">
-      <h5 class="q-mt-none q-mb-md">{% trans 'No UGent account?' %}</h5>
-      <p>{% trans 'Click the button and choose the "No account? Create one!" option in the next step. You can then create an external UGent account (formerly known as a "welcome" account); you can use this same account on Metis and on other UGent services.' %}</p>
-    </div>
-    <div class="col-12 col-md">
-      <img src="{% static 'images/no_account.png' %}" class="full-width">
+  <div class="row q-my-lg" :class="{'q-mt-xl': $q.screen.gt.sm}">
+    <div class="col-3 col-md-2"></div>
+    <div class="col-9 col-md-10">
+      <div class="row q-col-gutter-x-xl">
+        <div class="col-12 col-md-3 q-pr-xl">
+          <h5 class="q-mt-none q-mb-md">{% trans 'Sign in' %}</h5>
+          <django-form action="" btn-text="{% trans 'Sign in via UGent' %}" class="q-mb-lg"></django-form>
+        </div>
+        <div class="col-12 col-md-4 q-pb-xl">
+          <h5 class="q-mt-none q-mb-md">{% trans 'No UGent account?' %}</h5>
+          <p>{% trans 'Click the button and choose the "No account? Create one!" option in the next step. You can then create an external UGent account (formerly known as a "welcome" account); you can use this same account on Metis and on other UGent services.' %}</p>
+        </div>
+        <div class="col-12 col-md">
+          <img src="{% static 'images/no_account.png' %}" class="full-width">
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}
