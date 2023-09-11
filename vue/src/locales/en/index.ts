@@ -17,7 +17,8 @@ export default {
       'Digital platform for the communication, organization and evaluation of internships within the faculty of Medicine and Health Sciences',
     oauth_login: 'Sign in via UGent',
     help: {
-      dict: 'Sign in and out with your UGent account',
+      dict_login: 'Sign in and out with your UGent account',
+      dict_externe: 'External accounts at UGent',
     },
   },
   dashboard: {

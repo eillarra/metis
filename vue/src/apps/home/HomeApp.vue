@@ -33,9 +33,14 @@ const csrfToken = computed<string>(() => page.props.django_csrf_token as string)
 
 const links = [
   {
-    label: t('home.help.dict'),
+    label: t('home.help.dict_login'),
     href: `https://helpdesk.ugent.be/account/${page.props.django_locale == 'en' ? 'en/' : ''}login.php`,
     target: '_blank',
   },
+  {
+    label: t('home.help.dict_externe'),
+    href: `https://helpdesk.ugent.be/account/${page.props.django_locale == 'en' ? 'en/' : ''}externe.php`,
+    target: '_blank',
+  }
 ];
 </script>
