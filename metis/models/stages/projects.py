@@ -23,7 +23,7 @@ class ProjectManager(models.Manager):
                 super()
                 .get_queryset()
                 .filter(is_active=True)
-                .prefetch_related("updated_by", "periods__updated_by", "important_dates__updated_by")
+                .prefetch_related("updated_by", "periods__updated_by", "questionings__updated_by")
             )
         return super().get_queryset().filter(is_active=True)
 

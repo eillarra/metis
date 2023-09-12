@@ -127,14 +127,16 @@ const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps<{
   apiEndpoint: ApiEndpoint;
-  form: CustomForm;
+  questioning: Questioning;
   modelValue: CustomFormResponse[];
   addressesApiEndpoint?: ApiEndpoint;
 }>();
 
 const responses = ref<CustomFormResponse[]>(props.modelValue);
-const definition = ref<CustomFormDefinition>(props.form.definition);
-const mutable = ref<CustomFormData>(props.modelValue.find((response) => response.form === props.form.id)?.data || {});
+const definition = ref<CustomFormDefinition>(props.questioning.form_definition);
+const mutable = ref<CustomFormData>(
+  props.modelValue.find((response) => response.questioning === props.questioning.id)?.data || {}
+);
 
 const formTitle = computed<string>(() => {
   if (definition.value.title) {
@@ -144,11 +146,11 @@ const formTitle = computed<string>(() => {
 });
 
 const existingResponse = computed<CustomFormResponse | undefined>(() => {
-  return responses.value.find((response) => response.form === props.form.id);
+  return responses.value.find((response) => response.questioning === props.questioning.id);
 });
 
 const pendingFields = computed<string[]>(() => {
-  return props.form.definition.fieldsets.reduce((acc, fieldset) => {
+  return props.questioning.form_definition.fieldsets.reduce((acc, fieldset) => {
     return acc.concat(
       fieldset.fields.reduce((acc, field) => {
         if (field.required) {
@@ -168,7 +170,7 @@ const pendingFields = computed<string[]>(() => {
   }, [] as string[]);
 });
 
-props.form.definition.fieldsets.forEach((fieldset) => {
+props.questioning.form_definition.fieldsets.forEach((fieldset) => {
   fieldset.fields.forEach((field) => {
     if (!mutable.value[field.code]) {
       if (field.type === 'option_grid') {
@@ -176,7 +178,7 @@ props.form.definition.fieldsets.forEach((fieldset) => {
       } else if ((field.type === 'select' || field.type === 'option_group') && field.multiple) {
         mutable.value[field.code] = [];
         if (field.other_option) {
-          mutable.value[`${field.code}__other`] = '';
+          mutable.value[`${field.code}__${field.other_option}`] = '';
         }
       } else {
         mutable.value[field.code] = '';
@@ -186,7 +188,7 @@ props.form.definition.fieldsets.forEach((fieldset) => {
 });
 
 const formIsValid = computed<boolean>(() => {
-  return props.form.definition.fieldsets.every((fieldset) => {
+  return props.questioning.form_definition.fieldsets.every((fieldset) => {
     return fieldset.fields.every((field) => {
       if (field.required) {
         if (
@@ -240,14 +242,16 @@ const translatedFormDefinition = computed<CustomFormDefinition>(() => {
 
 function save(): void {
   if (existingResponse.value) {
-    api.put(existingResponse.value.self, { data: mutable.value, form: existingResponse.value.form }).then((res) => {
-      const idx = responses.value.findIndex((r) => r.id === res.data.id);
-      responses.value[idx] = res.data;
-      notify.success(t('form.updated'));
-      emit('update:modelValue', responses.value);
-    });
+    api
+      .put(existingResponse.value.self, { data: mutable.value, questioning: existingResponse.value.questioning })
+      .then((res) => {
+        const idx = responses.value.findIndex((r) => r.id === res.data.id);
+        responses.value[idx] = res.data;
+        notify.success(t('form.updated'));
+        emit('update:modelValue', responses.value);
+      });
   } else {
-    api.post(props.apiEndpoint, { data: mutable.value, form: props.form.id }).then((res) => {
+    api.post(props.apiEndpoint, { data: mutable.value, questioning: props.questioning.id }).then((res) => {
       responses.value.push(res.data);
       notify.success(t('form.saved'));
       emit('update:modelValue', responses.value);

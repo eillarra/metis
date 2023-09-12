@@ -3,7 +3,7 @@ from rest_framework import serializers
 from metis.models.stages.projects import Project, Period
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel import TextEntriesMixin
-from .dates import ImportantDateSerializer
+from .questionings import QuestioningSerializer
 
 
 education_lookup_fields = {
@@ -39,7 +39,7 @@ class ProjectSerializer(TextEntriesMixin, BaseModelSerializer):
     periods = PeriodSerializer(many=True, read_only=True)
     start_date = serializers.DateField(read_only=True)
     end_date = serializers.DateField(read_only=True)
-    important_dates = ImportantDateSerializer(many=True, read_only=True)
+    questionings = QuestioningSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project

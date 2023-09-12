@@ -23,13 +23,13 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] ELOA
 - [x] Evaluation: `CustomFormResponse`
 - [x] EvaluationDetail: `CustomFormResponse`
-- [x] EvaluationForm: `CustomForm`
-- [x] EvaluationFormDetail: `CustomForm.definition`
-- [x] EvaluationFormDetailOption: `CustomForm.definition`
-- [x] EvaluationFormType: `ImportantDate.form`
-- [x] EvaluationMoment: `ImportantDate.form`
-- [x] EvaluationScale: `CustomForm.definition`
-- [x] EvaluationScaleDetail: `CustomForm.definition`
+- [x] EvaluationForm: `Questioning`
+- [x] EvaluationFormDetail: `Questioning.form_definition`
+- [x] EvaluationFormDetailOption: `Questioning.form_definition`
+- [x] EvaluationFormType: `Questioning.form_definition`
+- [x] EvaluationMoment: `Questioning.start_at` and `Questioning.end_at`
+- [x] EvaluationScale: `Questioning.form_definition`
+- [x] EvaluationScaleDetail: `Questioning.form_definition`
 - [x] Faculty: `Faculty`
 - [x] FWAccount: `django` alternative
 - [x] FWAccountLinkFWSecurityGroup: `django` alternative
@@ -58,7 +58,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] FWFieldInfoLinkHS
 - [ ] FWFieldInfoPublish
 - [ ] FWFieldInfoTooltipType
-- [x] FWForm: not exactly the same, but we have `CustomForm` and `CustomFormResponse`
+- [x] FWForm: not exactly the same, but we have `Questioning.form_definition` and `CustomFormResponse`
 - [ ] FWICalLink
 - [ ] FWICalLinkHistory
 - [ ] FWImportFieldMapping
@@ -233,7 +233,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingRole
 - [x] TrainingStudent: `Student`
 - [ ] TrainingStudentChange
-- [x] TrainingStudentField: `CustomForm` (?)
+- [x] TrainingStudentField: `Questioning` complemented with OASIS
 - [x] TrainingStudentGroup: `Student.block` and `Student.track`
 - [ ] TrainingTitular
 - [ ] TrainingType

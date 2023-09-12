@@ -3,7 +3,7 @@ from rest_framework import serializers
 from metis.models.stages import Student, Signature
 from metis.models.users import User, TmpData
 from .rel.addresses import AddressesMixin
-from .rel.forms import CustomFormResponsesMixin
+from .rel.forms import FormResponsesMixin
 from .stages import ProgramBlockSerializer, ProjectTinySerializer
 
 
@@ -25,7 +25,7 @@ class AuthUserSerializer(AddressesMixin, serializers.ModelSerializer):
         read_only_fields = ("is_staff", "is_superuser", "is_active", "date_joined", "last_login")
 
 
-class AuthStudentSerializer(CustomFormResponsesMixin, serializers.ModelSerializer):
+class AuthStudentSerializer(FormResponsesMixin, serializers.ModelSerializer):
     project = ProjectTinySerializer(read_only=True)
     block = ProgramBlockSerializer(read_only=True)
     has_signed_required_texts = serializers.BooleanField(read_only=True)

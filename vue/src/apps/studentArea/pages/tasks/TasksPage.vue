@@ -4,11 +4,11 @@
     <div class="col"></div>
   </div>
   <student-task-box
-    v-if="activeDates.length && allSigned"
+    v-if="activeQuestionings.length && allSigned"
     :education="(education as EducationTiny)"
     :project="(project as Project)"
     :student="(student as Student)"
-    :active-dates="activeDates"
+    :active-questionings="activeQuestionings"
     :addresses-api-endpoint="addressesApiEndpoint"
     :project-place-options="projectPlaceOptions"
     :skip-place-id="ba3PlaceId"
@@ -184,7 +184,7 @@ const { t, locale } = useI18n();
 const page = usePage();
 const store = useStore();
 
-const { education, project, activeDates, signatures, projectPlaceOptions } = storeToRefs(store);
+const { education, project, activeQuestionings, signatures, projectPlaceOptions } = storeToRefs(store);
 
 const academicYear = computed<string>(() => page.props.academic_year as string);
 const student = computed<Student>(() => page.props.student as Student);

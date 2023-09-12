@@ -4,7 +4,7 @@
       <ugent-btn v-if="user" :label="$t('user_menu.dashboard')" color="yellow" :href="`/${$i18n.locale}/dashboard/`" />
       <div v-else class="fit column justify-between">
         <form method="post" action="/u/ugent/login/" class="q-mb-xl">
-          <input type="hidden" name="csrfmiddlewaretoken" :value="csrfToken">
+          <input type="hidden" name="csrfmiddlewaretoken" :value="csrfToken" />
           <ugent-btn :label="$t('home.oauth_login')" color="yellow" type="submit" />
         </form>
         <ugent-link-list title="Help" :items="links" />
@@ -41,6 +41,6 @@ const links = [
     label: t('home.help.dict_externe'),
     href: `https://helpdesk.ugent.be/account/${page.props.django_locale == 'en' ? 'en/' : ''}externe.php`,
     target: '_blank',
-  }
+  },
 ];
 </script>

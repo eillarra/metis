@@ -32,7 +32,7 @@ class ProjectPlaceInformationPdf(PdfReport):
 
             for project_place in self.project_places:
                 form_response = project_place.form_responses.filter(
-                    form__code="project_place_information",
+                    questioning__type="project_place_information"
                 ).first()
 
                 pdf.add_paragraph(project_place.place.name, "h2")
@@ -47,7 +47,7 @@ class ProjectPlaceInformationPdf(PdfReport):
 
                 if form_response:
                     if not form_definition:
-                        form_definition = form_response.form.definition
+                        form_definition = form_response.questioning.form_definition
 
                     if form_response.updated_by:
                         email = form_response.updated_by.email.lower()
@@ -78,18 +78,14 @@ class ProjectPlaceInformationPdf(PdfReport):
 class StudentInformationPdf(PdfReport):
     def __init__(self, period_id: int):
         self.period = Period.objects.get(id=period_id)
-        self.places_dict = {
-            project_place.id: project_place.place.name for project_place in self.period.project_places
-        }
+        self.places_dict = {project_place.id: project_place.place.name for project_place in self.period.project_places}
 
     def get_pdf(self) -> bytes:
         with PdfWrap() as pdf:
             pdf.add_footer(f"{now()}")
 
             for student in self.period.students.order_by("user__first_name", "user__last_name"):
-                tops = student.form_responses.filter(
-                    form__code="student_tops",
-                ).first()
+                tops = student.form_responses.filter(questioning__type="student_tops").first()
 
                 email = student.user.email.lower()
                 pdf.add_paragraph(student.user.name, "h2")
@@ -105,7 +101,9 @@ class StudentInformationPdf(PdfReport):
                 pdf.add_paragraph("Tops", "h6")
 
                 if tops:
-                    places_list = "<br />".join([f"{idx + 1}. {self.places_dict[place_id]}" for idx, place_id in enumerate(tops.data["tops"])])
+                    places_list = "<br />".join(
+                        [f"{idx + 1}. {self.places_dict[place_id]}" for idx, place_id in enumerate(tops.data["tops"])]
+                    )
                     pdf.add_paragraph(places_list)
                 else:
                     pdf.add_paragraph("(Geen tops ingevuld)")
@@ -127,20 +125,26 @@ class StudentInformationPdf(PdfReport):
                         f"""
                         {tmp_data.address}<br />
                         {tmp_data.city}<br />
-                    """)
+                    """
+                    )
                     if tmp_data.address2:
-                        pdf.add_paragraph("Logeeradres elders in Belgie dat kan fungeren als uitvalsbasis tijdens stage", "h6")
+                        pdf.add_paragraph(
+                            "Logeeradres elders in Belgie dat kan fungeren als uitvalsbasis tijdens stage", "h6"
+                        )
                         pdf.add_paragraph(
                             f"""
                             {tmp_data.address2}<br />
                             {tmp_data.city2}<br />
-                        """)
+                        """
+                        )
                     pdf.add_paragraph("Kot in Gent", "h6")
                     pdf.add_paragraph("- Ja" if tmp_data.has_kot else "- Nee")
                     pdf.add_paragraph("Beschikbaarheid auto", "h6")
                     pdf.add_paragraph("- Ja" if tmp_data.has_car else "- Nee")
                     pdf.add_paragraph("Tweetalig en/of voldoende kennis Frans", "h6")
-                    pdf.add_paragraph(f"- Ja<br/>- {tmp_data.can_speak_details}" if tmp_data.can_speak_french else "- Nee")
+                    pdf.add_paragraph(
+                        f"- Ja<br/>- {tmp_data.can_speak_details}" if tmp_data.can_speak_french else "- Nee"
+                    )
                     if tmp_data.has_special_status or tmp_data.is_werkstudent or tmp_data.is_beursstudent:
                         pdf.add_paragraph("Andere", "h6")
                         texts = []

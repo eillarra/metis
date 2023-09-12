@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from metis.models.stages.projects import Project
 
 
-def validate_custom_form_definition(definition: dict) -> CustomForm:
+def validate_form_definition(definition: dict) -> CustomForm:
     """
     Validate a form definition.
     """
@@ -19,12 +19,12 @@ def validate_custom_form_definition(definition: dict) -> CustomForm:
         raise ValueError(e)
 
 
-def validate_custom_form_data(form_definition: dict, data: dict) -> dict:
+def validate_form_response(form_definition: dict, data: dict) -> dict:
     """
     Validate form data against a form definition.
     """
 
-    form = validate_custom_form_definition(form_definition)
+    form = validate_form_definition(form_definition)
     fields = []
     field_codes = set()
 
@@ -95,7 +95,7 @@ def validate_tops_form_definition(definition: dict) -> TopsForm:
         raise ValueError(e)
 
 
-def validate_tops_form_data(form_definition: dict, data: dict, project: "Project") -> dict:
+def validate_tops_form_response(form_definition: dict, data: dict, project: "Project") -> dict:
     """
     Validate form data against a form definition.
     """

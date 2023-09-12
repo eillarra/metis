@@ -3,7 +3,7 @@ from rest_framework import serializers
 from metis.models import Place, ProjectPlace, ProjectPlaceAvailability
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..places import PlaceSerializer
-from ..rel.forms import CustomFormResponsesMixin
+from ..rel.forms import FormResponsesMixin
 from ..rel.remarks import RemarksMixin
 
 
@@ -22,7 +22,7 @@ class ProjectPlaceAvailabilitySerializer(serializers.ModelSerializer):
         fields = ("period", "min", "max")
 
 
-class ProjectPlaceSerializer(CustomFormResponsesMixin, RemarksMixin, BaseModelSerializer):
+class ProjectPlaceSerializer(FormResponsesMixin, RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-place-detail", nested_lookup=project_place_lookup_fields)
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     place = PlaceSerializer(read_only=True)

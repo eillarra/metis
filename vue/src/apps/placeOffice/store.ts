@@ -35,13 +35,13 @@ export const useStore = defineStore('placeOffice', () => {
     }));
     projects.value = djangoProjects.map((project) => {
       const periods = project.periods;
-      const important_dates = project.important_dates.map((date) => {
+      const questionings = project.questionings.map((date) => {
         date.Period = periods.find((period) => period.id === date.period) || undefined;
         return date;
       });
       return {
         ...project,
-        important_dates,
+        questionings,
       };
     });
     availableProjects.value = djangoProjects.map((project) => ({
@@ -72,10 +72,10 @@ export const useStore = defineStore('placeOffice', () => {
     );
   });
 
-  const activeDates = computed<ImportantDate[]>(() => {
+  const activeQuestionings = computed<Questioning[]>(() => {
     const validTypes: string[] = ['project_place_availability', 'project_place_information'];
     return (
-      project.value?.important_dates.filter(
+      project.value?.questionings.filter(
         (date) =>
           date.is_active &&
           validTypes.includes(date.type) &&
@@ -93,6 +93,6 @@ export const useStore = defineStore('placeOffice', () => {
     admins,
     availableProjects,
     userIsAdmin,
-    activeDates,
+    activeQuestionings,
   };
 });

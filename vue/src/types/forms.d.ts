@@ -54,14 +54,9 @@ interface CustomFormDefinition {
 
 type CustomFormData = Record<string, string | number | string[] | number[]>;
 
-interface CustomForm extends ApiObjectUpdated {
-  code: string;
-  definition: CustomFormDefinition;
-}
-
 interface CustomFormResponse extends ApiObjectUpdated {
   self: ApiEndpoint;
-  form: number;
+  questioning: number;
   data: CustomFormData;
 }
 

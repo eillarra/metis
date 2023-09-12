@@ -1,26 +1,31 @@
 <template>
-  <div v-if="activeDates">
+  <div v-if="activeQuestionings">
     {{ $t('tasks.intro', { email: education.office_email }) }}
     <div class="q-gutter-y-sm q-mt-md">
-      <q-banner v-for="date in activeDates" :key="date.id" :inline-actions="$q.screen.gt.sm" class="bg-yellow-3">
+      <q-banner
+        v-for="questioning in activeQuestionings"
+        :key="questioning.id"
+        :inline-actions="$q.screen.gt.sm"
+        class="bg-yellow-3"
+      >
         <template #default>
           <div class="text-body1 q-py-xs">
             Net zoals bij de stageverdeling in 3e bachelor, kunnen jullie voorkeursplaatsen doorgeven.<br />
-            <em>Deadline: {{ formatDate(date.end_at) }}</em>
+            <em>Deadline: {{ formatDate(questioning.end_at) }}</em>
           </div>
         </template>
         <template #action>
           <q-spinner v-if="!dataLoaded" color="yellow" size="2em" />
-          <q-btn v-else @click="openForm(date.form)" outline square color="ugent" label="Tops bijwerken" />
+          <q-btn v-else @click="openQuestioning(questioning)" outline square color="ugent" label="Tops bijwerken" />
         </template>
       </q-banner>
     </div>
-    <q-dialog v-if="selectedForm && formDataResponses" v-model="dialogForm">
+    <q-dialog v-if="selectedQuestioning && formDataResponses" v-model="dialogQuestioning">
       <tops-form
-        v-if="selectedForm.code == 'student_tops'"
+        v-if="selectedQuestioning.code == 'student_tops'"
         v-model="formDataResponses"
         :api-endpoint="student.rel_form_responses"
-        :form="(selectedForm as TopsForm)"
+        :questioning="(selectedQuestioning as Questioning)"
         :project-place-options="props.projectPlaceOptions"
         :skip-place-id="props.skipPlaceId"
       />
@@ -28,8 +33,10 @@
         v-else
         v-model="formDataResponses"
         :api-endpoint="student.rel_form_responses"
-        :form="(selectedForm as CustomForm)"
-        :addresses-api-endpoint="selectedForm.code == 'student_information' ? props.addressesApiEndpoint : undefined"
+        :questioning="(selectedQuestioning as Questioning)"
+        :addresses-api-endpoint="
+          selectedQuestioning.code == 'student_information' ? props.addressesApiEndpoint : undefined
+        "
       />
     </q-dialog>
   </div>
@@ -49,21 +56,21 @@ const props = defineProps<{
   education: EducationTiny;
   project: Project;
   student: Student;
-  activeDates: ImportantDate[];
+  activeQuestionings: Questioning[];
   addressesApiEndpoint?: ApiEndpoint;
   projectPlaceOptions?: ProjectPlace[];
   skipPlaceId?: number | null;
 }>();
 
 const dataLoaded = ref<boolean>(false);
-const dialogForm = ref<boolean>(false);
+const dialogQuestioning = ref<boolean>(false);
 
-const selectedForm = ref<CustomForm | TopsForm>();
+const selectedQuestioning = ref<CustomForm | TopsForm>();
 const formDataResponses = ref<CustomFormResponse[]>();
 
-function openForm(form?: CustomForm | TopsForm) {
-  selectedForm.value = form;
-  dialogForm.value = true;
+function openQuestioning(questioning: Questioning) {
+  selectedQuestioning.value = questioning;
+  dialogQuestioning.value = true;
 }
 
 onMounted(() => {

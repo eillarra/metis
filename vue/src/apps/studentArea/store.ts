@@ -38,13 +38,13 @@ export const useStore = defineStore('studentArea', () => {
     // TODO: move to an external fuction as it is very similar to placeOffice/store.ts
     projects.value = djangoProjects.map((project) => {
       const periods = project.periods;
-      const important_dates = project.important_dates.map((date) => {
+      const questionings = project.questionings.map((date) => {
         date.Period = periods.find((period) => period.id === date.period) || undefined;
         return date;
       });
       return {
         ...project,
-        important_dates,
+        questionings,
       };
     });
     selectedProjectId.value = djangoProjects[0]?.id || null;
@@ -55,9 +55,9 @@ export const useStore = defineStore('studentArea', () => {
     return projects.value.find((p: Project) => p.id === selectedProjectId.value);
   });
 
-  const activeDates = computed<ImportantDate[]>(() => {
+  const activeQuestionings = computed<Questioning[]>(() => {
     const validTypes: string[] = ['student_information', 'student_tops'];
-    return project.value?.important_dates.filter((date) => date.is_active && validTypes.includes(date.type)) ?? [];
+    return project.value?.questionings.filter((date) => date.is_active && validTypes.includes(date.type)) ?? [];
   });
 
   return {
@@ -67,7 +67,7 @@ export const useStore = defineStore('studentArea', () => {
     education,
     project,
     projectPlaceOptions,
-    activeDates,
+    activeQuestionings,
     signatures,
     students,
   };

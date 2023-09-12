@@ -2,12 +2,12 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from ..base import BaseModel
-from ..rel.forms import CustomFormResponsesMixin
+from ..rel.forms import FormResponsesMixin
 from ..rel.remarks import RemarksMixin
 from ..rel.texts import TextEntriesMixin
 
 
-class ProjectPlace(CustomFormResponsesMixin, RemarksMixin, TextEntriesMixin, BaseModel):
+class ProjectPlace(FormResponsesMixin, RemarksMixin, TextEntriesMixin, BaseModel):
     """
     The stagebureau works with a subset of all the places availablke for each Project.
     This can be copied from previous project.
