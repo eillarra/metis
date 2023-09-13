@@ -7,6 +7,16 @@ class Translation(BaseModel):
     en: str
 
 
+class Rule(BaseModel):
+    field: str
+    type: Literal["equals", "not_equals", "contains", "not_contains", "is_empty", "is_not_empty"]
+    value: str | int | bool | None = None
+
+    class Config:
+        extra = Extra.forbid
+        validate_default = True
+
+
 class FieldOption(BaseModel):
     value: str | int
     label: Translation
@@ -59,6 +69,7 @@ class Fieldset(BaseModel):
     fields: list[Union[InputField, ChoiceField, GridField]]
     legend: Translation | None = None
     description: Translation | None = None
+    rule: Rule | None = None
 
     class Config:
         extra = Extra.forbid

@@ -97,6 +97,7 @@ export default {
     add_to_place: 'Add to place',
     add_to_project: 'Add to project',
     pending_fields: 'Pending fields',
+    required: 'Required',
     address: {
       fields: {
         address: 'Street and number',

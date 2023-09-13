@@ -96,6 +96,7 @@ export default {
     add_to_place: 'Voeg toe aan stageplaats',
     add_to_project: 'Voeg toe aan project',
     pending_fields: 'Velden die nog ingevuld moeten worden',
+    required: 'Verplicht',
     address: {
       fields: {
         address: 'Straat en nummer',

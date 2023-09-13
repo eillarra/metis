@@ -18,7 +18,9 @@
     <q-header class="bg-white q-pt-sm">
       <q-toolbar class="text-primary q-pl-lg q-pr-sm">
         <q-icon :name="icon" />
-        <q-toolbar-title v-if="title">{{ title }}</q-toolbar-title>
+        <q-toolbar-title v-if="title" class="col-10">
+          <span>{{ title }}</span><span v-if="subtitle" class="text-caption q-pl-md">{{ subtitle }}</span>
+        </q-toolbar-title>
         <q-space />
         <q-btn flat dense v-close-popup icon="close" style="padding: 8px" />
       </q-toolbar>
@@ -41,5 +43,6 @@
 defineProps<{
   icon: string;
   title: string | undefined;
+  subtitle?: string | undefined;
 }>();
 </script>

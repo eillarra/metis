@@ -2,10 +2,16 @@
   <div v-if="activeQuestionings">
     {{ $t('tasks.intro', { email: education.office_email }) }}
     <div class="q-gutter-y-sm q-mt-md">
-      <q-banner v-for="questioning in activeQuestionings" :key="questioning.id" :inline-actions="$q.screen.gt.sm" class="bg-yellow-3">
+      <q-banner
+        v-for="questioning in activeQuestionings"
+        :key="questioning.id"
+        :inline-actions="$q.screen.gt.sm"
+        class="bg-yellow-3"
+      >
         <template #default>
           <div class="text-body1 q-py-xs">
-            {{ $t(`tasks.place.${questioning.type}.text`, { project_name: project.name }) }}<br />
+            <span v-if="questioning.form_definition.description">{{ questioning.form_definition.description[locale] }}</span>
+            <span v-else>{{ $t(`tasks.place.${questioning.type}.text`, { project_name: project.name }) }}</span><br />
             <em>Deadline: {{ formatDate(questioning.end_at) }}</em>
           </div>
         </template>
@@ -17,7 +23,7 @@
             outline
             square
             color="ugent"
-            :label="$t(`tasks.place.${questioning.type}.btn_label`)"
+            :label="$t(`form.update`)"
           />
         </template>
       </q-banner>
@@ -28,7 +34,7 @@
         v-model="formDataResponses"
         :api-endpoint="projectPlace.rel_form_responses"
         :questioning="selectedQuestioning"
-        :addresses-api-endpoint="props.projectPlace.Place?.rel_addresses || undefined"
+        :subtitle="projectPlace.Place?.name"
       />
       <project-place-availability-form v-else :project="project" />
     </q-dialog>
@@ -37,6 +43,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios';
 import { formatDate } from '@/utils';
@@ -51,6 +58,8 @@ const props = defineProps<{
   projectPlace: ProjectPlaceTiny;
   activeQuestionings: Questioning[];
 }>();
+
+const { locale } = useI18n();
 
 const dataLoaded = ref<boolean>(false);
 const dialogForm = ref<boolean>(false);

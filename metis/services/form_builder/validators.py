@@ -8,6 +8,13 @@ if TYPE_CHECKING:
     from metis.models.stages.projects import Project
 
 
+def fieldset_is_visible(fieldset, data: dict) -> bool:
+    if fieldset.rule:
+        if fieldset.rule.type == "equals":
+            return data[fieldset.rule.field] == fieldset.rule.value
+    return True
+
+
 def validate_form_definition(definition: dict) -> CustomForm:
     """
     Validate a form definition.
@@ -32,6 +39,8 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
         raise ValueError("Data should be a dict")
 
     for fieldset in form.fieldsets:
+        if not fieldset_is_visible(fieldset, data):
+            continue
         for field in fieldset.fields:
             fields.append(field)
             field_codes.add(field.code)
@@ -56,7 +65,7 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
                     if value not in options:
                         raise ValueError(f"Invalid value `{value}` for field `{field.code}`")
             else:
-                if data[field.code] not in options:
+                if data[field.code] and data[field.code] not in options:
                     raise ValueError(f"Invalid value `{data[field.code]}` for field `{field.code}`")
 
             if field.other_option and field.other_option in data[field.code]:
