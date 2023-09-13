@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
@@ -45,14 +46,17 @@ class Questioning(BaseModel):
 
     def clean(self) -> None:
         if self.period and self.period.project != self.project:
-            raise ValueError("The period must belong to the same project.")
+            raise ValidationError("The period must belong to the same project.")
         if not self.form_definition and self.type in self.TYPES_WITH_FORM:
-            raise ValueError("This type of questioning requires a custom form definition.")
+            raise ValidationError("This type of questioning requires a custom form definition.")
         if self.form_definition:
-            if self.type == self.STUDENT_TOPS:
-                form_validators.validate_tops_form_definition(self.form_definition)
-            else:
-                form_validators.validate_form_definition(self.form_definition)
+            try:
+                if self.type == self.STUDENT_TOPS:
+                    form_validators.validate_tops_form_definition(self.form_definition)
+                else:
+                    form_validators.validate_form_definition(self.form_definition)
+            except ValueError as e:
+                raise ValidationError({"form_definition": str(e)})
         return super().clean()
 
     def clean_response_data(self, data: dict) -> dict:
