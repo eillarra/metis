@@ -24,6 +24,7 @@ def render_inertia(request, vue_entry_point: str, *, props: dict | None = None, 
             "django_user": request.user if request.user.is_authenticated else None,
             "git_commit_hash": os.environ.get("GIT_REV", None),
             "mapbox_token": os.environ.get("MAPBOX_TOKEN", ""),
+            "sentry_vue_dsn": os.environ.get("SENTRY_VUE_DSN", None),
         }
         | (props or {}),
         template_data={

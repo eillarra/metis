@@ -37,7 +37,7 @@ def set_user_id(event, hint):
 
 
 sentry_sdk.init(
-    dsn=os.environ.get("SENTRY_DSN", None),
+    dsn=os.environ.get("SENTRY_DJANGO_DSN", None),
     release=os.environ.get("GIT_REV", None),
     environment=os.environ.get("DJANGO_ENV", "production"),
     integrations=[DjangoIntegration(), RedisIntegration()],

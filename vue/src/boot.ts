@@ -76,11 +76,11 @@ const bootApp = (routes: RouteRecordRaw[]) => {
       app.config.globalProperties.$axios = axios;
       app.config.globalProperties.$api = api;
 
-      if (!props.initialPage.props.django_debug) {
+      if (!props.initialPage.props.django_debug && props.initialPage.props.sentry_vue_dsn) {
         // sentry
         Sentry.init({
           app,
-          dsn: 'https://0c8a62299e0b46c9b472cdf6e69e8484@o124046.ingest.sentry.io/4505041367924736',
+          dsn: props.initialPage.props.sentry_vue_dsn as string,
           release: props.initialPage.props.git_commit_hash as string,
           environment: props.initialPage.props.django_env as string,
           integrations: [
