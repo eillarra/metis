@@ -47,8 +47,7 @@ sentry_sdk.init(
         "profiles_sample_rate": 0.1,
     },
     # pii
-    send_default_pii=False,
-    before_send=set_user_id,
+    send_default_pii=True,
 )
 
 
@@ -72,7 +71,7 @@ USE_ETAGS = True
 # https://docs.djangoproject.com/en/dev/topics/email/
 
 DEFAULT_FROM_EMAIL = "METIS <metis@ugent.be>"
-SERVER_EMAIL = "metis@ugent.be"
+SERVER_EMAIL = "helpdesk.metis@ugent.be"
 EMAIL_SUBJECT_PREFIX = "[METIS] "
 
 EMAIL_HOST = "smtprelay.ugent.be"

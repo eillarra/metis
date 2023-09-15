@@ -11,6 +11,7 @@ from metis.ugent_provider.views import oauth2_login, oauth2_callback
 
 admin.autodiscover()
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("metis.api.urls")),
@@ -33,3 +34,8 @@ if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
     urlpatterns += staticfiles_urlpatterns()
+
+
+# error handlers
+
+handler500 = "metis.site.views.errors.server_error"
