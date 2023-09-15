@@ -71,6 +71,18 @@
                 <a :href="`mailto:${helpdeskEmail}`">Feedback</a>
               </li>
               <li :class="{ inline: $q.screen.gt.sm }">
+                <a
+                  :href="
+                    django_locale == 'nl'
+                      ? 'https://www.ugent.be/nl/univgent/privacy'
+                      : 'https://www.ugent.be/en/ghentuniv/privacy/privacystatement.htm'
+                  "
+                  target="_blank"
+                  rel="noopener"
+                  >Privacy</a
+                >
+              </li>
+              <li :class="{ inline: $q.screen.gt.sm }">
                 <span
                   >&copy; {{ year }}
                   <a :href="`https://www.ugent.be/ge/${django_locale}`" target="_blank" rel="noopener">{{ $t('ge') }}</a
