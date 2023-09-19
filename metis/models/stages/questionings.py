@@ -74,7 +74,7 @@ class Questioning(BaseModel):
 
 def get_project_places_for_questioning(questioning: Questioning) -> models.QuerySet["ProjectPlace"]:
     """
-    Returns the places that should be notified for a given important date.
+    Returns the places that should be notified for a given questioning.
     """
 
     valid_types = {Questioning.PROJECT_PLACE_AVAILABILITY, Questioning.PROJECT_PLACE_INFORMATION}
@@ -82,7 +82,7 @@ def get_project_places_for_questioning(questioning: Questioning) -> models.Query
     if questioning.type not in valid_types:
         raise ValueError(f"Invalid type: {questioning.type}")
 
-    if not questioning.period:
-        return questioning.period.project_places  # type: ignore
+    if questioning.period:
+        return questioning.period.project_places
 
-    return questioning.project.place_set
+    return questioning.project.project_places

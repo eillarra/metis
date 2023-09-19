@@ -96,8 +96,16 @@ class Project(TextEntriesMixin, BaseModel):
     def is_open(self) -> bool:
         return self.is_active and self.periods.exists() and (self.start_date <= timezone.now().date() <= self.end_date)
 
+    @property
+    def project_places(self) -> models.QuerySet["ProjectPlace"]:
+        """
+        ProjectPlaces for this project.
+        It is just an alias for the place_set to use similar syntax as for periods.
+        """
+        return self.place_set.all()  # type: ignore
+
     @cached_property
-    def required_texts(self) -> list["TextEntry"]:
+    def required_texts(self) -> models.QuerySet["TextEntry"]:
         required_codes = {text_type["code"] for text_type in self.education.configuration["project_text_types"]}
         return self.texts.filter(code__in=required_codes)
 
