@@ -1,3 +1,4 @@
+from django.utils.html import conditional_escape
 from pydantic import ValidationError
 from typing import TYPE_CHECKING
 
@@ -6,6 +7,19 @@ from .tops import TopsForm
 
 if TYPE_CHECKING:
     from metis.models.stages.projects import Project
+
+
+def escape_html(data: dict) -> dict:
+    for key, value in data.items():
+        if isinstance(value, str):
+            data[key] = conditional_escape(value)
+        if isinstance(value, list):
+            for i, item in enumerate(value):
+                if isinstance(item, str):
+                    data[key][i] = conditional_escape(item)
+        if isinstance(value, dict):
+            data[key] = escape_html(value)
+    return data
 
 
 def fieldset_is_visible(fieldset, data: dict) -> bool:
@@ -44,7 +58,7 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
         for field in fieldset.fields:
             fields.append(field)
             field_codes.add(field.code)
-            if type(field) == ChoiceField and field.other_option:
+            if type(field) is ChoiceField and field.other_option:
                 field_codes.add(f"{field.code}__{field.other_option}")
             if field.required:
                 if field.code not in data or not data[field.code]:
@@ -90,7 +104,11 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
             if not isinstance(data[field.code], str):
                 raise ValueError(f"Field `{field.code}` should be a string")
 
-    return data
+    # clean data for XSS attacks
+    # users normally shouldn't be able to enter HTML, but we can't be sure
+    # TODO: if we expect HTML, we should create a valid field type for it
+
+    return escape_html(data)
 
 
 def validate_tops_form_definition(definition: dict) -> TopsForm:
