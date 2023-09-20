@@ -1,40 +1,60 @@
+import datetime
+import os
+
 from django.core.mail import EmailMultiAlternatives
 from django.utils.timezone import now
 from huey import crontab
 from huey.contrib.djhuey import db_periodic_task
 from markdown import markdown
+from smtplib import SMTPRecipientsRefused
 from time import sleep
 
 from metis.models.emails import EmailTemplate, EmailLog
 from metis.models.stages.questionings import Questioning
-from metis.services.mailer import schedule_template_email
+from metis.services.mailer import schedule_template_email, send_email_to_admins
 from metis.utils.dates import remind_deadline
+
+
+EMAILS_PER_MINUTE = int(os.getenv("UGENT_EMAILS_PER_MINUTE", 2))
 
 
 @db_periodic_task(crontab(minute="*"))
 def send_email():
     """
-    We have rate limits to send emails via UGent, so we only try to send two emails every minute.
-    TODO: see if we can increase this limit!
+    Send the emails that are scheduled.
+    If we get access to mass mailing, use EMAILS_PER_MINUTE to adjust the amount of emails sent.
     """
 
-    emails = EmailLog.objects.filter(sent_at=None).order_by("created_at")[:2]
+    # TODO: see what should be done here and what in the service
+
+    emails = EmailLog.objects.filter(sent_at=None).order_by("created_at")[:EMAILS_PER_MINUTE]
 
     for email in emails:
-        html_content = markdown(email.body)
-        msg = EmailMultiAlternatives(
-            email.subject,
-            email.body,
-            from_email=email.from_email,
-            to=email.to,
-            bcc=email.bcc,
-            reply_to=email.reply_to,
-        )
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
-        email.sent_at = now()
-        email.save()
-        sleep(26)
+        try:
+            html_content = markdown(email.body)
+            msg = EmailMultiAlternatives(
+                email.subject,
+                email.body,
+                from_email=email.from_email,
+                to=email.to,
+                bcc=email.bcc,
+                reply_to=email.reply_to,
+            )
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+            email.sent_at = now()
+            email.save()
+        except SMTPRecipientsRefused as e:
+            # set sent at as epoch 0 to prevent retrying
+            email.sent_at = datetime.datetime.utcfromtimestamp(0)
+            email.save()
+            send_email_to_admins("Email error", f"Recipient refused: {e}")
+            raise e
+        except Exception as e:
+            send_email_to_admins("Email error", f"Error while sending email: {e}")
+            raise e
+
+        sleep((60 / EMAILS_PER_MINUTE))
 
 
 @db_periodic_task(crontab(hour="8", minute="0"))
