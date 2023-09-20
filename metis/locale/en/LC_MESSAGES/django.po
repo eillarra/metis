@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 16:59+0200\n"
+"POT-Creation-Date: 2023-09-20 14:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,11 +48,11 @@ msgctxt "cases.Review.status"
 msgid "Unfinished"
 msgstr ""
 
-#: metis/site/templates/500.html:8
+#: metis/site/templates/500.html:12
 msgid "Well, this is unexpected..."
 msgstr ""
 
-#: metis/site/templates/500.html:9
+#: metis/site/templates/500.html:13
 msgid ""
 "Sorry, something went wrong and we can't complete your request right now. "
 "We've been notified of the problem and will work to fix it as soon as "
@@ -101,8 +101,8 @@ msgstr ""
 
 #: metis/site/templates/socialaccount/login.html:21
 msgid ""
-"Click the button and choose the \"No account? Create one!\" option in the "
-"next step. You can then create an external UGent account (formerly known as "
-"a \"welcome\" account); you can use this same account on Metis and on other "
+"Click the \"Sign in via UGent\" button. In the next step, you can choose the "
+"\"No account? Create one!\" option (see image) if you need to create an "
+"external UGent account; you can use this same account on Metis and on other "
 "UGent services."
 msgstr ""
