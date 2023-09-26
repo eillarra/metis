@@ -1,0 +1,19 @@
+{% extends 'pdf.html' %}
+
+{% load markdown %}
+
+
+{% block content %}
+  <code>
+    Document elektronisch ondertekend door {{ object.student.user.get_full_name }}<br>
+    op {{ object.created_at }} via metis.ugent.be
+  </code>
+  <pdf:spacer height="20" />
+  <h3 class="title text-ugent">{{ object.text_entry.title }}</h3>
+  <pdf:spacer height="10" />
+  {{ object.signed_text | marked }}
+{% endblock %}
+
+{% block footer %}
+  {{ object.uuid }}
+{% endblock %}

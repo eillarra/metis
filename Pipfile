@@ -39,9 +39,7 @@ sentry-sdk = {extras = ["django"], version = "*"}
 tzdata = "*"
 uritemplate = "*"
 whitenoise = "*"
-
-reportlab = "*"
-svglib = "*"
+xhtml2pdf = "*"
 
 [dev-packages]
 black = "*"

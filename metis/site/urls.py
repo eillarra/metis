@@ -25,6 +25,8 @@ urlpatterns = [
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     # invitations
     path("i/<uuid:uuid>/<slug:secret>/", never_cache(views.InvitationView.as_view()), name="invitation"),
+    # files
+    path("files/s/<uuid:uuid>.pdf", views.SignaturePdfView.as_view(), name="signature_pdf"),
 ]
 
 # Flatpages “catchall” pattern
