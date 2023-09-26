@@ -65,7 +65,7 @@
               ><span v-else>{{ version }}</span>
             </p>
           </div>
-          <div class="col-12 col-md-9">
+          <div class="col-12 col-md-9 q-pr-sm">
             <ul :class="{ 'text-right q-gutter-x-md': $q.screen.gt.sm }">
               <li :class="{ inline: $q.screen.gt.sm }">
                 <a :href="`mailto:${helpdeskEmail}`">Feedback</a>

@@ -28,6 +28,8 @@ class AuthStudentSerializer(FormResponsesMixin, serializers.ModelSerializer):
 
 
 class AuthSignatureSerializer(serializers.ModelSerializer):
+    url = serializers.CharField(read_only=True, source="get_absolute_url")
+
     class Meta:
         model = Signature
-        fields = "__all__"
+        exclude = ("uuid",)

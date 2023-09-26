@@ -1,9 +1,15 @@
 <template>
   <div class="row q-col-gutter-sm q-mb-lg">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('signature', 9) }}</h3>
+    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('document', 9) }}</h3>
     <div class="col"></div>
   </div>
-  <signatures-table v-if="signatures" :signatures="signatures" :texts="requiredTexts" />
+  <div v-if="signatures">
+    <signatures-table v-if="signatures.length" :signatures="signatures" :texts="requiredTexts" />
+    <div v-else class="col-12 col-md-3">
+      <p>{{ $t('signatures.no_results') }}</p>
+      <p class="text-grey-4 text-h2 text-mono q-mt-xl">(^-^*)</p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

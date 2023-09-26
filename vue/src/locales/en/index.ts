@@ -194,6 +194,9 @@ export default {
       signed: 'Text signed',
     },
   },
+  signatures: {
+    no_results: 'No signatures found.',
+  },
   tasks: {
     intro: 'Please complete the following tasks in a timely manner. I you have any questions, you can contact {email}.',
     place: {

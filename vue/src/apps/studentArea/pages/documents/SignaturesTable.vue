@@ -22,7 +22,7 @@ const columns = [
     name: 'name',
     field: 'name',
     required: true,
-    label: t('text'),
+    label: t('signature'),
     align: 'left',
     sort: (a: string, b: string) => a.localeCompare(b),
     headerClasses: 'sticky-left',
@@ -37,6 +37,13 @@ const columns = [
     sort: (a: string, b: string) => a.localeCompare(b),
     classes: 'q-table--col-auto-width',
   },
+  {
+    name: 'download',
+    field: 'download',
+    label: 'Download',
+    align: 'right',
+    classes: 'q-table--col-auto-width',
+  },
 ];
 
 const rows = computed(() => {
@@ -44,6 +51,7 @@ const rows = computed(() => {
     _self: obj,
     name: props.texts.find((text) => text.id === obj.text_entry)?.title_nl ?? '',
     date: formatDate(obj.created_at),
+    download: obj.url,
   }));
 });
 </script>

@@ -145,6 +145,14 @@
           <q-icon @click="selectObj(props.row)" name="edit" :size="iconSize" color="ugent" class="cursor-pointer" />
         </q-td>
       </template>
+      <template #body-cell-download="props">
+        <!-- Download icon -->
+        <q-td :props="props" auto-width>
+          <a :href="props.row.download" target="_blank" rel="noopener" class="inherit">
+            <q-icon name="download" :size="iconSize" color="ugent" class="cursor-pointer" />
+          </a>
+        </q-td>
+      </template>
     </q-table>
     <q-dialog v-if="formComponent" v-model="dialogVisible">
       <component :is="formComponent" :obj="selectedObj" @delete:obj="() => (selectedObj = null)" />

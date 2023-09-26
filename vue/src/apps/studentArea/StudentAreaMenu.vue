@@ -9,6 +9,12 @@
           </q-item-section>
           <q-item-section>{{ $t('task', 9) }}</q-item-section>
         </q-item>
+        <q-item clickable :to="{ name: 'documents' }" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="drive_file_move_outline" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('document', 9) }}</q-item-section>
+        </q-item>
         <q-item-label header>{{ $t('history') }}</q-item-label>
         <!--<q-item clickable :to="{ name: 'internships' }" active-class="bg-ugent text-white">-->
         <q-item disabled>
@@ -16,17 +22,6 @@
             <q-icon name="calendar_month" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('internship', 9) }}</q-item-section>
-        </q-item>
-        <q-item
-          clickable
-          :to="{ name: 'signatures' }"
-          active-class="bg-ugent text-white"
-          :disable="!signatures || !signatures.length"
-        >
-          <q-item-section avatar>
-            <q-icon name="draw" size="xs"></q-icon>
-          </q-item-section>
-          <q-item-section>{{ $t('signature', 9) }}</q-item-section>
         </q-item>
         <q-item-label header>{{ $t('user_menu.account') }}</q-item-label>
         <!--<q-item clickable :to="{ name: 'contact_details' }" active-class="bg-ugent text-white">-->

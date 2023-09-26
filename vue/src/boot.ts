@@ -26,7 +26,7 @@ const bootApp = (routes: RouteRecordRaw[]) => {
       // i18n
       const i18n = createI18n({
         legacy: false,
-        locale: props.initialPage.props.django_locale,
+        locale: props.initialPage.props.django_locale as string,
         fallbackLocale: {
           default: ['en'],
         },

@@ -193,6 +193,9 @@ export default {
       signed: 'Tekst ondertekend',
     },
   },
+  signatures: {
+    no_results: 'Er zijn geen handtekeningen gevonden.',
+  },
   tasks: {
     intro:
       'Vriendelijk verzoek om onderstaande taken tijdig uit te voeren. Bij vragen kan u contact opnemen met {email}.',
