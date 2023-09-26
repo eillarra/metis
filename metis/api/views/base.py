@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from metis.models.rel.invitations import Invitation
+from metis.services.graph import GraphAPI
 
 
 class ProtectedMixin:
@@ -52,15 +53,24 @@ class InvitationMixin:
         try:
             defaults = self.get_invitation_defaults()
             invitation_type = request.data.get("type") or defaults.get("type")
+            email = request.data.get("email") or defaults.get("email")
 
             if invitation_type not in self.valid_invitation_types:
                 return Response({"type": ["Invalid invitation type"]}, status=status.BAD_REQUEST)
+
+            if not email:
+                return Response({"email": ["This field is required"]}, status=status.BAD_REQUEST)
+
+            try:
+                GraphAPI().register_email(email)
+            except RuntimeError:
+                print("We are probably on test or development, so we skip the registration.")
 
             Invitation.objects.create(
                 content_object=self.get_object(),
                 type=invitation_type,
                 name=request.data.get("name") or defaults.get("name"),
-                email=request.data.get("email") or defaults.get("email"),
+                email=email,
                 data=request.data.get("data") or defaults.get("data"),
             )
 
