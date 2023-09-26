@@ -300,4 +300,6 @@ const updateResponseObject = () => {
   });
   processing.value = false;
 };
+
+updateResponseObject();
 </script>
