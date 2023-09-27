@@ -62,9 +62,13 @@ class InvitationMixin:
                 return Response({"email": ["This field is required"]}, status=status.BAD_REQUEST)
 
             try:
-                GraphAPI().register_email(email)
+                with GraphAPI() as graph:
+                    _, _, enabled = graph.register_email(email)
+                if not enabled:
+                    raise ValueError("User is disabled at UGent. Contact DICT first.")
             except RuntimeError:
-                print("We are probably on test or development, so we skip the registration.")
+                # We are probably on test or development, so we skip the registration
+                pass
 
             Invitation.objects.create(
                 content_object=self.get_object(),

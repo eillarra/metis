@@ -27,6 +27,13 @@ class GraphAPI:
         self.client_secret: str = app.secret
         self._token: GraphToken | None = None
 
+    def __enter__(self):
+        self.session = requests.Session()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.session.close()
+
     def _get_token(self) -> GraphToken:
         """
         Gets an access token for the Microsoft Graph API.
@@ -36,7 +43,7 @@ class GraphAPI:
         if self._token and not self._token.has_expired():
             return self._token
 
-        res = requests.post(
+        response = self.session.post(
             f"https://login.microsoftonline.com/{self.tenant_id}/oauth2/v2.0/token",
             data={
                 "grant_type": "client_credentials",
@@ -45,13 +52,13 @@ class GraphAPI:
                 "scope": "https://graph.microsoft.com/.default",
             },
         )
-        res.raise_for_status()
-        res_data = res.json()
+        response.raise_for_status()
+        response_data = response.json()
 
         self._token = GraphToken(
-            token_type=res_data["token_type"],
-            access_token=res_data["access_token"],
-            expires_at=datetime.datetime.now() + datetime.timedelta(seconds=res_data["expires_in"] - 60)
+            token_type=response_data["token_type"],
+            access_token=response_data["access_token"],
+            expires_at=datetime.datetime.now() + datetime.timedelta(seconds=response_data["expires_in"] - 60),
         )
 
         return self._token
@@ -59,37 +66,42 @@ class GraphAPI:
     def _get_delegated_token(self):
         raise NotImplementedError
 
-    def find_user_by_email(self, email: str) -> str | None:
+    def find_user_by_email(self, email: str) -> Tuple[str | None, bool]:
         """
         Finds a user in Azure AD by their email address.
 
         :param email: The email address of the user to find.
-        :return: A dictionary containing the user's information, or None if the user was not found.
+        :return: A tuple containing the user's id and status (enabled), or None if the user was not found.
         """
         token = self._get_token()
-        res = requests.get(
+        response = self.session.get(
             "https://graph.microsoft.com/v1.0/users",
             headers={"Authorization": f"{token.token_type} {token.access_token}"},
-            params={"$filter": f"mail eq '{email}'"},
+            params={"$filter": f"mail eq '{email}'", "$select": "id,accountEnabled"},
         )
-        res.raise_for_status()
+        response.raise_for_status()
+        response_data = response.json()
 
-        return res.json()["value"][0]["id"] if res.json()["value"] else None
+        return (
+            (response_data["value"][0]["id"], response_data["value"][0]["accountEnabled"])
+            if response_data["value"]
+            else (None, False)
+        )
 
-    def register_email(self, email: str, *, send_invitation: bool = False) -> Tuple[bool, str]:
+    def register_email(self, email: str, *, send_invitation: bool = False) -> Tuple[bool, str, bool]:
         """
         Registers a new email address and sends an invitation to join the Metis platform.
 
         :param email: The email address to register.
         :param send_invitation: Whether or not to send an invitation email. Defaults to False.
-        :return: A tuple containing a boolean indicating success or failure, and a user id.
+        :return: A tuple containing a boolean indicating success or failure, a user id, and account enabled status.
         """
-        existing_user_id = self.find_user_by_email(email)
+        existing_user_id, enabled = self.find_user_by_email(email)
         if existing_user_id:
-            return False, existing_user_id
+            return False, existing_user_id, enabled
 
         token = self._get_token()
-        res = requests.post(
+        res = self.session.post(
             "https://graph.microsoft.com/v1.0/invitations",
             headers={"Authorization": f"{token.token_type} {token.access_token}"},
             json={
@@ -100,4 +112,4 @@ class GraphAPI:
         )
         res.raise_for_status()
 
-        return True, res.json()["invitedUser"]["id"]
+        return True, res.json()["invitedUser"]["id"], True
