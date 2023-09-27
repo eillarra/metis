@@ -45,6 +45,7 @@ export default {
   },
   mentor: 'Mentor | Mentors',
   availability: 'Availability',
+  pending: 'Pending',
   period: 'Period | Periods',
   planning: 'Planning',
   profile: 'Profile | Profiles',
@@ -54,8 +55,10 @@ export default {
   project: 'Project | Projects',
   place: 'Place | Places',
   place_type: 'Place type | Place types',
+  questioning: 'Questioning | Questionings',
   region: 'Region | Regions',
   remark: 'Remark | Remarks',
+  response: 'Response | Responses',
   signature: 'Signature | Signatures',
   staff: 'Staff | Staff',
   student: 'Student | Students',
@@ -68,13 +71,19 @@ export default {
     name: 'Name | Names',
     code: 'Internal code | Internal codes',
     date: 'Date | Dates',
+    start: 'Start',
+    end: 'End',
     start_date: 'Start date',
     end_date: 'End date',
     title: 'Title | Titles',
+    type: 'Type | Types',
     status: 'Status | Statuses',
+    created_at: 'Created at',
+    created_by: 'Created by',
     updated_at: 'Last updated',
     updated_by: 'Last updated by',
     last_login: 'Last login',
+    open: 'Open',
   },
   form: {
     add: 'Add',
@@ -164,6 +173,11 @@ export default {
       save: 'Save place',
       saved: 'Internship place information saved',
     },
+    questioning: {
+      confirm_send_emails:
+        'Are you sure you want to sent a reminder email? | Are you sure you want to send {count} reminder emails?',
+      emails_sent: 'Reminder email sent | Reminder emails sent',
+    },
     student: {
       create: {
         new: 'Create a new student',
@@ -192,6 +206,14 @@ export default {
       save: 'Save text',
       saved: 'Text saved',
       signed: 'Text signed',
+    },
+  },
+  questionings: {
+    type: {
+      project_place_availability: 'Project place availability',
+      project_place_information: 'Project place information',
+      student_information: 'Student information',
+      student_tops: 'Student tops',
     },
   },
   signatures: {

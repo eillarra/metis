@@ -44,6 +44,7 @@ export default {
   },
   mentor: 'Mentor | Mentoren',
   availability: 'Beschikbaarheid',
+  pending: 'In afwachting',
   period: 'Periode | Periodes',
   planning: 'Stageplanning',
   profile: 'Profiel | Profielen',
@@ -53,8 +54,10 @@ export default {
   program_internship: 'Stage | Stages',
   place: 'Stageplaats | Stageplaatsen',
   place_type: 'Type stageplaats | Stageplaats types',
+  questioning: 'Bevraging | Bevragingen',
   region: "Regio | Regio's",
   remark: 'Opmerking | Opmerkingen',
+  response: 'Antwoord | Antwoorden',
   signature: 'Handtekening | Handtekeningen',
   staff: 'Secretariaat | Secretariaten',
   student: 'Student | Studenten',
@@ -67,13 +70,19 @@ export default {
     name: 'Naam | Namen',
     code: 'Interne code | Interne codes',
     date: 'Datum | Data',
+    start: 'Start',
+    end: 'Einde',
     start_date: 'Startdatum',
     end_date: 'Einddatum',
     title: 'Titel | Titels',
+    type: 'Type | Types',
     status: 'Status | Statussen',
+    created_at: 'Aangemaakt op',
+    created_by: 'Aangemaakt door',
     updated_at: 'Laatst bijgewerkt',
     updated_by: 'Laatst bijgewerkt door',
     last_login: 'Laatste aanmelding',
+    open: 'Open',
   },
   form: {
     add: 'Toevoegen',
@@ -163,6 +172,11 @@ export default {
       save: 'Stageplaats opslaan',
       saved: 'Stageplaats informatie opgeslagen',
     },
+    questioning: {
+      confirm_send_emails:
+        'Ben je zeker dat je een herinneringsmail wil versturen? | Ben je zeker dat je {count} herinneringsmails wil versturen?',
+      emails_sent: 'Herinneringsmail verstuurd | Herinneringsmails verstuurd',
+    },
     student: {
       create: {
         new: 'Nieuwe student aanmaken',
@@ -191,6 +205,14 @@ export default {
       save: 'Tekst opslaan',
       saved: 'Tekst informatie opgeslagen',
       signed: 'Tekst ondertekend',
+    },
+  },
+  questionings: {
+    type: {
+      project_place_availability: 'Beschikbaarheid stageplaats',
+      project_place_information: 'Stageplaats infofiche',
+      student_information: 'Student infofiche',
+      student_tops: 'Student tops',
     },
   },
   signatures: {

@@ -112,13 +112,7 @@ const filteredPlaces = computed<ProjectPlace[]>(() => {
         ? !obj.disciplines.length
         : !selectedDiscipline.value || obj.disciplines.some((id: number) => id === selectedDiscipline.value)
     )
-    .filter(
-      (obj) =>
-        !selectedPeriod.value ||
-        obj.availability_set.some(
-          (availability) => availability.period === selectedPeriod.value && availability.min > 0
-        )
-    )
+    .filter((obj) => !selectedPeriod.value || obj._periods.has(selectedPeriod.value))
     .filter((obj) => !selectedPlaceType.value || obj.place.type === selectedPlaceType.value);
 });
 </script>

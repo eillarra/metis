@@ -37,7 +37,7 @@ const periodOptions = computed(() => {
   }
 
   return props.periods.map((period) => ({
-    label: `${period.ProgramInternship?.Block?.name} / P${period.ProgramInternship?.position}`,
+    label: period.full_name,
     value: period.id,
   }));
 });

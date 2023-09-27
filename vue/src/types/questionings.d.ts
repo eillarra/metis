@@ -1,0 +1,18 @@
+interface Questioning extends ApiObject {
+  self: ApiEndpoint;
+  rel_responses: ApiEndpoint;
+  type: string;
+  start_at: string;
+  end_at: string;
+  is_active: boolean;
+  period: number;
+  form_definition: CustomFormDefinition | TopsFormDefinition;
+  updated_at: string;
+  updated_by: UserTiny;
+  target_object_ids?: number[];
+  stats?: {
+    response_rate: number;
+  };
+  // -----
+  Period?: Period;
+}

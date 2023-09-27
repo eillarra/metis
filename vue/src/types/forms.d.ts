@@ -57,7 +57,10 @@ type CustomFormData = Record<string, string | number | string[] | number[]>;
 interface CustomFormResponse extends ApiObjectUpdated {
   self: ApiEndpoint;
   questioning: number;
+  object_id: number;
   data: CustomFormData;
+  // -----
+  _object?: Student | ProjectPlace;
 }
 
 interface TopsFormDefinition {

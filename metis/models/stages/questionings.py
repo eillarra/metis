@@ -5,6 +5,7 @@ from django.utils import timezone
 from metis.services.form_builder import validators as form_validators
 from ..base import BaseModel
 from .project_places import ProjectPlace
+from .students import Student
 
 
 class QuestioningManager(models.Manager):
@@ -71,6 +72,20 @@ class Questioning(BaseModel):
     def is_active(self) -> bool:
         return self.start_at <= timezone.now() <= self.end_at
 
+    @property
+    def response_rate(self) -> float:
+        return self.responses.count() / self.get_target_group_size()  # type: ignore
+
+    def get_target_group(self) -> models.QuerySet["ProjectPlace"] | models.QuerySet["Student"]:
+        if self.type in {self.PROJECT_PLACE_AVAILABILITY, self.PROJECT_PLACE_INFORMATION}:
+            return get_project_places_for_questioning(self)
+        if self.type in {self.STUDENT_INFORMATION, self.STUDENT_TOPS}:
+            return get_students_for_questioning(self)
+        raise ValueError(f"Invalid type: {self.type}")
+
+    def get_target_group_size(self) -> int:
+        return self.get_target_group().count()
+
 
 def get_project_places_for_questioning(questioning: Questioning) -> models.QuerySet["ProjectPlace"]:
     """
@@ -86,3 +101,19 @@ def get_project_places_for_questioning(questioning: Questioning) -> models.Query
         return questioning.period.project_places
 
     return questioning.project.project_places
+
+
+def get_students_for_questioning(questioning: Questioning) -> models.QuerySet["Student"]:
+    """
+    Returns the students that should be notified for a given questioning.
+    """
+
+    valid_types = {Questioning.STUDENT_INFORMATION, Questioning.STUDENT_TOPS}
+
+    if questioning.type not in valid_types:
+        raise ValueError(f"Invalid type: {questioning.type}")
+
+    if questioning.period:
+        return questioning.period.students
+
+    return questioning.project.students

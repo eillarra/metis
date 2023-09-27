@@ -135,11 +135,16 @@ class Period(BaseModel):
         return super().clean()
 
     def __str__(self) -> str:
-        return f"{self.program_internship.block} / {self.name}"
+        return self.full_name
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.program_internship.block} / P{self.name}"
 
     @property
     def is_open(self) -> bool:
-        return self.is_active and (self.start_date <= timezone.now().date() <= self.end_date)
+        # TODO: do we need an is_active flag?
+        return self.start_date <= timezone.now().date() <= self.end_date
 
     def accepts_cases(self, *, extension_days: int = 4) -> bool:
         """

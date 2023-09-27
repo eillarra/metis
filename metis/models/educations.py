@@ -43,7 +43,7 @@ class Education(BaseModel):
         return self.short_name
 
     def can_be_managed_by(self, user) -> bool:
-        return user.is_staff or self.office_members.filter(pk=user.pk).exists()
+        return self.office_members.filter(pk=user.pk).exists()
 
     def get_office_url(self) -> str:
         return reverse("education_office", args=[self.code])

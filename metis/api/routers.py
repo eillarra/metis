@@ -39,6 +39,7 @@ class Router(NestedRouterMixin, DefaultRouter):
         # /educations/{parent_lookup_education_id}/projects/
         # /educations/{parent_lookup_education_id}/projects/{parent_lookup_project_id}/internships/
         # /educations/{parent_lookup_education_id}/projects/{parent_lookup_project_id}/places/
+        # /educations/{parent_lookup_education_id}/projects/{parent_lookup_project_id}/questionings/
         # /educations/{parent_lookup_education_id}/projects/{parent_lookup_project_id}/students/
 
         education_routes = self.register("educations", views.EducationViewSet, basename="education")
@@ -64,6 +65,12 @@ class Router(NestedRouterMixin, DefaultRouter):
             "places",
             views.ProjectPlaceViewSet,
             basename="project-place",
+            parents_query_lookups=["education_id", "project_id"],
+        )
+        project_routes.register(
+            "questionings",
+            views.QuestioningViewSet,
+            basename="project-questioning",
             parents_query_lookups=["education_id", "project_id"],
         )
         project_routes.register(

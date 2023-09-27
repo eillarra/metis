@@ -45,6 +45,8 @@ interface ProjectPlaceTiny extends ApiObject {
   Disciplines?: Discipline[];
   Place?: Place;
   Project?: Project;
+  // -----
+  _periods: Set<number>;
 }
 
 interface ProjectPlace extends ProjectPlaceTiny {

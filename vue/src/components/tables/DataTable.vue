@@ -92,6 +92,7 @@
           @click="createDialogVisible = true"
         />
       </div>
+      <slot name="selected-action" v-if="selected"></slot>
     </div>
     <q-table
       class="ugent__data-table q-mb-xl"
@@ -100,11 +101,13 @@
       :rows="queriedRows"
       :columns="extendedColumns"
       :visible-columns="visibleColumns.concat(['edit'])"
-      row-key="_self.id"
+      :row-key="(row) => row._self.id"
       :loading="loading"
       :hide-pagination="hidePagination"
       :pagination="initialPagination"
       binary-state-sort
+      :selection="selection || 'none'"
+      v-model:selected="selected"
     >
       <template #body-cell="props">
         <!-- Custom boolean field -->
@@ -122,6 +125,17 @@
           <span v-else-if="props.col.name == 'disciplines'" class="q-gutter-x-xs">
             <q-badge outline v-for="d in props.value" :key="d.code" :label="d.name" color="dark" />
           </span>
+          <div v-else-if="props.col.name.startsWith('progress_')" class="row full-width items-center">
+            <div class="col-9 q-pr-xs">
+              <q-linear-progress
+                rounded
+                :value="props.value / 100"
+                :color="props.value < 100 ? 'primary' : 'green'"
+                :instant-feedback="false"
+              />
+            </div>
+            <div class="col text-right text-caption">{{ props.value }}%</div>
+          </div>
           <span v-else>{{ props.value }}</span>
         </q-td>
       </template>
@@ -154,7 +168,7 @@
         </q-td>
       </template>
     </q-table>
-    <q-dialog v-if="formComponent" v-model="dialogVisible">
+    <q-dialog v-if="formComponent" v-model="dialogVisible" position="bottom">
       <component :is="formComponent" :obj="selectedObj" @delete:obj="() => (selectedObj = null)" />
     </q-dialog>
     <q-dialog v-if="createFormComponent" v-model="createDialogVisible">
@@ -164,7 +178,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, ComponentOptions } from 'vue';
+import { computed, onMounted, ref, watch, ComponentOptions, getCurrentInstance } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { copyToClipboard } from 'quasar';
@@ -174,6 +188,13 @@ import { Md5 } from 'ts-md5';
 import { notify } from '@/notify';
 import { storage } from '@/storage';
 
+const emit = defineEmits(['update:selected']);
+
+const parentName = computed<string>(() => {
+  const vm = getCurrentInstance()?.proxy as any;
+  return vm?.$parent?.$options.__name || '';
+});
+
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
@@ -181,6 +202,7 @@ const { t } = useI18n();
 const props = defineProps<{
   columns: object[];
   rows: object[];
+  rowsPerPage?: number;
   queryColumns?: string[];
   hiddenColumns?: string[];
   formComponent?: ComponentOptions;
@@ -189,11 +211,17 @@ const props = defineProps<{
   loading?: boolean;
   hideToolbar?: boolean;
   hidePagination?: boolean;
+  inDialog?: boolean;
+  selection?: 'multiple' | 'single' | 'none';
+  selected?: object[];
 }>();
 
+const selected = ref<object[]>(props.selected || []);
+
 const initialPagination = {
-  rowsPerPage: 25,
-  sortBy: props.sortBy || undefined,
+  rowsPerPage: props.rowsPerPage || 25,
+  sortBy: props.sortBy?.replace('-', '') || undefined,
+  descending: props.sortBy?.startsWith('-') || false,
 };
 
 const iconSize = '16px';
@@ -216,7 +244,7 @@ const extendedColumns = computed(() => {
   return columns;
 });
 
-const fullPath = computed<string>(() => `${window.location.href.split('#')[0]}#${route.path}`);
+const fullPath = computed<string>(() => `${window.location.href.split('#')[0]}#${route.path}&${parentName.value}`);
 const queryStorageKey = computed<string>(() => Md5.hashStr(`data_table.query.${fullPath.value}`));
 const query = ref<string>(storage.get(queryStorageKey.value) || route.query.q?.toString() || '');
 const queriedRows = computed(() => {
@@ -245,7 +273,7 @@ const queriedRows = computed(() => {
 });
 
 const visibleColumnsStorageKey = computed<string>(() => Md5.hashStr(`data_table.visible_columns.${fullPath.value}`));
-const visibleColumns = ref<string[]>(storage.get(visibleColumnsStorageKey.value) || []);
+const visibleColumns = ref<string[]>(props.hideToolbar ? [] : storage.get(visibleColumnsStorageKey.value) || []);
 
 const createDialogVisible = ref<boolean>(false);
 const selectedObj = ref<object | null>(null);
@@ -277,6 +305,7 @@ onMounted(() => {
 });
 
 watch(query, (newVal) => {
+  if (props.inDialog) return;
   router.push({ query: { q: newVal || undefined } });
   storage.set(queryStorageKey.value, newVal);
 });
@@ -288,4 +317,19 @@ watch(visibleColumns, (newVal) => {
 if (storage.get(queryStorageKey.value)) {
   router.push({ query: { q: storage.get(queryStorageKey.value) } });
 }
+
+watch(selected, (val) => {
+  if (!val) return;
+  emit('update:selected', val);
+});
+
+/// watch if props.selected is emptied
+watch(
+  () => props.selected,
+  (val) => {
+    if (val?.length === 0 && selected.value.length > 0) {
+      selected.value = [];
+    }
+  }
+);
 </script>

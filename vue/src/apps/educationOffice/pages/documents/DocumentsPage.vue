@@ -5,7 +5,7 @@
   <ul>
     <li v-for="period in filteredPeriods" :key="period.id">
       <div>
-        <span>{{ period.ProgramInternship?.Block?.name }} / P{{ period.name }}</span
+        <span>{{ period.full_name }}</span
         >:&nbsp;
         <a :href="`./files/p/${period.id}/project_place_information.pdf`" target="_blank">Infofiches</a>&nbsp;|&nbsp;
         <a :href="`./files/p/${period.id}/student_information.pdf`">Student information</a>&nbsp;|&nbsp;

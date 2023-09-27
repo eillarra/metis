@@ -3,4 +3,5 @@
 from .internships import *
 from .projects import *
 from .project_places import *
+from .questionings import *
 from .students import *

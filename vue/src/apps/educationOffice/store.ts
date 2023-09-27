@@ -10,6 +10,7 @@ export const useStore = defineStore('educationOffice', () => {
   const projects = ref<Project[]>([]);
   const projectInternships = ref<Internship[]>([]);
   const projectPlaces = ref<ProjectPlace[]>([]);
+  const questionings = ref<Questioning[]>([]);
   const students = ref<StudentUser[]>([]);
 
   const selectedProjectId = ref<number | null>(null);
@@ -240,8 +241,32 @@ export const useStore = defineStore('educationOffice', () => {
         return {
           ...obj,
           Disciplines: obj.disciplines.map((id: number) => disciplineMap.value.get(id)),
+          _periods: obj.availability_set.reduce((set, availability) => {
+            if (availability.min > 0) {
+              set.add(availability.period);
+            }
+            return set;
+          }, new Set<number>()),
         };
       });
+    });
+  }
+
+  async function fetchQuestionings() {
+    questionings.value = [];
+
+    if (!project.value) {
+      return;
+    }
+
+    await api.get(project.value.rel_questionings).then((res) => {
+      questionings.value = res.data.map(
+        (obj: Questioning) =>
+          ({
+            ...obj,
+            Period: periodMap.value.get(obj.period as number) || undefined,
+          } as Questioning)
+      );
     });
   }
 
@@ -348,6 +373,7 @@ export const useStore = defineStore('educationOffice', () => {
 
   return {
     init,
+    fetchQuestionings,
     setData,
     createObj,
     updateObj,
@@ -363,6 +389,7 @@ export const useStore = defineStore('educationOffice', () => {
     projectPlacesWithInternships,
     projectStudents,
     projectStudentsWithInternships,
+    questionings,
     selectedProjectId,
     students,
     blockMap,

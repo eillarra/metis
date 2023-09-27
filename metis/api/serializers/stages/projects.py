@@ -3,7 +3,7 @@ from rest_framework import serializers
 from metis.models.stages.projects import Project, Period
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel import TextEntriesMixin
-from .questionings import QuestioningSerializer
+from .questionings import QuestioningTinySerializer
 
 
 education_lookup_fields = {
@@ -16,6 +16,8 @@ project_lookup_fields = {
 
 
 class PeriodSerializer(BaseModelSerializer):
+    full_name = serializers.CharField(read_only=True)
+
     class Meta:
         model = Period
         exclude = ("created_at", "created_by", "project")
@@ -33,13 +35,14 @@ class ProjectSerializer(TextEntriesMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-detail", nested_lookup=education_lookup_fields)
     rel_internships = NestedHyperlinkField("v1:project-internship-list", nested_lookup=project_lookup_fields)
     rel_places = NestedHyperlinkField("v1:project-place-list", nested_lookup=project_lookup_fields)
+    rel_questionings = NestedHyperlinkField("v1:project-questioning-list", nested_lookup=project_lookup_fields)
     rel_students = NestedHyperlinkField("v1:project-student-users", nested_lookup=education_lookup_fields)
     education = serializers.PrimaryKeyRelatedField(read_only=True)
     full_name = serializers.CharField(read_only=True)
     periods = PeriodSerializer(many=True, read_only=True)
     start_date = serializers.DateField(read_only=True)
     end_date = serializers.DateField(read_only=True)
-    questionings = QuestioningSerializer(many=True, read_only=True)
+    questionings = QuestioningTinySerializer(many=True, read_only=True)  # TODO: remove this and use separate endpoint
 
     class Meta:
         model = Project

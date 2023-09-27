@@ -6,7 +6,7 @@ from markdown import markdown
 from time import sleep
 
 from metis.models.emails import EmailTemplate, EmailLog
-from metis.models.stages.questionings import Questioning, get_project_places_for_questioning
+from metis.models.stages.questionings import Questioning
 from metis.services.mailer import schedule_template_email
 from metis.utils.dates import remind_deadline
 
@@ -55,13 +55,21 @@ def schedule_questioning_emails(*, force_send: bool = False):
             raise Exception(f"Sender for Questioning `{questioning.type}` does not exist.")
 
 
-def schedule_project_place_information_email(questioning: Questioning):
+def schedule_project_place_information_email(questioning: Questioning, filtered_ids: list | None = None):
+    """
+    TODO: move from task to a service, as it is reused by the API.
+    """
     try:
         email_template = EmailTemplate.objects.get(code=questioning.type, education=questioning.project.education)
     except EmailTemplate.DoesNotExist:
         raise Exception(f"EmailTemplate for {questioning.type} does not exist.")
 
-    for project_place in get_project_places_for_questioning(questioning):
+    target_group = questioning.get_target_group()
+
+    if filtered_ids:
+        target_group = target_group.filter(id__in=filtered_ids)
+
+    for project_place in target_group:
         if project_place.form_responses.filter(questioning=questioning).exists():
             continue
 
@@ -83,16 +91,24 @@ def schedule_project_place_information_email(questioning: Questioning):
                 )
 
 
-def schedule_student_tops_email(questioning: Questioning):
-    students = questioning.period.students if questioning.period else None
+def schedule_student_tops_email(questioning: Questioning, filtered_ids: list | None = None):
+    """
+    TODO: move from task to a service, as it is reused by the API.
+    And there are things that can be cleaned up, now that we have target groups as model method...
+    And fix typing...
+    """
+    target_group = questioning.get_target_group()
 
-    if students:
+    if filtered_ids:
+        target_group = target_group.filter(id__in=filtered_ids)
+
+    if target_group:
         try:
             email_template = EmailTemplate.objects.get(code=questioning.type, education=questioning.project.education)
         except EmailTemplate.DoesNotExist:
             raise Exception(f"EmailTemplate for {questioning.type} does not exist.")
 
-        for student in students:
+        for student in target_group:
             if student.form_responses.filter(questioning=questioning).exists():
                 continue
 
