@@ -17,6 +17,8 @@ class ProjectPlace(FormResponsesMixin, RemarksMixin, TextEntriesMixin, BaseModel
     place = models.ForeignKey("metis.Place", related_name="project_place_set", on_delete=models.PROTECT)
     disciplines = models.ManyToManyField("metis.Discipline", related_name="places")
 
+    is_active = models.BooleanField(default=True)
+
     # TODO: planner
     # is_visible_to_planner = models.BooleanField(default=True)
 

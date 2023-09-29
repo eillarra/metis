@@ -32,3 +32,9 @@ class FormResponsesMixin(models.Model):
 
     class Meta:
         abstract = True
+
+    def delete(self, using=None, keep_parents=False):
+        # TODO: pre_delete makes more sense, but it has to be set for each model
+        if self.form_responses.exists():
+            raise models.ProtectedError("Cannot delete object with form responses.", self.form_responses.all())
+        return super().delete(using, keep_parents)
