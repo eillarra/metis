@@ -10,32 +10,37 @@
       >
         <template #default>
           <div class="text-body1 q-py-xs">
-            Net zoals bij de stageverdeling in 3e bachelor, kunnen jullie voorkeursplaatsen doorgeven.<br />
+            <span v-if="questioning.form_definition.description">{{
+              questioning.form_definition.description[locale]
+            }}</span>
+            <span v-else>{{ $t(`tasks.student.${questioning.type}.text`) }}</span
+            ><br />
             <em>Deadline: {{ formatDate(questioning.end_at) }}</em>
           </div>
         </template>
         <template #action>
           <q-spinner v-if="!dataLoaded" color="yellow" size="2em" />
-          <q-btn v-else @click="openQuestioning(questioning)" outline square color="ugent" label="Tops bijwerken" />
+          <q-btn v-else @click="openQuestioning(questioning)" outline square color="ugent" :label="$t(`form.update`)" />
         </template>
       </q-banner>
     </div>
     <q-dialog v-if="selectedQuestioning && formDataResponses" v-model="dialogQuestioning">
       <tops-form
-        v-if="selectedQuestioning.code == 'student_tops'"
+        v-if="selectedQuestioning.type == 'student_tops'"
         v-model="formDataResponses"
         :api-endpoint="student.rel_form_responses"
-        :questioning="(selectedQuestioning as Questioning)"
+        :questioning="selectedQuestioning"
         :project-place-options="props.projectPlaceOptions"
-        :skip-place-id="props.skipPlaceId"
+        :skip-place-ids="props.skipPlaceIds"
+        :skip-discipline-ids="props.skipDisciplineIds"
       />
       <custom-form
         v-else
         v-model="formDataResponses"
         :api-endpoint="student.rel_form_responses"
-        :questioning="(selectedQuestioning as Questioning)"
+        :questioning="selectedQuestioning"
         :addresses-api-endpoint="
-          selectedQuestioning.code == 'student_information' ? props.addressesApiEndpoint : undefined
+          selectedQuestioning.type == 'student_information' ? props.addressesApiEndpoint : undefined
         "
       />
     </q-dialog>
@@ -59,13 +64,14 @@ const props = defineProps<{
   activeQuestionings: Questioning[];
   addressesApiEndpoint?: ApiEndpoint;
   projectPlaceOptions?: ProjectPlace[];
-  skipPlaceId?: number | null;
+  skipPlaceIds?: number[];
+  skipDisciplineIds?: number[];
 }>();
 
 const dataLoaded = ref<boolean>(false);
 const dialogQuestioning = ref<boolean>(false);
 
-const selectedQuestioning = ref<CustomForm | TopsForm>();
+const selectedQuestioning = ref<Questioning>();
 const formDataResponses = ref<CustomFormResponse[]>();
 
 function openQuestioning(questioning: Questioning) {

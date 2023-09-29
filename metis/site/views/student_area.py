@@ -55,20 +55,25 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
         # PROVISIONAL
         # --------------
         from metis.api.serializers import AuthUserSerializer, ProjectTinySerializer, TextEntrySerializer
-        from metis.models import Project
+        from metis.models import Project, Internship
 
         try:
-            previous_project = Project.objects.get(education=self.get_education(), name="AJ22-23")
-            ba3_place_id = (
-                self.get_student_set(request.user)
-                .get(project=previous_project)
-                .internships.first()
-                .project_place.place_id
+            project = Project.objects.get(education=self.get_education(), name="AJ22-23")
+            place_ids = list(
+                Internship.objects.filter(student__in=self.get_student_set(request.user)).values_list(
+                    "project_place__place_id", flat=True
+                )
+            )
+            discipline_ids = list(
+                Internship.objects.filter(student__in=self.get_student_set(request.user)).values_list(
+                    "discipline_id", flat=True
+                )
             )
         except Exception:
-            ba3_place_id = None
+            place_ids = None
+            discipline_ids = None
 
-        period_id = 10 if self.get_education().code == "audio" else 20
+        period_id = 11 if self.get_education().code == "audio" else 20
         project = Project.objects.get(education=self.get_education(), name="AJ23-24")
 
         temp_props = {
@@ -90,7 +95,8 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
                     availability_set__period_id=period_id, availability_set__min__gt=0
                 ).order_by("place__name")
             ],
-            "ba3_place_id": ba3_place_id,
+            "place_ids": place_ids,
+            "discipline_ids": discipline_ids,
         }
         # --------------
         # --------------

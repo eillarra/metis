@@ -134,7 +134,7 @@ const props = defineProps<{
 
 const processing = ref(false);
 const responses = ref<CustomFormResponse[]>(props.modelValue);
-const definition = ref<CustomFormDefinition>(props.questioning.form_definition);
+const definition = ref<CustomFormDefinition>(props.questioning.form_definition as CustomFormDefinition);
 const mutable = ref<CustomFormData>(
   props.modelValue.find((response) => response.questioning === props.questioning.id)?.data || {}
 );

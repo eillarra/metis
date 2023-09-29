@@ -38,4 +38,5 @@ class Student(FormResponsesMixin, RemarksMixin, BaseModel):
         )
 
     def internships(self) -> list["ProgramInternship"]:
+        """TODO: does this make any sense?"""
         return self.block.internships.filter(block=self.block)

@@ -237,12 +237,12 @@ export default {
     },
     student: {
       student_information: {
-        text: 'Please check the student info sheet and update if necessary',
-        btn_label: 'Update info sheet',
+        text: 'Gelieve jouw infofiche te controleren en waar nodig te actualiseren.',
+        btn_label: 'Infofiche bijwerken',
       },
       student_tops: {
-        text: 'Please fill out the TOPS form for {student_name}.',
-        btn_label: 'Update TOPS form',
+        text: 'Gelieve jouw TOPS te controleren en waar nodig te actualiseren.',
+        btn_label: 'TOPS bijwerken',
       },
     },
   },

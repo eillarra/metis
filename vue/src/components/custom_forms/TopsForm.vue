@@ -28,8 +28,9 @@
                 <q-item-label>{{ scope.opt.label }}</q-item-label>
                 <q-item-label caption>{{ scope.opt.disciplines }}</q-item-label>
               </q-item-section>
-              <q-item section side v-if="scope.opt.disable">
-                <q-badge v-if="scope.opt.place_id == props.skipPlaceId" color="ugent">Ba3</q-badge>
+              <q-item section side v-if="scope.opt.disable || scope.opt.disciplineDisable">
+                <q-badge v-if="skipPlaceIds.includes(scope.opt.place_id)" color="ugent">Geweest</q-badge>
+                <q-badge v-else-if="scope.opt.disciplineDisable" color="red">{{ scope.opt.disciplines }}</q-badge>
                 <q-icon v-else name="check_circle" />
               </q-item>
             </q-item>
@@ -69,27 +70,29 @@ const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps<{
   apiEndpoint: ApiEndpoint;
-  form: TopsForm;
+  questioning: Questioning;
   modelValue: CustomFormResponse[];
   projectPlaceOptions: ProjectPlaceOption[];
-  skipPlaceId: number | null;
+  skipPlaceIds: number[];
+  skipDisciplineIds: number[];
 }>();
 
-const choices = [...Array(props.form.definition.num_tops).keys()];
+const choices = [...Array((props.questioning.form_definition as TopsFormDefinition).num_tops).keys()];
 const pdf =
-  props.form.definition.num_tops == 10
+  props.questioning.form_definition.num_tops == 10
     ? '/nl/stages/logo/files/p/20/project_place_information.pdf'
-    : '/nl/stages/audio/files/p/10/project_place_information.pdf';
+    : '/nl/stages/audio/files/p/11/project_place_information.pdf';
 const responses = ref<CustomFormResponse[]>(props.modelValue);
-const definition = ref<TopsFormDefinition>(props.form.definition);
+const definition = ref<TopsFormDefinition>(props.questioning.form_definition as TopsFormDefinition);
 const mutable = ref<CustomFormData>(
   props.modelValue
-    .find((response) => response.form === props.form.id)
+    .find((response) => response.questioning === props.questioning.id)
     ?.data.tops.map((id: number) => ({
       value: id,
       label: props.projectPlaceOptions.find((option) => option.value === id)?.label,
     })) || []
 );
+const skipPlaceIds = computed<number[]>(() => props.skipPlaceIds);
 
 const formTitle = computed<string>(() => {
   if (definition.value.title) {
@@ -99,12 +102,12 @@ const formTitle = computed<string>(() => {
 });
 
 const existingResponse = computed<CustomFormResponse | undefined>(() => {
-  return responses.value.find((response) => response.form === props.form.id);
+  return responses.value.find((response) => response.questioning === props.questioning.id);
 });
 
 const formIsValid = computed<boolean>(() => {
   const tops = mutable.value.filter((option: ProjectPlaceOption | null) => option);
-  return tops.length === props.form.definition.num_tops;
+  return tops.length === definition.value.num_tops;
 });
 
 function save(): void {
@@ -116,14 +119,16 @@ function save(): void {
   };
 
   if (existingResponse.value) {
-    api.put(existingResponse.value.self, { data: tops, form: existingResponse.value.form }).then((res) => {
-      const idx = responses.value.findIndex((r) => r.id === res.data.id);
-      responses.value[idx] = res.data;
-      notify.success(t('form.updated'));
-      emit('update:modelValue', responses.value);
-    });
+    api
+      .put(existingResponse.value.self, { data: tops, questioning: existingResponse.value.questioning })
+      .then((res) => {
+        const idx = responses.value.findIndex((r) => r.id === res.data.id);
+        responses.value[idx] = res.data;
+        notify.success(t('form.updated'));
+        emit('update:modelValue', responses.value);
+      });
   } else {
-    api.post(props.apiEndpoint, { data: tops, form: props.form.id }).then((res) => {
+    api.post(props.apiEndpoint, { data: tops, questioning: props.questioning.id }).then((res) => {
       responses.value.push(res.data);
       notify.success(t('form.saved'));
       emit('update:modelValue', responses.value);
@@ -135,12 +140,18 @@ const tops = computed(() =>
   mutable.value.filter((option: ProjectPlaceOption | null) => option).map((option: ProjectPlaceOption) => option.value)
 );
 
-const options = computed(() =>
-  props.projectPlaceOptions.map((option) => {
+const options = computed(() => {
+  return props.projectPlaceOptions.map((option) => {
+    const d = props.skipDisciplineIds;
+    const disciplineDisable =
+      (d.length == 2 && d[0] == 1 && d[1] == 1 && option.disciplines == 'Klinisch') ||
+      (d.length == 2 && d[0] == 2 && d[1] == 2 && option.disciplines == 'Prothetisch');
+
     return {
       ...option,
-      disable: tops.value.includes(option.value) || option.place_id == props.skipPlaceId,
+      disable: tops.value.includes(option.value) || props.skipPlaceIds.includes(option.place_id) || disciplineDisable,
+      disciplineDisable: disciplineDisable,
     };
-  })
-);
+  });
+});
 </script>

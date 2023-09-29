@@ -11,7 +11,8 @@
     :active-questionings="activeQuestionings"
     :addresses-api-endpoint="addressesApiEndpoint"
     :project-place-options="projectPlaceOptions"
-    :skip-place-id="ba3PlaceId"
+    :skip-place-ids="previousPlaceIds"
+    :skip-discipline-ids="previousDisciplineIds"
     class="q-mb-lg"
   />
   <div v-if="signatures !== undefined" class="q-mb-xl">
@@ -115,7 +116,8 @@ const academicYear = computed<string>(() => page.props.academic_year as string);
 const student = computed<Student>(() => page.props.student as Student);
 const requiredTexts = computed<TextEntry[]>(() => page.props.required_texts as TextEntry[]);
 const addressesApiEndpoint = computed<string>(() => (page.props.user as AuthenticatedUser)?.rel_addresses);
-const ba3PlaceId = computed<number | null>(() => page.props.ba3_place_id as number | null);
+const previousPlaceIds = computed<number[]>(() => page.props.place_ids as number[]);
+const previousDisciplineIds = computed<number[]>(() => page.props.discipline_ids as number[]);
 
 const rijksregisternummer = ref<string>('');
 const finalText = ref<string>('');

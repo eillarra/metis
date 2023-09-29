@@ -237,11 +237,11 @@ export default {
     },
     student: {
       student_information: {
-        text: 'Please check the student info sheet and update if necessary',
+        text: 'Please check the student info sheet and update if necessary.',
         btn_label: 'Update info sheet',
       },
       student_tops: {
-        text: 'Please fill out the TOPS form for {student_name}.',
+        text: 'Please check your TOPS and update if necessary.',
         btn_label: 'Update TOPS form',
       },
     },

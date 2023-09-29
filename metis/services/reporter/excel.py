@@ -31,7 +31,9 @@ class StudentTopsExcel:
         tops = {}
 
         for student in students:
-            form_response = student.form_responses.filter(questioning__type="student_tops").first()
+            form_response = student.form_responses.filter(
+                questioning__type="student_tops", questioning__period_id=self.period.id
+            ).first()
             student_tops = form_response.data["tops"] if form_response else []
             updated_at[student.id] = str(form_response.updated_at) if form_response else None
             tops[student.id] = {}
