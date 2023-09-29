@@ -3,6 +3,8 @@ export default {
   ge: 'Faculty of Medicine and Health Sciences',
   version: 'Version',
   loading: 'Loading...',
+  configuration: 'Configuratie',
+  progress: 'Progress',
   settings: 'Settings',
   user_menu: {
     account: 'Account',
@@ -34,6 +36,7 @@ export default {
   contact_only: 'Only a contact',
   discipline: 'Discipline | Disciplines',
   document: 'Document | Documents',
+  email_template: 'Email template | Email templates',
   history: 'History',
   internship: 'Internship | Internships',
   internship_status: {
@@ -76,6 +79,7 @@ export default {
     start_date: 'Start date',
     end_date: 'End date',
     title: 'Title | Titles',
+    subject: 'Subject | Subjects',
     type: 'Type | Types',
     status: 'Status | Statuses',
     created_at: 'Created at',

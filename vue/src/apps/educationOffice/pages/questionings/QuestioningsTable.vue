@@ -1,5 +1,12 @@
 <template>
-  <data-table :columns="columns" :rows="rows" :form-component="QuestioningDialog" sort-by="-start_at" hide-toolbar />
+  <data-table
+    :columns="columns"
+    :rows="rows"
+    :form-component="QuestioningDialog"
+    sort-by="-start_at"
+    hide-toolbar
+    open-dialog
+  />
 </template>
 
 <script setup lang="ts">

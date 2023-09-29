@@ -3,6 +3,8 @@ export default {
   ge: 'Faculteit Geneeskunde en Gezondheidswetenschappen',
   version: 'Versie',
   loading: 'Aan het laden...',
+  configuration: 'Configuratie',
+  progress: 'Verloop',
   settings: 'Instellingen',
   user_menu: {
     account: 'Account',
@@ -33,6 +35,7 @@ export default {
   contact_only: 'Enkel een contactpersoon',
   discipline: 'Discipline | Disciplines',
   document: 'Document | Documenten',
+  email_template: 'E-mail template | E-mail templates',
   history: 'Historiek',
   internship: 'Stage | Stages',
   internship_status: {
@@ -75,6 +78,7 @@ export default {
     start_date: 'Startdatum',
     end_date: 'Einddatum',
     title: 'Titel | Titels',
+    subject: 'Onderwerp | Onderwerpen',
     type: 'Type | Types',
     status: 'Status | Statussen',
     created_at: 'Aangemaakt op',

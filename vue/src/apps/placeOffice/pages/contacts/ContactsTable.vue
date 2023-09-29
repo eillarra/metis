@@ -57,6 +57,7 @@ const columns = [
 
 const rows = computed(() => {
   return props.contacts.map((obj) => ({
+    _self: obj,
     name: obj.user.name,
     is_mentor: obj.is_mentor,
     is_staff: obj.is_staff,

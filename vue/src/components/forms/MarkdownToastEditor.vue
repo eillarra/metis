@@ -9,9 +9,14 @@
     padding: 0 !important;
   }
 
-  .toastui-editor-tabs,
-  .toastui-editor-contents,
   .ProseMirror {
+    background-color: #f7f9fc;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  .toastui-editor-tabs,
+  .toastui-editor-contents {
     font-family: 'UGent Panno SemiLight', 'Arial', sans-serif;
     font-size: 18px !important;
     line-height: 1.4;
@@ -34,7 +39,13 @@
 </style>
 
 <template>
-  <div ref="canvas" class="metis__md-editor bg-white full-width" />
+  <div
+    ref="canvas"
+    class="metis__md-editor bg-white full-width"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+  />
 </template>
 
 <script setup lang="ts">

@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from metis.services.form_builder import validators as form_validators
 from ..base import BaseModel
+from ..rel.remarks import RemarksMixin
 from .project_places import ProjectPlace
 from .students import Student
 
@@ -13,7 +14,7 @@ class QuestioningManager(models.Manager):
         return self.filter(start_at__lte=timezone.now(), end_at__gte=timezone.now())
 
 
-class Questioning(BaseModel):
+class Questioning(RemarksMixin, BaseModel):
     """
     In a Project, questionings define the moments when students / places have to fill in a form.
     The dates can be assigned to the whole project or to a Period (and thus to a specific Block).
@@ -38,7 +39,11 @@ class Questioning(BaseModel):
     )
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
+
     form_definition = models.JSONField(default=dict)
+    email_subject = models.CharField(max_length=255)
+    email_body = models.TextField()
+    email_add_office_in_bcc = models.BooleanField(default=False)
 
     objects = QuestioningManager()
 

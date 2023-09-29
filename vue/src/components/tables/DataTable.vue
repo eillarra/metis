@@ -156,7 +156,13 @@
       <template #body-cell-edit="props">
         <!-- Edit icon -->
         <q-td :props="props" auto-width>
-          <q-icon @click="selectObj(props.row)" name="edit" :size="iconSize" color="ugent" class="cursor-pointer" />
+          <q-icon
+            @click="selectObj(props.row)"
+            :name="openDialog ? 'open_in_browser' : 'edit'"
+            :size="iconSize"
+            color="ugent"
+            class="cursor-pointer"
+          />
         </q-td>
       </template>
       <template #body-cell-download="props">
@@ -214,8 +220,10 @@ const props = defineProps<{
   inDialog?: boolean;
   selection?: 'multiple' | 'single' | 'none';
   selected?: object[];
+  openDialog?: boolean /* TODO: this can be solved in another way, as it is only for custom open icon */;
 }>();
 
+const openDialog = ref<boolean>(props.openDialog || false);
 const selected = ref<object[]>(props.selected || []);
 
 const initialPagination = {

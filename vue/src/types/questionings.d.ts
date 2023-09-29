@@ -7,6 +7,9 @@ interface Questioning extends ApiObject {
   is_active: boolean;
   period: number;
   form_definition: CustomFormDefinition | TopsFormDefinition;
+  email_subject: string;
+  email_body: string;
+  email_add_office_in_bcc: boolean;
   updated_at: string;
   updated_by: UserTiny;
   target_object_ids?: number[];

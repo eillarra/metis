@@ -14,7 +14,7 @@
 </style>
 
 <template>
-  <q-layout view="hHh LpR fFf" container class="bg-white metis__full-dialog-layout">
+  <q-layout view="hHh LpR lFf" container class="bg-white metis__full-dialog-layout">
     <q-header class="bg-white q-pt-sm">
       <q-toolbar class="text-primary q-pl-lg q-pr-sm">
         <q-icon :name="icon" />

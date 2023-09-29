@@ -6,7 +6,7 @@
     sort-by="name"
     :rows-per-page="10"
     in-dialog
-    :selection="(questioningIsOpen) ? 'multiple' : 'none'"
+    :selection="questioningIsOpen ? 'multiple' : 'none'"
     v-model:selected="selected"
   >
     <template #selected-action v-if="questioningIsOpen">
@@ -34,6 +34,7 @@ import { api } from '@/axios.ts';
 import { useCommonStore } from '@/stores/common.js';
 import { confirm } from '@/dialog';
 import { notify } from '@/notify';
+import { formatDate } from '@/utils';
 
 import DataTable from '@/components/tables/DataTable.vue';
 
@@ -63,6 +64,13 @@ const columns = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'last_login',
+    field: 'last_login',
+    label: t('field.last_login'),
+    align: 'left',
+    sortable: true,
+  },
 ];
 
 const rows = computed(() => {
@@ -71,6 +79,7 @@ const rows = computed(() => {
       _self: obj,
       name: obj.User?.name,
       email: obj.User?.email,
+      last_login: obj.User?.last_login ? formatDate(obj.User?.last_login) : '-',
     };
   });
 });

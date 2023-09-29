@@ -1,4 +1,5 @@
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from metis.models import Questioning
@@ -22,15 +23,15 @@ class QuestioningViewSet(ProjectNestedModelViewSet):
 
     @action(detail=True, methods=["post"])
     def send_emails(self, request, *args, **kwargs):
-        """
-        This endpoint gets a list if ids and sends the necessary emails.
-        """
         ids = request.data.get("ids", [])
 
         if not ids:
-            return Response({"status": "error", "message": "No ids provided."})
+            raise ValidationError({"ids": "No ids provided."})
 
         questioning = self.get_object()
+
+        if not questioning.is_active:
+            raise PermissionDenied("Questioning is not active.")
 
         if questioning.type == Questioning.PROJECT_PLACE_INFORMATION:
             schedule_project_place_information_email(questioning, ids)

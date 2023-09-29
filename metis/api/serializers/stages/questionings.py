@@ -15,7 +15,7 @@ class QuestioningTinySerializer(BaseModelSerializer):
 
     class Meta:
         model = Questioning
-        exclude = ("created_at", "created_by")
+        exclude = ("email_subject", "email_body", "email_add_office_in_bcc", "created_at", "created_by")
 
 
 class QuestioningSerializer(QuestioningTinySerializer):

@@ -325,6 +325,9 @@ export const useStore = defineStore('educationOffice', () => {
       case 'projectPlace':
         collection = projectPlaces.value as ProjectPlace[];
         break;
+      case 'questioning':
+        collection = questionings.value as Questioning[];
+        break;
       case 'student':
         if (action == 'insert') {
           fetchStudents();
