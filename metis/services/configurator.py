@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, Extra, ValidationError, validator
+from pydantic import BaseModel, Field, ValidationError, field_validator
 
 
 class Translation(BaseModel):
@@ -11,7 +11,7 @@ class TextEntryType(BaseModel):
     title: Translation
 
     class Config:
-        extra = Extra.forbid
+        extra = "forbid"
         str_strip_whitespace = True
 
 
@@ -40,10 +40,10 @@ class EducationConfig(BaseModel):
     )
 
     class Config:
-        extra = Extra.forbid
+        extra = "forbid"
         validate_default = True
 
-    @validator("project_text_types")
+    @field_validator("project_text_types")
     def validate_project_text_types(cls, v):
         required = {"project.internship_agreement", "project.privacy_agreement"}
         codes = {c.code for c in v}

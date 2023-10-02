@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Extra, validator
+from pydantic import BaseModel, field_validator
 from typing import Literal, Union
 
 
@@ -13,7 +13,7 @@ class Rule(BaseModel):
     value: str | int | bool | None = None
 
     class Config:
-        extra = Extra.forbid
+        extra = "forbid"
         validate_default = True
 
 
@@ -22,7 +22,7 @@ class FieldOption(BaseModel):
     label: Translation
 
     class Config:
-        extra = Extra.forbid
+        extra = "forbid"
         validate_default = True
 
 
@@ -49,7 +49,7 @@ class ChoiceField(FormField):
     multiple: bool = False
     other_option: str | None = None
 
-    @validator("options")
+    @field_validator("options")
     def validate_options(cls, v):
         values = set()
         for option in v:
@@ -72,7 +72,7 @@ class Fieldset(BaseModel):
     rule: Rule | None = None
 
     class Config:
-        extra = Extra.forbid
+        extra = "forbid"
         validate_default = True
 
 
@@ -82,10 +82,10 @@ class CustomForm(BaseModel):
     description: Translation | None = None
 
     class Config:
-        extra = Extra.forbid
+        extra = "forbid"
         validate_default = True
 
-    @validator("fieldsets")
+    @field_validator("fieldsets")
     def validate_fieldsets(cls, v):
         codes = set()
         for fieldset in v:
