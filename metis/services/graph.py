@@ -70,7 +70,7 @@ class GraphAPI:
         """
         Finds a user in Azure AD by their email address.
 
-        :param email: The email address of the user to find.
+        :param str email: The email address of the user to find.
         :return: A tuple containing the user's id and status (enabled), or None if the user was not found.
         """
         token = self._get_token()
@@ -90,11 +90,11 @@ class GraphAPI:
 
     def register_email(self, email: str, *, send_invitation: bool = False) -> Tuple[bool, str, bool]:
         """
-        Registers a new email address and sends an invitation to join the Metis platform.
+        Registers a new email address and (optionally) sends an invitation to join the Metis platform.
 
-        :param email: The email address to register.
-        :param send_invitation: Whether or not to send an invitation email. Defaults to False.
-        :return: A tuple containing a boolean indicating success or failure, a user id, and account enabled status.
+        :param str email: The email address to register.
+        :param bool send_invitation: Whether or not to send an invitation email. Defaults to False.
+        :return: A tuple containing a bool indicating success or failure, a user id, and account enabled status.
         """
         existing_user_id, enabled = self.find_user_by_email(email)
         if existing_user_id:
