@@ -168,17 +168,10 @@ AUTHENTICATION_BACKENDS = [
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_FORMS = {
-    "signup": "metis.forms.MetisSignupForm",
-}
 
 # Social accounts
 
 SOCIALACCOUNT_PROVIDERS = {
-    "linkedin_oauth2": {
-        "SCOPE": ["r_emailaddress", "r_liteprofile"],
-        "PROFILE_FIELDS": ["id", "firstName", "lastName", "emailAddress"],
-    },
     "ugent": {
         "TENANT": os.environ.get("UGENT_TENANT_ID", "organizations"),
     },
