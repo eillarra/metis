@@ -221,7 +221,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingPlaceLinkTrainingDiscipline
 - [ ] TrainingPreferenceDiscipline
 - [ ] TrainingPreferencePeriod
-- [ ] TrainingPreferencePlace
+- [x] TrainingPreferencePlace: `Questioning` and `CustomFormResponse`
 - [ ] TrainingPreferenceStatus
 - [ ] TrainingPrePlanning
 - [x] TrainingProgram: `Program`

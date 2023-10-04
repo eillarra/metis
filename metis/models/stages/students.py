@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 class Student(FormResponsesMixin, RemarksMixin, BaseModel):
     """
     A Student is a User that is linked to a Project.
-    TODO: This model is used to register students' preferences too.
     """
 
     user = models.ForeignKey("metis.User", related_name="student_set", on_delete=models.PROTECT)
