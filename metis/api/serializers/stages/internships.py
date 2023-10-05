@@ -4,6 +4,7 @@ from metis.models.stages.internships import Internship, Mentor
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..disciplines import DisciplineSerializer
 from ..rel.remarks import RemarksMixin
+from ..places import PlaceInertiaSerializer
 from ..users import UserLastLoginSerializer
 from .programs import ProgramInternshipSerializer
 from .students import StudentInertiaSerializer
@@ -50,3 +51,7 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
 class InternshipInertiaSerializer(InternshipSerializer):
     Discipline = DisciplineSerializer(read_only=True, source="discipline")
     Student = StudentInertiaSerializer(read_only=True, source="student")
+
+
+class InternshipFullInertiaSerializer(InternshipInertiaSerializer):
+    Place = PlaceInertiaSerializer(read_only=True, source="place")

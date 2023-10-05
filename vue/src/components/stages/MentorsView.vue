@@ -10,7 +10,7 @@
     sort-by="name"
     hide-toolbar
     hide-pagination
-    removable
+    :removable="editable"
     @remove:row="removeMentor"
   />
   <div v-if="editable">

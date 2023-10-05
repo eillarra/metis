@@ -9,13 +9,7 @@
           </q-item-section>
           <q-item-section>Info</q-item-section>
         </q-item>
-        <q-item clickable @click="tab = 'mentors'" :active="tab == 'mentors'" active-class="bg-ugent text-white">
-          <q-item-section avatar>
-            <q-icon name="people_outline" size="xs"></q-icon>
-          </q-item-section>
-          <q-item-section>{{ $t('mentor', 9) }}</q-item-section>
-        </q-item>
-        <q-item :disabled="true" :active="tab == 'timesheets'" active-class="bg-ugent text-white">
+        <q-item clickable @click="tab = 'timesheets'" :active="tab == 'timesheets'" active-class="bg-ugent text-white">
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
           </q-item-section>
@@ -36,18 +30,52 @@
             <div class="col-12 col-md-6">
               <div class="q-gutter-sm">
                 <h4 class="col-12 col-md-3 q-mt-sm q-mb-none">{{ $t('internship') }}</h4>
-                <readonly-field :label="$t('student')" :value="((obj.Student as Student).User as User).name" />
-                <readonly-field :label="$t('field.email')" :value="((obj.Student as Student).User as User).email" />
+                <readonly-field :label="$t('place')" :value="(obj.Place as Place).name" />
+                <readonly-field
+                  :label="$t('place_type')"
+                  :value="((obj.Place as Place).Type as PlaceType)?.name || '-'"
+                />
                 <div class="row q-col-gutter-x-lg q-pl-sm">
                   <readonly-field :label="$t('field.start_date')" :value="obj.start_date" class="col-12 col-md" />
                   <readonly-field :label="$t('field.end_date')" :value="obj.end_date" class="col-12 col-md" />
                 </div>
+                <q-field
+                  v-for="(address, i) in obj.Place?.addresses"
+                  :key="address.id"
+                  :label="`${$t('address')} #${i + 1}`"
+                  readonly
+                  class="col-12 col-md"
+                  dense
+                  stack-label
+                >
+                  <template #control>
+                    <div class="self-center full-width no-outline" tabindex="0">
+                      {{ address.address }}, {{ address.postcode }} {{ address.city }}
+                    </div>
+                  </template>
+                  <template #append>
+                    <a
+                      @click.stop
+                      :href="`https://www.google.com/maps/place/${address.mapbox_feature.center[1]}+${address.mapbox_feature.center[0]}`"
+                      target="_blank"
+                      class="q-ml-md inherit"
+                    >
+                      <q-icon name="map" size="xs" />
+                    </a>
+                  </template>
+                </q-field>
               </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <mentors-view :editable="false" :obj="obj" />
             </div>
           </div>
         </q-tab-panel>
-        <q-tab-panel name="mentors">
-          <mentors-view :editable="userIsAdmin" :obj="obj" @update:obj="(obj: Internship) => updateObj(obj)" />
+        <q-tab-panel name="timesheets">
+          <div class="row q-col-gutter-sm q-mb-lg">
+            <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('timesheet', 9) }}</h4>
+          </div>
+          <timesheets-view :internship="obj" />
         </q-tab-panel>
       </q-tab-panels>
     </template>
@@ -57,29 +85,19 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-
-import { useStore } from '../../store.js';
 
 import FullDialog from '@/components/FullDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
+import TimesheetsView from './timesheets/TimesheetsView.vue';
 
 const props = defineProps<{
   obj: Internship;
 }>();
-
-const store = useStore();
-
-const { userIsAdmin } = storeToRefs(store);
 
 const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');
 const internshipName = computed<string>(
   () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`
 );
-
-function updateObj(obj: Internship) {
-  store.updateObj('internship', obj);
-}
 </script>

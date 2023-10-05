@@ -15,13 +15,19 @@
           </q-item-section>
           <q-item-section>{{ $t('mentor', 9) }}</q-item-section>
         </q-item>
-        <q-item :disabled="true" :active="tab == 'timesheets'" active-class="bg-ugent text-white">
+        <q-item
+          clickable
+          :disable="!hasStarted"
+          @click="tab = 'timesheets'"
+          :active="tab == 'timesheets'"
+          active-class="bg-ugent text-white"
+        >
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
-        <q-item :disabled="true" :active="tab == 'evaluations'" active-class="bg-ugent text-white">
+        <q-item disable :active="tab == 'evaluations'" active-class="bg-ugent text-white">
           <q-item-section avatar>
             <q-icon name="checklist" size="xs"></q-icon>
           </q-item-section>
@@ -74,6 +80,9 @@
         <q-tab-panel name="mentors">
           <mentors-view editable :obj="obj" @update:obj="(obj: Internship) => updateObj(obj)" />
         </q-tab-panel>
+        <q-tab-panel name="timesheets">
+          <timesheets-view :internship="obj" />
+        </q-tab-panel>
         <q-tab-panel name="remarks">
           <remarks-view :api-endpoints="remarkEndpoints" />
         </q-tab-panel>
@@ -111,6 +120,7 @@ import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
+import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
 
 const emit = defineEmits(['delete:obj']);
@@ -129,6 +139,10 @@ const projectName = computed<string>(() => (project.value ? project.value.name :
 const internshipName = computed<string>(
   () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`
 );
+const hasStarted = computed<boolean>(() => {
+  if (!obj.value.start_date) return false;
+  return new Date(obj.value.start_date) <= new Date();
+});
 
 const filteredPeriods = computed(() => {
   if (!project.value) return [];

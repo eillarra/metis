@@ -5,6 +5,7 @@ import { api } from '@/axios.ts';
 
 export const useStore = defineStore('studentArea', () => {
   const education = ref<EducationTiny | undefined>(undefined);
+  const internships = ref<Internship[]>([]);
   const signatures = ref<Signature[] | undefined>(undefined);
   const students = ref<Student[]>([]);
   const projects = ref<Project[]>([]);
@@ -28,7 +29,8 @@ export const useStore = defineStore('studentArea', () => {
     djangoEducation: EducationTiny,
     djangoProjects: Project[],
     djangoStudents: Student[],
-    djangProjectPlaceOptions: ProjectPlaceOption[]
+    djangProjectPlaceOptions: ProjectPlaceOption[],
+    djangoInternships: Internship[]
   ) {
     djangoProjects.sort((a, b) => {
       return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
@@ -49,6 +51,9 @@ export const useStore = defineStore('studentArea', () => {
     });
     selectedProjectId.value = djangoProjects[0]?.id || null;
     projectPlaceOptions.value = djangProjectPlaceOptions;
+    internships.value = djangoInternships.map((internship) => ({
+      ...internship,
+    }));
   }
 
   const project = computed<Project | undefined>(() => {
@@ -65,6 +70,7 @@ export const useStore = defineStore('studentArea', () => {
     setData,
     fetchSignatures,
     education,
+    internships,
     project,
     projectPlaceOptions,
     activeQuestionings,

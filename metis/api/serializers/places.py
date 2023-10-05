@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from metis.models import Place, PlaceType, Contact, User
 from .base import BaseTranslatedModelSerializer, BaseModelSerializer, NestedHyperlinkField
-from .rel import AddressesMixin, RemarksMixin, TextEntriesMixin
+from .rel import AddressSerializer, AddressesMixin, RemarksMixin, TextEntriesMixin
 from .users import UserLastLoginSerializer
 
 
@@ -45,3 +45,8 @@ class PlaceTypeSerializer(BaseTranslatedModelSerializer):
     class Meta:
         model = PlaceType
         fields = ("id", "name")
+
+
+class PlaceInertiaSerializer(PlaceSerializer):
+    Type = PlaceTypeSerializer(read_only=True, source="type")
+    addresses = AddressSerializer(many=True, read_only=True)

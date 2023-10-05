@@ -46,10 +46,10 @@ const columns = [
     classes: 'q-table--col-auto-width',
   },
   {
-    name: 'student_name',
-    field: 'student_name',
+    name: 'place_name',
+    field: 'place_name',
     required: true,
-    label: t('student'),
+    label: t('place'),
     align: 'left',
     sortable: true,
     sort: (a: string, b: string) => a.localeCompare(b),
@@ -57,17 +57,18 @@ const columns = [
     classes: 'sticky-left',
   },
   {
+    name: 'place_type',
+    field: 'place_type',
+    label: t('place_type'),
+    align: 'left',
+    classes: 'q-table--col-auto-width',
+  },
+  {
     name: 'disciplines',
     field: 'disciplines',
     label: t('discipline'),
     align: 'left',
     classes: 'q-table--col-auto-width',
-  },
-  {
-    name: 'has_mentors',
-    field: 'has_mentors',
-    label: t('mentor', 9),
-    align: 'center',
   },
 ];
 
@@ -77,9 +78,9 @@ const rows = computed(() => {
     _class: obj.status === 'cancelled' ? 'bg-red-1' : obj.status === 'unsuccessful' ? 'bg-orange-1' : '',
     start_date: obj.start_date,
     end_date: obj.end_date,
-    student_name: (obj.Student?.User as StudentUser)?.name || '-',
+    place_name: (obj.Place as Place)?.name || '-',
+    place_type: (obj.Place as Place)?.Type?.name || '-',
     disciplines: obj.Discipline ? [obj.Discipline] : [],
-    has_mentors: obj.mentors.length > 0,
   }));
 });
 </script>

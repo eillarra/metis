@@ -16,7 +16,7 @@
     </div>
     <div v-if="!educations.length && !student_educations.length && !places.length" class="col-12 col-md-3">
       <p>{{ $t('dashboard.no_results') }}</p>
-      <p class="text-grey-4 text-h2 text-mono q-mt-xl">\(^Д^)/</p>
+      <p class="text-grey-4 text-h3 text-mono q-mt-xl text-no-wrap">\(^Д^)/</p>
     </div>
   </div>
 </template>

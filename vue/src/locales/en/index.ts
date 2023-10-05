@@ -90,7 +90,11 @@ export default {
     updated_at: 'Last updated',
     updated_by: 'Last updated by',
     last_login: 'Last login',
+    approved: 'Approved',
     open: 'Open',
+    start_time: 'Start time',
+    end_time: 'End time',
+    duration: 'Duration',
   },
   form: {
     add: 'Add',
@@ -220,6 +224,19 @@ export default {
       save: 'Save text',
       saved: 'Text saved',
       signed: 'Text signed',
+    },
+    timesheet: {
+      help: {
+        choose_date: 'Choose a date',
+        calendar_colors:
+          'Choose a date to add or edit a timesheet. Orange days have not been approved yet by the mentor(s) so you can still edit them. Green days have been approved and can no longer be edited.',
+      },
+      create: {
+        new: 'Create a new timesheet',
+        success: 'Timesheet created',
+      },
+      edit: 'Edit timesheet',
+      saved: 'Timesheet information saved',
     },
   },
   questionings: {

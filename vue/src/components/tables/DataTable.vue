@@ -63,6 +63,7 @@
         </template>
       </q-input>
       <q-select
+        v-if="!hideColumnSelector"
         v-model="visibleColumns"
         multiple
         dense
@@ -224,6 +225,7 @@ const props = defineProps<{
   sortBy?: string;
   loading?: boolean;
   hideToolbar?: boolean;
+  hideColumnSelector?: boolean;
   hidePagination?: boolean;
   inDialog?: boolean;
   selection?: 'multiple' | 'single' | 'none';

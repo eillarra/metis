@@ -24,7 +24,8 @@ store.setData(
   page.props.education as EducationTiny,
   page.props.projects as Project[],
   page.props.students as Student[],
-  page.props.project_place_otions as ProjectPlaceOption[]
+  page.props.project_place_otions as ProjectPlaceOption[],
+  page.props.internships as Internship[]
 );
 store.init();
 </script>

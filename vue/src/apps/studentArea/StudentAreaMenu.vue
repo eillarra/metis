@@ -5,9 +5,15 @@
         <q-item-label header>{{ $t('internship', 9) }}</q-item-label>
         <q-item clickable :to="{ name: 'tasks' }" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="checklist" size="xs"></q-icon>
+            <q-icon name="done_all" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('task', 9) }}</q-item-section>
+        </q-item>
+        <q-item clickable :to="{ name: 'planning' }" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="calendar_month" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('planning') }}</q-item-section>
         </q-item>
         <q-item clickable :to="{ name: 'documents' }" active-class="bg-ugent text-white">
           <q-item-section avatar>

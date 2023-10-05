@@ -89,7 +89,11 @@ export default {
     updated_at: 'Laatst bijgewerkt',
     updated_by: 'Laatst bijgewerkt door',
     last_login: 'Laatste aanmelding',
+    approved: 'Goedgekeurd',
     open: 'Open',
+    start_time: 'Beginuur',
+    end_time: 'Einduur',
+    duration: 'Duur',
   },
   form: {
     add: 'Toevoegen',
@@ -219,6 +223,19 @@ export default {
       save: 'Tekst opslaan',
       saved: 'Tekst informatie opgeslagen',
       signed: 'Tekst ondertekend',
+    },
+    timesheet: {
+      help: {
+        choose_date: 'Kies een datum',
+        calendar_colors:
+          'Kies een datum om een tijdenlijst toe te voegen of te bewerken. Oranje dagen zijn nog niet goedgekeurd door de mentor(en) en kunnen nog bewerkt worden. Groene dagen zijn goedgekeurd en kunnen niet meer bewerkt worden.',
+      },
+      create: {
+        new: 'Nieuwe tijdenlijst aanmaken',
+        success: 'Tijdenlijst aangemaakt',
+      },
+      edit: 'Tijdenlijst bewerken',
+      saved: 'Tijdenlijst informatie opgeslagen',
     },
   },
   questionings: {

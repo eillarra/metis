@@ -27,6 +27,7 @@ interface Place extends ApiObject {
   updated_by: UserTiny | null;
   remark_count: number;
   // -----
+  addresses?: Address[];
   Type?: PlaceType;
 }
 

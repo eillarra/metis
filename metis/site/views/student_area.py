@@ -5,8 +5,13 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from metis.api.serializers import EducationTinySerializer, ProjectSerializer, AuthStudentSerializer
-from metis.models import Education
+from metis.api.serializers import (
+    AuthStudentSerializer,
+    EducationTinySerializer,
+    InternshipFullInertiaSerializer,
+    ProjectSerializer,
+)
+from metis.models import Education, Internship
 from metis.services.reporter.pdf import ProjectPlaceInformationPdf
 from .inertia import InertiaView
 from .reports.periods import PeriodReportMixin
@@ -42,6 +47,7 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
 
     def get_props(self, request, *args, **kwargs):
         projects = self.get_education().projects.filter(students__user=request.user)
+        last_project = projects.get(name="AJ23-24")  # TODO: clean
 
         base = {
             "education": EducationTinySerializer(self.get_education()).data,
@@ -49,13 +55,20 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
             "student_set": AuthStudentSerializer(
                 self.get_student_set(request.user), many=True, context={"request": request}
             ).data,
+            "internships": InternshipFullInertiaSerializer(
+                Internship.objects.filter(
+                    student__user=request.user, project=last_project, status=Internship.DEFINITIVE
+                ),
+                many=True,
+                context={"request": request},
+            ).data,
         }
 
         # --------------
         # PROVISIONAL
         # --------------
         from metis.api.serializers import AuthUserSerializer, ProjectTinySerializer, TextEntrySerializer
-        from metis.models import Project, Internship
+        from metis.models import Project
 
         try:
             project = Project.objects.get(education=self.get_education(), name="AJ22-23")
