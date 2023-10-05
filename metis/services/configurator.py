@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 
 class Translation(BaseModel):
@@ -7,12 +7,10 @@ class Translation(BaseModel):
 
 
 class TextEntryType(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
     code: str
     title: Translation
-
-    class Config:
-        extra = "forbid"
-        str_strip_whitespace = True
 
 
 class ProjectTextEntryType(TextEntryType):
@@ -24,6 +22,8 @@ class PlaceTextEntryType(TextEntryType):
 
 
 class EducationConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid", validate_default=True)
+
     allow_different_blocks_per_user_in_project: bool = Field(
         default=True,
         description="Whether a user can be in different Blocks for the same Project",
@@ -38,10 +38,6 @@ class EducationConfig(BaseModel):
         default=False,
         description="Whether staff level contacts are allowed, or just a simple contact > mentor > admin hierarchy",
     )
-
-    class Config:
-        extra = "forbid"
-        validate_default = True
 
     @field_validator("project_text_types")
     def validate_project_text_types(cls, v):

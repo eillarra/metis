@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Literal, Union
 
 
@@ -8,33 +8,28 @@ class Translation(BaseModel):
 
 
 class Rule(BaseModel):
+    model_config = ConfigDict(extra="forbid", validate_default=True)
+
     field: str
     type: Literal["equals", "not_equals", "contains", "not_contains", "is_empty", "is_not_empty"]
     value: str | int | bool | None = None
 
-    class Config:
-        extra = "forbid"
-        validate_default = True
-
 
 class FieldOption(BaseModel):
+    model_config = ConfigDict(extra="forbid", validate_default=True)
+
     value: str | int
     label: Translation
 
-    class Config:
-        extra = "forbid"
-        validate_default = True
-
 
 class FormField(BaseModel):
+    model_config = ConfigDict(validate_default=True)
+
     type: str
     code: str
     label: Translation
     required: bool = False
     collapsed: bool = False
-
-    class Config:
-        validate_default = True
 
 
 class InputField(FormField):
@@ -66,24 +61,20 @@ class GridField(FormField):
 
 
 class Fieldset(BaseModel):
+    model_config = ConfigDict(extra="forbid", validate_default=True)
+
     fields: list[Union[InputField, ChoiceField, GridField]]
     legend: Translation | None = None
     description: Translation | None = None
     rule: Rule | None = None
 
-    class Config:
-        extra = "forbid"
-        validate_default = True
-
 
 class CustomForm(BaseModel):
+    model_config = ConfigDict(extra="forbid", validate_default=True)
+
     fieldsets: list[Fieldset]
     title: Translation | None = None
     description: Translation | None = None
-
-    class Config:
-        extra = "forbid"
-        validate_default = True
 
     @field_validator("fieldsets")
     def validate_fieldsets(cls, v):
