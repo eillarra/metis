@@ -3,9 +3,10 @@
     :columns="columns"
     :rows="rows"
     :query-columns="queryColumns"
-    :form-component="InternshipForm"
+    :form-component="InternshipDialog"
     :create-form-component="InternshipCreateForm"
     sort-by="name"
+    open-dialog
   />
 </template>
 
@@ -15,7 +16,7 @@ import { useI18n } from 'vue-i18n';
 
 import DataTable from '@/components/tables/DataTable.vue';
 import InternshipCreateForm from './InternshipCreateForm.vue';
-import InternshipForm from './InternshipForm.vue';
+import InternshipDialog from './InternshipDialog.vue';
 
 const { t } = useI18n();
 
@@ -80,6 +81,12 @@ const columns = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'has_mentors',
+    field: 'has_mentors',
+    label: t('mentor', 9),
+    align: 'center',
+  },
 ];
 
 const rows = computed(() => {
@@ -93,6 +100,7 @@ const rows = computed(() => {
     track_name: obj.Track?.name || '-',
     disciplines: obj.Discipline ? [obj.Discipline] : [],
     status: t(`internship_status.${obj.status}`),
+    has_mentors: obj.mentors.length > 0,
   }));
 });
 </script>

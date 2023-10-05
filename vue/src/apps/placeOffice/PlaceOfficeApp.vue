@@ -57,6 +57,7 @@ store.setData(
   page.props.projects as Project[],
   page.props.place as Place,
   page.props.project_places as ProjectPlaceTiny[],
+  page.props.internships as Internship[],
   (page.props.django_user as DjangoAuthenticatedUser).id
 );
 

@@ -31,11 +31,13 @@ export default {
   },
   address: 'Adres | Adressen',
   admin: 'Beheerder | Beheerders',
+  availability: 'Beschikbaarheid',
   contact: 'Contact | Contacten',
   contact_only: 'Enkel een contactpersoon',
   discipline: 'Discipline | Disciplines',
   document: 'Document | Documenten',
   email_template: 'E-mail template | E-mail templates',
+  evaluation: 'Evaluatie | Evaluaties',
   history: 'Historiek',
   internship: 'Stage | Stages',
   internship_status: {
@@ -46,7 +48,7 @@ export default {
     unsuccessful: 'Niet geslaagd',
   },
   mentor: 'Mentor | Mentoren',
-  availability: 'Beschikbaarheid',
+  other: 'Andere',
   pending: 'In afwachting',
   period: 'Periode | Periodes',
   planning: 'Stageplanning',
@@ -66,6 +68,7 @@ export default {
   student: 'Student | Studenten',
   task: 'Taak | Taken',
   text: 'Tekst | Teksten',
+  timesheet: 'Tijdenlijst',
   track: 'Traject | Trajecten',
   type: 'Type | Types',
   field: {
@@ -162,6 +165,13 @@ export default {
       save: 'Stage opslaan',
       saved: 'Stage informatie opgeslagen',
     },
+    mentor: {
+      added: 'Mentor toegevoegd',
+      confirm_delete: 'Ben je zeker dat je deze mentor wil verwijderen?',
+      deleted: 'Mentor verwijderd',
+      no_more_contacts:
+        'Er zijn geen contactpersonen meer die als mentor voor deze stage kunnen worden toegewezen. Probeer een nieuwe contactpersoon toe te voegen.',
+    },
     place: {
       create: {
         new: 'Nieuwe stageplaats aanmaken',
@@ -226,6 +236,10 @@ export default {
     intro:
       'Vriendelijk verzoek om onderstaande taken tijdig uit te voeren. Bij vragen kan u contact opnemen met {email}.',
     place: {
+      missing_mentors: {
+        text: 'Er is een stage zonder mentor(en). | Er zijn {count} stages zonder mentor(en).',
+        btn_label: 'Mentor(en) toevoegen',
+      },
       project_place_availability: {
         text: 'Gelieve de beschikbaarheid voor {project_name} aan te vullen.',
         btn_label: 'Beschikbaarheid bijwerken',

@@ -100,7 +100,7 @@
       dense
       :rows="queriedRows"
       :columns="extendedColumns"
-      :visible-columns="visibleColumns.concat(['edit'])"
+      :visible-columns="visibleColumns.concat(['edit', 'remove'])"
       :row-key="(row) => row._self.id"
       :loading="loading"
       :hide-pagination="hidePagination"
@@ -147,10 +147,16 @@
           }}</a>
           <q-icon
             @click="copyText(props.row.email)"
-            name="content_copy"
+            :name="'content_copy'"
             :size="iconSize"
             class="cursor-pointer q-ml-xs"
           />
+        </q-td>
+      </template>
+      <template #body-cell-remove="props">
+        <!-- Remove icon -->
+        <q-td :props="props" auto-width>
+          <q-icon @click="removeRow(props.row)" name="backspace" :size="iconSize" color="red" class="cursor-pointer" />
         </q-td>
       </template>
       <template #body-cell-edit="props">
@@ -194,7 +200,7 @@ import { Md5 } from 'ts-md5';
 import { notify } from '@/notify';
 import { storage } from '@/storage';
 
-const emit = defineEmits(['update:selected']);
+const emit = defineEmits(['update:selected', 'remove:row']);
 
 const parentName = computed<string>(() => {
   const vm = getCurrentInstance()?.proxy as any;
@@ -221,6 +227,7 @@ const props = defineProps<{
   selection?: 'multiple' | 'single' | 'none';
   selected?: object[];
   openDialog?: boolean /* TODO: this can be solved in another way, as it is only for custom open icon */;
+  removable?: boolean;
 }>();
 
 const openDialog = ref<boolean>(props.openDialog || false);
@@ -243,6 +250,18 @@ const extendedColumns = computed(() => {
       name: 'edit',
       label: null,
       field: 'edit',
+      align: 'center',
+      headerClasses: 'sticky-right',
+      classes: 'sticky-right',
+    });
+  }
+
+  // add custom remove field
+  if (props.removable) {
+    columns.push({
+      name: 'remove',
+      label: null,
+      field: 'remove',
       align: 'center',
       headerClasses: 'sticky-right',
       classes: 'sticky-right',
@@ -300,6 +319,10 @@ function copyText(text: string) {
   copyToClipboard(text).then(() => {
     notify.info(t('copied_to_clipboard'));
   });
+}
+
+function removeRow(row: object) {
+  emit('remove:row', row);
 }
 
 function selectObj(row: { _self: object }) {

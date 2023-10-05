@@ -5,6 +5,7 @@ from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel.addresses import AddressesMixin
 from ..rel.forms import FormResponsesMixin
 from ..rel.remarks import RemarksMixin
+from ..users import UserLastLoginSerializer
 
 
 project_student_lookup_fields = {
@@ -30,3 +31,7 @@ class StudentUserSerializer(AddressesMixin, serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "rel_addresses", "username", "name", "email", "last_login", "is_active", "student_set")
+
+
+class StudentInertiaSerializer(StudentSerializer):
+    User = UserLastLoginSerializer(read_only=True, source="user")

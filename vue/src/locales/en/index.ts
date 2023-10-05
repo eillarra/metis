@@ -32,11 +32,13 @@ export default {
   },
   address: 'Address | Addresses',
   admin: 'Admin | Admins',
+  availability: 'Availability',
   contact: 'Contact | Contacts',
   contact_only: 'Only a contact',
   discipline: 'Discipline | Disciplines',
   document: 'Document | Documents',
   email_template: 'Email template | Email templates',
+  evaluation: 'Evaluation | Evaluations',
   history: 'History',
   internship: 'Internship | Internships',
   internship_status: {
@@ -47,7 +49,7 @@ export default {
     unsuccessful: 'Unsuccessful',
   },
   mentor: 'Mentor | Mentors',
-  availability: 'Availability',
+  other: 'Other',
   pending: 'Pending',
   period: 'Period | Periods',
   planning: 'Planning',
@@ -67,6 +69,7 @@ export default {
   student: 'Student | Students',
   task: 'Task | Tasks',
   text: 'Text | Texts',
+  timesheet: 'Timesheet | Timesheets',
   track: 'Track | Tracks',
   type: 'Type | Types',
   field: {
@@ -163,6 +166,13 @@ export default {
       save: 'Save internship',
       saved: 'Internship information saved',
     },
+    mentor: {
+      added: 'Mentor added',
+      confirm_delete: 'Are you sure you want to remove this mentor?',
+      deleted: 'Mentor removed',
+      no_more_contacts:
+        'There are no more contacts that can be assigned as a mentor for this internship. Try adding a new contact.',
+    },
     place: {
       create: {
         new: 'Create a new place',
@@ -226,6 +236,10 @@ export default {
   tasks: {
     intro: 'Please complete the following tasks in a timely manner. I you have any questions, you can contact {email}.',
     place: {
+      missing_mentors: {
+        text: 'There is an internship without mentor(s). | There are {count} internships without mentor(s).',
+        btn_label: 'Add mentor(s)',
+      },
       project_place_availability: {
         text: 'Please fill out the place availability for {project_name}.',
         btn_label: 'Update place availability',

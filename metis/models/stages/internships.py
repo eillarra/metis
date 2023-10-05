@@ -127,7 +127,6 @@ class Internship(RemarksMixin, BaseModel):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=CONCEPT)
 
     # evaluation_deadline = models.DateField()  # this can be used for cases > reviews
-    # mentors
     # reviewers (beoordelaars)
 
     def clean(self) -> None:
@@ -231,3 +230,26 @@ class Internship(RemarksMixin, BaseModel):
             return Counter()
 
         return Counter(self.get_covered_disciplines().values_list("id", flat=True))
+
+
+class Mentor(BaseModel):
+    """
+    A Mentor is a User that is linked to an Internship.
+    """
+
+    internship = models.ForeignKey(Internship, related_name="mentors", on_delete=models.CASCADE)
+    user = models.ForeignKey("metis.User", related_name="mentorships", on_delete=models.PROTECT)
+    is_primary = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "metis_internship_mentors"
+        unique_together = ("internship", "user")
+
+    def clean(self) -> None:
+        """
+        TODO: check if there are issues when a contact is removed after the internship has been created.
+        Normally we don't need to change this entry anymore, so it should be ok.
+        """
+        if not self.internship.place.contacts.filter(user_id=self.user_id, is_mentor=True).exists():  # type: ignore
+            raise ValidationError("The chosen user is not a valid mentor for the chosen place.")
+        return super().clean()

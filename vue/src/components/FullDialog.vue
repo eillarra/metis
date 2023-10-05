@@ -37,7 +37,7 @@
       </q-scroll-area>
     </q-drawer>
     <q-page-container>
-      <q-page>
+      <q-page class="q-pr-sm">
         <slot name="page"></slot>
       </q-page>
     </q-page-container>

@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { cloneDeep } from 'lodash-es';
 
 interface ProjectOptions {
   value: number;
@@ -9,6 +10,7 @@ interface ProjectOptions {
 export const useStore = defineStore('placeOffice', () => {
   const userId = ref<number>();
   const education = ref<EducationTiny>();
+  const internships = ref<Internship[]>([]);
   const projects = ref<Project[]>([]);
   const projectPlaces = ref<ProjectPlaceTiny[]>([]);
   const place = ref<Place>();
@@ -21,6 +23,7 @@ export const useStore = defineStore('placeOffice', () => {
     djangoProjects: Project[],
     djangoPlace: Place,
     djangoProjectPlaces: ProjectPlaceTiny[],
+    djangoInternships: Internship[],
     djangoUserId: number
   ) {
     djangoProjects.sort((a, b) => {
@@ -44,6 +47,10 @@ export const useStore = defineStore('placeOffice', () => {
         questionings,
       };
     });
+    internships.value = djangoInternships.map((internship) => ({
+      ...internship,
+      Place: djangoPlace,
+    }));
     availableProjects.value = djangoProjects.map((project) => ({
       value: project.id,
       label: project.name,
@@ -84,9 +91,37 @@ export const useStore = defineStore('placeOffice', () => {
     );
   });
 
+  function updateCollection(type: string, action: string, obj: ApiObject) {
+    let collection: ApiObject[] = [];
+
+    switch (type) {
+      case 'internship':
+        collection = internships.value as Internship[];
+        break;
+      default:
+        break;
+    }
+
+    const idx: number = collection.findIndex((row: ApiObject) => row.id === obj.id);
+
+    switch (action) {
+      case 'update':
+        Object.assign(collection[idx], cloneDeep(obj));
+        break;
+      default:
+        break;
+    }
+  }
+
+  function updateObj(type: string, obj: ApiObject) {
+    updateCollection(type, 'update', obj);
+  }
+
   return {
     setData,
+    updateObj,
     education,
+    internships,
     project,
     projectPlace,
     place,

@@ -31,6 +31,13 @@ const routes: RouteRecordRaw[] = [
         beforeEnter: [isPlaceAdmin],
       },
       {
+        path: 'planning/',
+        name: 'planning',
+        strict: true,
+        component: () => import('./pages/planning/PlanningPage.vue'),
+        beforeEnter: [isPlaceAdmin],
+      },
+      {
         path: 'contacts/',
         name: 'contacts',
         strict: true,

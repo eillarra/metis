@@ -44,7 +44,7 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
         ordering = ["education", "code"]
         unique_together = ("education", "code")
 
-    def clean(self):
+    def clean(self) -> None:
         if self.parent and self.parent.education != self.education:
             raise ValidationError("Parent place must be in the same education.")
         if self.type and self.type.education != self.education:

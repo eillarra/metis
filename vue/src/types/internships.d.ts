@@ -4,6 +4,7 @@ interface Internship extends ApiObject {
   student: number | null;
   track: number | null;
   period: number | null;
+  mentors: Mentor[];
   discipline: number | null;
   start_date: string;
   end_date: string;
@@ -20,4 +21,8 @@ interface Internship extends ApiObject {
   Discipline?: Discipline;
   ProjectPlace?: ProjectPlace;
   Place?: Place;
+}
+
+interface Mentor extends ApiObject {
+  user: UserLastLogin;
 }

@@ -31,13 +31,13 @@ class Education(BaseModel):
     office_email = models.EmailField(blank=True, null=True)
     config = models.JSONField(default=dict)
 
-    def clean(self, *args, **kwargs) -> None:
+    def clean(self) -> None:
         if self.config:
             try:
                 validate_education_configuration(self.config)
             except ValueError as e:
                 raise ValidationError({"config": str(e)})
-        return super().clean(*args, **kwargs)
+        return super().clean()
 
     def __str__(self) -> str:
         return self.short_name

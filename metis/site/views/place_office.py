@@ -6,11 +6,12 @@ from django.utils.decorators import method_decorator
 
 from metis.api.serializers import (
     EducationTinySerializer,
+    InternshipInertiaSerializer,
     ProjectSerializer,
     PlaceSerializer,
     ProjectPlaceTinySerializer,
 )
-from metis.models import Place, Project
+from metis.models import Internship, Place, Project
 from .inertia import InertiaView
 
 
@@ -38,6 +39,7 @@ class PlaceOfficeView(InertiaView):
     def get_props(self, request, *args, **kwargs):
         place = self.get_object()
         projects = Project.objects.filter_by_place(place, prefetch_related=True)
+        last_project = projects.get(name="AJ23-24")  # TODO: clean
 
         return {
             "education": EducationTinySerializer(place.education).data,
@@ -45,6 +47,13 @@ class PlaceOfficeView(InertiaView):
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
             "project_places": ProjectPlaceTinySerializer(
                 place.project_place_set, many=True, context={"request": request}
+            ).data,
+            "internships": InternshipInertiaSerializer(
+                Internship.objects.filter(
+                    project_place__place=place, project=last_project, status=Internship.DEFINITIVE
+                ),
+                many=True,
+                context={"request": request},
             ).data,
             "contact_places": [
                 {

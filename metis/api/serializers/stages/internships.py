@@ -1,15 +1,26 @@
 from rest_framework import serializers
 
-from metis.models.stages.internships import Internship
+from metis.models.stages.internships import Internship, Mentor
 from ..base import BaseModelSerializer, NestedHyperlinkField
+from ..disciplines import DisciplineSerializer
 from ..rel.remarks import RemarksMixin
+from ..users import UserLastLoginSerializer
 from .programs import ProgramInternshipSerializer
+from .students import StudentInertiaSerializer
 
 
 project_internship_lookup_fields = {
     "parent_lookup_education_id": "project__education_id",
     "parent_lookup_project_id": "project_id",
 }
+
+
+class MentorTinySerializer(BaseModelSerializer):
+    user = UserLastLoginSerializer(read_only=True)
+
+    class Meta:
+        model = Mentor
+        fields = ("id", "user")
 
 
 class InternshipSerializer(RemarksMixin, BaseModelSerializer):
@@ -20,7 +31,13 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
     end_date = serializers.DateField(read_only=True)
     custom_start_date = serializers.DateField(allow_null=True, required=False)
     custom_end_date = serializers.DateField(allow_null=True, required=False)
+    mentors = MentorTinySerializer(many=True, read_only=True)
 
     class Meta:
         model = Internship
         exclude = ("created_at", "created_by")
+
+
+class InternshipInertiaSerializer(InternshipSerializer):
+    Discipline = DisciplineSerializer(read_only=True, source="discipline")
+    Student = StudentInertiaSerializer(read_only=True, source="student")

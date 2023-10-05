@@ -185,8 +185,8 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingCalculationQueueStatus
 - [ ] TrainingCase: TODO: `Case`
 - [ ] TrainingCaseDocument: `Case.files` via `FilesMixin`
-- [ ] TrainingCaseEvaluation
-- [ ] TrainingCaseEvaluationDetail
+- [ ] TrainingCaseEvaluation: `CustomFormResponse`
+- [ ] TrainingCaseEvaluationDetail: `CustomFormResponse`
 - [ ] TrainingCaseFollowUp
 - [ ] TrainingCaseFollowUpType
 - [ ] TrainingCaseType: TODO: `Case.TYPE_CHOICES` (separate model for dates?)
@@ -202,8 +202,8 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingDocument: `Internship.files` via `FilesMixin`
 - [ ] TrainingDocumentSigned
 - [ ] TrainingDocumentVersion
-- [ ] TrainingEvaluation
-- [ ] TrainingEvaluationDetail
+- [x] TrainingEvaluation: `CustomFormResponse`
+- [x] TrainingEvaluationDetail: `CustomFormResponse`
 - [ ] TrainingEvaluationFollowUp
 - [ ] TrainingEvaluationFollowUpType
 - [ ] TrainingExcludePlaceForStudent
