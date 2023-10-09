@@ -145,12 +145,14 @@
           <a :href="`mailto:${props.row.email}`" target="_blank" rel="noopener" class="inherit">{{
             props.row.email
           }}</a>
-          <q-icon
+          <i
             @click="copyText(props.row.email)"
-            :name="'content_copy'"
-            :size="iconSize"
-            class="cursor-pointer q-ml-xs"
-          />
+            class="q-icon notranslate material-icons cursor-pointer q-ml-xs"
+            :style="{ 'font-size': iconSize }"
+            aria-hidden="true"
+            role="presentation"
+            >content_copy</i
+          >
         </q-td>
       </template>
       <template #body-cell-remove="props">
