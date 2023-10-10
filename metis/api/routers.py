@@ -56,12 +56,6 @@ class Router(NestedRouterMixin, DefaultRouter):
             "projects", views.ProjectViewSet, basename="project", parents_query_lookups=["education_id"]
         )
         project_routes.register(
-            "internships",
-            views.InternshipViewSet,
-            basename="project-internship",
-            parents_query_lookups=["education_id", "project_id"],
-        )
-        project_routes.register(
             "places",
             views.ProjectPlaceViewSet,
             basename="project-place",
@@ -78,6 +72,28 @@ class Router(NestedRouterMixin, DefaultRouter):
             views.StudentViewSet,
             basename="project-student",
             parents_query_lookups=["education_id", "project_id"],
+        )
+
+        # /educations/{...education_id}/projects/{...project_id}/internships/{parent_lookup_internship_id}/absences/
+        # /educations/{...education_id}/projects/{...project_id}/internships/{parent_lookup_internship_id}/timesheets/
+
+        internship_routes = project_routes.register(
+            "internships",
+            views.InternshipViewSet,
+            basename="project-internship",
+            parents_query_lookups=["education_id", "project_id"],
+        )
+        internship_routes.register(
+            "absences",
+            views.AbsenceViewSet,
+            basename="project-internship-absence",
+            parents_query_lookups=["education_id", "project_id", "internship_id"],
+        )
+        internship_routes.register(
+            "timesheets",
+            views.TimesheetViewSet,
+            basename="project-internship-timesheet",
+            parents_query_lookups=["education_id", "project_id", "internship_id"],
         )
 
         # /user/

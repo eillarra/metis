@@ -4,7 +4,7 @@ from metis.models.stages.questionings import Questioning
 from ..base import BaseModelSerializer, NestedHyperlinkField
 
 
-questioning_lookup_fields = {
+project_lookup_fields = {
     "parent_lookup_education_id": "project__education_id",
     "parent_lookup_project_id": "project_id",
 }
@@ -19,8 +19,8 @@ class QuestioningTinySerializer(BaseModelSerializer):
 
 
 class QuestioningSerializer(QuestioningTinySerializer):
-    self = NestedHyperlinkField("v1:project-questioning-detail", nested_lookup=questioning_lookup_fields)
-    rel_responses = NestedHyperlinkField("v1:project-questioning-responses", nested_lookup=questioning_lookup_fields)
+    self = NestedHyperlinkField("v1:project-questioning-detail", nested_lookup=project_lookup_fields)
+    rel_responses = NestedHyperlinkField("v1:project-questioning-responses", nested_lookup=project_lookup_fields)
     target_object_ids = serializers.SerializerMethodField()
     stats = serializers.SerializerMethodField()
 

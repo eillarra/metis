@@ -66,7 +66,8 @@ class TestForAnonymous:
         data = self._get_place_availability_data(education)
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["project_place_availability"]
-        if data:
+
+        if response.status_code == status.CREATED:
             assert len(response.data["availability_set"]) == 1
 
 

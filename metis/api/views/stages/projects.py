@@ -47,9 +47,8 @@ class ProjectNestedModelViewSet(BaseModelViewSet):
         return self.get_project().education
 
     def get_project(self) -> "Project":
-        if self._project:
-            return self._project
-        self._project = Project.objects.get(id=self.kwargs["parent_lookup_project_id"])
+        if not self._project:
+            self._project = Project.objects.get(id=self.kwargs["parent_lookup_project_id"])
         return self._project
 
     def perform_create(self, serializer):

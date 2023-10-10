@@ -34,9 +34,8 @@ class PlaceNestedModelViewSet(BaseModelViewSet):
         return self.get_place().education
 
     def get_place(self) -> "Place":
-        if self._place:
-            return self._place
-        self._place = Place.objects.select_related("education").get(id=self.kwargs["parent_lookup_place_id"])
+        if not self._place:
+            self._place = Place.objects.select_related("education").get(id=self.kwargs["parent_lookup_place_id"])
         return self._place
 
     def perform_create(self, serializer):

@@ -167,9 +167,6 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [x] StandaardWaardeGroep: `django.contrib.auth` alternative
 - [x] StandaardWaardeOptie: `django.contrib.auth` alternative
 - [x] SubmitStudent: `django.contrib.auth` alternative
-- [ ] Timesheet
-- [ ] TimesheetAvailabilty
-- [ ] TimesheetType
 - [x] Training: `Internship`
 - [ ] TrainingAbsence: TODO: `Absence`
 - [ ] TrainingAbsenceByMentor
@@ -308,3 +305,6 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] Photo: **not used** in SPARTA
 - [ ] ReadcommissionerSurvey: ???
 - [ ] Telephone: **not used** in SPARTA
+- [ ] Timesheet: ???, something else than our `Timesheet` model
+- [ ] TimesheetAvailabilty: ???
+- [ ] TimesheetType: ???

@@ -8,14 +8,14 @@ from ..rel.remarks import RemarksMixin
 from ..users import UserLastLoginSerializer
 
 
-project_student_lookup_fields = {
+project_lookup_fields = {
     "parent_lookup_education_id": "project__education_id",
     "parent_lookup_project_id": "project_id",
 }
 
 
 class StudentSerializer(FormResponsesMixin, RemarksMixin, BaseModelSerializer):
-    self = NestedHyperlinkField("v1:project-student-detail", nested_lookup=project_student_lookup_fields)
+    self = NestedHyperlinkField("v1:project-student-detail", nested_lookup=project_lookup_fields)
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(source="user", queryset=User.objects.all(), write_only=True)

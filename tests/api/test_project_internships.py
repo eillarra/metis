@@ -111,7 +111,7 @@ class TestForAnonymous:
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["internship_create"]
 
-        if data:
+        if response.status_code == status.CREATED:
             assert response.data["student"] == data["student"]
 
     def test_update_internship(self, api_client, education, internship):

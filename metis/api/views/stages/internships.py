@@ -4,20 +4,16 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from metis.models import User, Internship, Mentor
+from metis.models import User, Internship, Mentor, Project, Education
 from ...permissions import IsEducationOfficeMember
 from ...serializers import InternshipSerializer, MentorTinySerializer
+from ..base import BaseModelViewSet
 from .projects import ProjectNestedModelViewSet
 
 
 class CanManageMentors(IsAuthenticated):
-    def has_permission(self, request, view):
-        return super().has_permission(request, view)
-
     def has_object_permission(self, request, view, obj):
-        return obj.place.contacts.filter(
-            user_id=request.user.id, is_admin=True
-        ).exists() or view.get_education().can_be_managed_by(request.user)
+        return obj.place.can_be_managed_by(request.user)
 
 
 class InternshipViewSet(ProjectNestedModelViewSet):
@@ -47,3 +43,36 @@ class InternshipViewSet(ProjectNestedModelViewSet):
         mentor = Mentor.objects.get(internship=self.get_object(), user_id=user_id)
         mentor.delete()
         return Response(status=status.NO_CONTENT)
+
+
+class InternshipNestedModelViewSet(BaseModelViewSet):
+    _internship = None
+
+    def get_queryset(self):
+        return super().get_queryset().filter(internship=self.get_internship())
+
+    def get_education(self) -> "Education":
+        return self.get_project().education
+
+    def get_project(self) -> "Project":
+        return self.get_internship().project
+
+    def get_internship(self) -> "Internship":
+        if not self._internship:
+            self._internship = Internship.objects.get(id=self.kwargs["parent_lookup_internship_id"])
+        return self._internship
+
+    def perform_create(self, serializer):
+        self.validate(serializer)
+        serializer.save(internship=self.get_internship(), created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        self.validate(serializer)
+        serializer.save(internship=self.get_internship(), updated_by=self.request.user)
+
+    def validate(self, serializer) -> None:
+        try:
+            ModelClass = serializer.Meta.model
+            ModelClass(internship=self.get_internship(), **serializer.validated_data).clean()
+        except Exception as e:
+            raise ValidationError(str(e))

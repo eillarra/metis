@@ -44,9 +44,8 @@ class EducationNestedModelViewSet(BaseModelViewSet):
         return super().get_queryset().filter(education=self.get_education())
 
     def get_education(self) -> "Education":
-        if self._education:
-            return self._education
-        self._education = Education.objects.get(id=self.kwargs["parent_lookup_education_id"])
+        if not self._education:
+            self._education = Education.objects.get(id=self.kwargs["parent_lookup_education_id"])
         return self._education
 
     def perform_create(self, serializer):

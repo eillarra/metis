@@ -84,7 +84,7 @@ class TestForAnonymous:
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["remark_create"]
 
-        if data:
+        if response.status_code == status.CREATED:
             assert response.data["text"] == data["text"]
             assert place.remarks.count() == 1
 
@@ -96,7 +96,7 @@ class TestForAnonymous:
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["remark_create"]
 
-        if data:
+        if response.status_code == status.CREATED:
             assert response.data["text"] == data["text"]
             assert project_place.remarks.count() == 1
 

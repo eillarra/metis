@@ -89,7 +89,7 @@ class TestForAnonymous:
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["text_create"]
 
-        if data:
+        if response.status_code == status.CREATED:
             assert response.data["text_nl"] == data["text_nl"]
             assert place.texts.count() == 1
 
@@ -100,7 +100,7 @@ class TestForAnonymous:
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["text_create"]
 
-        if data:
+        if response.status_code == status.CREATED:
             assert response.data["text_nl"] == data["text_nl"]
             assert project.texts.count() == 1
 

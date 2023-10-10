@@ -9,9 +9,14 @@ from .programs import ProgramInternshipSerializer
 from .students import StudentInertiaSerializer
 
 
-project_internship_lookup_fields = {
+project_lookup_fields = {
     "parent_lookup_education_id": "project__education_id",
     "parent_lookup_project_id": "project_id",
+}
+internship_lookup_fields = {
+    "parent_lookup_education_id": "project__education_id",
+    "parent_lookup_project_id": "project_id",
+    "parent_lookup_internship_id": "id",
 }
 
 
@@ -24,7 +29,11 @@ class MentorTinySerializer(BaseModelSerializer):
 
 
 class InternshipSerializer(RemarksMixin, BaseModelSerializer):
-    self = NestedHyperlinkField("v1:project-internship-detail", nested_lookup=project_internship_lookup_fields)
+    self = NestedHyperlinkField("v1:project-internship-detail", nested_lookup=project_lookup_fields)
+    rel_absences = NestedHyperlinkField("v1:project-internship-absence-list", nested_lookup=internship_lookup_fields)
+    rel_timesheets = NestedHyperlinkField(
+        "v1:project-internship-timesheet-list", nested_lookup=internship_lookup_fields
+    )
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     program_internship = ProgramInternshipSerializer(read_only=True)
     start_date = serializers.DateField(read_only=True)

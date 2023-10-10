@@ -88,7 +88,7 @@ class TestForAnonymous:
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["place_create"]
 
-        if data:
+        if response.status_code == status.CREATED:
             assert response.data["code"] == data["code"]
 
     def test_update_place(self, api_client, education, place):
@@ -118,7 +118,7 @@ class TestForAnonymous:
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["contact_create"]
 
-        if data:
+        if response.status_code == status.CREATED:
             assert response.data["user"]["id"] == data["user_id"]
 
     def test_update_contact(self, api_client, education, place, contact):
