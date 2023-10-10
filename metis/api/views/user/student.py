@@ -5,7 +5,8 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from metis.models.stages import Student, Signature
+from metis.models.rel.signatures import Signature
+from metis.models.stages import Student
 from ...permissions import IsAuthenticated
 from ...serializers import AuthStudentSerializer, AuthSignatureSerializer
 
@@ -31,15 +32,19 @@ class AuthStudentSignatureViewSet(CreateModelMixin, ListModelMixin, GenericViewS
     serializer_class = AuthSignatureSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(student__user=self.request.user)
+        return super().get_queryset().filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        student_id: int = self.request.data["student"]
-        student = Student.objects.get(id=student_id)
-        if student.user != self.request.user:
+        user_id = self.request.data["user"]
+
+        if user_id != self.request.user.id:
             raise PermissionDenied("This student does not belong to this user")
 
-        serializer.save(student_id=student_id)
+        serializer.save(
+            user=self.request.user,
+            content_type_id=self.request.data["content_type"],
+            object_id=self.request.data["object_id"],
+        )
 
     @method_decorator(never_cache)
     def list(self, request, *args, **kwargs) -> Response:

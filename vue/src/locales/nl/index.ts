@@ -68,7 +68,7 @@ export default {
   student: 'Student | Studenten',
   task: 'Taak | Taken',
   text: 'Tekst | Teksten',
-  timesheet: 'Tijdenlijst',
+  timesheet: 'Stagetijd | Tijdenlijst',
   track: 'Traject | Trajecten',
   type: 'Type | Types',
   field: {
@@ -97,6 +97,7 @@ export default {
   },
   form: {
     add: 'Toevoegen',
+    approve: 'Goedkeuren',
     new: 'Nieuw',
     back: 'Terug',
     continue: 'Verdergaan',
@@ -228,14 +229,16 @@ export default {
       help: {
         choose_date: 'Kies een datum',
         calendar_colors:
-          'Kies een datum om een tijdenlijst toe te voegen of te bewerken. Oranje dagen zijn nog niet goedgekeurd door de mentor(en) en kunnen nog bewerkt worden. Groene dagen zijn goedgekeurd en kunnen niet meer bewerkt worden.',
+          'Kies een datum om een stagetijd toe te voegen of te bewerken. Oranje dagen zijn nog niet goedgekeurd door de mentor(en) en kunnen nog bewerkt worden. Groene dagen zijn goedgekeurd en kunnen niet meer bewerkt worden.',
       },
       create: {
-        new: 'Nieuwe tijdenlijst aanmaken',
-        success: 'Tijdenlijst aangemaakt',
+        new: 'Nieuwe stagetijd aanmaken',
+        success: 'Stagetijd aangemaakt',
       },
-      edit: 'Tijdenlijst bewerken',
-      saved: 'Tijdenlijst informatie opgeslagen',
+      approve: 'Stagetijd(en) goedkeuren',
+      approved: 'Stagetijd(en) goedgekeurd',
+      edit: 'Stagetijd bewerken',
+      saved: 'Stagetijd informatie opgeslagen',
     },
   },
   questionings: {

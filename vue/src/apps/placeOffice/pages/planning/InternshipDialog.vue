@@ -15,7 +15,7 @@
           </q-item-section>
           <q-item-section>{{ $t('mentor', 9) }}</q-item-section>
         </q-item>
-        <q-item :disabled="true" :active="tab == 'timesheets'" active-class="bg-ugent text-white">
+        <q-item clickable @click="tab = 'timesheets'" :active="tab == 'timesheets'" active-class="bg-ugent text-white">
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
           </q-item-section>
@@ -49,6 +49,9 @@
         <q-tab-panel name="mentors">
           <mentors-view :editable="userIsAdmin" :obj="obj" @update:obj="(obj: Internship) => updateObj(obj)" />
         </q-tab-panel>
+        <q-tab-panel name="timesheets">
+          <timesheets-view :internship="obj" approvable />
+        </q-tab-panel>
       </q-tab-panels>
     </template>
     <template #footer> </template>
@@ -64,6 +67,7 @@ import { useStore } from '../../store.js';
 import FullDialog from '@/components/FullDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
+import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 
 const props = defineProps<{
   obj: Internship;

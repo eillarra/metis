@@ -16,7 +16,7 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
 
     @property
     def name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        return self.get_full_name() or self.username
 
     @property
     def is_contact(self) -> bool:

@@ -7,6 +7,5 @@ from .programs import *
 from .projects import *
 from .project_places import *
 from .questionings import *
-from .signatures import *
 from .students import *
 from .timesheets import *

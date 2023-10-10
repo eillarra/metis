@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from metis.models.stages import Student, Signature
+from metis.models.rel.signatures import Signature
+from metis.models.stages import Student
 from metis.models.users import User
 from .rel.addresses import AddressesMixin
 from .rel.forms import FormResponsesMixin

@@ -1,5 +1,6 @@
 interface Signature extends ApiObject {
-  text_entry: number;
+  content_type_id: number;
+  object_id: number;
   signed_text: string;
   created_at: string;
   url: string;

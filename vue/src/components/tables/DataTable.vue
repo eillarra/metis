@@ -110,6 +110,26 @@
       :selection="selection || 'none'"
       v-model:selected="selected"
     >
+      <template v-slot:header-selection="scope">
+        <q-checkbox
+          v-model="scope.selected"
+          :disable="!selectableAmount"
+          size="sm"
+          dense
+          :color="selectableAmount ? 'grey-8' : 'grey-4'"
+          keep-color
+        />
+      </template>
+      <template v-slot:body-selection="scope">
+        <q-checkbox
+          v-model="scope.selected"
+          :disable="scope.row._hide_selection"
+          size="sm"
+          dense
+          :color="!scope.row._hide_selection ? 'grey-8' : 'grey-4'"
+          keep-color
+        />
+      </template>
       <template #body-cell="props">
         <!-- Custom boolean field -->
         <q-td
@@ -236,6 +256,7 @@ const props = defineProps<{
 
 const openDialog = ref<boolean>(props.openDialog || false);
 const selected = ref<object[]>(props.selected || []);
+const selectableAmount = computed<number>(() => props.rows.filter((r) => !r._hide_selection).length);
 
 const initialPagination = {
   rowsPerPage: props.rowsPerPage || 25,
@@ -355,6 +376,10 @@ if (storage.get(queryStorageKey.value)) {
 
 watch(selected, (val) => {
   if (!val) return;
+  if (val.filter((obj) => obj._hide_selection).length > 0) {
+    selected.value = val.filter((obj) => !obj._hide_selection);
+    return;
+  }
   emit('update:selected', val);
 });
 

@@ -10,21 +10,17 @@
       >
         <template #default>
           <div class="text-body1 q-py-xs">
-            <span v-if="questioning.form_definition.description">{{ questioning.form_definition.description[locale] }}</span>
-            <span v-else>{{ $t(`tasks.place.${questioning.type}.text`, { project_name: project.name }) }}</span><br />
+            <span v-if="questioning.form_definition.description">{{
+              questioning.form_definition.description[locale]
+            }}</span>
+            <span v-else>{{ $t(`tasks.place.${questioning.type}.text`, { project_name: project.name }) }}</span
+            ><br />
             <em>Deadline: {{ formatDate(questioning.end_at) }}</em>
           </div>
         </template>
         <template #action>
           <q-spinner v-if="!dataLoaded" color="yellow" size="2em" />
-          <q-btn
-            v-else
-            @click="openQuestioning(questioning)"
-            outline
-            square
-            color="ugent"
-            :label="$t(`form.update`)"
-          />
+          <q-btn v-else @click="openQuestioning(questioning)" outline square color="ugent" :label="$t(`form.update`)" />
         </template>
       </q-banner>
     </div>

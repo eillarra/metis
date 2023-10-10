@@ -23,11 +23,16 @@
       <div v-else class="q-gutter-sm">
         <h5 v-if="!obj.self" class="text-body1 text-strong">{{ $t('form.timesheet.create.new') }}</h5>
         <h5 v-else class="text-body1 text-strong">{{ $t('form.timesheet.edit') }}</h5>
-        <readonly-field :label="$t('field.date')" :value="date" />
+        <readonly-field :label="$t('field.date')" :value="date">
+          <template #append>
+            <q-badge v-if="obj.is_approved" color="green" text-color="white" :label="$t('field.approved')" />
+          </template>
+        </readonly-field>
         <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
           <date-select
             type="time"
             v-model="obj.start_time_am"
+            :readonly="obj.is_approved"
             :label="`${$t('field.start_time')} (am)`"
             clearable
             class="col-12 col-md"
@@ -35,7 +40,8 @@
           <date-select
             type="time"
             v-model="obj.end_time_am"
-            :disable="!obj.start_time_am"
+            :readonly="obj.is_approved"
+            :disable="!obj.is_approved && !obj.start_time_am"
             :label="`${$t('field.end_time')} (am)`"
             clearable
             class="col-12 col-md"
@@ -52,6 +58,7 @@
           <date-select
             type="time"
             v-model="obj.start_time_pm"
+            :readonly="obj.is_approved"
             :label="`${$t('field.start_time')} (pm)`"
             clearable
             class="col-12 col-md"
@@ -59,7 +66,8 @@
           <date-select
             type="time"
             v-model="obj.end_time_pm"
-            :disable="!obj.start_time_pm"
+            :readonly="obj.is_approved"
+            :disable="!obj.is_approved && !obj.start_time_pm"
             :label="`${$t('field.end_time')} (pm)`"
             clearable
             class="col-12 col-md"
@@ -78,10 +86,13 @@
           color="ugent"
           :label="obj.self ? $t('form.update') : $t('form.create')"
           :disable="
-            !date ||
-            (!obj.start_time_am && !obj.start_time_pm) ||
-            (obj.start_time_am && !obj.end_time_am) ||
-            (obj.start_time_pm && !obj.end_time_pm)
+            Boolean(
+              obj.is_approved ||
+                !date ||
+                (!obj.start_time_am && !obj.start_time_pm) ||
+                (obj.start_time_am && !obj.end_time_am) ||
+                (obj.start_time_pm && !obj.end_time_pm)
+            )
           "
           class="q-mt-lg"
         />
@@ -115,6 +126,7 @@ const obj = ref({
   end_time_am: null as string | null,
   start_time_pm: null as string | null,
   end_time_pm: null as string | null,
+  is_approved: false,
 });
 
 const timesheetsByDate = computed<Record<string, Timesheet>>(() => {
@@ -146,7 +158,7 @@ const markedDates = computed<string[]>(() => {
 
 function dateColors(date: string) {
   if (date in timesheetsByDate.value) {
-    return timesheetsByDate[date]?.is_approved ? 'green' : 'orange';
+    return timesheetsByDate.value[date].is_approved ? 'green' : 'orange';
   }
 
   return 'grey';

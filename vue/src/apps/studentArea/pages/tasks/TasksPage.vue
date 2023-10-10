@@ -132,7 +132,7 @@ const textsToSign = computed<TextEntry[]>(() =>
 
 const signedTextIds = computed<Set<number>>(() => {
   if (signatures.value === undefined) return new Set();
-  return new Set(signatures.value.map((signature) => signature.text_entry));
+  return new Set(signatures.value.map((signature) => signature.object_id));
 });
 
 const allSigned = computed<boolean>(() => {
@@ -156,8 +156,9 @@ const dialogVisible = computed<boolean>({
 async function signText() {
   await api
     .post('/user/student/signatures/', {
-      student: student.value.id,
-      text_entry: selectedText.value?.id,
+      user: student.value.user.id,
+      object_id: selectedText.value?.id,
+      content_type: 34,
       signed_text: finalText.value,
     })
     .then(() => {

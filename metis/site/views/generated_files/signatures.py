@@ -13,7 +13,7 @@ class SignaturePdfView(View):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if self.get_object().student.user_id != request.user.id:
+        if self.get_object().user != request.user:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 

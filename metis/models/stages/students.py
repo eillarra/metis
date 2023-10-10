@@ -1,9 +1,11 @@
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from typing import TYPE_CHECKING
 
 from ..base import BaseModel
 from ..rel.forms import FormResponsesMixin
 from ..rel.remarks import RemarksMixin
+from ..rel.texts import TextEntry
 
 if TYPE_CHECKING:
     from .programs import ProgramInternship
@@ -32,9 +34,11 @@ class Student(FormResponsesMixin, RemarksMixin, BaseModel):
         return self.project.can_be_managed_by(user) or self.user == user
 
     def has_signed_required_texts(self) -> bool:
-        return self.signatures.filter(text_entry__in=self.project.required_texts).count() == len(
-            self.project.required_texts
-        )
+        required_text_ids = self.project.required_texts.values_list("id", flat=True)
+        text_entry_content_type = ContentType.objects.get_for_model(TextEntry)
+        return self.user.signatures.filter(
+            content_type=text_entry_content_type, object_id__in=required_text_ids
+        ).count() == len(self.project.required_texts)
 
     def internships(self) -> list["ProgramInternship"]:
         """TODO: does this make any sense?"""

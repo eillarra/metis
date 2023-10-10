@@ -49,7 +49,7 @@ const columns = [
 const rows = computed(() => {
   return props.signatures.map((obj: Signature) => ({
     _self: obj,
-    name: props.texts.find((text) => text.id === obj.text_entry)?.title_nl ?? '',
+    name: props.texts.find((text) => text.id === obj.object_id)?.title_nl ?? '',
     date: formatDate(obj.created_at),
     download: obj.url,
   }));

@@ -98,6 +98,7 @@ export default {
   },
   form: {
     add: 'Add',
+    approve: 'Approve',
     new: 'New',
     back: 'Back',
     continue: 'Continue',
@@ -235,6 +236,8 @@ export default {
         new: 'Create a new timesheet',
         success: 'Timesheet created',
       },
+      approve: 'Approve timesheet',
+      approved: 'Timesheet approved',
       edit: 'Edit timesheet',
       saved: 'Timesheet information saved',
     },

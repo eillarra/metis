@@ -6,14 +6,15 @@
     :stack-label="mutable !== null"
     class="cursor-pointer"
     :disable="disable"
+    :readonly="readonly"
   >
     <template #control>
       <span>{{ text }}</span>
     </template>
-    <template #append>
+    <template #append v-if="!readonly">
       <q-icon ref="calendarBtn" :name="calendarType == 'time' ? 'schedule' : 'event'" size="xs" class="q-mx-xs" />
     </template>
-    <template #default>
+    <template #default v-if="!readonly">
       <q-menu anchor="top end" self="bottom right">
         <q-time v-if="calendarType == 'time'" v-model="mutable" minimal :options="options" />
         <q-date v-else v-model="mutable" mask="YYYY-MM-DD" minimal />
@@ -33,6 +34,7 @@ const props = defineProps<{
   modelValue: string | null;
   options?: ((data: any) => void) | undefined;
   disable?: boolean;
+  readonly?: boolean;
 }>();
 
 const calendarBtn = ref<HTMLElement | null>(null);
