@@ -1,7 +1,14 @@
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from pathlib import Path
+from django.urls import reverse
+from typing import TYPE_CHECKING
+
+from metis.services.file_guard import check_file_access
+from metis.services.s3 import delete_s3_object
+
+if TYPE_CHECKING:
+    from metis.models.users import User
 
 
 def get_upload_path(instance, filename):
@@ -26,13 +33,24 @@ class File(models.Model):
         unique_together = ("content_type", "object_id", "code", "version")
 
     def delete(self, *args, **kwargs):
-        if self.path.exists() and self.path.is_file():
-            self.path.unlink()
+        try:
+            delete_s3_object(self.s3_object_key)
+        except Exception:
+            pass
         super().delete(*args, **kwargs)
 
+    def is_accessible_by_user(self, user: "User") -> bool:
+        if self.file.name.startswith("public/"):
+            return True
+        return check_file_access(self, user)
+
     @property
-    def path(self) -> Path:
-        return Path(self.file.path)
+    def s3_object_key(self):
+        return self.file.name
+
+    @property
+    def url(self):
+        return reverse("media_file", args=[self.file.name])
 
 
 class FilesMixin(models.Model):
@@ -44,4 +62,4 @@ class FilesMixin(models.Model):
     def get_file(self, code: str, version: int | None = None) -> File:
         if version is not None:
             return self.files.get(code=code, version=version)
-        return self.files.get(code=code)
+        return self.files.filter(code=code).order_by("-version").first()

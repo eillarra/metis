@@ -18,6 +18,7 @@ django-dnt = "*"
 django-ical = "*"
 django-libsass = "*"
 django-modeltranslation = "*"
+django-storages = {extras = ["s3"], version = "*"}
 django-vite = "*"
 drf-extensions = "*"
 drf-writable-nested = "*"

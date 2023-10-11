@@ -21,10 +21,24 @@ CSRF_COOKIE_SECURE = True
 CSRF_USE_SESSIONS = True
 
 
-# sendfile
+# https://docs.djangoproject.com/en/dev/ref/settings/#storages
+# https://django-storages.readthedocs.io/en/latest/
 
-SENDFILE_ROOT = f"{MEDIA_ROOT}private"
-SENDFILE_URL = "/-internal"
+AWS_S3_ENDPOINT_URL = os.environ.get("S3_ENDPOINT_URL")
+AWS_ACCESS_KEY_ID = os.environ.get("S3_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = os.environ.get("S3_SECRET_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
+AWS_QUERYSTRING_AUTH = False
+AWS_IS_GZIPPED = True
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 
 # https://docs.sentry.io/platforms/python/guides/django/

@@ -3,8 +3,12 @@ from allauth.socialaccount.signals import pre_social_login
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from typing import TYPE_CHECKING
 
 from .rel import AddressesMixin, LinksMixin, PhoneNumbersMixin
+
+if TYPE_CHECKING:
+    from .rel.files import File
 
 
 class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
@@ -13,6 +17,9 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
 
     def can_be_managed_by(self, user: "User") -> bool:
         return user.is_superuser or user == self
+
+    def has_file_access(self, file: "File") -> bool:
+        return file.is_accessible_by_user(self)
 
     @property
     def name(self) -> str:

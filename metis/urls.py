@@ -7,6 +7,7 @@ from django.urls import path
 from django.views.i18n import set_language
 
 from metis.ugent_provider.views import oauth2_login, oauth2_callback
+from metis.site.views.files import MediaFileView
 
 
 admin.autodiscover()
@@ -21,6 +22,8 @@ urlpatterns = [
     path("u/logout/", logout, name="account_logout"),
     path("u/ugent/login/", oauth2_login, name="ugent_login"),
     path("u/ugent/login/callback/", oauth2_callback, name="ugent_callback"),
+    # media
+    path("media/<path:file>", MediaFileView.as_view(), name="media_file"),
 ]
 
 urlpatterns += i18n_patterns(path("", include("metis.site.urls")))
