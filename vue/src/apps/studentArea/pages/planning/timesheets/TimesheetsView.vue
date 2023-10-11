@@ -36,6 +36,7 @@
             :label="`${$t('field.start_time')} (am)`"
             clearable
             class="col-12 col-md"
+            :options="(hr, min) => limitTimeOptions(hr, min)"
           />
           <date-select
             type="time"
@@ -45,13 +46,7 @@
             :label="`${$t('field.end_time')} (am)`"
             clearable
             class="col-12 col-md"
-            :options="
-              (hr, min) => {
-                if (hr < +obj.start_time_am.split(':')[0]) return false;
-                if (min !== null && min < +obj.start_time_am.split(':')[1]) return false;
-                return true;
-              }
-            "
+            :options="(hr, min) => limitTimeOptions(hr, min, obj.start_time_am)"
           />
         </div>
         <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
@@ -62,6 +57,7 @@
             :label="`${$t('field.start_time')} (pm)`"
             clearable
             class="col-12 col-md"
+            :options="(hr, min) => limitTimeOptions(hr, min, obj.end_time_am)"
           />
           <date-select
             type="time"
@@ -71,13 +67,7 @@
             :label="`${$t('field.end_time')} (pm)`"
             clearable
             class="col-12 col-md"
-            :options="
-              (hr, min) => {
-                if (hr < +obj.start_time_pm.split(':')[0]) return false;
-                if (min !== null && min < +obj.start_time_pm.split(':')[1]) return false;
-                return true;
-              }
-            "
+            :options="(hr, min) => limitTimeOptions(hr, min, obj.start_time_pm)"
           />
         </div>
         <q-btn
@@ -226,4 +216,14 @@ watch(date, () => {
     };
   }
 });
+
+function limitTimeOptions(hr: number, min: number, pastTime?: string | null) {
+  if (min % 5 !== 0) return false;
+  if (!pastTime) return true;
+
+  const splits = pastTime.split(':');
+  if (hr < +splits[0]) return false;
+  if (hr !== null && min !== null && (hr === +splits[0] && min <= +splits[1])) return false;
+  return true;
+}
 </script>
