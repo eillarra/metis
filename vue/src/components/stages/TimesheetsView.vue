@@ -177,7 +177,7 @@ const columns = [
 
 const rows = computed(() => {
   return timesheets.value.map((obj: Timesheet) => ({
-    _hide_selection: obj.is_approved,
+    _hide_selection: obj.is_approved || new Date() < new Date(`${obj.date} ${obj.end_time_pm || obj.end_time_am}`),
     _self: obj,
     date: obj.date,
     start_time_am: obj.start_time_am ? obj.start_time_am.substring(0, 5) : '-',
