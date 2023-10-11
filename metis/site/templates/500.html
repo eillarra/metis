@@ -8,10 +8,10 @@
     <div class="col-3 col-md-2"></div>
     <div class="col-9 col-md-10">
       <div class="row q-col-gutter-x-xl">
-        <div class="col-12 col-md-4 q-pr-xl">
+        <div class="col-12 col-md-5 q-pr-xl">
           <h5 class="q-mt-none q-mb-md">{% trans 'Well, this is unexpected...' %}</h5>
           <p>{% trans "Sorry, something went wrong and we can't complete your request right now. We've been notified of the problem and will work to fix it as soon as possible." %}</p>
-          {% if sentry_event_id %}<p class="text-grey">Code: {{ sentry_event_id }}</p>{% endif %}
+          <p class="text-grey">500 Internal Server Error{% if sentry_event_id %}<br>{{ sentry_event_id }}{% endif %}</p>
         </div>
       </div>
     </div>
