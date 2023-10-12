@@ -53,6 +53,7 @@ const columns = [
     label: t('track'),
     align: 'left',
     sortable: true,
+    classes: 'q-table--col-auto-width',
   },
   {
     name: 'block_name',
@@ -60,6 +61,7 @@ const columns = [
     label: t('program_block'),
     align: 'left',
     sortable: true,
+    classes: 'q-table--col-auto-width',
   },
   {
     name: 'period_name',
@@ -67,6 +69,7 @@ const columns = [
     label: t('period'),
     align: 'left',
     sortable: true,
+    classes: 'q-table--col-auto-width',
   },
   {
     name: 'disciplines',
@@ -80,6 +83,23 @@ const columns = [
     label: t('field.status'),
     align: 'left',
     sortable: true,
+    classes: 'q-table--col-auto-width',
+  },
+  {
+    name: 'start_date',
+    field: 'start_date',
+    label: t('field.start_date'),
+    align: 'left',
+    sortable: true,
+    classes: 'q-table--col-auto-width',
+  },
+  {
+    name: 'end_date',
+    field: 'end_date',
+    label: t('field.end_date'),
+    align: 'left',
+    sortable: true,
+    classes: 'q-table--col-auto-width',
   },
   {
     name: 'has_mentors',
@@ -100,6 +120,8 @@ const rows = computed(() => {
     track_name: obj.Track?.name || '-',
     disciplines: obj.Discipline ? [obj.Discipline] : [],
     status: t(`internship_status.${obj.status}`),
+    start_date: obj.start_date,
+    end_date: obj.end_date,
     has_mentors: obj.mentors.length > 0,
   }));
 });

@@ -26,6 +26,10 @@
               :disciplines="education.disciplines"
               :label="$t('discipline')"
             />
+            <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
+              <date-select v-model="obj.start_date" :label="$t('field.start_date')" class="col-12 col-md" />
+              <date-select v-model="obj.end_date" :label="$t('field.end_date')" class="col-12 col-md" />
+            </div>
           </div>
           <q-stepper-navigation class="flex"> </q-stepper-navigation>
         </q-step>
@@ -39,7 +43,7 @@
           @click="createInternship"
           color="ugent"
           :label="$t('form.add_to_project')"
-          :disable="!obj.ProjectPlace || !obj.Student || !obj.discipline"
+          :disable="!obj.ProjectPlace || !obj.Student || !obj.discipline || !obj.start_date || !obj.end_date"
         />
       </div>
     </template>
@@ -47,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
@@ -57,6 +61,7 @@ import { notify } from '@/notify';
 import { useStore } from '../../store.js';
 
 import ApiAutocomplete from '@/components/forms/ApiAutocomplete.vue';
+import DateSelect from '@/components/forms/DateSelect.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
@@ -75,6 +80,8 @@ const obj = ref({
   discipline: null as number | null,
   Student: null as Student | null,
   ProjectPlace: null as ProjectPlace | null,
+  start_date: null as string | null,
+  end_date: null as string | null,
 });
 const projectName = computed<string>(() => (project.value ? project.value.name : ''));
 
@@ -122,6 +129,8 @@ function createInternship() {
       period: obj.value.period,
       track: obj.value.Student?.Track?.id,
       discipline: obj.value.discipline,
+      start_date: obj.value.start_date,
+      end_date: obj.value.end_date,
     })
     .then((res) => {
       store.createObj('projectInternship', res.data);
@@ -129,4 +138,15 @@ function createInternship() {
       emit('create:obj');
     });
 }
+
+watch(
+  () => obj.value.period,
+  () => {
+    if (!obj.value.period) return;
+    const period = project.value?.periods.find((period) => period.id == obj.value.period);
+    if (!period) return;
+    if (!obj.value.start_date) obj.value.start_date = period.start_date;
+    if (!obj.value.end_date) obj.value.end_date = period.end_date;
+  },
+);
 </script>

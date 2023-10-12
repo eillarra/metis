@@ -42,9 +42,9 @@ class PlaceOfficeView(InertiaView):
         last_project = projects.get(name="AJ23-24")  # TODO: clean
         is_admin = place.contacts.filter(user=request.user, is_admin=True).exists()
 
-        internships = Internship.objects.filter(
-            project_place__place=place, project=last_project, status=Internship.DEFINITIVE
-        )
+        internships = Internship.objects.prefetch_related(
+            "period__program_internship__block__internships", "discipline", "student__user", "mentors__user"
+        ).filter(project_place__place=place, project=last_project, status=Internship.DEFINITIVE)
 
         if not is_admin:
             internships = internships.filter(mentors__user=request.user)

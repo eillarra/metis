@@ -178,17 +178,27 @@ class TestForOfficeMember(TestForAuthenticated):
         api_client.force_authenticate(user=office_member)
 
     def _get_internship_create_data(self, internship):
+        period = internship.project.periods.first()
+
         return {
             "student": StudentFactory.create(project=internship.project).id,
             "project_place": internship.project_place.id,
-            "discipline_id": internship.discipline.id,
+            "period": period.id,
+            "discipline": internship.discipline.id,
+            "start_date": period.start_date,
+            "end_date": period.end_date,
         }
 
     def _get_internship_update_data(self, internship):
+        period = internship.project.periods.first()
+
         return {
             "student": StudentFactory.create(project=internship.project).id,
             "project_place": internship.project_place.id,
-            "discipline_id": internship.discipline.id,
+            "period": period.id,
+            "discipline": internship.discipline.id,
+            "start_date": period.start_date,
+            "end_date": period.end_date,
         }
 
     def test_delete_related_place(self, api_client, education, internship):

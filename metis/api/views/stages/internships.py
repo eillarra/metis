@@ -17,7 +17,7 @@ class CanManageMentors(IsAuthenticated):
 
 
 class InternshipViewSet(ProjectNestedModelViewSet):
-    queryset = Internship.objects.prefetch_related("project__education", "period", "track", "discipline", "updated_by")
+    queryset = Internship.objects.prefetch_related("project__education", "mentors__user", "updated_by")
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = InternshipSerializer

@@ -1,4 +1,3 @@
-import datetime
 import math
 
 from collections import Counter
@@ -120,8 +119,8 @@ class Internship(RemarksMixin, BaseModel):
 
     student = models.ForeignKey("metis.Student", related_name="internships", null=True, on_delete=models.PROTECT)
     project_place = models.ForeignKey("metis.ProjectPlace", related_name="internships", on_delete=models.PROTECT)
-    custom_start_date = models.DateField(null=True)  # by default start date is period's start date
-    custom_end_date = models.DateField(null=True)  # by default end date is period's end date
+    start_date = models.DateField()
+    end_date = models.DateField()
 
     discipline = models.ForeignKey("metis.Discipline", related_name="internships", null=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=CONCEPT)
@@ -148,35 +147,30 @@ class Internship(RemarksMixin, BaseModel):
             raise ValidationError("The chosen place is not part of the chosen project.")
         if self.track and not self.track.program_internships.filter(id=self.period.program_internship_id).count():
             raise ValidationError("The chosen program internship is not part of the chosen track.")
-        if self.custom_start_date and self.custom_start_date < self.period.start_date:
+        if self.start_date and self.period and self.start_date < self.period.start_date:
             raise ValidationError("The chosen start date is before the start of the chosen period.")
-        if self.custom_end_date and self.custom_end_date > self.period.end_date:
+        if self.end_date and self.period and self.end_date > self.period.end_date:
             raise ValidationError("The chosen end date is after the end of the chosen period.")
-        if self.custom_start_date and self.custom_end_date and self.custom_start_date > self.custom_end_date:
+        if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError("The chosen start date is after the chosen end date.")
 
         validate_discipline_choice(self)
         return super().clean()
 
+    def save(self, *args, **kwargs) -> None:
+        if not self.pk and self.period:
+            if not self.start_date:
+                self.start_date = self.period.start_date
+            if not self.end_date:
+                self.end_date = self.period.end_date
+        super().save(*args, **kwargs)
+
     def can_be_managed_by(self, user) -> bool:
-        # TODO: change to self.period.project.can_be_managed_by(user) once we switch to period
-        return self.project_place.can_be_managed_by(user)
+        return self.project.can_be_managed_by(user)
 
     @cached_property
     def place(self) -> "Place":
         return self.project_place.place
-
-    @property
-    def start_date(self) -> datetime.date:
-        return self.custom_start_date if self.custom_start_date else self.period.start_date
-
-    @property
-    def end_date(self) -> datetime.date:
-        return self.custom_end_date if self.custom_end_date else self.period.end_date
-
-    @property
-    def duration(self) -> datetime.timedelta:
-        return self.end_at - self.start_at
 
     @property
     def is_active(self) -> bool:
@@ -184,7 +178,7 @@ class Internship(RemarksMixin, BaseModel):
 
     @property
     def program(self) -> Optional["Program"]:
-        return self.period.program_internship.block.program if self.period.program_period else None
+        return self.period.program_internship.block.program if self.period else None
 
     def accepts_cases(self) -> bool:
         raise NotImplementedError

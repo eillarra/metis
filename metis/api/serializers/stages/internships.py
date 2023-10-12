@@ -6,7 +6,7 @@ from ..disciplines import DisciplineSerializer
 from ..rel.remarks import RemarksMixin
 from ..places import PlaceInertiaSerializer
 from ..users import UserLastLoginSerializer
-from .programs import ProgramInternshipSerializer
+from .projects import PeriodSerializer
 from .students import StudentInertiaSerializer
 
 
@@ -36,11 +36,8 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
         "v1:project-internship-timesheet-list", nested_lookup=internship_lookup_fields
     )
     project = serializers.PrimaryKeyRelatedField(read_only=True)
-    program_internship = ProgramInternshipSerializer(read_only=True)
-    start_date = serializers.DateField(read_only=True)
-    end_date = serializers.DateField(read_only=True)
-    custom_start_date = serializers.DateField(allow_null=True, required=False)
-    custom_end_date = serializers.DateField(allow_null=True, required=False)
+    start_date = serializers.DateField()
+    end_date = serializers.DateField()
     mentors = MentorTinySerializer(many=True, read_only=True)
 
     class Meta:
@@ -50,6 +47,7 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
 
 class InternshipInertiaSerializer(InternshipSerializer):
     Discipline = DisciplineSerializer(read_only=True, source="discipline")
+    Period = PeriodSerializer(read_only=True, source="period")
     Student = StudentInertiaSerializer(read_only=True, source="student")
 
 

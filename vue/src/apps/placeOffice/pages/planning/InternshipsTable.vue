@@ -46,6 +46,14 @@ const columns = [
     classes: 'q-table--col-auto-width',
   },
   {
+    name: 'period_name',
+    field: 'period_name',
+    label: t('period'),
+    align: 'left',
+    sortable: true,
+    classes: 'q-table--col-auto-width',
+  },
+  {
     name: 'student_name',
     field: 'student_name',
     required: true,
@@ -78,6 +86,7 @@ const rows = computed(() => {
     start_date: obj.start_date,
     end_date: obj.end_date,
     student_name: (obj.Student?.User as StudentUser)?.name || '-',
+    period_name: obj.Period?.full_name || '-',
     disciplines: obj.Discipline ? [obj.Discipline] : [],
     has_mentors: obj.mentors.length > 0,
   }));
