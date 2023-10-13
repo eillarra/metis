@@ -36,7 +36,10 @@ const periodOptions = computed(() => {
     return [];
   }
 
-  return props.periods.map((period) => ({
+  // TODO: check why we are getting empty objects in the array here
+  // .filter is a workaround
+
+  return props.periods.filter((obj) => obj).map((period) => ({
     label: period.full_name,
     value: period.id,
   }));
