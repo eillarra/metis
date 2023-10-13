@@ -17,6 +17,7 @@ DEBUG = True
 
 ADMINS = (("eillarra", "eneko.illarramendi@ugent.be"),)
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "DJANGO_SECRET_KEY")
+ENCRYPTION_KEY = os.environ.get("DJANGO_ENCRYPTION_KEY", "DJANGO_ENCRYPTION_KEY")
 SITE_ID = int(os.environ.get("SITE_ID", 1))
 
 INSTALLED_APPS = [

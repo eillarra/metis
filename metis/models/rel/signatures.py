@@ -4,6 +4,7 @@ from django.db import models
 from django.urls import reverse
 from uuid import uuid4
 
+from metis.services.cryptography import EncryptedTextField
 from ..base import NonEditableMixin
 
 
@@ -17,7 +18,7 @@ class Signature(NonEditableMixin, models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     user = models.ForeignKey("metis.User", related_name="signatures", on_delete=models.PROTECT)
-    signed_text = models.TextField()
+    signed_text = EncryptedTextField()
     created_at = models.DateTimeField(auto_now_add=True)
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
 
@@ -29,7 +30,7 @@ class Signature(NonEditableMixin, models.Model):
 
 
 class SignaturesMixin(models.Model):
-    remarks = GenericRelation(Signature)
+    signatures = GenericRelation(Signature)
 
     class Meta:
         abstract = True
