@@ -1,6 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -49,7 +50,16 @@ class EducationNestedModelViewSet(BaseModelViewSet):
         return self._education
 
     def perform_create(self, serializer):
+        self.validate(serializer)
         serializer.save(education=self.get_education(), created_by=self.request.user)
 
     def perform_update(self, serializer):
+        self.validate(serializer)
         serializer.save(education=self.get_education(), updated_by=self.request.user)
+
+    def validate(self, serializer) -> None:
+        try:
+            ModelClass = serializer.Meta.model
+            ModelClass(education=self.get_education(), **serializer.validated_data).clean()
+        except Exception as e:
+            raise ValidationError(str(e))

@@ -1,6 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from typing import TYPE_CHECKING
 
@@ -52,7 +53,16 @@ class ProjectNestedModelViewSet(BaseModelViewSet):
         return self._project
 
     def perform_create(self, serializer):
+        self.validate(serializer)
         serializer.save(project=self.get_project(), created_by=self.request.user)
 
     def perform_update(self, serializer):
+        self.validate(serializer)
         serializer.save(project=self.get_project(), updated_by=self.request.user)
+
+    def validate(self, serializer) -> None:
+        try:
+            ModelClass = serializer.Meta.model
+            ModelClass(project=self.get_project(), **serializer.validated_data).clean()
+        except Exception as e:
+            raise ValidationError(str(e))

@@ -147,10 +147,6 @@ class Internship(RemarksMixin, BaseModel):
             raise ValidationError("The chosen place is not part of the chosen project.")
         if self.track and not self.track.program_internships.filter(id=self.period.program_internship_id).count():
             raise ValidationError("The chosen program internship is not part of the chosen track.")
-        if self.start_date and self.period and self.start_date < self.period.start_date:
-            raise ValidationError("The chosen start date is before the start of the chosen period.")
-        if self.end_date and self.period and self.end_date > self.period.end_date:
-            raise ValidationError("The chosen end date is after the end of the chosen period.")
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError("The chosen start date is after the chosen end date.")
 
