@@ -35,14 +35,14 @@ const columns = [
     align: 'left',
     sortable: true,
     sort: (a: string, b: string) => a.localeCompare(b),
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'download',
     field: 'download',
     label: 'Download',
     align: 'right',
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
 ];
 

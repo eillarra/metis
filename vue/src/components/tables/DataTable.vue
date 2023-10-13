@@ -135,7 +135,10 @@
         <q-td
           :props="props"
           :auto-width="
-            props.col.name.startsWith('is_') || props.col.name.startsWith('has_') || props.col.name == 'last_login'
+            props.col.name.startsWith('is_') ||
+            props.col.name.startsWith('has_') ||
+            props.col.name == 'last_login' ||
+            props.col.autoWidth
           "
           :class="props.row._class || ''"
         >

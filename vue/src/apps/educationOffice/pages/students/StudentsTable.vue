@@ -29,7 +29,7 @@ const props = defineProps<{
   students: StudentUser[];
 }>();
 
-const queryColumns = ['name', 'email'];
+const queryColumns = ['name', 'email', 'number'];
 
 const columns = [
   {
@@ -56,6 +56,14 @@ const columns = [
     align: 'left',
   },
   {
+    name: 'number',
+    field: 'number',
+    label: t('field.number'),
+    align: 'left',
+    autoWidth: true,
+    classes: 'panno-mono-number',
+  },
+  {
     name: 'email',
     field: 'email',
     label: t('field.email'),
@@ -73,7 +81,9 @@ const columns = [
 
 const rows = computed(() => {
   return props.students.map((obj: StudentUser) => {
-    const currentStudent = obj.student_set.find((student) => student.Project?.id === (project.value as Project).id);
+    const currentStudent = obj.student_set.find(
+      (student: Student) => student.Project?.id === (project.value as Project).id
+    );
 
     return {
       _self: obj,
@@ -82,6 +92,7 @@ const rows = computed(() => {
       email: obj.email,
       track: obj.student_set[0].Track?.name || '-',
       blocks: obj.student_set.map((student) => `${student.Project?.name}-${student.Block?.name}`).join(', '),
+      number: currentStudent?.number || '-',
       last_login: obj.last_login ? formatDate(obj.last_login) : '-',
     };
   });

@@ -82,6 +82,8 @@ export default {
     start_date: 'Start date',
     end_date: 'End date',
     title: 'Title | Titles',
+    student_number: 'Student number | Student numbers',
+    number: 'Number | Numbers',
     subject: 'Subject | Subjects',
     type: 'Type | Types',
     status: 'Status | Statuses',

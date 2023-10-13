@@ -31,7 +31,7 @@ const columns = [
     label: t('field.updated_at'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'updated_by',

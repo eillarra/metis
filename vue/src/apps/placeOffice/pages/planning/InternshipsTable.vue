@@ -34,7 +34,7 @@ const columns = [
     label: t('field.start_date'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'end_date',
@@ -43,7 +43,7 @@ const columns = [
     label: t('field.end_date'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'period_name',
@@ -51,7 +51,7 @@ const columns = [
     label: t('period'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'student_name',
@@ -69,7 +69,7 @@ const columns = [
     field: 'disciplines',
     label: t('discipline'),
     align: 'left',
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'has_mentors',

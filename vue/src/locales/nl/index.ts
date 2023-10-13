@@ -84,6 +84,8 @@ export default {
     subject: 'Onderwerp | Onderwerpen',
     type: 'Type | Types',
     status: 'Status | Statussen',
+    student_number: 'Studentennummer | Studentennummers',
+    number: 'Nummer | Nummers',
     created_at: 'Aangemaakt op',
     created_by: 'Aangemaakt door',
     updated_at: 'Laatst bijgewerkt',

@@ -34,7 +34,7 @@ const columns = [
     label: t('field.start_date'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'end_date',
@@ -43,7 +43,7 @@ const columns = [
     label: t('field.end_date'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'place_name',
@@ -61,14 +61,14 @@ const columns = [
     field: 'place_type',
     label: t('place_type'),
     align: 'left',
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'disciplines',
     field: 'disciplines',
     label: t('discipline'),
     align: 'left',
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
 ];
 

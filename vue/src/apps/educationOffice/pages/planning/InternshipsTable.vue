@@ -53,7 +53,7 @@ const columns = [
     label: t('track'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'block_name',
@@ -61,7 +61,7 @@ const columns = [
     label: t('program_block'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'period_name',
@@ -69,7 +69,7 @@ const columns = [
     label: t('period'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'disciplines',
@@ -83,7 +83,7 @@ const columns = [
     label: t('field.status'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'start_date',
@@ -91,7 +91,7 @@ const columns = [
     label: t('field.start_date'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'end_date',
@@ -99,7 +99,7 @@ const columns = [
     label: t('field.end_date'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'has_mentors',

@@ -120,6 +120,11 @@ code, kbd, pre, samp,
   font-weight: 400;
 }
 
+.panno-mono-number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.0625em;;
+}
+
 .q-field.text-mono {
   font-size: .85em;
 }

@@ -63,7 +63,7 @@ const columns = [
     label: t('admin'),
     align: 'left',
     sortable: true,
-    classes: 'q-table--col-auto-width',
+    autoWidth: true,
   },
   {
     name: 'email',
