@@ -101,7 +101,6 @@ const acceptanceChecked = ref(false);
 // --
 const page = usePage();
 const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_user as DjangoAuthenticatedUser);
-const rijksregisternummer = computed<string | null>(() => (page.props.student_rijksregisternummers as Record<string, string>)[String(props.internship.student || 0)] || null);
 // --
 
 const selectedPendingApproval = computed(() => {
@@ -112,7 +111,7 @@ const finalText = ref<string>('');
 const signedText = computed<string>(() => {
   let text =  `Ondergetekende,
 
-${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value.email}) medewerker op stageplaats ${props.internship.Place?.name} bevestigt dat student ${props.internship.Student?.User?.name} met rijksregisternummer ${rijksregisternummer.value} stage gelopen heeft op de dagen en uren die hieronder vermeld staan.
+${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value.email}) medewerker op stageplaats ${props.internship.Place?.name} bevestigt dat student ${props.internship.Student?.User?.name} met studentennummer ${props.internship.Student?.number} hier stage heeft gelopen op:
 `;
 
   for (const timesheet of selectedPendingApproval.value) {

@@ -49,7 +49,7 @@ class PlaceOfficeView(InertiaView):
         if not is_admin:
             internships = internships.filter(mentors__user=request.user)
 
-        base = {
+        return {
             "education": EducationTinySerializer(place.education).data,
             "place": PlaceSerializer(place, context={"request": request}).data,
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
@@ -65,35 +65,6 @@ class PlaceOfficeView(InertiaView):
                 for place in Place.objects.filter(contacts__user_id=request.user.id).select_related("education")
             ],
         }
-
-        # --------------
-        # PROVISIONAL
-        # --------------
-        # we don't have the rijksregisternummer from OASIS yet, so we solve it like this for now
-
-        from metis.models import Signature
-
-        numbers = {}
-        ids = list(internships.values_list("student_id", "student__user_id"))
-
-        for student_id, user_id in ids:
-            signatures = Signature.objects.filter(content_type__model="textentry", user_id=user_id)
-            rijksregisternummer = ""
-
-            for signature in signatures:
-                if "Rijksregisternummer" in signature.signed_text:
-                    rijksregisternummer = signature.signed_text.split("Rijksregisternummer ")[1].split(",")[0]
-                    break
-
-            numbers[student_id] = rijksregisternummer
-
-        temp_props = {
-            "student_rijksregisternummers": numbers,
-        }
-        # --------------
-        # --------------
-
-        return {**base, **temp_props}
 
     def get_page_title(self, request, *args, **kwargs) -> str:
         return f"{self.get_object().name} - Stageplaats"
