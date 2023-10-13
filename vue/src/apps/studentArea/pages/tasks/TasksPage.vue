@@ -54,13 +54,6 @@
         />
       </q-page-container>
       <q-footer class="bg-white text-dark q-pa-lg">
-        <q-input
-          v-model="rijksregisternummer"
-          dense
-          label="Rijksregisternummer *"
-          mask="##.##.##-###.##"
-          :rules="[(val) => val.length == 15]"
-        />
         <q-list class="q-my-md">
           <q-item tag="label" v-ripple>
             <q-item-section avatar top>
@@ -84,7 +77,7 @@
             unelevated
             color="ugent"
             :label="$t('form.sign')"
-            :disable="!acceptanceChecked || !rijksregisternummer"
+            :disable="!acceptanceChecked"
           />
         </div>
       </q-footer>
@@ -119,7 +112,6 @@ const addressesApiEndpoint = computed<string>(() => (page.props.user as Authenti
 const previousPlaceIds = computed<number[]>(() => page.props.place_ids as number[]);
 const previousDisciplineIds = computed<number[]>(() => page.props.discipline_ids as number[]);
 
-const rijksregisternummer = ref<string>('');
 const finalText = ref<string>('');
 
 const textsToSign = computed<TextEntry[]>(() =>
@@ -173,6 +165,6 @@ const replaceData = computed(() => ({
   project_academic_year: academicYear.value,
   block_name: student.value.block.name,
   student_name: student.value.user.name,
-  student_rijksregisternummer: rijksregisternummer.value,
+  student_number: student.value.number,
 }));
 </script>
