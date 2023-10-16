@@ -1,18 +1,22 @@
+from http import HTTPStatus as status
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
+from rest_framework.response import Response
 from typing import TYPE_CHECKING
 
-from metis.models import Place, Contact
+from metis.models import User, Place, Contact
+from metis.services.mailer import schedule_invitation_email
 from ..permissions import IsEducationOfficeMember
 from ..serializers import PlaceSerializer, ContactSerializer
-from .base import BaseModelViewSet, InvitationMixin
+from .base import BaseModelViewSet
 from .educations import EducationNestedModelViewSet
 
 if TYPE_CHECKING:
     from metis.models.educations import Education
 
 
-class PlaceViewSet(EducationNestedModelViewSet, InvitationMixin):
+class PlaceViewSet(EducationNestedModelViewSet):
     queryset = Place.objects.select_related("updated_by").prefetch_related(
         "education", "contacts__user", "contacts__updated_by"
     )
@@ -22,7 +26,21 @@ class PlaceViewSet(EducationNestedModelViewSet, InvitationMixin):
 
     filter_backends = (SearchFilter,)
     search_fields = ("name", "code")
-    valid_invitation_types = {"contact"}
+
+    @action(detail=True, methods=["post"])
+    def invite(self, request, *args, **kwargs):
+        emails = request.data.get("emails")
+        data = request.data.get("data", {})
+
+        if not emails:
+            return Response({"emails": ["Must provide emails"]}, status=status.BAD_REQUEST)
+
+        user = User.create_from_invitation(name=request.data.get("name"), emails=emails)
+        contact = Contact.objects.create(place=self.get_object(), user=user, created_by=self.request.user, **data)
+        self.get_object().contacts.add(contact)
+        schedule_invitation_email("contact", contact)
+
+        return Response(ContactSerializer(contact, context={"request": request}).data, status=status.CREATED)
 
 
 class PlaceNestedModelViewSet(BaseModelViewSet):
@@ -55,19 +73,13 @@ class PlaceNestedModelViewSet(BaseModelViewSet):
             raise ValidationError(str(e))
 
 
-class ContactViewSet(PlaceNestedModelViewSet, InvitationMixin):
+class ContactViewSet(PlaceNestedModelViewSet):
     queryset = Contact.objects.select_related("user")
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ContactSerializer
 
-    valid_invitation_types = {"existing_contact"}
-
-    def get_invitation_defaults(self) -> dict:
-        user = self.get_object().user
-        return {
-            "type": "existing_contact",
-            "name": user.name,
-            "email": user.email,
-            "data": {},
-        }
+    @action(detail=True, methods=["post"])
+    def invite(self, request, *args, **kwargs):
+        schedule_invitation_email("contact", self.get_object())
+        return Response(status=status.NO_CONTENT)

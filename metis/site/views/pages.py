@@ -1,12 +1,8 @@
-from django import http
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.urls import reverse
-from django.views.generic import View
 
 from metis.api.serializers import EducationTinySerializer, EducationSerializer, PlaceSerializer
 from metis.models import Education, Place
-from metis.models.rel.invitations import Invitation
 from .inertia import InertiaView
 
 
@@ -44,23 +40,3 @@ class DashboardView(InertiaView):
             )
 
         return data
-
-
-class InvitationView(View):
-    """
-    Visiting this view processes an invitation and redirects the user to his/her dashboard.
-    """
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def get(self, request, uuid: str, secret: str) -> http.HttpResponse:
-        try:
-            invitation = Invitation.objects.get(uuid=uuid)
-        except Invitation.DoesNotExist:
-            return http.HttpResponseNotFound("Invitation has expired")
-        if invitation.secret != secret:
-            return http.HttpResponseNotFound("Invitation does not exist")
-        invitation.process(request.user)
-        return http.HttpResponseRedirect(reverse("dashboard"))

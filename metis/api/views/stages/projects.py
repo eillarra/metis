@@ -8,22 +8,20 @@ from typing import TYPE_CHECKING
 from metis.models import Project, User
 from ...permissions import IsEducationOfficeMember
 from ...serializers.stages import ProjectSerializer, StudentUserSerializer
-from ..base import BaseModelViewSet, InvitationMixin
+from ..base import BaseModelViewSet
 from ..educations import EducationNestedModelViewSet
 
 if TYPE_CHECKING:
     from metis.models import Education
 
 
-class ProjectViewSet(EducationNestedModelViewSet, InvitationMixin):
+class ProjectViewSet(EducationNestedModelViewSet):
     queryset = Project.objects.select_related("updated_by").prefetch_related(
         "periods__updated_by", "questionings__updated_by"
     )
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ProjectSerializer
-
-    valid_invitation_types = {"student"}
 
     @action(detail=True, pagination_class=None, url_path="student-users")
     @method_decorator(never_cache)

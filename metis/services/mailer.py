@@ -4,10 +4,10 @@ from django.template import Context, Template
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from metis.models import User, Education, EmailTemplate, Invitation, Contact
+    from metis.models import User, Education, EmailTemplate, Contact
 
 
-def send_email_to_admins(subject: str, message: str) -> None:
+def send_email_to_admins(subject: str, message: str = "") -> None:
     django_send_mail(
         subject if subject.startswith("[METIS] ") else f"[METIS] {subject}",
         message,
@@ -73,25 +73,24 @@ def schedule_template_email(
         raise e
 
 
-def schedule_invitation_email(invitation: "Invitation", education: Optional["Education"] = None) -> None:
+def schedule_invitation_email(invitation_type: str, content_object: "Contact") -> None:
     from metis.models import EmailTemplate
 
+    if invitation_type == "contact":
+        contact: "Contact" = content_object
+    else:
+        raise ValueError(f"Unknown invitation type: {invitation_type}")
+
     try:
-        template = EmailTemplate.objects.get(education=education, code=f"invitation.{invitation.type}")
+        template = EmailTemplate.objects.get(education=contact.education, code=f"invitation.{invitation_type}")
     except EmailTemplate.DoesNotExist:
-        send_email_to_admins("Invitation email template not found", str(invitation))
+        send_email_to_admins("Invitation email template not found", f"invitation.{invitation_type}")
         return
 
-    if invitation.type == "existing_contact" and invitation.content_object:
-        contact: "Contact" = invitation.content_object
-        invited_user = contact.user
-    else:
-        invited_user = None
-
     schedule_template_email(
-        from_email=f"{education.short_name} UGent <metis@ugent.be>" if education else "Metis <metis@ugent.be>",
-        to=[invitation.email],
+        from_email=f"{contact.education.short_name} UGent <metis@ugent.be>",
+        to=[contact.user.email],
         template=template,
-        context={"invitation": invitation},
-        log_user=invited_user,
+        context={"contact": contact},
+        log_user=contact.user,
     )

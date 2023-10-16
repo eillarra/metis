@@ -3,7 +3,6 @@ import pytest
 from django.urls import reverse
 from http import HTTPStatus as status
 
-from metis.models.rel.invitations import Invitation
 from metis.utils.factories import (
     ContactFactory,
     EducationFactory,
@@ -54,7 +53,12 @@ class TestForAnonymous:
         data = self._get_contact_invite_data(place)
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["place_invite"]
-        assert Invitation.objects.count() == int(bool(data))
+
+    def test_invite_existing_contact(self, api_client, education, place):
+        contact = place.contacts.first()
+        url = reverse("v1:education-place-contact-invite", args=[education.id, place.id, contact.id])
+        response = api_client.post(url)
+        assert response.status_code == self.expected_status_codes["existing_contact_invite"]
 
 
 class TestForAuthenticated(TestForAnonymous):
@@ -66,7 +70,7 @@ class TestForAuthenticated(TestForAnonymous):
 class TestForOfficeMember(TestForAuthenticated):
     expected_status_codes = {
         "place_invite": status.CREATED,
-        "existing_contact_invite": status.CREATED,
+        "existing_contact_invite": status.NO_CONTENT,
     }
 
     @pytest.fixture(autouse=True)
@@ -75,21 +79,13 @@ class TestForOfficeMember(TestForAuthenticated):
 
     def _get_contact_invite_data(self, place):
         return {
-            "type": "contact",
             "name": "Test Contact",
-            "email": "contact@uzgent.be",
+            "emails": ["contact@uzgent.be"],
             "data": {
                 "is_mentor": False,
                 "is_staff": False,
             },
         }
-
-    def test_invite_existing_contact(self, api_client, education, place):
-        contact = place.contacts.first()
-        url = reverse("v1:education-place-contact-invite", args=[education.id, place.id, contact.id])
-        response = api_client.post(url)
-        assert response.status_code == self.expected_status_codes["existing_contact_invite"]
-        assert Invitation.objects.count() == 1
 
     def test_invite_contact_bad_request(self, api_client, education, place):
         url = reverse("v1:education-place-invite", args=[education.id, place.id])

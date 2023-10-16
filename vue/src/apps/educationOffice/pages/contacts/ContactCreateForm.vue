@@ -182,9 +182,8 @@ function inviteContact() {
       }
 
       const data = {
-        type: 'contact',
         name: formData.value.name,
-        email: formData.value.email,
+        emails: [formData.value.email],
         data: {
           is_mentor: formData.value.is_mentor,
           is_staff: formData.value.is_staff,
@@ -192,7 +191,8 @@ function inviteContact() {
         },
       };
 
-      api.post(`${selectedPlace.value?.self}invite/`, data).then(() => {
+      api.post(`${selectedPlace.value?.self}invite/`, data).then((res) => {
+        store.createObj('contact', res.data);
         notify.success(t('form.contact.create.invited'));
         emit('create:obj');
       });

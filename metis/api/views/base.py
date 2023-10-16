@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db.models.deletion import ProtectedError
 from django.db.utils import IntegrityError
 from django.utils.decorators import method_decorator
@@ -8,8 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from metis.models.rel.invitations import Invitation
-from metis.services.graph import GraphAPI
+from metis.models.users import User
 
 
 class ProtectedMixin:
@@ -38,45 +36,3 @@ class BaseModelViewSet(ProtectedMixin, ModelViewSet):
     @method_decorator(never_cache)
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
-
-
-class InvitationMixin:
-    valid_invitation_types: set = set()
-
-    def get_object(self):
-        raise NotImplementedError
-
-    def get_invitation_defaults(self) -> dict:
-        return {}
-
-    @action(detail=True, methods=["post"])
-    def invite(self, request, *args, **kwargs):
-        try:
-            defaults = self.get_invitation_defaults()
-            invitation_type = request.data.get("type") or defaults.get("type")
-            email = request.data.get("email") or defaults.get("email")
-
-            if invitation_type not in self.valid_invitation_types:
-                return Response({"type": ["Invalid invitation type"]}, status=status.BAD_REQUEST)
-
-            if not email:
-                return Response({"email": ["This field is required"]}, status=status.BAD_REQUEST)
-
-            if settings.ENV == "production":
-                with GraphAPI() as graph:
-                    _, _, enabled = graph.register_email(email)
-                if not enabled:
-                    raise ValueError("User is disabled at UGent. Contact DICT first.")
-
-            Invitation.objects.create(
-                content_object=self.get_object(),
-                type=invitation_type,
-                name=request.data.get("name") or defaults.get("name"),
-                email=email,
-                data=request.data.get("data") or defaults.get("data"),
-            )
-
-            return Response(status=status.CREATED)
-
-        except IntegrityError as e:
-            return Response({"ValueError": [str(e)]}, status=status.BAD_REQUEST)

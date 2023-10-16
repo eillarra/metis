@@ -1,10 +1,13 @@
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.signals import pre_social_login
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.crypto import get_random_string
 from typing import TYPE_CHECKING
 
+from metis.services.graph import GraphAPI
+from metis.services.mailer import send_email_to_admins
 from .rel import AddressesMixin, LinksMixin, PhoneNumbersMixin
 
 if TYPE_CHECKING:
@@ -37,20 +40,44 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
     def is_student(self) -> bool:
         return self.student_set.exists()  # type: ignore
 
+    @classmethod
+    def create_from_invitation(cls, name: str, emails: list[str]) -> "User":
+        if not emails or not all(emails):
+            raise ValueError("At least one email is required")
 
-def find_user_by_email(email: str, *, verified_only: bool = True) -> User | None:
+        emails = [email.lower() for email in emails]
+        primary_email = emails[0]
+        username = primary_email.split("@")[0]
+
+        if cls.objects.filter(username=username).exists():
+            username = f"{username}.{get_random_string(4)}"
+
+        user = cls.objects.create(
+            username=username,
+            password=f"!{get_random_string(40)}",  # not a usable password, they will use UGent OAuth anyway
+            first_name=name.split()[0],
+            last_name=" ".join(name.split()[1:]),
+            email=primary_email,
+        )
+
+        for email in emails:
+            EmailAddress.objects.create(user=user, email=email, verified=False, primary=email == primary_email)
+
+        if settings.ENV == "production":
+            with GraphAPI() as graph:
+                for email in emails:
+                    _, _, enabled = graph.register_email(email)
+                    if not enabled:
+                        send_email_to_admins(f"Email disabled at UGent: {email} EOM")
+
+        return user
+
+
+def find_user_by_email(email: str) -> User | None:
     try:
-        return EmailAddress.objects.get(email__iexact=email, verified=verified_only).user
+        return EmailAddress.objects.get(email__iexact=email).user
     except EmailAddress.DoesNotExist:
         return None
-
-
-@receiver(post_save, sender=User)
-def check_invitations(sender, instance, created, **kwargs):
-    if created:
-        from metis.services.inviter import check_user_invitations
-
-        check_user_invitations(instance)
 
 
 @receiver(pre_social_login)
@@ -58,11 +85,11 @@ def link_to_existing_user(sender, request, sociallogin, **kwargs):
     if sociallogin.is_existing:
         return
 
-    # for social accounts, we can use the email address to find the user, if email is verified
     try:
         email = sociallogin.account.extra_data["mail"]
-        user = find_user_by_email(email, verified_only=True)
+        user = find_user_by_email(email)
         if user:
+            EmailAddress.objects.filter(user=user, email__iexact=email).update(verified=True)
             sociallogin.connect(request, user)
     except KeyError:
         return
