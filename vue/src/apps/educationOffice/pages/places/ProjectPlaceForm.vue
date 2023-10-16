@@ -51,14 +51,14 @@
               {{ period.start_date }} - {{ period.end_date }}
             </div>
             <q-input
-              v-model="availability[String(period.id)].min"
+              v-model.number="availability[String(period.id)].min"
               dense
               label="min"
               type="number"
               class="col-6 col-md-3"
             />
             <q-input
-              v-model="availability[String(period.id)].max"
+              v-model.number="availability[String(period.id)].max"
               dense
               label="max"
               type="number"

@@ -25,27 +25,28 @@ class ProjectPlaceViewSet(ProjectNestedModelViewSet):
     filter_backends = (SearchFilter,)
     search_fields = ("place__name", "place__code")
 
+    def perform_create(self, serializer):
+        # TODO: activate validation
+        # self.validate(serializer)
+        serializer.save(project=self.get_project(), created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        # TODO: activate validation
+        # self.validate(serializer)
+        serializer.save(project=self.get_project(), updated_by=self.request.user)
+
     @action(detail=True, methods=["put"])
     def availability(self, request, *args, **kwargs):
-        """
-        This endpoint is a bit special, because it is an endpoint for a nested field.
-        TODO: We repeat the validations from Model.clean() here, it could be refactored in the future.
-        """
-
         project_place = self.get_object()
-        period_ids = set(project_place.project.periods.values_list("id", flat=True))
 
-        # validate
-
-        ProjectPlaceAvailabilitySerializer(data=request.data, many=True).is_valid(raise_exception=True)
-
-        for availability in request.data:
-            if availability["period"] not in period_ids:
-                raise ValidationError({"period": "Period does not belong to project"})
-            if availability["min"] > availability["max"]:
-                raise ValidationError({"min": "Min availability cannot be greater than max availability"})
-
-        # update
+        try:
+            serializer = ProjectPlaceAvailabilitySerializer(data=request.data, many=True)
+            serializer.is_valid(raise_exception=True)
+            ModelClass = ProjectPlaceAvailabilitySerializer.Meta.model
+            for data in serializer.validated_data:  # type: ignore
+                ModelClass(project_place=project_place, **data).clean()
+        except Exception as e:
+            raise ValidationError(str(e))
 
         for availability in request.data:
             try:

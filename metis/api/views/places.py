@@ -1,3 +1,4 @@
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
 from typing import TYPE_CHECKING
 
@@ -39,10 +40,19 @@ class PlaceNestedModelViewSet(BaseModelViewSet):
         return self._place
 
     def perform_create(self, serializer):
+        self.validate(serializer)
         serializer.save(place=self.get_place(), created_by=self.request.user)
 
     def perform_update(self, serializer):
+        self.validate(serializer)
         serializer.save(place=self.get_place(), updated_by=self.request.user)
+
+    def validate(self, serializer) -> None:
+        try:
+            ModelClass = serializer.Meta.model
+            ModelClass(place=self.get_place(), **serializer.validated_data).clean()
+        except Exception as e:
+            raise ValidationError(str(e))
 
 
 class ContactViewSet(PlaceNestedModelViewSet, InvitationMixin):

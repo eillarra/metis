@@ -5,6 +5,7 @@ from http import HTTPStatus as status
 
 from metis.utils.factories import (
     ContactFactory,
+    DisciplineFactory,
     EducationFactory,
     PlaceFactory,
     ProjectFactory,
@@ -17,6 +18,8 @@ from metis.utils.factories import (
 def education(db):
     education = EducationFactory()
     place = PlaceFactory(education=education)
+    DisciplineFactory(education=education)
+    DisciplineFactory(education=education)
     ContactFactory(place=place)
     ProjectFactory(education=education)
     return education
@@ -68,13 +71,19 @@ class TestForAnonymous:
     def _get_place_create_data(self, education):
         return {}
 
-    def _get_place_update_data(self):
+    def _get_place_update_data(self, education):
         return {}
 
-    def _get_contact_create_data(self):
+    def _get_place_partial_update_data(self):
         return {}
 
-    def _get_contact_update_data(self):
+    def _get_contact_create_data(self, place):
+        return {}
+
+    def _get_contact_update_data(self, place):
+        return {}
+
+    def _get_contact_partial_update_data(self):
         return {}
 
     def test_list_places(self, api_client, education):
@@ -93,13 +102,13 @@ class TestForAnonymous:
 
     def test_update_place(self, api_client, education, place):
         url = reverse("v1:education-place-detail", args=[education.id, place.id])
-        data = self._get_place_update_data() | {"education_id": place.education_id}
+        data = self._get_place_update_data(education) | {"education_id": place.education_id}
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["place_update"]
 
     def test_partial_update_place(self, api_client, education, place):
         url = reverse("v1:education-place-detail", args=[education.id, place.id])
-        response = api_client.patch(url, self._get_place_update_data())
+        response = api_client.patch(url, self._get_place_partial_update_data())
         assert response.status_code == self.expected_status_codes["place_update"]
 
     def test_delete_place(self, api_client, education, place):
@@ -114,7 +123,7 @@ class TestForAnonymous:
 
     def test_create_contact(self, api_client, education, place):
         url = reverse("v1:education-place-contact-list", args=[education.id, place.id])
-        data = self._get_contact_create_data()
+        data = self._get_contact_create_data(place)
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["contact_create"]
 
@@ -123,15 +132,13 @@ class TestForAnonymous:
 
     def test_update_contact(self, api_client, education, place, contact):
         url = reverse("v1:education-place-contact-detail", args=[education.id, place.id, contact.id])
-        data = self._get_contact_update_data() | {
-            "user_id": contact.user_id,
-        }
+        data = self._get_contact_update_data(place) | {"place_id": place.id}
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["contact_update"]
 
     def test_partial_update_contact(self, api_client, education, place, contact):
         url = reverse("v1:education-place-contact-detail", args=[education.id, place.id, contact.id])
-        response = api_client.patch(url, self._get_contact_update_data())
+        response = api_client.patch(url, self._get_contact_partial_update_data())
         assert response.status_code == self.expected_status_codes["contact_update"]
 
     def test_delete_contact(self, api_client, education, place, contact):
@@ -179,24 +186,41 @@ class TestForOfficeMember(TestForAuthenticated):
             "education_id": education.id,
             "name": "New place name",
             "code": "New place code",
+            "disciplines": list(education.disciplines.values_list("id", flat=True)),
         }
 
-    def _get_place_update_data(self):
+    def _get_place_update_data(self, education):
         return {
+            "education_id": education.id,
             "name": "Updated place name",
             "code": "Updated place code",
+            "disciplines": [list(education.disciplines.values_list("id", flat=True))[0]],
         }
 
-    def _get_contact_create_data(self):
+    def _get_place_partial_update_data(self):
         return {
+            "name": "Updated place name",
+        }
+
+    def _get_contact_create_data(self, place):
+        return {
+            "place_id": place.id,
             "user_id": UserFactory().id,  # type: ignore
             "is_staff": True,
         }
 
-    def _get_contact_update_data(self):
+    def _get_contact_update_data(self, place):
         return {
+            "place_id": place.id,
+            "user_id": UserFactory().id,  # type: ignore
             "is_staff": False,
             "is_mentor": True,
+        }
+
+    def _get_contact_partial_update_data(self):
+        return {
+            "is_staff": True,
+            "is_mentor": False,
         }
 
     def test_delete_used_place(self, api_client, education, place):

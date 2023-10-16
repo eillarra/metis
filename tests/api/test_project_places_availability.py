@@ -58,12 +58,12 @@ class TestForAnonymous:
         "project_place_availability": status.FORBIDDEN,
     }
 
-    def _get_place_availability_data(self, education):
+    def _update_place_availability_data(self, education, project_place):
         return []
 
     def test_availability_place(self, api_client, education, project_place):
         url = reverse("v1:project-place-availability", args=[education.id, project_place.project_id, project_place.id])
-        data = self._get_place_availability_data(education)
+        data = self._update_place_availability_data(education, project_place)
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["project_place_availability"]
 
@@ -98,7 +98,7 @@ class TestForOfficeMember(TestForAuthenticated):
     def setup(self, api_client, office_member):
         api_client.force_authenticate(user=office_member)
 
-    def _get_place_availability_data(self, education):
+    def _update_place_availability_data(self, education, project_place):
         return [
             {
                 "period": education.projects.first().periods.first().id,

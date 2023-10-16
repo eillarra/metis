@@ -18,6 +18,7 @@ from metis.utils.factories import (
 def education(db):
     education = EducationFactory()
     DisciplineFactory(education=education)
+    DisciplineFactory(education=education)
     place = PlaceFactory(education=education)
     ContactFactory(place=place)
     project = ProjectFactory(education=education)
@@ -59,10 +60,13 @@ class TestForAnonymous:
         "project_place_delete": status.FORBIDDEN,
     }
 
-    def _get_place_create_data(self, education):
+    def _get_project_place_create_data(self, education):
         return {}
 
-    def _get_place_update_data(self, education):
+    def _get_project_place_update_data(self, education):
+        return {}
+
+    def _get_project_place_partial_update_data(self, education):
         return {}
 
     def test_list_places(self, api_client, education, project_place):
@@ -72,7 +76,7 @@ class TestForAnonymous:
 
     def test_create_place(self, api_client, education, project_place):
         url = reverse("v1:project-place-list", args=[education.id, project_place.project_id])
-        data = self._get_place_create_data(education)
+        data = self._get_project_place_create_data(education)
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["project_place_create"]
 
@@ -81,13 +85,13 @@ class TestForAnonymous:
 
     def test_update_place(self, api_client, education, project_place):
         url = reverse("v1:project-place-detail", args=[education.id, project_place.project_id, project_place.id])
-        data = self._get_place_update_data(education) | {"place_id": project_place.place_id}
+        data = self._get_project_place_update_data(education) | {"place_id": project_place.place_id}
         response = api_client.put(url, data)
         assert response.status_code == self.expected_status_codes["project_place_update"]
 
     def test_partial_update_place(self, api_client, education, project_place):
         url = reverse("v1:project-place-detail", args=[education.id, project_place.project_id, project_place.id])
-        response = api_client.patch(url, self._get_place_update_data(education))
+        response = api_client.patch(url, self._get_project_place_partial_update_data(education))
         assert response.status_code == self.expected_status_codes["project_place_update"]
 
     def test_delete_place(self, api_client, education, project_place):
@@ -126,16 +130,23 @@ class TestForOfficeMember(TestForAuthenticated):
     def setup(self, api_client, office_member):
         api_client.force_authenticate(user=office_member)
 
-    def _get_place_create_data(self, education):
+    def _get_project_place_create_data(self, education):
         return {
+            "project_id": education.projects.first().id,
             "place_id": PlaceFactory(education=education).id,  # type: ignore
             "disciplines": list(education.disciplines.values_list("id", flat=True)),
         }
 
-    def _get_place_update_data(self, education):
+    def _get_project_place_update_data(self, education):
         return {
+            "project_id": education.projects.first().id,
             "place_id": PlaceFactory(education=education).id,  # type: ignore
             "disciplines": list(education.disciplines.values_list("id", flat=True)),
+        }
+
+    def _get_project_place_partial_update_data(self, education):
+        return {
+            "disciplines": [list(education.disciplines.values_list("id", flat=True))[0]],
         }
 
     def test_delete_with_no_internships(self, api_client, education, project_place):
