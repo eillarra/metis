@@ -24,7 +24,7 @@ const props = defineProps<{
   internships: Internship[];
 }>();
 
-const queryColumns = ['student_name', 'place_name'];
+const queryColumns = ['student_name', 'student_number', 'place_name'];
 
 const columns = [
   {
@@ -114,6 +114,7 @@ const rows = computed(() => {
     _self: obj,
     _class: obj.status === 'cancelled' ? 'bg-red-1' : obj.status === 'unsuccessful' ? 'bg-orange-1' : '',
     student_name: (obj.Student?.User as StudentUser)?.name || '-',
+    student_number: obj.Student?.number || '-',
     place_name: obj.Place?.name || '-',
     block_name: obj.Period?.ProgramInternship?.Block?.name || '-',
     period_name: obj.Period?.ProgramInternship ? `P${obj.Period.ProgramInternship.position}` : '-',
@@ -122,7 +123,7 @@ const rows = computed(() => {
     status: t(`internship_status.${obj.status}`),
     start_date: obj.start_date,
     end_date: obj.end_date,
-    has_mentors: obj.mentors.length > 0,
+    has_mentors: obj.mentors.filter((mentor: Mentor) => mentor.user.last_login).length > 0,
   }));
 });
 </script>
