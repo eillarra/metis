@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models.deletion import ProtectedError
 from django.db.utils import IntegrityError
 from django.utils.decorators import method_decorator
@@ -61,14 +62,11 @@ class InvitationMixin:
             if not email:
                 return Response({"email": ["This field is required"]}, status=status.BAD_REQUEST)
 
-            try:
+            if settings.ENV == "production":
                 with GraphAPI() as graph:
                     _, _, enabled = graph.register_email(email)
                 if not enabled:
                     raise ValueError("User is disabled at UGent. Contact DICT first.")
-            except RuntimeError:
-                # We are probably on test or development, so we skip the registration
-                pass
 
             Invitation.objects.create(
                 content_object=self.get_object(),

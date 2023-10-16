@@ -13,6 +13,7 @@ SITE_ROOT = PACKAGE_ROOT / "site"
 
 # General configuration
 
+ENV = os.environ.get("DJANGO_ENV", "development")
 DEBUG = True
 
 ADMINS = (("eillarra", "eneko.illarramendi@ugent.be"),)
