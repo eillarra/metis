@@ -68,6 +68,7 @@ export default {
   staff: 'Staff | Staff',
   student: 'Student | Students',
   task: 'Task | Tasks',
+  my_tasks: 'My tasks',
   text: 'Text | Texts',
   timesheet: 'Timesheet | Timesheets',
   track: 'Track | Tracks',

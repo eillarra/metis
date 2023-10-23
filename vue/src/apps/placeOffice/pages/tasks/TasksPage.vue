@@ -1,6 +1,6 @@
 <template>
   <div class="q-mb-xl">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-lg">{{ $t('task', 9) }}</h3>
+    <h3 class="text-ugent col-12 col-md-3 q-mb-lg">{{ $t('my_tasks') }}</h3>
     <div v-if="userIsAdmin && internshipsWithoutMentors.length">
       - {{ $t('tasks.place.missing_mentors.text', { count: internshipsWithoutMentors.length }) }}
       <router-link :to="{ name: 'planning' }">{{ $t('tasks.place.missing_mentors.btn_label') }}</router-link>

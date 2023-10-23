@@ -7,7 +7,7 @@
           <q-item-section avatar>
             <q-icon name="done_all" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section>{{ $t('task', 9) }}</q-item-section>
+          <q-item-section>{{ $t('my_tasks') }}</q-item-section>
         </q-item>
         <q-item clickable :to="{ name: 'planning' }" active-class="bg-ugent text-white">
           <q-item-section avatar>

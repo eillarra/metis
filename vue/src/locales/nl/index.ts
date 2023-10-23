@@ -67,6 +67,7 @@ export default {
   staff: 'Secretariaat | Secretariaten',
   student: 'Student | Studenten',
   task: 'Taak | Taken',
+  my_tasks: 'Mijn taken',
   text: 'Tekst | Teksten',
   timesheet: 'Stagetijd | Tijdenlijst',
   track: 'Traject | Trajecten',
