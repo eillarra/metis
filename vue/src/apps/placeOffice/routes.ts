@@ -22,19 +22,24 @@ const routes: RouteRecordRaw[] = [
         strict: true,
         component: () => import('./pages/tasks/TasksPage.vue'),
       },
-      // --- for is_admin
       {
-        path: 'addresses/',
-        name: 'addresses',
+        path: 'documents/',
+        name: 'documents',
         strict: true,
-        component: () => import('./pages/AddressesPage.vue'),
-        beforeEnter: [isPlaceAdmin],
+        component: () => import('./pages/documents/DocumentsPage.vue'),
       },
       {
         path: 'planning/',
         name: 'planning',
         strict: true,
         component: () => import('./pages/planning/PlanningPage.vue'),
+      },
+      // --- for is_admin
+      {
+        path: 'addresses/',
+        name: 'addresses',
+        strict: true,
+        component: () => import('./pages/AddressesPage.vue'),
         beforeEnter: [isPlaceAdmin],
       },
       {

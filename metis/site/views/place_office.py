@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 
 from metis.api.serializers import (
     EducationTinySerializer,
+    FileSerializer,
     InternshipInertiaSerializer,
     ProjectSerializer,
     PlaceSerializer,
@@ -51,6 +52,7 @@ class PlaceOfficeView(InertiaView):
 
         return {
             "education": EducationTinySerializer(place.education).data,
+            "files": FileSerializer(last_project.files.all(), many=True, context={"request": request}).data,
             "place": PlaceSerializer(place, context={"request": request}).data,
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
             "project_places": ProjectPlaceTinySerializer(

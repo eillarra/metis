@@ -5,6 +5,7 @@ from django.utils.html import format_html
 
 from metis.models.stages.projects import Project, Period
 from ..base import BaseModelAdmin
+from ..rel.files import FilesInline
 from .questionings import QuestioningsInline
 
 
@@ -28,7 +29,7 @@ class ProjectAdmin(BaseModelAdmin):
     list_filter = (("education", admin.RelatedOnlyFieldListFilter), "is_active")
     # form
     raw_id_fields = ("education",)
-    inlines = (PeriodsInline, QuestioningsInline)
+    inlines = (PeriodsInline, QuestioningsInline, FilesInline)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(Count("internships", distinct=True))

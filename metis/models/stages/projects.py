@@ -7,7 +7,7 @@ from django.utils.functional import cached_property
 from typing import TYPE_CHECKING
 
 from ..base import BaseModel
-from ..rel import TextEntriesMixin
+from ..rel import FilesMixin, TextEntriesMixin
 
 if TYPE_CHECKING:
     from ..places import Place
@@ -36,7 +36,7 @@ class ProjectManager(models.Manager):
         return self.get_queryset(prefetch_related=prefetch_related).filter(place_set__place=place)
 
 
-class Project(TextEntriesMixin, BaseModel):
+class Project(FilesMixin, TextEntriesMixin, BaseModel):
     """
     A project is a collection of internships for an academic year or other period of time.
     Projects are created so that the planner can distribute students to places. It is mainly an administrative tool.
