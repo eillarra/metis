@@ -62,7 +62,6 @@
           dense
           filled
           :label="$t('remark', 9)"
-          :rules="[(val) => val.length <= 255 || $t('validation.max_length', { max: 255 })]"
           type="textarea"
         />
       </div>
