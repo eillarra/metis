@@ -126,19 +126,21 @@ const timesheetsByDate = computed<Record<string, Timesheet>>(() => {
   }, {} as Record<string, Timesheet>);
 });
 
-const yearMonths = computed<string>(() => {
-  return {
-    min: formatDate(props.internship.start_date, 'YYYY/MM'),
-    max: formatDate(props.internship.end_date, 'YYYY/MM'),
-    default: formatDate(new Date(), 'YYYY/MM'),
-  };
-});
+const yearMonths = computed<{
+  min: string;
+  max: string;
+  default: string;
+}>(() => ({
+  min: formatDate(props.internship.start_date, 'YYYY/MM'),
+  max: formatDate(props.internship.end_date, 'YYYY/MM'),
+  default: formatDate(new Date().toDateString(), 'YYYY/MM'),
+}));
 
 function availableDates(date: string) {
   return (
     date >= formatDate(props.internship.start_date, 'YYYY/MM/DD') &&
     date <= formatDate(props.internship.end_date, 'YYYY/MM/DD') &&
-    date <= formatDate(new Date(), 'YYYY/MM/DD')
+    date <= formatDate(new Date().toDateString(), 'YYYY/MM/DD')
   );
 }
 
@@ -223,7 +225,7 @@ function limitTimeOptions(hr: number, min: number, pastTime?: string | null) {
 
   const splits = pastTime.split(':');
   if (hr < +splits[0]) return false;
-  if (hr !== null && min !== null && (hr === +splits[0] && min <= +splits[1])) return false;
+  if (hr !== null && min !== null && hr === +splits[0] && min <= +splits[1]) return false;
   return true;
 }
 </script>

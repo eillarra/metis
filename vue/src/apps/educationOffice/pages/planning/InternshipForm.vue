@@ -25,18 +25,8 @@
               :label="$t('discipline')"
             />
             <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
-              <date-select
-                v-model="obj.start_date"
-                :label="$t('field.start_date')"
-                clearable
-                class="col-12 col-md"
-              />
-              <date-select
-                v-model="obj.end_date"
-                :label="$t('field.end_date')"
-                clearable
-                class="col-12 col-md"
-              />
+              <date-select v-model="obj.start_date" :label="$t('field.start_date')" clearable class="col-12 col-md" />
+              <date-select v-model="obj.end_date" :label="$t('field.end_date')" clearable class="col-12 col-md" />
             </div>
           </div>
         </q-tab-panel>

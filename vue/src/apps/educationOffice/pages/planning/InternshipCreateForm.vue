@@ -147,6 +147,6 @@ watch(
     if (!period) return;
     if (!obj.value.start_date) obj.value.start_date = period.start_date;
     if (!obj.value.end_date) obj.value.end_date = period.end_date;
-  },
+  }
 );
 </script>

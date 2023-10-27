@@ -7,18 +7,16 @@
         </h5>
         <address-cards :api-endpoint="addressesApiEndpoint" />
       </div>
-      <div
-        v-for="(fieldset, idx) in visibleFieldsets"
-        :key="idx"
-        class="q-px-lg q-mt-md q-mb-lg"
-      >
+      <div v-for="(fieldset, idx) in visibleFieldsets" :key="idx" class="q-px-lg q-mt-md q-mb-lg">
         <h5 v-if="fieldset.legend" class="text-h6 text-grey-8 text-weight-regular q-mt-none q-mb-md">
           {{ getTextValue(fieldset.legend) }}
         </h5>
         <div class="q-gutter-y-sm">
           <div v-for="field in fieldset.fields" :key="field.code || field.component" class="q-pb-md">
             <p class="text-body2">
-              <q-badge v-if="field.required" color="orange" class="q-mt-xs q-ml-sm float-right">{{  $t('form.required') }}</q-badge>
+              <q-badge v-if="field.required" color="orange" class="q-mt-xs q-ml-sm float-right">{{
+                $t('form.required')
+              }}</q-badge>
               <span>{{ getTextValue(field.label) }}</span>
             </p>
             <q-input
@@ -242,7 +240,9 @@ function fieldsetIsVisible(fieldset: Fieldset): boolean {
 }
 
 const visibleFieldsets = computed<Fieldset[]>(() => {
-  return translatedFormDefinition.value.fieldsets.filter((fieldset) => !processing.value && fieldsetIsVisible(fieldset));
+  return translatedFormDefinition.value.fieldsets.filter(
+    (fieldset) => !processing.value && fieldsetIsVisible(fieldset)
+  );
 });
 
 function save(): void {
