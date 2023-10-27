@@ -42,11 +42,18 @@ STORAGES = {
 
 
 # https://docs.sentry.io/platforms/python/guides/django/
+# https://github.com/getsentry/sentry-python/issues/149#issuecomment-1056642777
 
 
-def set_user_id(event, hint):
-    if "request" in event and event["request"].user.is_authenticated:
-        event["user"] = {"id": event["request"].user.id}
+def before_send(event, hint):
+    """
+    Ignore some exceptions.
+    """
+    if "exc_info" in hint:
+        errors_to_ignore = (DisallowedHost,)
+        exc_type, exc_value, tb = hint["exc_info"]
+        if isinstance(exc_value, errors_to_ignore):
+            return None
     return event
 
 
@@ -55,7 +62,7 @@ sentry_sdk.init(
     release=os.environ.get("GIT_REV", None),
     environment=os.environ.get("DJANGO_ENV", "production"),
     integrations=[DjangoIntegration(), RedisIntegration()],
-    ignore_errors=[DisallowedHost],
+    before_send=before_send,
     traces_sample_rate=0.1,
     _experiments={
         "profiles_sample_rate": 0.1,
