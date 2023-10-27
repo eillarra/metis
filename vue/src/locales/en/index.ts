@@ -32,6 +32,7 @@ export default {
   },
   address: 'Address | Addresses',
   admin: 'Admin | Admins',
+  allocation: 'Allocation | Allocations',
   availability: 'Availability',
   contact: 'Contact | Contacts',
   contact_only: 'Only a contact',

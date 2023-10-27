@@ -1,6 +1,6 @@
 <template>
   <div class="row q-col-gutter-sm q-mb-lg">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('planning') }}</h3>
+    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('allocation') }}</h3>
     <div class="col"></div>
     <period-select as-filter :periods="periodOptions" v-model="selectedPeriod" class="col-6 col-md-2" />
     <q-select

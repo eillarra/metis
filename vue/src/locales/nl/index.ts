@@ -31,6 +31,7 @@ export default {
   },
   address: 'Adres | Adressen',
   admin: 'Beheerder | Beheerders',
+  allocation: 'Toewijzing | Toewijzingen',
   availability: 'Beschikbaarheid',
   contact: 'Contact | Contacten',
   contact_only: 'Enkel een contactpersoon',
