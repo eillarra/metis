@@ -53,7 +53,7 @@ class Education(BaseModel):
 
     @property
     def configuration(self) -> dict | None:
-        return EducationConfig(**self.config).dict() if self.config else None
+        return EducationConfig(**self.config).model_dump() if self.config else None
 
 
 class EducationTranslationOptions(TranslationOptions):

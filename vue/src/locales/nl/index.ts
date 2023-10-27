@@ -160,6 +160,17 @@ export default {
       save: 'Contactpersoon opslaan',
       saved: 'Contactpersoon informatie opgeslagen',
     },
+    evaluation: {
+      create: {
+        new: 'Nieuwe evaluatie aanmaken',
+        success: 'Evaluatie aangemaakt',
+      },
+      delete: 'Evaluatie verwijderen',
+      confirm_delete: 'Ben je zeker dat je deze evaluatie wil verwijderen?',
+      deleted: 'Evaluatie verwijderd',
+      save: 'Evaluatie opslaan',
+      saved: 'Evaluatie informatie opgeslagen',
+    },
     internship: {
       create: {
         new: 'Nieuwe stage aanmaken',

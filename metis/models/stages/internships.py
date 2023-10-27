@@ -13,6 +13,7 @@ from ..rel.remarks import RemarksMixin
 
 if TYPE_CHECKING:
     from ..places import Place
+    from .evaluations import EvaluationForm
     from .programs import Program
 
 
@@ -164,13 +165,27 @@ class Internship(RemarksMixin, BaseModel):
     def can_be_managed_by(self, user) -> bool:
         return self.project.can_be_managed_by(user)
 
-    @cached_property
-    def place(self) -> "Place":
-        return self.project_place.place
-
     @property
     def is_active(self) -> bool:
         return self.start_date <= timezone.now().date() <= self.end_date
+
+    @property
+    def evaluation_form(self) -> Optional["EvaluationForm"]:
+        qs = self.project.evaluation_forms.all()
+
+        if self.period and qs.filter(period=self.period).exists():
+            qs = self.period.evaluation_forms.filter(period=self.period)
+
+        if self.discipline:
+            form = qs.filter(discipline=self.discipline).first()
+            if form:
+                return form
+
+        return qs.first()
+
+    @cached_property
+    def place(self) -> "Place":
+        return self.project_place.place
 
     @property
     def program(self) -> Optional["Program"]:

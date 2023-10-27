@@ -3,6 +3,7 @@ from pydantic import ValidationError
 from typing import TYPE_CHECKING
 
 from .custom_forms import CustomForm, ChoiceField
+from .evaluations import EvaluationForm
 from .tops import TopsForm
 
 if TYPE_CHECKING:
@@ -27,6 +28,21 @@ def fieldset_is_visible(fieldset, data: dict) -> bool:
         if fieldset.rule.type == "equals":
             return data[fieldset.rule.field] == fieldset.rule.value
     return True
+
+
+def validate_evaluation_form_definition(definition: dict) -> EvaluationForm:
+    """
+    Validate an evaluation form definition.
+    """
+
+    try:
+        return EvaluationForm(**definition)
+    except (TypeError, ValidationError) as e:
+        raise ValueError(e)
+
+
+def validate_evaluation_form_response(form_definition: dict, data: dict) -> dict:
+    return data
 
 
 def validate_form_definition(definition: dict) -> CustomForm:

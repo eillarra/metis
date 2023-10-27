@@ -161,6 +161,17 @@ export default {
       save: 'Save contact',
       saved: 'Contact information saved',
     },
+    evaluation: {
+      create: {
+        new: 'Create a new evaluation',
+        success: 'Evaluation created',
+      },
+      delete: 'Delete evaluation',
+      confirm_delete: 'Are you sure you want to delete this evaluation?',
+      deleted: 'Evaluation deleted',
+      save: 'Save evaluation',
+      saved: 'Evaluation information saved',
+    },
     internship: {
       create: {
         new: 'Create a new internship',

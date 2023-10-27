@@ -6,6 +6,7 @@ from ..disciplines import DisciplineSerializer
 from ..rel.remarks import RemarksMixin
 from ..places import PlaceInertiaSerializer
 from ..users import UserLastLoginSerializer
+from .evaluations import EvaluationFormSerializer
 from .projects import PeriodSerializer
 from .students import StudentInertiaSerializer
 
@@ -32,6 +33,9 @@ class MentorTinySerializer(BaseModelSerializer):
 class InternshipSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-internship-detail", nested_lookup=project_lookup_fields)
     rel_absences = NestedHyperlinkField("v1:project-internship-absence-list", nested_lookup=internship_lookup_fields)
+    rel_evaluations = NestedHyperlinkField(
+        "v1:project-internship-evaluation-list", nested_lookup=internship_lookup_fields
+    )
     rel_timesheets = NestedHyperlinkField(
         "v1:project-internship-timesheet-list", nested_lookup=internship_lookup_fields
     )
@@ -49,6 +53,7 @@ class InternshipInertiaSerializer(InternshipSerializer):
     Discipline = DisciplineSerializer(read_only=True, source="discipline")
     Period = PeriodSerializer(read_only=True, source="period")
     Student = StudentInertiaSerializer(read_only=True, source="student")
+    EvaluationForm = EvaluationFormSerializer(read_only=True, source="evaluation_form")
 
 
 class InternshipFullInertiaSerializer(InternshipInertiaSerializer):

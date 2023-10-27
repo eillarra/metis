@@ -1,5 +1,6 @@
 interface Internship extends ApiObject {
   self: ApiEndpoint;
+  rel_evaluations: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   rel_timesheets: ApiEndpoint;
   student: number | null;
@@ -20,8 +21,13 @@ interface Internship extends ApiObject {
   Discipline?: Discipline;
   ProjectPlace?: ProjectPlace;
   Place?: Place;
+  EvaluationForm?: EvaluationForm;
 }
 
 interface Mentor extends ApiObject {
   user: UserLastLogin;
+}
+
+interface Evaluation extends ApiObject {
+  url: string;
 }

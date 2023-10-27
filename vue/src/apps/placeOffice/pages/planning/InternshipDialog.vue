@@ -21,7 +21,12 @@
           </q-item-section>
           <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
-        <q-item :disabled="true" :active="tab == 'evaluations'" active-class="bg-ugent text-white">
+        <q-item
+          clickable
+          @click="tab = 'evaluations'"
+          :active="tab == 'evaluations'"
+          active-class="bg-ugent text-white"
+        >
           <q-item-section avatar>
             <q-icon name="checklist" size="xs"></q-icon>
           </q-item-section>
@@ -52,6 +57,9 @@
         <q-tab-panel name="timesheets">
           <timesheets-view :internship="obj" approvable />
         </q-tab-panel>
+        <q-tab-panel name="evaluations">
+          <evaluations-view :internship="obj" />
+        </q-tab-panel>
       </q-tab-panels>
     </template>
     <template #footer> </template>
@@ -68,6 +76,7 @@ import FullDialog from '@/components/FullDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';
+import EvaluationsView from './EvaluationsView.vue';
 
 const props = defineProps<{
   obj: Internship;

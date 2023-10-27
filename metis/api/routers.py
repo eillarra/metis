@@ -90,6 +90,12 @@ class Router(NestedRouterMixin, DefaultRouter):
             parents_query_lookups=["education_id", "project_id", "internship_id"],
         )
         internship_routes.register(
+            "evaluations",
+            views.EvaluationViewSet,
+            basename="project-internship-evaluation",
+            parents_query_lookups=["education_id", "project_id", "internship_id"],
+        )
+        internship_routes.register(
             "timesheets",
             views.TimesheetViewSet,
             basename="project-internship-timesheet",

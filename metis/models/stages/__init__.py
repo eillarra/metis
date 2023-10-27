@@ -2,6 +2,7 @@
 
 from .cases import *
 from .constraints import *
+from .evaluations import *
 from .internships import *
 from .programs import *
 from .projects import *
