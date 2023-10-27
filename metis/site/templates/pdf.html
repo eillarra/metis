@@ -45,12 +45,17 @@
         font-size: 16px;
         line-height: 1.4;
       }
-      b, strong {
+      h3, h4, h5, b, strong {
         font-family: 'UGent Panno Medium';
       }
       .title {
         font-size: 1.5em;
+        line-height: 1.2;
         font-weight: bold;
+        padding-right: 3cm;
+      }
+      h5 {
+        font-size: 1.1em;
       }
       p {
         -pdf-keep-with-next: false;
@@ -58,6 +63,18 @@
       code {
         font-family: monospace;
         font-size: 0.6em;
+      }
+      table {
+        border-collapse: collapse;
+        margin-left: 2px;
+      }
+      table td {
+        padding-top: 3px;
+        border-top: 1px solid #ddd;
+      }
+      a.inherit {
+        color: inherit;
+        text-decoration: inherit;
       }
       .logo {
         height: 2cm;
@@ -68,8 +85,36 @@
       .text-ugent {
         color: #1e64c8;
       }
-      .text-smaller {
-        font-size: smaller;
+      .text-uppercase {
+        text-transform: uppercase;
+      }
+      .text-light {
+        color: #999;
+      }
+      .text-big {
+        font-size: 1.5em;
+      }
+      .text-body2, .text-smaller {
+        font-size: 0.8em;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .bg-light {
+        background-color: #f5f5f5;
+      }
+      .metis__form-response h4 {
+        font-size: 0.9em;
+        font-family: 'UGent Panno Medium';
+      }
+      .metis__form-response ul {
+        padding-left: 0.5cm;
+      }
+      .q-ma-none {
+        margin: 0;
+      }
+      .q-pl-sm {
+        padding-left: 0.05cm;
       }
     </style>
     {% block styles %}{% endblock %}

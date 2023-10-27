@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, field_validator
-from typing import Literal, Union
+from typing import Generator, Literal, Union
 
 
 class Translation(BaseModel):
@@ -85,3 +85,8 @@ class CustomForm(BaseModel):
                     raise ValueError(f"Duplicate field code `{field.code}`")
                 codes.add(field.code)
         return v
+
+    def get_fields(self) -> Generator[FormField, None, None]:
+        for fieldset in self.fieldsets:
+            for field in fieldset.fields:
+                yield field

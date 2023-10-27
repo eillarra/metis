@@ -17,9 +17,7 @@ def form_to_markdown(form_definition: dict, response: dict) -> str:
 
             if field.code in response and response[field.code]:
                 md += f"#### {question_n}. {field.label.nl}\n\n"
-                if field.type == "textarea":
-                    md += response[field.code] + "\n"
-                elif field.type == "text":
+                if field.type in {"text", "textarea", "number", "date", "email", "tel", "url"}:
                     md += response[field.code] + "\n"
                 elif field.type in {"select", "option_group"}:
                     for option in field.options:

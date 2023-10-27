@@ -1,0 +1,25 @@
+{% extends 'pdf.html' %}
+
+{% load markdown %}
+
+
+{% block content %}
+  {% for response in questioning.responses.all %}
+    {% if questioning.type == 'project_place_information' %}
+      <h3 class="title">{{ response.content_object.place.name }}</h3>
+      <div class="text-smaller">
+        {{ response.created_by.name }} &lt;<a href="mailto:{{ response.created_by.email }}" class="inherit">{{ response.created_by.email }}</a>&gt;<br />
+        {{ response.created_at }}
+      </div>
+    {% endif %}
+    <pdf:spacer height="20" />
+    <div class="metis__form-response">
+      {{ response.data_md | marked }}
+    </div>
+    <pdf:nextpage />
+  {% endfor %}
+{% endblock %}
+
+{% block footer %}
+  {{ questioning.type }}
+{% endblock %}

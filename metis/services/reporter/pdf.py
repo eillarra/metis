@@ -86,7 +86,9 @@ class StudentInformationPdf(PdfReport):
             form_definition = None
 
             for student in self.period.students.order_by("user__first_name", "user__last_name"):
-                tops = student.form_responses.filter(questioning__type="student_tops").first()
+                tops = student.form_responses.filter(
+                    questioning__type="student_tops", questioning__period=self.period
+                ).first()
 
                 email = student.user.email.lower()
                 pdf.add_paragraph(student.user.name, "h2")

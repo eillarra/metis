@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from metis.services.form_builder.converters import form_to_markdown
 from ..base import BaseModel
 
 
@@ -25,6 +26,10 @@ class FormResponse(BaseModel):
     def clean(self) -> None:
         self.data = self.questioning.clean_response_data(self.data)
         return super().clean()
+
+    @property
+    def data_md(self) -> str:
+        return form_to_markdown(self.questioning.form_definition, self.data)
 
 
 class FormResponsesMixin(models.Model):

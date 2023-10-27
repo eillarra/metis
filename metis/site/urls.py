@@ -23,6 +23,7 @@ urlpatterns = [
     path("", views.HomeView.as_view(), name="homepage"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     # files
+    path("files/q/<int:questioning_id>.<slug:file_type>", views.QuestioningFileView.as_view(), name="questioning_file"),
     path("files/s/<uuid:uuid>.pdf", views.SignaturePdfView.as_view(), name="signature_pdf"),
 ]
 
