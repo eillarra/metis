@@ -11,6 +11,12 @@ if TYPE_CHECKING:
     from metis.models import Contact, Education, EmailTemplate, Evaluation, User
 
 
+def render_context(body: str, context: dict) -> str:
+    """Render a body with a context."""
+    templ = Template(body)
+    return templ.render(Context(context))
+
+
 def send_email_to_admins(subject: str, message: str = "") -> None:
     django_send_mail(
         subject if subject.startswith("[METIS] ") else f"[METIS] {subject}",
@@ -59,15 +65,11 @@ def schedule_template_email(
     log_education: Optional["Education"] = None,
 ) -> None:
     try:
-        templ = Template(template.body)
-        text_content = templ.render(Context(context or {}))
-        subject = Template(template.subject)
-
         schedule_email(
             from_email=from_email,
             to=to,
-            subject=subject.render(Context(context or {})),
-            text_content=text_content,
+            subject=render_context(template.subject, context or {}),
+            text_content=render_context(template.body, context or {}),
             bcc=template.bcc + (bcc or []),
             reply_to=template.reply_to,
             log_template=template,

@@ -3,7 +3,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from metis.models import Questioning
-from metis.tasks.emails import schedule_project_place_information_email, schedule_student_tops_email
+from metis.tasks.emails import schedule_questioning_email
 
 from ...permissions import IsEducationOfficeMember
 from ...serializers import FormResponseSerializer, QuestioningSerializer
@@ -33,9 +33,6 @@ class QuestioningViewSet(ProjectNestedModelViewSet):
         if not questioning.is_active:
             raise PermissionDenied("Questioning is not active.")
 
-        if questioning.type == Questioning.PROJECT_PLACE_INFORMATION:
-            schedule_project_place_information_email(questioning, ids)
-        if questioning.type == Questioning.STUDENT_TOPS:
-            schedule_student_tops_email(questioning, ids)
+        schedule_questioning_email(questioning, filtered_ids=ids)
 
         return Response({"status": "ok", "message": "Emails scheduled."})
