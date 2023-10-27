@@ -53,14 +53,8 @@ class TimesheetViewSet(InternshipNestedModelViewSet):
         timesheet_ids = request.data.get("ids", [])
         signed_text = request.data.get("signed_text", "")
 
-        # we do a bulk update because we don't want to update the user's updated_at value just for the signature
-        bulk_update = []
-
         for timesheet in internship.timesheets.filter(id__in=timesheet_ids, is_approved=False):
-            Signature.objects.create(content_object=timesheet, user=request.user, signed_text=signed_text)
-            timesheet.is_approved = True
-            bulk_update.append(timesheet)
-
-        Timesheet.objects.bulk_update(bulk_update, ["is_approved"])
+            signature = Signature.objects.create(content_object=timesheet, user=request.user, signed_text=signed_text)
+            Timesheet.approve(timesheet, signature)
 
         return Response(status=status.NO_CONTENT)

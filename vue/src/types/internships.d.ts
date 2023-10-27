@@ -1,5 +1,6 @@
 interface Internship extends ApiObject {
   self: ApiEndpoint;
+  rel_absences: ApiEndpoint;
   rel_evaluations: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   rel_timesheets: ApiEndpoint;

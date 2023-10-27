@@ -1,11 +1,15 @@
-from datetime import datetime, time
+from datetime import time
 from django.core.exceptions import ValidationError
 from django.db import models
+from typing import TYPE_CHECKING
 
 from metis.models.base import BaseModel
 from metis.models.rel.files import FilesMixin
 from metis.models.rel.remarks import RemarksMixin
 from metis.utils.dates import get_minutes_difference, get_time_difference, sum_times
+
+if TYPE_CHECKING:
+    from ..rel.signatures import Signature
 
 
 class Absence(FilesMixin, RemarksMixin, BaseModel):
@@ -13,19 +17,10 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
     An absence during a student's internship.
     """
 
-    PENDING = "pending"
-    ACCEPTED = "accepted"
-    REJECTED = "rejected"
-    STATUSES = (
-        (PENDING, "Pending"),
-        (ACCEPTED, "Accepted"),
-        (REJECTED, "Rejected"),
-    )
-
     internship = models.ForeignKey("metis.Internship", related_name="absences", on_delete=models.CASCADE)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
-    status = models.CharField(max_length=8, choices=STATUSES, default=PENDING)
+    is_approved = models.BooleanField(default=None, null=True, blank=True)
 
     class Meta:
         db_table = "metis_internship_absence"
@@ -36,6 +31,13 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
 
         if self.end_at.date() > self.internship.end_date:
             raise ValidationError("Absence end date cannot be after internship end date.")
+
+    @classmethod
+    def approve(cls, absence: "Absence", signature: "Signature") -> None:
+        """Approve an absence, without calling clean() on the model. A signature is required."""
+        if not signature or not signature.content_object == absence:
+            raise ValidationError("A signature is required to approve an absence.")
+        cls.objects.filter(id=absence.pk).update(is_approved=True)
 
 
 class Timesheet(BaseModel):
@@ -81,6 +83,13 @@ class Timesheet(BaseModel):
             and get_minutes_difference(self.start_time_pm, self.end_time_am) < 30
         ):
             raise ValidationError("The difference between start_time_pm and end_time_am must be at least 30 minutes.")
+
+    @classmethod
+    def approve(cls, timesheet: "Timesheet", signature: "Signature") -> None:
+        """Approve a timesheet, without calling clean() on the model. A signature is required."""
+        if not signature or not signature.content_object == timesheet:
+            raise ValidationError("A signature is required to approve a timesheet.")
+        cls.objects.filter(id=timesheet.pk).update(is_approved=True)
 
     @property
     def duration(self) -> time:
