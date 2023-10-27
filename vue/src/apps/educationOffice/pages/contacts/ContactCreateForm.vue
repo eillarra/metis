@@ -1,7 +1,7 @@
 <template>
   <dialog-form icon="add" :title="$t('contact')">
     <template #page>
-      <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive>
+      <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
         <q-step :name="1" :title="$t('form.contact.create.add_existing')" icon="search" active-icon="search">
           {{ $t('form.contact.create.search') }}
           <div class="q-gutter-sm q-mt-sm">

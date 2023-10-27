@@ -1,7 +1,7 @@
 <template>
   <dialog-form icon="add" :title="$t('internship')">
     <template #page>
-      <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive>
+      <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
         <q-step :name="1" :title="$t('form.internship.create.new')" icon="edit">
           <div class="q-gutter-sm">
             <q-input v-model="projectName" dense :label="$t('project')" readonly />

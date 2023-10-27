@@ -50,7 +50,7 @@
     <q-dialog v-model="dialogVisible">
       <dialog-form :icon="obj.self ? 'map' : 'add'" :title="$t('address')" class="metis__dialog-geocode">
         <template #page>
-          <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive>
+          <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
             <q-step :name="1" :title="$t('form.address.create.find')" icon="search" active-icon="search">
               <div class="q-gutter-sm q-mt-sm">
                 <q-input dense type="text" v-model="obj.address" :label="$t('form.address.fields.address')" />
