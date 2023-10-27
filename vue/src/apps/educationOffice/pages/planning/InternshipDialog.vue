@@ -27,7 +27,12 @@
           </q-item-section>
           <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
-        <q-item disable :active="tab == 'evaluations'" active-class="bg-ugent text-white">
+        <q-item
+          clickable
+          @click="tab = 'evaluations'"
+          :active="tab == 'evaluations'"
+          active-class="bg-ugent text-white"
+        >
           <q-item-section avatar>
             <q-icon name="checklist" size="xs"></q-icon>
           </q-item-section>
@@ -62,18 +67,8 @@
               :label="$t('discipline')"
             />
             <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
-              <date-select
-                v-model="obj.start_date"
-                :label="$t('field.start_date')"
-                clearable
-                class="col-12 col-md"
-              />
-              <date-select
-                v-model="obj.end_date"
-                :label="$t('field.end_date')"
-                clearable
-                class="col-12 col-md"
-              />
+              <date-select v-model="obj.start_date" :label="$t('field.start_date')" clearable class="col-12 col-md" />
+              <date-select v-model="obj.end_date" :label="$t('field.end_date')" clearable class="col-12 col-md" />
             </div>
           </div>
         </q-tab-panel>
@@ -82,6 +77,9 @@
         </q-tab-panel>
         <q-tab-panel name="timesheets">
           <timesheets-view :internship="obj" />
+        </q-tab-panel>
+        <q-tab-panel name="evaluations">
+          <evaluation-files :internship="obj" />
         </q-tab-panel>
         <q-tab-panel name="remarks">
           <remarks-view :api-endpoints="remarkEndpoints" />
@@ -119,6 +117,7 @@ import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
+import EvaluationFiles from '@/components/stages/EvaluationFiles.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';

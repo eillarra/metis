@@ -23,6 +23,7 @@ class EvaluationFormSerializer(BaseModelSerializer):
 class EvaluationSerializer(RemarksMixin, BaseModelSerializer):
     self = NestedHyperlinkField("v1:project-internship-evaluation-detail", nested_lookup=internship_lookup_fields)
     internship = serializers.PrimaryKeyRelatedField(read_only=True)
+    url = serializers.CharField(read_only=True, source="get_absolute_url")
 
     class Meta:
         model = Evaluation

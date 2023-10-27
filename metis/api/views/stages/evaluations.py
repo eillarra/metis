@@ -16,6 +16,7 @@ class EvaluationPermissions(IsAuthenticated):
         if request.method in SAFE_METHODS:
             return (
                 internship.place.can_be_managed_by(request.user)
+                or internship.student.user == request.user
                 or internship.mentors.filter(user=request.user).exists()
             )
 

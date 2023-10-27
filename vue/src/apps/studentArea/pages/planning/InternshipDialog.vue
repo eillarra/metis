@@ -15,11 +15,16 @@
           </q-item-section>
           <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
-        <q-item :disabled="true" :active="tab == 'evaluations'" active-class="bg-ugent text-white">
+        <q-item
+          clickable
+          @click="tab = 'evaluations'"
+          :active="tab == 'evaluations'"
+          active-class="bg-ugent text-white"
+        >
           <q-item-section avatar>
             <q-icon name="checklist" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section>{{ $t('evaluation') }}</q-item-section>
+          <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
         </q-item>
       </q-list>
     </template>
@@ -77,6 +82,9 @@
           </div>
           <timesheets-view :internship="obj" />
         </q-tab-panel>
+        <q-tab-panel name="evaluations">
+          <evaluation-files :internship="obj" />
+        </q-tab-panel>
       </q-tab-panels>
     </template>
     <template #footer> </template>
@@ -88,6 +96,7 @@ import { computed, ref } from 'vue';
 
 import FullDialog from '@/components/FullDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
+import EvaluationFiles from '@/components/stages/EvaluationFiles.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from './timesheets/TimesheetsView.vue';
 

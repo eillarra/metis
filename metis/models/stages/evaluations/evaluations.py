@@ -1,5 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.urls import reverse
 from uuid import uuid4
 
 from metis.models.base import BaseModel
@@ -32,3 +35,14 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
     def can_be_viewed_by(self, user) -> bool:
         # TODO: fix how permissions are checked
         return self.internship.student.user == user or self.internship.project.can_be_managed_by(user)
+
+    def get_absolute_url(self) -> str:
+        return reverse("evaluation_pdf", kwargs={"uuid": self.uuid})
+
+
+@receiver(post_save, sender=Evaluation)
+def evaluation_post_save(sender, instance, created, *args, **kwargs):
+    if created:
+        from metis.services.mailer import schedule_evaluation_notification
+
+        schedule_evaluation_notification(instance)

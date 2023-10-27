@@ -1,0 +1,79 @@
+{% extends 'pdf.html' %}
+
+{% load dict %}
+{% load markdown %}
+
+
+{% block content %}
+  {% for evaluation in evaluations %}
+    <code>
+      {% if evaluation.is_final %}
+        Finale evaluatie
+      {% else %}
+        Tussentijdse evaluatie #{{ evaluation.intermediate }}
+      {% endif %}
+      ingevuld door {{ evaluation.created_by.name }}<br>
+      op {{ evaluation.created_at }} via metis.ugent.be
+    </code>
+    <pdf:spacer height="20" />
+    <h3 class="title text-ugent">{{ evaluation.internship.place }}</h3>
+    <p>
+      Student: {{ evaluation.internship.student.user.name }} &lt;<a href="mailto:{{ evaluation.internship.student.user.email }}" class="inherit">{{ evaluation.internship.student.user.email }}</a>&gt;<br>
+      Stagebegeleider: {{ evaluation.created_by.name }} &lt;<a href="mailto:{{ evaluation.created_by.email }}" class="inherit">{{ evaluation.created_by.email }}</a>&gt;
+    </p>
+    {% for section in evaluation.form.definition.sections %}
+      <pdf:spacer height="20" />
+      {% with evaluation.data|dict_key:section.code as section_answers %}
+        <h5>{{ section.title.nl }}</h5>
+        <table class="text-body2">
+          <thead>
+            <th></th>
+            <th></th>
+            {% for grade in evaluation.form.definition.grades %}
+              <th class="text-center text-smaller">{{ grade.label.nl }}</th>
+            {% endfor %}
+          </thead>
+          <tbody>
+            {% for item in section.items %}
+              <tr>
+                <td class="q-pl-sm">{{ item.label.nl }}</td>
+                <td></td>
+                {% for grade in evaluation.form.definition.grades %}
+                  <td class="text-center">
+                    {% with section_answers.grades|dict_key:item.value as a %}
+                      {% if a.0 == grade.value %}<h5 class="text-big text-ugent q-ma-none">x
+                        {% if a.1 %}<span class="text-uppercase">({{ a.1.0 }})</span>{% endif %}</h5>
+                      {% else %}<span class="text-light">-</span>{% endif %}
+                    {% endwith %}
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr class="bg-light">
+              <td colspan="2" class="q-pl-sm"><strong>Algemeen</strong></td>
+              {% for grade in evaluation.form.definition.grades %}
+                <td class="text-center">
+                  {% if section_answers.grade == grade.value %}<h5 class="text-big q-ma-none">x</h5>
+                  {% else %}<span class="text-light">-</span>{% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+          </tfoot>
+        </table>
+        {% if section_answers.remarks %}
+          <h6>Opmerkingen</h6>
+          {{ section_answers.remarks|marked }}
+        {% endif %}
+      {% endwith %}
+    {% endfor %}
+    {% if evaluations|length > 1 %}<pdf:nextpage />{% endif %}
+  {% endfor %}
+{% endblock %}
+
+{% block footer %}
+  {% if evaluations|length == 1 %}
+    {{ evaluations.0.uuid }}
+  {% endif %}
+{% endblock %}

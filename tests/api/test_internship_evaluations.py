@@ -169,7 +169,7 @@ class TestForPlaceAdmin(TestForMentor):
 
 class TestForStudent(TestForAuthenticated):
     expected_status_codes = {
-        "evaluation_list": status.FORBIDDEN,
+        "evaluation_list": status.OK,
         "evaluation_create": status.FORBIDDEN,
         "evaluation_update": status.FORBIDDEN,
         "evaluation_delete": status.FORBIDDEN,

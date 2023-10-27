@@ -1,10 +1,12 @@
 from django.conf import settings
 from django.core.mail import send_mail as django_send_mail
 from django.template import Context, Template
+from django.template.defaultfilters import date as date_filter
+from textwrap import dedent
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from metis.models import User, Education, EmailTemplate, Contact
+    from metis.models import User, Education, EmailTemplate, Contact, Evaluation
 
 
 def send_email_to_admins(subject: str, message: str = "") -> None:
@@ -93,4 +95,37 @@ def schedule_invitation_email(invitation_type: str, content_object: "Contact") -
         template=template,
         context={"contact": contact},
         log_user=contact.user,
+    )
+
+
+def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
+    education = evaluation.internship.project.education
+    evaluation_type = (
+        "Finale evaluatie" if evaluation.is_final else f"Tussentijdse evaluatie #{evaluation.intermediate}"
+    )
+    subject = "[Metis] Nieuwe evaluatie ontvangen"
+    formatted_date = evaluation.created_at.strftime("%d/%m/%Y om %H:%M")
+    body = dedent(
+        f"""
+        Beste {evaluation.internship.student.user.name},
+
+        Er is een nieuwe evaluatie ontvangen voor je stage bij {evaluation.internship.place.name}.
+
+        Je kan deze bekijken op <https://metis.ugent.be/nl/stages/{education.code}/>
+
+        - **{evaluation_type}**
+        - Opgeslagen door: {evaluation.created_by.name}
+        - Opgeslagen op: {date_filter(evaluation.created_at, 'DATETIME_FORMAT')}
+        """
+    )
+
+    schedule_email(
+        from_email=f"{education.short_name} UGent <metis@ugent.be>",
+        to=[evaluation.internship.student.user.email],
+        bcc=[education.office_email],
+        reply_to=[education.office_email],
+        subject=subject,
+        text_content=body.strip(),
+        log_education=education,
+        log_user=evaluation.internship.student.user,
     )
