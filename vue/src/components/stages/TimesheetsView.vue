@@ -15,6 +15,20 @@
       />
     </div>
   </div>
+  <div class="row q-col-gutter-md q-mb-lg text-right">
+    <div class="col-12 col-md-3">
+      <q-card flat class="bg-grey-2 q-pa-md">
+        <span class="text-h5 text-ugent">{{ totalTime }}</span>
+        <small class="float-left">{{ $t('form.timesheet.help.time_total') }}</small>
+      </q-card>
+    </div>
+    <div class="col-12 col-md-3">
+      <q-card flat class="bg-grey-2 q-pa-md">
+        <span class="text-h5 text-grey-8">{{ totalPendingApproval }}</span>
+        <small class="float-left">{{ $t('form.timesheet.help.time_pending') }}</small>
+      </q-card>
+    </div>
+  </div>
   <data-table
     :columns="columns"
     :rows="rows"
@@ -37,11 +51,7 @@
         </q-toolbar>
       </q-header>
       <q-page-container>
-        <markdown-toast-viewer
-          v-model="finalText"
-          :source-text="signedText"
-          class="q-px-lg"
-        />
+        <markdown-toast-viewer v-model="finalText" :source-text="signedText" class="q-px-lg" />
       </q-page-container>
       <q-footer class="bg-white text-dark q-pa-lg">
         <q-list class="q-my-md">
@@ -82,6 +92,7 @@ import { usePage } from '@inertiajs/vue3';
 
 import { api } from '@/axios.ts';
 import { notify } from '@/notify';
+import { sumHours } from '@/utils/dates';
 
 import MarkdownToastViewer from '@/components/forms/MarkdownToastViewer.vue';
 import DataTable from '@/components/tables/DataTable.vue';
@@ -104,12 +115,14 @@ const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_use
 // --
 
 const selectedPendingApproval = computed(() => {
-  return selected.value.filter((obj) => !(obj._self as Timesheet).is_approved).sort((a, b) => (a._self as Timesheet).date.localeCompare((b._self as Timesheet).date));
+  return selected.value
+    .filter((obj) => !(obj._self as Timesheet).is_approved)
+    .sort((a, b) => (a._self as Timesheet).date.localeCompare((b._self as Timesheet).date));
 });
 
 const finalText = ref<string>('');
 const signedText = computed<string>(() => {
-  let text =  `Ondergetekende,
+  let text = `Ondergetekende,
 
 ${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value.email}) medewerker op stageplaats ${props.internship.Place?.name} bevestigt dat student ${props.internship.Student?.User?.name} met studentennummer ${props.internship.Student?.number} hier stage heeft gelopen op:
 `;
@@ -122,6 +135,18 @@ ${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value
   }
 
   return text;
+});
+
+const totalTime = computed<string>(() => {
+  if (!timesheets.value.length) return '-';
+  const total = sumHours(timesheets.value.map((obj) => obj.duration));
+  return (total != '0:00' ? total : '-') as string;
+});
+
+const totalPendingApproval = computed<string>(() => {
+  if (!timesheets.value.length) return '-';
+  const total = sumHours(timesheets.value.filter((obj) => !obj.is_approved).map((obj) => obj.duration));
+  return (total != '0:00' ? total : '-') as string;
 });
 
 const columns = [
@@ -193,7 +218,7 @@ function approveTimesheets() {
 
   const ids = selected.value.map((obj) => (obj._self as Timesheet).id);
 
-  api.post(`${props.internship.rel_timesheets}approve/`, { 'ids': ids, 'signed_text': signedText.value }).then(() => {
+  api.post(`${props.internship.rel_timesheets}approve/`, { ids: ids, signed_text: signedText.value }).then(() => {
     notify.success(t('form.timesheet.approved'));
     fetchTimesheets();
     reset();

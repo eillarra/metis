@@ -14,7 +14,7 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
-import { formatDate } from '@/utils';
+import { formatDate } from '@/utils/dates';
 
 import { useStore } from '../../store.js';
 

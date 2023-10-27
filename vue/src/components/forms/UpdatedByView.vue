@@ -28,7 +28,7 @@ import { computed, ref } from 'vue';
 
 import { biMicrosoftTeams } from '@quasar/extras/bootstrap-icons';
 
-import { formatDate } from '@/utils';
+import { formatDate } from '@/utils/dates';
 
 const props = defineProps<{
   obj: object;

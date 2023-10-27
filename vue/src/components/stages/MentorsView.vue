@@ -50,7 +50,7 @@ import { useI18n } from 'vue-i18n';
 import { api } from '@/axios.ts';
 import { confirm } from '@/dialog';
 import { notify } from '@/notify';
-import { formatDate } from '@/utils';
+import { formatDate } from '@/utils/dates';
 
 import DataTable from '@/components/tables/DataTable.vue';
 

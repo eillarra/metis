@@ -51,7 +51,7 @@
 import { onMounted, ref } from 'vue';
 
 import { api } from '@/axios';
-import { formatDate } from '@/utils';
+import { formatDate } from '@/utils/dates';
 
 import TaskBox from './TaskBox.vue';
 import TopsForm from '@/components/custom_forms/TopsForm.vue';

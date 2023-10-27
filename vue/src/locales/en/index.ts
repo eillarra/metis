@@ -243,6 +243,8 @@ export default {
     },
     timesheet: {
       help: {
+        time_total: 'Total time',
+        time_pending: 'Time pending approval',
         choose_date: 'Choose a date',
         calendar_colors:
           'Choose a date to add or edit a timesheet. Orange days have not been approved yet by the mentor(s) so you can still edit them. Green days have been approved and can no longer be edited.',

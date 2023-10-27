@@ -42,7 +42,7 @@ import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios';
-import { formatDate } from '@/utils';
+import { formatDate } from '@/utils/dates';
 
 import TaskBox from './TaskBox.vue';
 import ProjectPlaceAvailabilityForm from '@/components/custom_forms/ProjectPlaceAvailabilityForm.vue';

@@ -97,7 +97,7 @@ import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios';
 import { notify } from '@/notify';
-import { formatDate } from '@/utils';
+import { formatDate } from '@/utils/dates';
 
 import DateSelect from '@/components/forms/DateSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
