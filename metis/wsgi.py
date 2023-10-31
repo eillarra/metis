@@ -13,4 +13,4 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "metis.settings")
 os.environ["HTTPS"] = "on"
 
 application = get_wsgi_application()
-application = WhiteNoise(application, root=os.path.join(settings.SITE_ROOT, "www"), max_age=31536000)
+application = WhiteNoise(application, root=settings.SITE_ROOT / "www", max_age=31536000)

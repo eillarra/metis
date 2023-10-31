@@ -36,6 +36,7 @@ pydantic = "*"
 pyyaml = "*"
 redis = "*"
 requests = "*"
+scipy = "*"
 sentry-sdk = {extras = ["django"], version = "*"}
 tzdata = "*"
 uritemplate = "*"
