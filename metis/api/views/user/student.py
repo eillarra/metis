@@ -7,8 +7,9 @@ from rest_framework.viewsets import GenericViewSet
 
 from metis.models.rel.signatures import Signature
 from metis.models.stages import Student
+
 from ...permissions import IsAuthenticated
-from ...serializers import AuthStudentSerializer, AuthSignatureSerializer
+from ...serializers import AuthSignatureSerializer, AuthStudentSerializer
 
 
 class AuthStudentViewSet(ListModelMixin, GenericViewSet):

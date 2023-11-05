@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from metis.models.stages.internships import Internship
+
 from ..base import BaseModelAdmin
 from ..rel.remarks import RemarksInline
 

@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from metis.models.educations import Faculty, Education
+from metis.models.educations import Education, Faculty
+
 from .base import BaseModelAdmin
 
 

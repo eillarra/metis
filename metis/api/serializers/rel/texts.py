@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
 from metis.models.rel.texts import TextEntry
+
 from ..users import UserTinySerializer
-from .base import RelHyperlinkedField, NestedRelHyperlinkField
+from .base import NestedRelHyperlinkField, RelHyperlinkedField
 
 
 class TextEntrySerializer(serializers.ModelSerializer):

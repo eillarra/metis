@@ -1,9 +1,11 @@
 from http import HTTPStatus as status
+
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 
-from metis.models import Absence, Timesheet, Signature
+from metis.models import Absence, Signature, Timesheet
+
 from ...serializers import AbsenceSerializer, TimesheetSerializer
 from .internships import InternshipNestedModelViewSet
 

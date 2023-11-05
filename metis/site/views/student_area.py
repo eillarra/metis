@@ -13,6 +13,7 @@ from metis.api.serializers import (
 )
 from metis.models import Education, Internship
 from metis.services.reporter.pdf import ProjectPlaceInformationPdf
+
 from .inertia import InertiaView
 from .reports.periods import PeriodReportMixin
 

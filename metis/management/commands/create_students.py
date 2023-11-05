@@ -1,9 +1,8 @@
 import pandas as pd
-
 from django.core.management.base import BaseCommand
 from django.utils.crypto import get_random_string
 
-from metis.models import User, Student, Project, ProgramBlock, Track
+from metis.models import ProgramBlock, Project, Student, Track, User
 
 
 class Command(BaseCommand):

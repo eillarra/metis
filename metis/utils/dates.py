@@ -1,6 +1,6 @@
-import holidays
-
 from datetime import date, datetime, time
+
+import holidays
 
 
 def is_holiday(date: date, country_code: str = "BE") -> bool:
@@ -17,7 +17,7 @@ def is_weekend(date: date) -> bool:
     return date.weekday() in [5, 6]
 
 
-def remind_deadline(moment: datetime, deadline: datetime, remind_before: list[int] = [0, 1, 3, 7]) -> bool:
+def remind_deadline(moment: datetime, deadline: datetime, remind_before: list[int] | None = None) -> bool:
     """
     Given a deadline, return True if the deadline hasn't passed and:
         - the deadline is today or yesterday
@@ -26,6 +26,9 @@ def remind_deadline(moment: datetime, deadline: datetime, remind_before: list[in
 
     if moment > deadline:
         return False
+
+    if remind_before is None:
+        remind_before = [0, 1, 3, 7]
 
     remind_before.sort(reverse=True)
     date = moment.date()

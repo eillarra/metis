@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from .base import IsManager
 
+
 if TYPE_CHECKING:
     from ..views.educations import EducationNestedModelViewSet
 

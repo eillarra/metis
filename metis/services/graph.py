@@ -1,9 +1,9 @@
 import datetime
 import os
-import requests
+from typing import NamedTuple
 
+import requests
 from allauth.socialaccount.models import SocialApp
-from typing import NamedTuple, Tuple
 
 
 class GraphToken(NamedTuple):
@@ -19,8 +19,8 @@ class GraphAPI:
     def __init__(self) -> None:
         try:
             app = SocialApp.objects.get(provider="ugent")
-        except SocialApp.DoesNotExist:
-            raise RuntimeError("UGent Azure app not configured")
+        except SocialApp.DoesNotExist as exc:
+            raise RuntimeError("UGent Azure app not configured") from exc
 
         self.tenant_id: str = os.environ["UGENT_TENANT_ID"]
         self.client_id: str = app.client_id
@@ -66,7 +66,7 @@ class GraphAPI:
     def _get_delegated_token(self):
         raise NotImplementedError
 
-    def find_user_by_email(self, email: str) -> Tuple[str | None, bool]:
+    def find_user_by_email(self, email: str) -> tuple[str | None, bool]:
         """
         Finds a user in Azure AD by their email address.
 
@@ -88,7 +88,7 @@ class GraphAPI:
             else (None, False)
         )
 
-    def register_email(self, email: str, *, send_invitation: bool = False) -> Tuple[bool, str, bool]:
+    def register_email(self, email: str, *, send_invitation: bool = False) -> tuple[bool, str, bool]:
         """
         Registers a new email address and (optionally) sends an invitation to join the Metis platform.
 

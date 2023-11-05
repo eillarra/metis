@@ -45,10 +45,10 @@ pytest --cov=metis --cov-report=term
 
 ### Style guide
 
-Tab size is 4 spaces. Max line length is 120. You should run `flake8` and `black` before committing any change.
+Tab size is 4 spaces. Max line length is 120. You should run `ruff` before committing any change.
 
 ```bash
-black metis
+ruff format . && ruff check metis
 ```
 
 ## Frontend

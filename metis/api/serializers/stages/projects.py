@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from metis.models.stages.projects import Project, Period
+from metis.models.stages.projects import Period, Project
+
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel import TextEntriesMixin
 from .questionings import QuestioningTinySerializer

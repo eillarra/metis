@@ -3,7 +3,8 @@ from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 
-from metis.models.stages.projects import Project, Period
+from metis.models.stages.projects import Period, Project
+
 from ..base import BaseModelAdmin
 from ..rel.files import FilesInline
 from .questionings import QuestioningsInline

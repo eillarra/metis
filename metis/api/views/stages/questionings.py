@@ -3,11 +3,11 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from metis.models import Questioning
-from ...permissions import IsEducationOfficeMember
-from ...serializers import QuestioningSerializer, FormResponseSerializer
-from .projects import ProjectNestedModelViewSet
-
 from metis.tasks.emails import schedule_project_place_information_email, schedule_student_tops_email
+
+from ...permissions import IsEducationOfficeMember
+from ...serializers import FormResponseSerializer, QuestioningSerializer
+from .projects import ProjectNestedModelViewSet
 
 
 class QuestioningViewSet(ProjectNestedModelViewSet):

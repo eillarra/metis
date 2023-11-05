@@ -3,6 +3,7 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from metis.models import User
+
 from ..permissions import IsOfficeMember
 from ..serializers import UserTinySerializer
 

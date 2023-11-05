@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import pgettext_lazy
 
 from metis.models.base import BaseModel
+
 from .cases import Case
 
 

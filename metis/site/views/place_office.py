@@ -8,11 +8,12 @@ from metis.api.serializers import (
     EducationTinySerializer,
     FileSerializer,
     InternshipInertiaSerializer,
-    ProjectSerializer,
     PlaceSerializer,
     ProjectPlaceTinySerializer,
+    ProjectSerializer,
 )
 from metis.models import Internship, Place, Project
+
 from .inertia import InertiaView
 
 

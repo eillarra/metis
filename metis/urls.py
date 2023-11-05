@@ -6,8 +6,8 @@ from django.contrib import admin
 from django.urls import path
 from django.views.i18n import set_language
 
-from metis.ugent_provider.views import oauth2_login, oauth2_callback
 from metis.site.views.files import MediaFileView
+from metis.ugent_provider.views import oauth2_callback, oauth2_login
 
 
 admin.autodiscover()

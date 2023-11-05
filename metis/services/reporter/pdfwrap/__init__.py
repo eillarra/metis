@@ -2,9 +2,8 @@ import io
 
 from reportlab.graphics.shapes import Drawing, Line
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm, cm
-from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer
-
+from reportlab.lib.units import cm, mm
+from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer
 
 from .styles import PDF_STYLES
 
@@ -13,9 +12,10 @@ INNER_FRAME_PADDING = 6
 
 
 class PdfWrap:
-    def __init__(
-        self, *, page_size: tuple = A4, margins: list[float] = [12 * mm, 12 * mm, 20 * mm, 12 * mm], styles=PDF_STYLES
-    ) -> None:
+    def __init__(self, *, page_size: tuple = A4, margins: list[float] | None = None, styles=PDF_STYLES) -> None:
+        if margins is None:
+            margins = [12 * mm, 12 * mm, 20 * mm, 12 * mm]
+
         self.buffer = io.BytesIO()
         self.parts = []
         self.styles = styles

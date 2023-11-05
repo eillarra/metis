@@ -1,16 +1,19 @@
 from http import HTTPStatus as status
+from typing import TYPE_CHECKING
+
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
-from typing import TYPE_CHECKING
 
-from metis.models import User, Place, Contact
+from metis.models import Contact, Place, User
 from metis.services.mailer import schedule_invitation_email
+
 from ..permissions import IsEducationOfficeMember
-from ..serializers import PlaceSerializer, ContactSerializer
+from ..serializers import ContactSerializer, PlaceSerializer
 from .base import BaseModelViewSet
 from .educations import EducationNestedModelViewSet
+
 
 if TYPE_CHECKING:
     from metis.models.educations import Education
@@ -69,8 +72,8 @@ class PlaceNestedModelViewSet(BaseModelViewSet):
         try:
             ModelClass = serializer.Meta.model
             ModelClass(place=self.get_place(), **serializer.validated_data).clean()
-        except Exception as e:
-            raise ValidationError(str(e))
+        except Exception as exc:
+            raise ValidationError(str(exc)) from exc
 
 
 class ContactViewSet(PlaceNestedModelViewSet):

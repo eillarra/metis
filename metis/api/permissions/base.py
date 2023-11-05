@@ -1,5 +1,7 @@
-from rest_framework.permissions import BasePermission, IsAuthenticated
 from typing import TYPE_CHECKING
+
+from rest_framework.permissions import BasePermission, IsAuthenticated
+
 
 if TYPE_CHECKING:
     from ..views.rel import RelModelViewSet

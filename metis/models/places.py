@@ -1,11 +1,13 @@
+from typing import TYPE_CHECKING
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from modeltranslation.translator import TranslationOptions
-from typing import TYPE_CHECKING
 
 from .base import BaseModel
 from .rel import AddressesMixin, FilesMixin, LinksMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
+
 
 if TYPE_CHECKING:
     from .educations import Education

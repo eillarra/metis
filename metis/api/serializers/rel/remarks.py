@@ -3,8 +3,9 @@ from django.db.models import Count
 from rest_framework import serializers
 
 from metis.models.rel.remarks import Remark
+
 from ..users import UserTinySerializer
-from .base import RelHyperlinkedField, NestedRelHyperlinkField
+from .base import NestedRelHyperlinkField, RelHyperlinkedField
 
 
 class RemarkSerializer(serializers.ModelSerializer):

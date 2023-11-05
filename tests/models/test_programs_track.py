@@ -1,8 +1,8 @@
-import pytest
-
 from datetime import date, timedelta
 
-from metis.utils.factories import TrackFactory, ProgramFactory
+import pytest
+
+from metis.utils.factories import ProgramFactory, TrackFactory
 
 
 @pytest.mark.django_db

@@ -1,14 +1,17 @@
+from typing import TYPE_CHECKING
+
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.signals import pre_social_login
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 from django.utils.crypto import get_random_string
-from typing import TYPE_CHECKING
 
 from metis.services.graph import GraphAPI
 from metis.services.mailer import send_email_to_admins
+
 from .rel import AddressesMixin, LinksMixin, PhoneNumbersMixin
+
 
 if TYPE_CHECKING:
     from .rel.files import File

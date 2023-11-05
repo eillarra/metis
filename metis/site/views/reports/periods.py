@@ -14,8 +14,8 @@ class PeriodReportMixin(View):
                 self.period = Period.objects.get(
                     id=self.kwargs.get("period_id"), project__education=self.get_education()
                 )
-            except Period.DoesNotExist:
-                raise PermissionDenied
+            except Period.DoesNotExist as exc:
+                raise PermissionDenied from exc
 
         return self.period
 
@@ -27,9 +27,8 @@ class PeriodReportMixin(View):
             file_type = self.kwargs.get("file_type", "__KeyError__")
             report_code = self.kwargs.get("code", "__KeyError__")
             report = self.available_reports[file_type][report_code](self.get_period().id)  # type: ignore
-        except KeyError:
-            print("KeyError PermissionDenied")
-            raise PermissionDenied
+        except KeyError as exc:
+            raise PermissionDenied from exc
 
         return report
 

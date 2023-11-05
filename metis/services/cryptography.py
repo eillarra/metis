@@ -1,7 +1,6 @@
 from cryptography.fernet import Fernet
 from django.conf import settings
 from django.db.models import TextField
-from typing import Union
 
 
 def encrypt(text: str) -> str:
@@ -13,7 +12,7 @@ def encrypt(text: str) -> str:
     return fernet.encrypt(text.encode()).decode()
 
 
-def decrypt(token: Union[bytes, str], ttl: int | None = None) -> str:
+def decrypt(token: bytes | str, ttl: int | None = None) -> str:
     """
     Decrypts a token.
     """

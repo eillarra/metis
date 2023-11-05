@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -33,8 +33,8 @@ class MediaFileView(View):
 
         try:
             res = get_s3_response(file.s3_object_key)
-        except HTTPError:
-            raise Http404("File not found.")
+        except HTTPError as exc:
+            raise Http404("File not found.") from exc
 
         return HttpResponse(
             res.raw,

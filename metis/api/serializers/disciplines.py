@@ -1,4 +1,5 @@
 from metis.models.disciplines import Discipline
+
 from .base import BaseTranslatedModelSerializer
 
 

@@ -9,6 +9,7 @@ from metis.api.serializers import EducationSerializer, EducationTinySerializer, 
 from metis.models import Education
 from metis.services.reporter.excel import StudentTopsExcel
 from metis.services.reporter.pdf import ProjectPlaceInformationPdf, StudentInformationPdf
+
 from .inertia import InertiaView
 from .reports.periods import PeriodReportMixin
 

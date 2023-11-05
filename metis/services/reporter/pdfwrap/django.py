@@ -1,7 +1,7 @@
 try:
     from django.http import HttpResponse
-except ImportError:
-    raise ImportError("Django is required for the PdfResponse class")
+except ImportError as exc:
+    raise ImportError("Django is required for the PdfResponse class") from exc
 
 
 class PdfResponse(HttpResponse):

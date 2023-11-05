@@ -1,10 +1,10 @@
 from django.utils.timezone import now
 
-from .form_to_pdf import form_to_pdf, _add_textarea_response
+from metis.models import Period, ProjectPlace
+
+from .form_to_pdf import form_to_pdf
 from .pdfwrap import PdfWrap
 from .pdfwrap.django import PdfResponse
-
-from metis.models import Period, ProjectPlace
 
 
 class PdfReport:

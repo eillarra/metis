@@ -1,8 +1,9 @@
+from typing import Optional
+
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from modeltranslation.translator import TranslationOptions
-from typing import Optional
 
 from ..base import BaseModel
 from .files import FilesMixin

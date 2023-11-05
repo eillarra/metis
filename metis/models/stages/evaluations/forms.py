@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
 
 from metis.models.base import BaseModel
 from metis.services.form_builder import validators as form_validators
@@ -28,8 +28,8 @@ class EvaluationForm(BaseModel):
     def clean(self) -> None:
         try:
             form_validators.validate_evaluation_form_definition(self.form_definition)
-        except ValueError as e:
-            raise ValidationError({"form_definition": str(e)})
+        except ValueError as exc:
+            raise ValidationError({"form_definition": str(exc)}) from exc
         return super().clean()
 
     def clean_response_data(self, data: dict) -> dict:

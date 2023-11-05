@@ -1,6 +1,7 @@
 import factory
 
-from metis.models.stages.projects import Project, Period
+from metis.models.stages.projects import Period, Project
+
 from ..educations import EducationFactory
 from .programs import ProgramInternshipFactory
 

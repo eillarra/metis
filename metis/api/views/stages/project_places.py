@@ -3,8 +3,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
 
 from metis.models import ProjectPlace, ProjectPlaceAvailability
+
 from ...permissions import IsEducationOfficeMember
-from ...serializers import ProjectPlaceSerializer, ProjectPlaceAvailabilitySerializer
+from ...serializers import ProjectPlaceAvailabilitySerializer, ProjectPlaceSerializer
 from .projects import ProjectNestedModelViewSet
 
 
@@ -45,8 +46,8 @@ class ProjectPlaceViewSet(ProjectNestedModelViewSet):
             ModelClass = ProjectPlaceAvailabilitySerializer.Meta.model
             for data in serializer.validated_data:  # type: ignore
                 ModelClass(project_place=project_place, **data).clean()
-        except Exception as e:
-            raise ValidationError(str(e))
+        except Exception as exc:
+            raise ValidationError(str(exc)) from exc
 
         for availability in request.data:
             try:

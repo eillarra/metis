@@ -1,18 +1,17 @@
 import pytest
-
 from django.core.exceptions import ValidationError
 
+from metis.models import Discipline, Program, ProgramInternship, Track
 from metis.utils.factories import (
+    InternshipFactory,
+    PeriodFactory,
     PlaceFactory,
     PlaceTypeFactory,
     ProjectFactory,
     ProjectPlaceFactory,
-    PeriodFactory,
     StudentFactory,
-    InternshipFactory,
 )
 from metis.utils.fixtures.programs import create_audiology_program, create_logopedics_program
-from metis.models import Discipline, Program, ProgramInternship, Track
 
 
 @pytest.fixture

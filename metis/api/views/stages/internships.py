@@ -1,10 +1,12 @@
 from http import HTTPStatus as status
-from rest_framework.permissions import IsAuthenticated
+
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from metis.models import User, Internship, Mentor, Project, Education
+from metis.models import Education, Internship, Mentor, Project, User
+
 from ...permissions import IsEducationOfficeMember
 from ...serializers import InternshipSerializer, MentorTinySerializer
 from ..base import BaseModelViewSet
@@ -74,5 +76,5 @@ class InternshipNestedModelViewSet(BaseModelViewSet):
         try:
             ModelClass = serializer.Meta.model
             ModelClass(internship=self.get_internship(), **serializer.validated_data).clean()
-        except Exception as e:
-            raise ValidationError(str(e))
+        except Exception as exc:
+            raise ValidationError(str(exc)) from exc

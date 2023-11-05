@@ -1,7 +1,7 @@
 import os
 import re
-import sentry_sdk
 
+import sentry_sdk
 from django.core.exceptions import DisallowedHost
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration

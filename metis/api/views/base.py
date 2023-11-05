@@ -1,13 +1,10 @@
+from http import HTTPStatus as status
+
 from django.db.models.deletion import ProtectedError
-from django.db.utils import IntegrityError
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from http import HTTPStatus as status
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
-from metis.models.users import User
 
 
 class ProtectedMixin:

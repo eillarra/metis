@@ -1,8 +1,8 @@
 import os
-
-from django.contrib.messages import constants as messages
 from pathlib import Path
 from urllib.parse import urlparse
+
+from django.contrib.messages import constants as messages
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

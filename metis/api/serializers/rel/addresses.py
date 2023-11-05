@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from metis.models.rel.addresses import Address
-from .base import RelHyperlinkedField, NestedRelHyperlinkField
+
+from .base import NestedRelHyperlinkField, RelHyperlinkedField
 
 
 class AddressSerializer(serializers.ModelSerializer):

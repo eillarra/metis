@@ -1,11 +1,13 @@
+from typing import TYPE_CHECKING
+
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from typing import TYPE_CHECKING
 
 from ..base import BaseModel
 from ..rel.forms import FormResponsesMixin
 from ..rel.remarks import RemarksMixin
 from ..rel.texts import TextEntry
+
 
 if TYPE_CHECKING:
     from .programs import ProgramInternship

@@ -1,10 +1,12 @@
+from typing import TYPE_CHECKING, Optional
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.serializers import serialize
 from django.db import models
-from typing import Optional, Type, TYPE_CHECKING
 
 from metis.services.mailer import send_email_to_admins
+
 
 if TYPE_CHECKING:
     from metis.models.base import BaseModel
@@ -28,7 +30,7 @@ class Snapshot(models.Model):
         db_table = "metis_rel_snapshot"
 
 
-def save_snapshot(sender: Type["BaseModel"], instance: models.Model, *, user: Optional["User"]) -> None:
+def save_snapshot(sender: type["BaseModel"], instance: models.Model, *, user: Optional["User"]) -> None:
     """
     Save a snapshot of a given Django model instance.
 

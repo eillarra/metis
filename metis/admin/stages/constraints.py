@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.admin import GenericTabularInline
 
 from metis.models.disciplines import Discipline
-from metis.models.stages.constraints import DisciplineConstraint
+from metis.models.stages import DisciplineConstraint, ProgramInternship
 
 
 class DisciplineConstraintsInline(GenericTabularInline):

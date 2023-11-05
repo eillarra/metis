@@ -1,11 +1,10 @@
-import pytest
-
 from datetime import date
+
+import pytest
 from django.db.models import QuerySet
-from typing import List
 
 from metis.models.disciplines import Discipline
-from metis.models.educations import Faculty, Education
+from metis.models.educations import Education, Faculty
 from metis.models.stages.constraints import (
     DisciplineConstraint,
     get_disciplines_from_constraints,
@@ -112,7 +111,7 @@ def create_constraint(request, track):
 )
 def test_validate_discipline_constraints(
     create_constraint,
-    discipline_ids: List[int],
+    discipline_ids: list[int],
     expected_result: bool,
 ):
     constraint = create_constraint

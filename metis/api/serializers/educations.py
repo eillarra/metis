@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from metis.models.educations import Education, Faculty
+
 from .base import BaseTranslatedModelSerializer
 from .disciplines import DisciplineSerializer
 from .places import PlaceTypeSerializer

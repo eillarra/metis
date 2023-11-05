@@ -1,15 +1,16 @@
 import math
-
 from collections import Counter
+from typing import TYPE_CHECKING, Optional
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
-from typing import Optional, TYPE_CHECKING
 
 from ..base import BaseModel
 from ..disciplines import Discipline
 from ..rel.remarks import RemarksMixin
+
 
 if TYPE_CHECKING:
     from ..places import Place
@@ -88,7 +89,8 @@ def validate_discipline_choice(obj: "Internship") -> None:
         max_repeat = obj.track.constraints.first().max_repeat
         if max_repeat and obj.get_counter_for_disciplines()[obj.discipline_id] >= max_repeat:
             raise ValidationError(
-                f"Chosen discipline does not meet the remaining constraints for this internship: {obj.track}, {obj.student}"
+                "Chosen discipline does not meet the remaining constraints for this internship: "
+                f"{obj.track}, {obj.student}"
             )
 
     for constraint in get_remaining_discipline_constraints(obj):

@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
-from metis.models import Place, PlaceType, Contact, User
-from .base import BaseTranslatedModelSerializer, BaseModelSerializer, NestedHyperlinkField
-from .rel import AddressSerializer, AddressesMixin, RemarksMixin, TextEntriesMixin
+from metis.models import Contact, Place, PlaceType, User
+
+from .base import BaseModelSerializer, BaseTranslatedModelSerializer, NestedHyperlinkField
+from .rel import AddressesMixin, AddressSerializer, RemarksMixin, TextEntriesMixin
 from .users import UserLastLoginSerializer
 
 

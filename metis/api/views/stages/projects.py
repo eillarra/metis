@@ -1,15 +1,18 @@
+from typing import TYPE_CHECKING
+
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from typing import TYPE_CHECKING
 
 from metis.models import Project, User
+
 from ...permissions import IsEducationOfficeMember
 from ...serializers.stages import ProjectSerializer, StudentUserSerializer
 from ..base import BaseModelViewSet
 from ..educations import EducationNestedModelViewSet
+
 
 if TYPE_CHECKING:
     from metis.models import Education
@@ -62,5 +65,5 @@ class ProjectNestedModelViewSet(BaseModelViewSet):
         try:
             ModelClass = serializer.Meta.model
             ModelClass(project=self.get_project(), **serializer.validated_data).clean()
-        except Exception as e:
-            raise ValidationError(str(e))
+        except Exception as exc:
+            raise ValidationError(str(exc)) from exc

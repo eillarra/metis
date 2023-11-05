@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from metis.models import Place, ProjectPlace, ProjectPlaceAvailability
+
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..places import PlaceSerializer
 from ..rel.forms import FormResponsesMixin

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from metis.models.users import User
+
 from .rel.remarks import RemarksInline
 
 

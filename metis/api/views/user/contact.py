@@ -2,6 +2,7 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import GenericViewSet
 
 from metis.models import Place
+
 from ...permissions import IsAuthenticated
 from ...serializers import PlaceSerializer
 
@@ -19,9 +20,10 @@ class ContactPlaceViewSet(GenericViewSet):
 
     @action(detail=True, methods=["post"])
     def email(self, request, *args, **kwargs):
-        from metis.services.mailer import schedule_email
         from rest_framework import status
         from rest_framework.response import Response
+
+        from metis.services.mailer import schedule_email
 
         place = self.get_object()
 

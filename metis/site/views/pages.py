@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from metis.api.serializers import EducationTinySerializer, EducationSerializer, PlaceSerializer
+from metis.api.serializers import EducationSerializer, EducationTinySerializer, PlaceSerializer
 from metis.models import Education, Place
+
 from .inertia import InertiaView
 
 

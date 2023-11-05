@@ -1,12 +1,14 @@
 from datetime import time
+from typing import TYPE_CHECKING
+
 from django.core.exceptions import ValidationError
 from django.db import models
-from typing import TYPE_CHECKING
 
 from metis.models.base import BaseModel
 from metis.models.rel.files import FilesMixin
 from metis.models.rel.remarks import RemarksMixin
 from metis.utils.dates import get_minutes_difference, get_time_difference, sum_times
+
 
 if TYPE_CHECKING:
     from ..rel.signatures import Signature

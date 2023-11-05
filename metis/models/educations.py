@@ -4,6 +4,7 @@ from django.urls import reverse
 from modeltranslation.translator import TranslationOptions
 
 from metis.services.configurator import EducationConfig, validate_education_configuration
+
 from .base import BaseModel
 
 
@@ -35,8 +36,8 @@ class Education(BaseModel):
         if self.config:
             try:
                 validate_education_configuration(self.config)
-            except ValueError as e:
-                raise ValidationError({"config": str(e)})
+            except ValueError as exc:
+                raise ValidationError({"config": str(exc)}) from exc
         return super().clean()
 
     def __str__(self) -> str:

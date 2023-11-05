@@ -1,6 +1,7 @@
 import factory
 
 from metis.models.stages.students import Student
+
 from ..users import UserFactory
 from .programs import ProgramBlockFactory
 from .projects import ProjectFactory

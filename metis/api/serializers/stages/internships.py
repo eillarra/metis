@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
 from metis.models.stages.internships import Internship, Mentor
+
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..disciplines import DisciplineSerializer
-from ..rel.remarks import RemarksMixin
 from ..places import PlaceInertiaSerializer
+from ..rel.remarks import RemarksMixin
 from ..users import UserLastLoginSerializer
 from .evaluations import EvaluationFormSerializer
 from .projects import PeriodSerializer

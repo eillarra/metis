@@ -1,15 +1,15 @@
 import pytest
 
-from metis.models import Discipline, ProgramInternship, ProjectPlaceAvailability, Student
+from metis.models import ProgramInternship
 from metis.services.cloner import clone_project
 from metis.utils.factories import (
     DisciplineFactory,
-    ProgramFactory,
+    PeriodFactory,
     ProgramBlockFactory,
+    ProgramFactory,
     ProgramInternshipFactory,
     ProjectFactory,
     ProjectPlaceFactory,
-    PeriodFactory,
     StudentFactory,
 )
 

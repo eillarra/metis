@@ -1,13 +1,14 @@
 import datetime
+from typing import TYPE_CHECKING
 
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
-from typing import TYPE_CHECKING
 
 from ..base import BaseModel
 from ..rel import FilesMixin, TextEntriesMixin
+
 
 if TYPE_CHECKING:
     from ..places import Place

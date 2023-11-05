@@ -52,5 +52,5 @@ class EducationConfig(BaseModel):
 def validate_education_configuration(config):
     try:
         EducationConfig(**config)
-    except (TypeError, ValidationError) as e:
-        raise ValueError(e)
+    except (TypeError, ValidationError) as exc:
+        raise ValueError(exc) from exc

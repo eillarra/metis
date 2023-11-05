@@ -1,11 +1,13 @@
+from typing import TYPE_CHECKING
+
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
-from typing import TYPE_CHECKING
 
 from metis.services.file_guard import check_file_access
 from metis.services.s3 import delete_s3_object
+
 
 if TYPE_CHECKING:
     from metis.models.users import User

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from metis.models import User, Student
+from metis.models import Student, User
+
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel.addresses import AddressesMixin
 from ..rel.forms import FormResponsesMixin

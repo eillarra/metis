@@ -33,7 +33,7 @@ def django_link_callback(uri, rel) -> str:
         return uri
 
     if not os.path.isfile(path):
-        raise Exception("Please make sure that file exists: {}".format(path))
+        raise Exception(f"Please make sure that file exists: {path}")
 
     return str(path)
 

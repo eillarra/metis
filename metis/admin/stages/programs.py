@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from metis.models.stages.programs import Program, ProgramBlock, ProgramInternship, Track, TrackInternship
+
 from ..base import BaseModelAdmin
 from .constraints import DisciplineConstraintsInline
 

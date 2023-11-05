@@ -1,8 +1,8 @@
-import pytest
+from http import HTTPStatus as status
 
+import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
-from http import HTTPStatus as status
 
 from metis.models.rel import Remark
 from metis.utils.factories import (

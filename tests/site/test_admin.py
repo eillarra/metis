@@ -1,7 +1,7 @@
-import pytest
-
-from django.urls import reverse
 from http import HTTPStatus as status
+
+import pytest
+from django.urls import reverse
 
 from metis.utils.factories import UserFactory
 

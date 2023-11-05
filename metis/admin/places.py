@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from metis.models.places import Place, PlaceType
+
 from .base import BaseModelAdmin
 from .rel.remarks import RemarksInline
 

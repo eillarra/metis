@@ -1,8 +1,8 @@
 import factory
-
 from django.utils import timezone
 
 from metis.models.stages.programs import Program, ProgramBlock, ProgramInternship, Track, TrackInternship
+
 from ..educations import EducationFactory
 
 

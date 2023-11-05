@@ -30,5 +30,5 @@ class CustomFormResponseViewSet(RelModelViewSet):
     def validate_form_response(self, serializer) -> None:
         try:
             serializer.validated_data["questioning"].clean_response_data(serializer.validated_data["data"])
-        except ValueError as e:
-            raise serializers.ValidationError({"data": str(e)})
+        except ValueError as exc:
+            raise serializers.ValidationError({"data": str(exc)}) from exc

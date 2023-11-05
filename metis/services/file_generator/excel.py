@@ -1,9 +1,9 @@
-import pandas as pd
-
-from django.http import HttpResponse
 from io import BytesIO
 
-from metis.models import Period, Questioning
+import pandas as pd
+from django.http import HttpResponse
+
+from metis.models import Questioning
 from metis.services.form_builder.custom_forms import CustomForm
 
 

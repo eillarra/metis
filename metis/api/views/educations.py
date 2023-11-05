@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from metis.models import Education, User
+
 from ..permissions import IsManager
 from ..serializers import EducationSerializer, ProgramSerializer, StudentSerializer
 from .base import BaseModelViewSet
@@ -61,5 +62,5 @@ class EducationNestedModelViewSet(BaseModelViewSet):
         try:
             ModelClass = serializer.Meta.model
             ModelClass(education=self.get_education(), **serializer.validated_data).clean()
-        except Exception as e:
-            raise ValidationError(str(e))
+        except Exception as exc:
+            raise ValidationError(str(exc)) from exc

@@ -43,7 +43,8 @@ class Case(FilesMixin, RemarksMixin, BaseModel):
     def save(self, *args, **kwargs):
         """
         1) make sure a review is created once the case is submitted.
-        2) run a task to check if the provided email can bve reached, if not, the student gets an email to fix this => student can edit the case: once a reviewer account has been assigned the student cannot edit the case anymore?
+        2) run a task to check if the provided email can be reached, if not, the student gets an email to fix this =>
+        student can edit the case: once a reviewer account has been assigned the student cannot edit the case anymore?
         3) if a new account is needed, the reviewer can get an email with instructions to create a new account => link.
         4) the mentor or internship coordinator needs to validate the reviewer
         """

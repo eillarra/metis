@@ -1,6 +1,6 @@
 import math
-
 from collections import Counter
+
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -8,8 +8,6 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
-from typing import List, Tuple
-
 
 from metis.models import Discipline
 
@@ -93,13 +91,16 @@ class DisciplineConstraintsMixin(models.Model):
         if max_count1 < min_count2 or max_count2 < min_count1:
             return False
 
-        if constraint1.max_repeat is not None and constraint2.max_repeat is not None:
-            if constraint1.max_repeat != constraint2.max_repeat:
-                return True
+        if (
+            constraint1.max_repeat is not None
+            and constraint2.max_repeat is not None
+            and constraint1.max_repeat != constraint2.max_repeat
+        ):
+            return True
 
         return False
 
-    def _get_count_bounds(self, constraint: DisciplineConstraint) -> Tuple[int, int]:
+    def _get_count_bounds(self, constraint: DisciplineConstraint) -> tuple[int, int]:
         min_count = constraint.min_count or 0
         max_count = constraint.max_count or math.inf
 
@@ -118,7 +119,7 @@ class DisciplineConstraintsMixin(models.Model):
 
         return True
 
-    def validate_discipline_constraints(self, discipline_ids: List[int]) -> bool:
+    def validate_discipline_constraints(self, discipline_ids: list[int]) -> bool:
         return validate_discipline_constraints(discipline_ids, list(self.constraints.all()))
 
     def add_required_discipline(self, discipline: Discipline) -> None:
@@ -143,7 +144,7 @@ def get_disciplines_from_constraints(constraints: models.QuerySet) -> "QuerySet[
 
 
 def validate_discipline_constraints(
-    discipline_ids: List[int], remaining_constraints: List[DisciplineConstraint]
+    discipline_ids: list[int], remaining_constraints: list[DisciplineConstraint]
 ) -> bool:
     """
     Validate a list of discipline_ids against the remaining constraints.

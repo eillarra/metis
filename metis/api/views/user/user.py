@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from metis.models import User
+
 from ...permissions import IsAuthenticated
 from ...serializers.user import AuthUserSerializer
 

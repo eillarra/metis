@@ -1,6 +1,3 @@
-[tool.black]
-line-length = 120
-
 [tool.coverage.run]
 omit = [
   "*/migrations/**",
@@ -23,3 +20,14 @@ markers = [
   "site: mark a test as an `site` test",
 ]
 DJANGO_SETTINGS_MODULE = "metis.settings.test"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.isort]
+lines-after-imports = 2
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+ignore = ["B026", "SIM105"]

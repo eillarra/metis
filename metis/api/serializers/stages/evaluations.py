@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from metis.models.stages.evaluations import EvaluationForm, Evaluation
+from metis.models.stages.evaluations import Evaluation, EvaluationForm
+
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..rel.remarks import RemarksMixin
 

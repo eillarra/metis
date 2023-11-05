@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
 from metis.models.rel.forms import FormResponse
+
 from ..users import UserTinySerializer
-from .base import RelHyperlinkedField, NestedRelHyperlinkField
+from .base import NestedRelHyperlinkField, RelHyperlinkedField
 
 
 class FormResponseSerializer(serializers.ModelSerializer):

@@ -1,5 +1,4 @@
 import pandas as pd
-
 from django.core.management.base import BaseCommand
 
 from metis.models import Student

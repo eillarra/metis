@@ -1,7 +1,7 @@
-import pandas as pd
-
-from django.http import HttpResponse
 from io import BytesIO
+
+import pandas as pd
+from django.http import HttpResponse
 
 from metis.models import Period
 

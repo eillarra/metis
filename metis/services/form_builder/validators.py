@@ -1,10 +1,12 @@
-from django.utils.html import conditional_escape
-from pydantic import ValidationError
 from typing import TYPE_CHECKING
 
-from .custom_forms import CustomForm, ChoiceField
+from django.utils.html import conditional_escape
+from pydantic import ValidationError
+
+from .custom_forms import ChoiceField, CustomForm
 from .evaluations import EvaluationForm
 from .tops import TopsForm
+
 
 if TYPE_CHECKING:
     from metis.models.stages.projects import Project
@@ -24,9 +26,8 @@ def escape_html(data: dict) -> dict:
 
 
 def fieldset_is_visible(fieldset, data: dict) -> bool:
-    if fieldset.rule:
-        if fieldset.rule.type == "equals":
-            return data[fieldset.rule.field] == fieldset.rule.value
+    if fieldset.rule and fieldset.rule.type == "equals":
+        return data[fieldset.rule.field] == fieldset.rule.value
     return True
 
 
@@ -37,8 +38,8 @@ def validate_evaluation_form_definition(definition: dict) -> EvaluationForm:
 
     try:
         return EvaluationForm(**definition)
-    except (TypeError, ValidationError) as e:
-        raise ValueError(e)
+    except (TypeError, ValidationError) as exc:
+        raise ValueError(exc) from exc
 
 
 def validate_evaluation_form_response(form_definition: dict, data: dict) -> dict:
@@ -52,8 +53,8 @@ def validate_form_definition(definition: dict) -> CustomForm:
 
     try:
         return CustomForm(**definition)
-    except (TypeError, ValidationError) as e:
-        raise ValueError(e)
+    except (TypeError, ValidationError) as exc:
+        raise ValueError(exc) from exc
 
 
 def validate_form_response(form_definition: dict, data: dict) -> dict:
@@ -76,9 +77,8 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
             field_codes.add(field.code)
             if type(field) is ChoiceField and field.other_option:
                 field_codes.add(f"{field.code}__{field.other_option}")
-            if field.required:
-                if field.code not in data or not data[field.code]:
-                    raise ValueError(f"Missing required field `{field.code}`")
+            if field.required and (field.code not in data or not data[field.code]):
+                raise ValueError(f"Missing required field `{field.code}`")
 
     for field in data:
         if field not in field_codes:
@@ -134,8 +134,8 @@ def validate_tops_form_definition(definition: dict) -> TopsForm:
 
     try:
         return TopsForm(**definition)
-    except (TypeError, ValidationError) as e:
-        raise ValueError(e)
+    except (TypeError, ValidationError) as exc:
+        raise ValueError(exc) from exc
 
 
 def validate_tops_form_response(form_definition: dict, data: dict, project: "Project") -> dict:
@@ -165,7 +165,7 @@ def validate_tops_form_response(form_definition: dict, data: dict, project: "Pro
     try:
         if len(data["tops"]) != form.num_tops:
             raise ValueError("Invalid number of tops")
-    except AttributeError:
-        raise ValueError("Missing required field `tops`")
+    except AttributeError as exc:
+        raise ValueError("Missing required field `tops`") from exc
 
     return data

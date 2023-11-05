@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 from metis.services.form_builder import validators as form_validators
+
 from ..base import BaseModel
 from ..rel.remarks import RemarksMixin
 from .project_places import ProjectPlace
@@ -61,8 +62,8 @@ class Questioning(RemarksMixin, BaseModel):
                     form_validators.validate_tops_form_definition(self.form_definition)
                 else:
                     form_validators.validate_form_definition(self.form_definition)
-            except ValueError as e:
-                raise ValidationError({"form_definition": str(e)})
+            except ValueError as exc:
+                raise ValidationError({"form_definition": str(exc)}) from exc
         return super().clean()
 
     def clean_response_data(self, data: dict) -> dict:

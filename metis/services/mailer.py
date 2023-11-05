@@ -1,12 +1,14 @@
+from textwrap import dedent
+from typing import TYPE_CHECKING, Optional
+
 from django.conf import settings
 from django.core.mail import send_mail as django_send_mail
 from django.template import Context, Template
 from django.template.defaultfilters import date as date_filter
-from textwrap import dedent
-from typing import Optional, TYPE_CHECKING
+
 
 if TYPE_CHECKING:
-    from metis.models import User, Education, EmailTemplate, Contact, Evaluation
+    from metis.models import Contact, Education, EmailTemplate, Evaluation, User
 
 
 def send_email_to_admins(subject: str, message: str = "") -> None:
@@ -25,8 +27,8 @@ def schedule_email(
     to: list[str],
     subject: str,
     text_content: str,
-    bcc: list[str] = [],
-    reply_to: list[str] = [],
+    bcc: list[str] | None = None,
+    reply_to: list[str] | None = None,
     log_template: Optional["EmailTemplate"] = None,
     log_user: Optional["User"] = None,
     log_education: Optional["Education"] = None,
@@ -38,8 +40,8 @@ def schedule_email(
         from_email=from_email,
         to=to,
         to_user=log_user,
-        bcc=bcc,
-        reply_to=reply_to,
+        bcc=bcc or [],
+        reply_to=reply_to or [],
         subject=subject,
         body=text_content,
         education=log_template.education if log_template else log_education,
@@ -51,18 +53,18 @@ def schedule_template_email(
     from_email: str = "Metis <metis@ugent.be>",
     to: list[str],
     template: "EmailTemplate",
-    context: dict = {},
+    context: dict | None = None,
     log_user: Optional["User"] = None,
 ) -> None:
     try:
         templ = Template(template.body)
-        text_content = templ.render(Context(context))
+        text_content = templ.render(Context(context or {}))
         subject = Template(template.subject)
 
         schedule_email(
             from_email=from_email,
             to=to,
-            subject=subject.render(Context(context)),
+            subject=subject.render(Context(context or {})),
             text_content=text_content,
             bcc=template.bcc,
             reply_to=template.reply_to,
@@ -104,7 +106,6 @@ def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
         "Finale evaluatie" if evaluation.is_final else f"Tussentijdse evaluatie #{evaluation.intermediate}"
     )
     subject = "[Metis] Nieuwe evaluatie ontvangen"
-    formatted_date = evaluation.created_at.strftime("%d/%m/%Y om %H:%M")
     body = dedent(
         f"""
         Beste {evaluation.internship.student.user.name},

@@ -1,10 +1,12 @@
+from uuid import uuid4
+
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
-from uuid import uuid4
 
 from metis.services.cryptography import EncryptedTextField
+
 from ..base import NonEditableMixin
 
 

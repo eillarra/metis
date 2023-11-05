@@ -1,23 +1,23 @@
-import pytest
-
-from django.urls import reverse
 from http import HTTPStatus as status
+
+import pytest
+from django.urls import reverse
 
 from metis.utils.factories import (
     ContactFactory,
     EducationFactory,
     EvaluationFormFactory,
+    InternshipFactory,
     MentorFactory,
     PeriodFactory,
     PlaceFactory,
     ProjectFactory,
     ProjectPlaceFactory,
-    InternshipFactory,
     StudentFactory,
     UserFactory,
 )
-from metis.utils.fixtures.programs import create_audiology_program
 from metis.utils.fixtures.forms.evaluations import get_audio_internship_evaluation_form_klinisch
+from metis.utils.fixtures.programs import create_audiology_program
 
 
 @pytest.fixture

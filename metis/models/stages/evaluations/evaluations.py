@@ -1,9 +1,10 @@
+from uuid import uuid4
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
-from uuid import uuid4
 
 from metis.models.base import BaseModel
 from metis.models.rel.remarks import RemarksMixin

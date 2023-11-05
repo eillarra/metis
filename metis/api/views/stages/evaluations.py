@@ -1,7 +1,8 @@
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 
 from metis.models import Evaluation
+
 from ...serializers import EvaluationSerializer
 from .internships import InternshipNestedModelViewSet
 

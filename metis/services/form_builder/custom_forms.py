@@ -1,5 +1,7 @@
+from collections.abc import Generator
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, field_validator
-from typing import Generator, Literal, Union
 
 
 class Translation(BaseModel):
@@ -63,7 +65,7 @@ class GridField(FormField):
 class Fieldset(BaseModel):
     model_config = ConfigDict(extra="forbid", validate_default=True)
 
-    fields: list[Union[InputField, ChoiceField, GridField]]
+    fields: list[InputField | ChoiceField | GridField]
     legend: Translation | None = None
     description: Translation | None = None
     rule: Rule | None = None
@@ -88,5 +90,4 @@ class CustomForm(BaseModel):
 
     def get_fields(self) -> Generator[FormField, None, None]:
         for fieldset in self.fieldsets:
-            for field in fieldset.fields:
-                yield field
+            yield from fieldset.fields
