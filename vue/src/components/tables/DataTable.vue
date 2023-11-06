@@ -110,7 +110,7 @@
       :selection="selection || 'none'"
       v-model:selected="selected"
     >
-      <template v-slot:header-selection="scope">
+      <template #header-selection="scope">
         <q-checkbox
           v-model="scope.selected"
           :disable="!selectableAmount"
@@ -120,7 +120,7 @@
           keep-color
         />
       </template>
-      <template v-slot:body-selection="scope">
+      <template #body-selection="scope">
         <q-checkbox
           v-model="scope.selected"
           :disable="scope.row._hide_selection"

@@ -15,6 +15,12 @@
           </q-item-section>
           <q-item-section>{{ $t('pending') }}</q-item-section>
         </q-item>
+        <q-item clickable @click="tab = 'documents'" :active="tab == 'documents'" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="drive_file_move_outline" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('document', 9) }}</q-item-section>
+        </q-item>
         <q-item-label header>{{ $t('configuration') }}</q-item-label>
         <q-item clickable @click="tab = 'email'" :active="tab == 'email'" active-class="bg-ugent text-white">
           <q-item-section avatar>
@@ -60,6 +66,16 @@
             :questioning="props.obj"
             :students="(objectsPendingResponse as Student[])"
           />
+        </q-tab-panel>
+        <q-tab-panel name="documents">
+          <div class="row q-col-gutter-sm q-mb-sm">
+            <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('document', 9) }}</h4>
+          </div>
+          <ul>
+            <li>
+              <a :href="`/nl/files/q/${obj.id}.pdf`" target="_blank">Antwoorden (PDF)</a>
+            </li>
+          </ul>
         </q-tab-panel>
         <q-tab-panel name="email">
           <div class="row q-col-gutter-sm q-mb-sm">

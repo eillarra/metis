@@ -10,9 +10,7 @@
       >
         <template #default>
           <div class="text-body1 q-py-xs">
-            <span v-if="questioning.form_definition.description">{{
-              questioning.form_definition.description[locale]
-            }}</span>
+            <span v-if="questioning.form_definition.task_cta">{{ questioning.form_definition.task_cta[locale] }}</span>
             <span v-else>{{ $t(`tasks.student.${questioning.type}.text`) }}</span
             ><br />
             <em>Deadline: {{ formatDate(questioning.end_at) }}</em>
@@ -49,6 +47,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios';
 import { formatDate } from '@/utils/dates';
@@ -56,6 +55,8 @@ import { formatDate } from '@/utils/dates';
 import TaskBox from './TaskBox.vue';
 import TopsForm from '@/components/custom_forms/TopsForm.vue';
 import CustomForm from '@/components/custom_forms/CustomForm.vue';
+
+const { locale } = useI18n();
 
 const props = defineProps<{
   education: EducationTiny;

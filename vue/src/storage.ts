@@ -6,6 +6,10 @@ type StorageItem = {
 };
 
 class Storage {
+  readonly ONE_MINUTE: number = 60;
+  readonly ONE_HOUR: number = 60 * this.ONE_MINUTE;
+  readonly ONE_DAY: number = 24 * this.ONE_HOUR;
+
   clear() {
     LocalStorage.clear();
   }

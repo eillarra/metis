@@ -25,9 +25,12 @@
       </li>
     </ol>
     <q-separator class="q-my-lg" />
-    Je wenst in het academiejaar {{ academicYear }} je {{ student.block.name }}-stage <strong>niet</strong> op te
+    Je wenst in het academiejaar {{ academicYear }} je {{ student.Block?.name }}-stage <strong>niet</strong> op te
     nemen.<br />Breng de stagecel hiervan op de hoogte door te mailen naar
-    <a href="mailto:stagelaw@ugent.be" target="_blank">stagelaw@ugent.be</a>.
+    <a :href="`mailto:${(education as EducationTiny).office_email}`" target="_blank">{{
+      (education as EducationTiny).office_email
+    }}</a
+    >.
   </div>
   <q-dialog v-model="dialogVisible">
     <q-layout
@@ -72,13 +75,7 @@
         <small></small>
         <div class="flex q-gutter-sm">
           <q-space />
-          <q-btn
-            @click="signText"
-            unelevated
-            color="ugent"
-            :label="$t('form.sign')"
-            :disable="!acceptanceChecked"
-          />
+          <q-btn @click="signText" unelevated color="ugent" :label="$t('form.sign')" :disable="!acceptanceChecked" />
         </div>
       </q-footer>
     </q-layout>
@@ -163,7 +160,7 @@ async function signText() {
 const replaceData = computed(() => ({
   education_name: education.value?.short_name,
   project_academic_year: academicYear.value,
-  block_name: student.value.block.name,
+  block_name: student.value.Block?.name,
   student_name: student.value.user.name,
   student_number: student.value.number,
 }));

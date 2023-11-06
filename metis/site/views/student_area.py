@@ -98,7 +98,7 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
                 self.get_student_set(request.user).get(project=project), context={"request": request}
             ).data,
             "required_texts": TextEntrySerializer(project.required_texts, many=True, context={"request": request}).data,
-            "project_place_otions": [
+            "project_place_options": [
                 {
                     "place_id": project_place.place_id,
                     "value": project_place.id,

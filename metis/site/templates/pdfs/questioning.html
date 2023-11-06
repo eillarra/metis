@@ -4,7 +4,13 @@
 
 
 {% block content %}
+  <h3 class="title text-ugent">{{ questioning.form.title }}</h3>
+
   {% for response in questioning.responses.all %}
+    {% if forloop.counter > 1 %}
+      <pdf:nextpage />
+    {% endif %}
+
     {% if questioning.type == 'project_place_information' %}
       <h3 class="title">{{ response.content_object.place.name }}</h3>
       <div class="text-smaller">
@@ -12,11 +18,26 @@
         {{ response.created_at }}
       </div>
     {% endif %}
+
+    {% if questioning.type == 'student_tops' %}
+      {% with response.content_object as student %}
+        <code>
+          Tops gekozen door {{ student.user.name }} op {{ response.created_at }} via metis.ugent.be<br />
+          Laatst bijgewerkt op {{ response.updated_at }}
+        </code>
+        <pdf:spacer height="20" />
+        <h3 class="title">{{ student.user.name }}</h3>
+        <div class="text-smaller">
+          Email: &lt;<a href="mailto:{{ response.created_by.email }}" class="inherit">{{ response.created_by.email }}</a>&gt;<br />
+          Studentennummer: {{ student.number }}<br />
+        </div>
+      {% endwith %}
+    {% endif %}
+
     <pdf:spacer height="20" />
     <div class="metis__form-response">
       {{ response.data_md | marked }}
     </div>
-    <pdf:nextpage />
   {% endfor %}
 {% endblock %}
 

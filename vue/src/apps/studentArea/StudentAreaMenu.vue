@@ -21,14 +21,6 @@
           </q-item-section>
           <q-item-section>{{ $t('document', 9) }}</q-item-section>
         </q-item>
-        <q-item-label header>{{ $t('history') }}</q-item-label>
-        <!--<q-item clickable :to="{ name: 'internships' }" active-class="bg-ugent text-white">-->
-        <q-item disabled>
-          <q-item-section avatar>
-            <q-icon name="calendar_month" size="xs"></q-icon>
-          </q-item-section>
-          <q-item-section>{{ $t('internship', 9) }}</q-item-section>
-        </q-item>
         <q-item-label header>{{ $t('user_menu.account') }}</q-item-label>
         <!--<q-item clickable :to="{ name: 'contact_details' }" active-class="bg-ugent text-white">-->
         <q-item disabled>

@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 from metis.services.form_builder import validators as form_validators
@@ -75,6 +76,10 @@ class Questioning(RemarksMixin, BaseModel):
         return form_validators.validate_form_response(self.form_definition, data)
 
     @property
+    def file_url(self) -> str:
+        return reverse("questioning_file", kwargs={"questioning_id": self.id, "file_type": "pdf"})
+
+    @property
     def has_email(self) -> bool:
         return bool(self.email_subject and self.email_body)
 
@@ -85,6 +90,11 @@ class Questioning(RemarksMixin, BaseModel):
     @property
     def response_rate(self) -> float:
         return self.responses.count() / self.get_target_group_size()  # type: ignore
+
+    def get_support_data(self) -> dict:
+        if self.type == self.STUDENT_TOPS:
+            return {"project_places": self.project.project_places.select_related("place").all()}
+        return {}
 
     def get_target_group(self) -> models.QuerySet["ProjectPlace"] | models.QuerySet["Student"]:
         if self.type in {self.PROJECT_PLACE_AVAILABILITY, self.PROJECT_PLACE_INFORMATION}:

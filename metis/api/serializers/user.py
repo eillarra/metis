@@ -20,9 +20,9 @@ class AuthUserSerializer(AddressesMixin, serializers.ModelSerializer):
 
 class AuthStudentSerializer(FormResponsesMixin, serializers.ModelSerializer):
     project = ProjectTinySerializer(read_only=True)
-    block = ProgramBlockSerializer(read_only=True)
     has_signed_required_texts = serializers.BooleanField(read_only=True)
     user = AuthUserSerializer(read_only=True)
+    Block = ProgramBlockSerializer(read_only=True, source="block")
 
     class Meta:
         model = Student

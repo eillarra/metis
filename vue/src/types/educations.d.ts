@@ -19,6 +19,7 @@ interface Education extends EducationTiny {
   description: string | null;
   disciplines: Discipline[];
   office_members: UserTiny[];
+  office_email: string | null;
   configuration: EducationConfig | null;
   place_types: PlaceType[];
 }

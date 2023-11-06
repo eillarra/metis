@@ -6,7 +6,7 @@
     sort-by="name"
     :rows-per-page="10"
     in-dialog
-    :selection="questioningIsOpen ? 'multiple' : 'none'"
+    :selection="questioningIsOpen && questioning.has_email ? 'multiple' : 'none'"
     v-model:selected="selected"
   >
     <template #selected-action v-if="questioningIsOpen && questioning.has_email">

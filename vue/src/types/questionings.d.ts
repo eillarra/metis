@@ -17,5 +17,6 @@ interface Questioning extends ApiObject {
     response_rate: number;
   };
   // -----
+  has_email?: boolean;
   Period?: Period;
 }

@@ -74,9 +74,10 @@ class Fieldset(BaseModel):
 class CustomForm(BaseModel):
     model_config = ConfigDict(extra="forbid", validate_default=True)
 
-    fieldsets: list[Fieldset]
     title: Translation | None = None
+    task_cta: Translation | None = None
     description: Translation | None = None
+    fieldsets: list[Fieldset]
 
     @field_validator("fieldsets")
     def validate_fieldsets(cls, v):

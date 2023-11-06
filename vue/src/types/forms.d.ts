@@ -47,9 +47,10 @@ interface Fieldset {
 }
 
 interface CustomFormDefinition {
-  fieldsets: Fieldset[];
   title?: Translation;
+  task_cta?: Translation;
   description?: Translation;
+  fieldsets: Fieldset[];
 }
 
 type CustomFormData = Record<string, string | number | string[] | number[]>;
@@ -65,12 +66,24 @@ interface CustomFormResponse extends ApiObjectUpdated {
 
 interface TopsFormDefinition {
   title?: Translation;
+  task_cta?: Translation;
   description?: Translation;
   type: 'project_places' | 'regions';
   num_tops: number;
+  require_motivation: boolean;
+  triage_question?: Translation;
 }
 
 interface TopsForm extends ApiObjectUpdated {
   code: 'student_tops';
   definition: TopsFormDefinition;
+}
+
+interface TopsFormData {
+  tops: number[] | null;
+  motivation?: Record<number, string>;
+}
+
+interface TopsFormResponse extends CustomFormResponse {
+  data: TopsFormData;
 }
