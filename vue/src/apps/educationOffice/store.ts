@@ -333,7 +333,7 @@ export const useStore = defineStore('educationOffice', () => {
           fetchStudents();
           return;
         }
-        collection = students.value.find((row) => row.id === (obj as Student).user)?.student_set as Student[];
+        collection = students.value as StudentUser[];
         break;
       default:
         break;
