@@ -63,6 +63,12 @@ const columns = [
     align: 'center',
   },
   {
+    name: 'has_email',
+    field: 'has_email',
+    label: t('field.email'),
+    align: 'center',
+  },
+  {
     name: 'progress_responses',
     field: 'progress_responses',
     label: t('response', 9),
@@ -79,6 +85,7 @@ const rows = computed(() => {
       start_at: formatDate(obj.start_at),
       end_at: formatDate(obj.end_at),
       is_open: obj.is_active,
+      has_email: !!obj.email_subject && !!obj.email_body,
       progress_responses: obj.stats?.response_rate ?? 0,
     };
   });

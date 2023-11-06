@@ -211,6 +211,7 @@ export default {
       confirm_send_emails:
         'Are you sure you want to sent a reminder email? | Are you sure you want to send {count} reminder emails?',
       emails_sent: 'Reminder email sent | Reminder emails sent',
+      no_email_template: 'No automatic emails will be sent for this questioning unless you fill in the email template.',
     },
     student: {
       create: {

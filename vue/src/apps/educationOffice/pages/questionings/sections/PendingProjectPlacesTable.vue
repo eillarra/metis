@@ -9,7 +9,7 @@
     :selection="questioningIsOpen ? 'multiple' : 'none'"
     v-model:selected="selected"
   >
-    <template #selected-action v-if="questioningIsOpen">
+    <template #selected-action v-if="questioningIsOpen && questioning.has_email">
       <div class="col-6 col-md-2 ugent__create-btn">
         <q-btn
           unelevated

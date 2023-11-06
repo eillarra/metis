@@ -210,6 +210,7 @@ export default {
       confirm_send_emails:
         'Ben je zeker dat je een herinneringsmail wil versturen? | Ben je zeker dat je {count} herinneringsmails wil versturen?',
       emails_sent: 'Herinneringsmail verstuurd | Herinneringsmails verstuurd',
+      no_email_template: 'Geen automatische emails zullen verstuurd worden tenzij u een email template invult.',
     },
     student: {
       create: {

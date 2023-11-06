@@ -66,6 +66,9 @@ def schedule_questioning_emails(*, force_send: bool = False):
     }
 
     for questioning in active_questionings:
+        if not questioning.has_email:
+            continue
+
         if not force_send and not remind_deadline(now(), questioning.end_at):
             continue
 

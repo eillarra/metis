@@ -42,8 +42,8 @@ class Questioning(RemarksMixin, BaseModel):
     end_at = models.DateTimeField()
 
     form_definition = models.JSONField(default=dict)
-    email_subject = models.CharField(max_length=255)
-    email_body = models.TextField()
+    email_subject = models.CharField(max_length=255, null=True, blank=True)
+    email_body = models.TextField(null=True, blank=True)
     email_add_office_in_bcc = models.BooleanField(default=False)
 
     objects = QuestioningManager()
@@ -73,6 +73,10 @@ class Questioning(RemarksMixin, BaseModel):
         if self.type == self.STUDENT_TOPS:
             return form_validators.validate_tops_form_response(self.form_definition, data, self.project)
         return form_validators.validate_form_response(self.form_definition, data)
+
+    @property
+    def has_email(self) -> bool:
+        return bool(self.email_subject and self.email_body)
 
     @property
     def is_active(self) -> bool:
