@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v2.12.7
+ * Quasar Framework v2.13.0
  * (c) 2015-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -1653,7 +1653,7 @@
   }
 
   var installQuasar = function (parentApp, opts = {}) {
-      const $q = { version: '2.12.7' };
+      const $q = { version: '2.13.0' };
 
       if (globalConfigIsFrozen === false) {
         if (opts.config !== void 0) {
@@ -21616,7 +21616,12 @@
         ? unmaskValue(masked)
         : masked;
 
-      String(props.modelValue) !== val && emitValue(val, true);
+      if (
+        String(props.modelValue) !== val
+        && (props.modelValue !== null || val !== '')
+      ) {
+        emitValue(val, true);
+      }
     }
 
     function moveCursorForPaste (inp, start, end) {
@@ -26297,11 +26302,26 @@
         targetRef.value[ dirProps[ axis ].scroll ] = offset;
       }
 
+      let mouseEventTimer = null;
+
       function onMouseenter () {
-        hover.value = true;
+        if (mouseEventTimer !== null) {
+          clearTimeout(mouseEventTimer);
+        }
+
+        // setTimeout needed for iOS; see ticket #16210
+        mouseEventTimer = setTimeout(() => {
+          mouseEventTimer = null;
+          hover.value = true;
+        }, proxy.$q.platform.is.ios ? 50 : 0);
       }
 
       function onMouseleave () {
+        if (mouseEventTimer !== null) {
+          clearTimeout(mouseEventTimer);
+          mouseEventTimer = null;
+        }
+
         hover.value = false;
       }
 
@@ -27295,7 +27315,8 @@
       const dialogFieldFocused = vue.ref(false);
       const innerLoadingIndicator = vue.ref(false);
 
-      let inputTimer = null, innerValueCache,
+      let filterTimer = null, inputValueTimer = null,
+        innerValueCache,
         hasDialog, userInputValue, filterId = null, defaultInputValue,
         transitionShowComputed, searchBuffer, searchBufferExp;
 
@@ -27740,9 +27761,11 @@
             scrollTo(index);
 
             if (skipInputValue !== true && props.useInput === true && props.fillInput === true) {
-              setInputValue(index >= 0
-                ? getOptionLabel.value(props.options[ index ])
-                : defaultInputValue
+              setInputValue(
+                index >= 0
+                  ? getOptionLabel.value(props.options[ index ])
+                  : defaultInputValue,
+                true
               );
             }
           }
@@ -27803,9 +27826,13 @@
 
         e.target.value = '';
 
-        if (inputTimer !== null) {
-          clearTimeout(inputTimer);
-          inputTimer = null;
+        if (filterTimer !== null) {
+          clearTimeout(filterTimer);
+          filterTimer = null;
+        }
+        if (inputValueTimer !== null) {
+          clearTimeout(inputValueTimer);
+          inputValueTimer = null;
         }
 
         resetInputValue();
@@ -27896,6 +27923,10 @@
         // backspace
         if (
           e.keyCode === 8
+          && (
+            props.useChips === true
+            || props.clearable === true
+          )
           && props.hideSelected !== true
           && inputValue.value.length === 0
         ) {
@@ -27990,7 +28021,7 @@
               scrollTo(index);
 
               if (index >= 0 && props.useInput === true && props.fillInput === true) {
-                setInputValue(getOptionLabel.value(props.options[ index ]));
+                setInputValue(getOptionLabel.value(props.options[ index ]), true);
               }
             });
           }
@@ -28176,9 +28207,13 @@
       }
 
       function onInput (e) {
-        if (inputTimer !== null) {
-          clearTimeout(inputTimer);
-          inputTimer = null;
+        if (filterTimer !== null) {
+          clearTimeout(filterTimer);
+          filterTimer = null;
+        }
+        if (inputValueTimer !== null) {
+          clearTimeout(inputValueTimer);
+          inputValueTimer = null;
         }
 
         if (e && e.target && e.target.qComposing === true) {
@@ -28199,17 +28234,26 @@
         }
 
         if (props.onFilter !== void 0) {
-          inputTimer = setTimeout(() => {
-            inputTimer = null;
+          filterTimer = setTimeout(() => {
+            filterTimer = null;
             filter(inputValue.value);
           }, props.inputDebounce);
         }
       }
 
-      function setInputValue (val) {
+      function setInputValue (val, emitImmediately) {
         if (inputValue.value !== val) {
           inputValue.value = val;
-          emit('inputValue', val);
+
+          if (emitImmediately === true || props.inputDebounce === 0 || props.inputDebounce === '0') {
+            emit('inputValue', val);
+          }
+          else {
+            inputValueTimer = setTimeout(() => {
+              inputValueTimer = null;
+              emit('inputValue', val);
+            }, props.inputDebounce);
+          }
         }
       }
 
@@ -28217,7 +28261,7 @@
         userInputValue = internal !== true;
 
         if (props.useInput === true) {
-          setInputValue(val);
+          setInputValue(val, true);
 
           if (noFiltering === true || internal !== true) {
             defaultInputValue = val;
@@ -28570,7 +28614,8 @@
       updatePreState();
 
       vue.onBeforeUnmount(() => {
-        inputTimer !== null && clearTimeout(inputTimer);
+        filterTimer !== null && clearTimeout(filterTimer);
+        inputValueTimer !== null && clearTimeout(inputValueTimer);
       });
 
       // expose public methods
@@ -31894,6 +31939,9 @@
                 A = val(a),
                 B = val(b);
 
+              if (col.rawSort !== void 0) {
+                return col.rawSort(A, B, a, b) * dir
+              }
               if (A === null || A === void 0) {
                 return -1 * dir
               }
@@ -31901,6 +31949,8 @@
                 return 1 * dir
               }
               if (col.sort !== void 0) {
+                // gets called without rows that have null/undefined as value
+                // due to the above two statements
                 return col.sort(A, B, a, b) * dir
               }
               if (isNumber(A) === true && isNumber(B) === true) {
@@ -34255,23 +34305,36 @@
         }
       }
 
+      function goToViewWhenHasModel (newView) {
+        const model = props.modelValue;
+        if (
+          view.value !== newView
+          && model !== void 0
+          && model !== null
+          && model !== ''
+          && typeof model !== 'string'
+        ) {
+          view.value = newView;
+        }
+      }
+
       function verifyAndUpdate () {
         if (hourInSelection.value !== null && hourInSelection.value(innerModel.value.hour) !== true) {
           innerModel.value = __splitDate();
-          view.value = 'hour';
+          goToViewWhenHasModel('hour');
           return
         }
 
         if (minuteInSelection.value !== null && minuteInSelection.value(innerModel.value.minute) !== true) {
           innerModel.value.minute = null;
           innerModel.value.second = null;
-          view.value = 'minute';
+          goToViewWhenHasModel('minute');
           return
         }
 
         if (props.withSeconds === true && secondInSelection.value !== null && secondInSelection.value(innerModel.value.second) !== true) {
           innerModel.value.second = null;
-          view.value = 'second';
+          goToViewWhenHasModel('second');
           return
         }
 
@@ -35157,6 +35220,8 @@
               + (m.selected === true ? ' q-tree__node--selected' : '')
               + (m.disabled === true ? ' q-tree__node--disabled' : ''),
             tabindex: m.link === true ? 0 : -1,
+            ariaExpanded: children.length > 0 ? m.expanded : null,
+            role: 'treeitem',
             onClick: (e) => {
               onClick(node, m, e);
             },
@@ -35230,7 +35295,8 @@
                           body,
                           vue.h('div', {
                             class: 'q-tree__children'
-                              + (m.disabled === true ? ' q-tree__node--disabled' : '')
+                              + (m.disabled === true ? ' q-tree__node--disabled' : ''),
+                            role: 'group'
                           }, children)
                         ])
                         : null
@@ -35248,7 +35314,8 @@
                       body,
                       vue.h('div', {
                         class: 'q-tree__children'
-                          + (m.disabled === true ? ' q-tree__node--disabled' : '')
+                          + (m.disabled === true ? ' q-tree__node--disabled' : ''),
+                        role: 'group'
                       }, children)
                     ]),
                     [ [ vue.vShow, m.expanded ] ]
@@ -35342,7 +35409,8 @@
 
         return vue.h(
           'div', {
-            class: classes.value
+            class: classes.value,
+            role: 'tree'
           },
           children.length === 0
             ? (
@@ -40932,7 +41000,7 @@
    */
 
   var index_umd = {
-    version: '2.12.7',
+    version: '2.13.0',
     install (app, opts) {
       installQuasar(app, {
         components,
