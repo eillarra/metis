@@ -1,3 +1,4 @@
+from http import HTTPStatus as status
 from typing import TYPE_CHECKING
 
 from django.utils.decorators import method_decorator
@@ -6,10 +7,11 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from metis.models import Project, User
+from metis.models import Project, Student, User
 
 from ...permissions import IsEducationOfficeMember
 from ...serializers.stages import ProjectSerializer, StudentUserSerializer
+from ...serializers.stages.students import StudentSerializer
 from ..base import BaseModelViewSet
 from ..educations import EducationNestedModelViewSet
 
@@ -25,6 +27,20 @@ class ProjectViewSet(EducationNestedModelViewSet):
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = ProjectSerializer
+
+    @action(detail=True, methods=["post"])
+    def invite(self, request, *args, **kwargs):
+        emails = request.data.get("emails")
+        data = request.data.get("data", {})
+
+        if not emails:
+            return Response({"emails": ["Must provide emails"]}, status=status.BAD_REQUEST)
+
+        user = User.create_from_invitation(name=request.data.get("name"), emails=emails)
+        student = Student.objects.create(project=self.get_object(), user=user, created_by=self.request.user, **data)
+        self.get_object().students.add(student)
+
+        return Response(StudentSerializer(student, context={"request": request}).data, status=status.CREATED)
 
     @action(detail=True, pagination_class=None, url_path="student-users")
     @method_decorator(never_cache)

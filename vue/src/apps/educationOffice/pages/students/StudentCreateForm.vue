@@ -6,8 +6,10 @@
           {{ $t('form.student.create.search') }}
           <div class="q-gutter-sm q-mt-sm">
             <readonly-field v-if="project" :label="$t('project')" :value="project.name" class="col-12 col-md" />
-            <track-select :programs="programs" v-model="formData.track" class="col-12 col-md-2" />
-            <program-block-select :programs="programs" v-model="formData.block" class="col-12 col-md-2" />
+            <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
+              <track-select :programs="programs" v-model="formData.track" class="col-12 col-md" />
+              <program-block-select :programs="programs" v-model="formData.block" class="col-12 col-md" />
+            </div>
             <api-autocomplete
               v-model="formData.user"
               clearable
@@ -15,6 +17,7 @@
               :mapper="userMapper"
               :label="$t('student')"
             />
+            <q-input v-model="formData.number" dense :label="$t('field.student_number')" type="text" />
           </div>
           <q-stepper-navigation class="flex">
             <q-btn
@@ -39,10 +42,13 @@
           {{ $t('form.student.create.invite') }}
           <div class="q-gutter-sm q-mt-sm">
             <readonly-field v-if="project" :label="$t('project')" :value="project.name" class="col-12 col-md" />
-            <track-select :programs="programs" v-model="formData.track" class="col-12 col-md-2" />
-            <program-block-select :programs="programs" v-model="formData.block" class="col-12 col-md-2" />
+            <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
+              <track-select :programs="programs" v-model="formData.track" class="col-12 col-md" />
+              <program-block-select :programs="programs" v-model="formData.block" class="col-12 col-md" />
+            </div>
             <q-input v-model="formData.name" dense :label="$t('field.name')" type="text" />
             <q-input v-model="formData.email" dense :label="$t('field.email')" type="email" />
+            <q-input v-model="formData.number" dense :label="$t('field.student_number')" type="text" />
           </div>
         </q-step>
       </q-stepper>
@@ -53,9 +59,9 @@
         <q-space />
         <q-btn
           unelevated
-          @click="inviteStudent"
+          @click="createStudent"
           color="ugent"
-          :label="$t('form.invite')"
+          :label="$t('form.create')"
           :disable="!formData.name || !formData.email || !formData.block"
         />
       </div>
@@ -92,6 +98,7 @@ const formData = ref({
   block: null as number | null,
   name: null as string | null,
   email: null as string | null,
+  number: null as string | null,
 });
 
 function userMapper(data: ApiObject[]) {
@@ -113,6 +120,7 @@ function addStudent() {
     user_id: formData.value.user.id,
     track: formData.value.track,
     block: formData.value.block,
+    number: formData.value.number,
   };
 
   api.post(`${project.value.self}students/`, data).then((res) => {
@@ -122,7 +130,7 @@ function addStudent() {
   });
 }
 
-function inviteStudent() {
+function createStudent() {
   api
     .get('/users/', {
       params: {
@@ -138,17 +146,18 @@ function inviteStudent() {
       }
 
       const data = {
-        type: 'student',
         name: formData.value.name,
-        email: formData.value.email,
+        emails: [formData.value.email],
         data: {
           track_id: formData.value.track,
           block_id: formData.value.block,
+          number: formData.value.number,
         },
       };
 
-      api.post(`${project.value?.self}invite/`, data).then(() => {
-        notify.success(t('form.student.create.invited'));
+      api.post(`${project.value?.self}invite/`, data).then((res) => {
+        store.createObj('student', res.data);
+        notify.success(t('form.student.create.success'));
         emit('create:obj');
       });
     });

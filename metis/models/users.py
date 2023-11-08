@@ -44,6 +44,10 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
         return self.student_set.exists()  # type: ignore
 
     @classmethod
+    def bot(cls) -> "User":
+        return cls.objects.get(username="metis")
+
+    @classmethod
     def create_from_invitation(cls, name: str, emails: list[str]) -> "User":
         if not emails or not all(emails):
             raise ValueError("At least one email is required")
