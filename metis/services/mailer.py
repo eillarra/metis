@@ -50,11 +50,13 @@ def schedule_email(
 
 def schedule_template_email(
     *,
+    template: "EmailTemplate",
     from_email: str = "Metis <metis@ugent.be>",
     to: list[str],
-    template: "EmailTemplate",
+    bcc: list[str] | None = None,
     context: dict | None = None,
     log_user: Optional["User"] = None,
+    log_education: Optional["Education"] = None,
 ) -> None:
     try:
         templ = Template(template.body)
@@ -66,10 +68,11 @@ def schedule_template_email(
             to=to,
             subject=subject.render(Context(context or {})),
             text_content=text_content,
-            bcc=template.bcc,
+            bcc=template.bcc + (bcc or []),
             reply_to=template.reply_to,
             log_template=template,
             log_user=log_user,
+            log_education=log_education,
         )
 
     except Exception as e:
