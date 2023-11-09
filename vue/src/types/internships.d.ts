@@ -30,5 +30,11 @@ interface Mentor extends ApiObject {
 }
 
 interface Evaluation extends ApiObject {
+  intermediate: number;
+  name: string;
   url: string;
+  form: number;
+  // -----
+  form_definition?: EvaluationFormDefinition;
+  Form?: EvaluationForm;
 }

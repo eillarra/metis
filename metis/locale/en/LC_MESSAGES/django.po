@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-12 10:42+0200\n"
+"POT-Creation-Date: 2023-11-24 11:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,24 +28,35 @@ msgctxt "cases.Case.type"
 msgid "Interactive"
 msgstr ""
 
-#: metis/models/stages/cases/reviews.py:14
+#: metis/models/stages/cases/reviews.py:15
 msgctxt "cases.Review.status"
 msgid "New"
 msgstr ""
 
-#: metis/models/stages/cases/reviews.py:15
+#: metis/models/stages/cases/reviews.py:16
 msgctxt "cases.Review.status"
 msgid "Concept"
 msgstr ""
 
-#: metis/models/stages/cases/reviews.py:16
+#: metis/models/stages/cases/reviews.py:17
 msgctxt "cases.Review.status"
 msgid "Final"
 msgstr ""
 
-#: metis/models/stages/cases/reviews.py:17
+#: metis/models/stages/cases/reviews.py:18
 msgctxt "cases.Review.status"
 msgid "Unfinished"
+msgstr ""
+
+#: metis/models/stages/evaluations/evaluations.py:50
+msgctxt "evaluations.Evaluation.name"
+msgid "Final evaluation"
+msgstr ""
+
+#: metis/models/stages/evaluations/evaluations.py:52
+#, python-format
+msgctxt "evaluations.Evaluation.name"
+msgid "Intermediate evaluation #%(num)d"
 msgstr ""
 
 #: metis/site/templates/403.html:12
@@ -97,16 +108,16 @@ msgstr ""
 msgid "Yes, please"
 msgstr ""
 
-#: metis/site/templates/base.html:19 metis/site/templates/base.html:75
+#: metis/site/templates/base.html:19 metis/site/templates/base.html:72
 #: metis/site/templates/vue/inertia.html:19
 msgid "Ghent University"
 msgstr ""
 
-#: metis/site/templates/base.html:70
+#: metis/site/templates/base.html:67
 msgid "Version"
 msgstr ""
 
-#: metis/site/templates/base.html:75
+#: metis/site/templates/base.html:72
 msgid "Faculty of Medicine and Health Sciences"
 msgstr ""
 

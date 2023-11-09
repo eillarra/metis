@@ -25,4 +25,7 @@ interface EvaluationFormDefinition {
 
 interface EvaluationForm extends ApiObjectUpdated {
   definition: EvaluationFormDefinition;
+  period: number;
+  // -----
+  Period?: Period;
 }

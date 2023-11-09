@@ -83,7 +83,7 @@
           <timesheets-view :internship="obj" />
         </q-tab-panel>
         <q-tab-panel name="evaluations">
-          <evaluation-files :internship="obj" />
+          <evaluations-view :internship="obj" />
         </q-tab-panel>
       </q-tab-panels>
     </template>
@@ -96,7 +96,7 @@ import { computed, ref } from 'vue';
 
 import FullDialog from '@/components/FullDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
-import EvaluationFiles from '@/components/stages/EvaluationFiles.vue';
+import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from './timesheets/TimesheetsView.vue';
 

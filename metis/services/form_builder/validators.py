@@ -32,10 +32,7 @@ def fieldset_is_visible(fieldset, data: dict) -> bool:
 
 
 def validate_evaluation_form_definition(definition: dict) -> EvaluationForm:
-    """
-    Validate an evaluation form definition.
-    """
-
+    """Validate an evaluation form definition."""
     try:
         return EvaluationForm(**definition)
     except (TypeError, ValidationError) as exc:
@@ -47,10 +44,7 @@ def validate_evaluation_form_response(form_definition: dict, data: dict) -> dict
 
 
 def validate_form_definition(definition: dict) -> CustomForm:
-    """
-    Validate a form definition.
-    """
-
+    """Validate a form definition."""
     try:
         return CustomForm(**definition)
     except (TypeError, ValidationError) as exc:
@@ -58,10 +52,7 @@ def validate_form_definition(definition: dict) -> CustomForm:
 
 
 def validate_form_response(form_definition: dict, data: dict) -> dict:
-    """
-    Validate form data against a form definition.
-    """
-
+    """Validate form data against a form definition."""
     form = validate_form_definition(form_definition)
     fields = []
     field_codes = set()
@@ -128,10 +119,7 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
 
 
 def validate_tops_form_definition(definition: dict) -> TopsForm:
-    """
-    Validate a tops form definition.
-    """
-
+    """Validate a tops form definition."""
     try:
         return TopsForm(**definition)
     except (TypeError, ValidationError) as exc:
@@ -139,10 +127,7 @@ def validate_tops_form_definition(definition: dict) -> TopsForm:
 
 
 def validate_tops_form_response(form_definition: dict, data: dict, project: "Project") -> dict:
-    """
-    Validate form data against a form definition.
-    """
-
+    """Validate form data against a form definition."""
     form = validate_tops_form_definition(form_definition)
 
     if not isinstance(data, dict) or "tops" not in data:

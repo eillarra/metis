@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.core.exceptions import ValidationError
@@ -5,13 +6,20 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils.translation import pgettext_lazy
 
 from metis.models.base import BaseModel
 from metis.models.rel.remarks import RemarksMixin
 from metis.models.rel.signatures import SignaturesMixin
 
 
+if TYPE_CHECKING:
+    from metis.models.users import User
+
+
 class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
+    """An evaluation of an Internship."""
+
     internship = models.ForeignKey("metis.Internship", related_name="evaluations", on_delete=models.CASCADE)
     form = models.ForeignKey("metis.EvaluationForm", on_delete=models.PROTECT, related_name="evaluations")
     data = models.JSONField(default=dict)
@@ -24,6 +32,7 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
         unique_together = ("internship", "intermediate")
 
     def clean(self) -> None:
+        """Validates the evaluation data using the form definition."""
         if self.intermediate > self.form.definition["intermediate_evaluations"]:
             raise ValidationError("Intermediate evaluation number is too high.")
         self.data = self.form.clean_response_data(self.data)
@@ -31,18 +40,34 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
 
     @property
     def is_final(self) -> bool:
+        """Returns whether this is the final evaluation."""
         return self.intermediate == 0
 
-    def can_be_viewed_by(self, user) -> bool:
-        # TODO: fix how permissions are checked
+    @property
+    def name(self) -> str:
+        """Returns the evaluation name (type)."""
+        return (
+            pgettext_lazy("evaluations.Evaluation.name", "Final evaluation")
+            if self.is_final
+            else pgettext_lazy("evaluations.Evaluation.name", "Intermediate evaluation #%(num)d")
+            % {"num": self.intermediate}
+        )
+
+    def can_be_viewed_by(self, user: "User") -> bool:
+        """Returns whether the user can view this evaluation.
+
+        TODO: fix how permissions are checked
+        """
         return self.internship.student.user == user or self.internship.project.can_be_managed_by(user)
 
     def get_absolute_url(self) -> str:
+        """Returns the absolute URL of the evaluation PDF."""
         return reverse("evaluation_pdf", kwargs={"uuid": self.uuid})
 
 
 @receiver(post_save, sender=Evaluation)
 def evaluation_post_save(sender, instance, created, *args, **kwargs):
+    """Schedule a notification email when an evaluation is created."""
     if created:
         from metis.services.mailer import schedule_evaluation_notification
 

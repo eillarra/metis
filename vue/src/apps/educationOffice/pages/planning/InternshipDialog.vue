@@ -79,7 +79,7 @@
           <timesheets-view :internship="obj" />
         </q-tab-panel>
         <q-tab-panel name="evaluations">
-          <evaluation-files :internship="obj" />
+          <evaluations-view :internship="obj" />
         </q-tab-panel>
         <q-tab-panel name="remarks">
           <remarks-view :api-endpoints="remarkEndpoints" />
@@ -117,7 +117,7 @@ import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
-import EvaluationFiles from '@/components/stages/EvaluationFiles.vue';
+import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';

@@ -7,12 +7,7 @@
 {% block content %}
   {% for evaluation in evaluations %}
     <code>
-      {% if evaluation.is_final %}
-        Finale evaluatie
-      {% else %}
-        Tussentijdse evaluatie #{{ evaluation.intermediate }}
-      {% endif %}
-      ingevuld door {{ evaluation.created_by.name }}<br>
+      {{ evaluation.name }} ingevuld door {{ evaluation.created_by.name }}<br>
       op {{ evaluation.created_at }} via metis.ugent.be
     </code>
     <pdf:spacer height="20" />
@@ -52,7 +47,7 @@
           </tbody>
           <tfoot>
             <tr class="bg-light">
-              <td colspan="2" class="q-pl-sm"><strong>Algemeen</strong></td>
+              <td colspan="2" class="q-pl-sm"><strong>Deelscore</strong></td>
               {% for grade in evaluation.form.definition.grades %}
                 <td class="text-center">
                   {% if section_answers.grade == grade.value %}<h5 class="text-big q-ma-none">x</h5>
@@ -68,6 +63,44 @@
         {% endif %}
       {% endwith %}
     {% endfor %}
+    <pdf:spacer height="20" />
+    <h5>Algemene opmerkingen</h5>
+    {{ evaluation.data.remarks__final|marked }}
+    <h5>Algemene beoordeling</h5>
+    <!-- tmp solution until we refactor scores, we hardcode 1, 2, 3, 4, 5, 5.5, 6, 7, 8, 8.5, 9 -->
+    {% if evaluation.data.grade__final == 1 %}
+      <h5 class="text-big q-ma-none">Onvoldoende</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 2 %}
+      <h5 class="text-big q-ma-none">Onvoldoende / Net voldoende</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 3 %}
+      <h5 class="text-big q-ma-none">Net voldoende</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 4 %}
+      <h5 class="text-big q-ma-none">Net voldoende / Voldoende</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 5 %}
+      <h5 class="text-big q-ma-none">Voldoende</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 5.5 %}
+      <h5 class="text-big q-ma-none">Voldoende / Goed</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 6 %}
+      <h5 class="text-big q-ma-none">Goed</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 7 %}
+      <h5 class="text-big q-ma-none">Goed / Zeer goed</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 8 %}
+      <h5 class="text-big q-ma-none">Zeer goed</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 8.5 %}
+      <h5 class="text-big q-ma-none">Zeer goed / Uitmuntend</h5>
+    {% endif %}
+    {% if evaluation.data.grade__final == 9 %}
+      <h5 class="text-big q-ma-none">Uitmuntend</h5>
+    {% endif %}
     {% if evaluations|length > 1 %}<pdf:nextpage />{% endif %}
   {% endfor %}
 {% endblock %}

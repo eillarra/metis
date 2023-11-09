@@ -36,6 +36,11 @@
       right: 0;
       z-index: 2;
     }
+
+    .q-badge {
+      vertical-align: text-bottom;
+      padding: 2px 4px 1px;
+    }
   }
 
   .q-field,

@@ -40,6 +40,8 @@ export default {
   document: 'Document | Documents',
   email_template: 'Email template | Email templates',
   evaluation: 'Evaluation | Evaluations',
+  evaluation_intermediate: 'Intermediate evaluation | Intermediate evaluations',
+  evaluation_final: 'Final evaluation | Final evaluations',
   history: 'History',
   internship: 'Internship | Internships',
   internship_status: {

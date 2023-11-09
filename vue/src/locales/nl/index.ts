@@ -39,6 +39,8 @@ export default {
   document: 'Document | Documenten',
   email_template: 'E-mail template | E-mail templates',
   evaluation: 'Evaluatie | Evaluaties',
+  evaluation_intermediate: 'Tussentijdse evaluatie | Tussentijdse evaluaties',
+  evaluation_final: 'Eindevaluatie | Eindevaluaties',
   history: 'Historiek',
   internship: 'Stage | Stages',
   internship_status: {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-12 10:42+0200\n"
+"POT-Creation-Date: 2023-11-24 11:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,25 +28,36 @@ msgctxt "cases.Case.type"
 msgid "Interactive"
 msgstr ""
 
-#: metis/models/stages/cases/reviews.py:14
+#: metis/models/stages/cases/reviews.py:15
 msgctxt "cases.Review.status"
 msgid "New"
 msgstr ""
 
-#: metis/models/stages/cases/reviews.py:15
+#: metis/models/stages/cases/reviews.py:16
 msgctxt "cases.Review.status"
 msgid "Concept"
 msgstr ""
 
-#: metis/models/stages/cases/reviews.py:16
+#: metis/models/stages/cases/reviews.py:17
 msgctxt "cases.Review.status"
 msgid "Final"
 msgstr ""
 
-#: metis/models/stages/cases/reviews.py:17
+#: metis/models/stages/cases/reviews.py:18
 msgctxt "cases.Review.status"
 msgid "Unfinished"
 msgstr ""
+
+#: metis/models/stages/evaluations/evaluations.py:50
+msgctxt "evaluations.Evaluation.name"
+msgid "Final evaluation"
+msgstr "Eindevaluatie"
+
+#: metis/models/stages/evaluations/evaluations.py:52
+#, python-format
+msgctxt "evaluations.Evaluation.name"
+msgid "Intermediate evaluation #%(num)d"
+msgstr "Tussentijdse evaluatie #%(num)d"
 
 #: metis/site/templates/403.html:12
 msgid "Not this time"
@@ -58,7 +69,11 @@ msgid ""
 "You are not authorized to view the page you are trying to open. Please <a "
 "href=\"mailto:%(email)s\">contact us</a> if you believe you are seeing this "
 "page incorrectly and should have access to the resource you are looking for."
-msgstr "Je bent niet geautoriseerd om de pagina die je probeert te openen te bekijken. <a href=\"mailto:%(email)s\">Neem contact met ons op</a> als je denkt dat je deze pagina onterecht ziet en toegang zou moeten hebben tot de bron die je zoekt."
+msgstr ""
+"Je bent niet geautoriseerd om de pagina die je probeert te openen te "
+"bekijken. <a href=\"mailto:%(email)s\">Neem contact met ons op</a> als je "
+"denkt dat je deze pagina onterecht ziet en toegang zou moeten hebben tot de "
+"bron die je zoekt."
 
 #: metis/site/templates/404.html:12
 msgid "Sorry, we couldn't find that page"
@@ -70,7 +85,10 @@ msgid ""
 "Did we miss something? <a href=\"mailto:%(email)s\">Contact us</a> if you "
 "think you are seeing this page incorrectly and that the source you are "
 "looking for should exist.</p>"
-msgstr "Hebben we iets gemist? <a href=\"mailto:%(email)s\">Neem contact met ons op</a> als je denkt dat je deze pagina onterecht ziet en dat de bron die je zoekt zou moeten bestaan.</p>"
+msgstr ""
+"Hebben we iets gemist? <a href=\"mailto:%(email)s\">Neem contact met ons op</"
+"a> als je denkt dat je deze pagina onterecht ziet en dat de bron die je "
+"zoekt zou moeten bestaan.</p>"
 
 #: metis/site/templates/500.html:12
 msgid "Well, this is unexpected..."
@@ -102,16 +120,16 @@ msgstr ""
 msgid "Yes, please"
 msgstr "Ja, graag"
 
-#: metis/site/templates/base.html:19 metis/site/templates/base.html:75
+#: metis/site/templates/base.html:19 metis/site/templates/base.html:72
 #: metis/site/templates/vue/inertia.html:19
 msgid "Ghent University"
 msgstr "Universiteit Gent"
 
-#: metis/site/templates/base.html:70
+#: metis/site/templates/base.html:67
 msgid "Version"
 msgstr "Versie"
 
-#: metis/site/templates/base.html:75
+#: metis/site/templates/base.html:72
 msgid "Faculty of Medicine and Health Sciences"
 msgstr "Faculteit Geneeskunde en Gezondheidswetenschappen"
 

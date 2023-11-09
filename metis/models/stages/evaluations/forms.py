@@ -6,6 +6,8 @@ from metis.services.form_builder import validators as form_validators
 
 
 class EvaluationForm(BaseModel):
+    """A form that can be used to evaluate an Internship."""
+
     project = models.ForeignKey("metis.Project", related_name="evaluation_forms", on_delete=models.CASCADE)
     period = models.ForeignKey(
         "metis.Period", related_name="evaluation_forms", on_delete=models.CASCADE, null=True, blank=True
@@ -20,12 +22,13 @@ class EvaluationForm(BaseModel):
     email_add_office_in_bcc = models.BooleanField(default=False)
     version = models.PositiveSmallIntegerField(default=1)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_project_evaluation_forms"
         unique_together = ("project", "period", "discipline", "version")
         ordering = ["project", "-version"]
 
     def clean(self) -> None:
+        """Validate the form definition."""
         try:
             form_validators.validate_evaluation_form_definition(self.form_definition)
         except ValueError as exc:
@@ -33,11 +36,10 @@ class EvaluationForm(BaseModel):
         return super().clean()
 
     def clean_response_data(self, data: dict) -> dict:
-        """
-        Clean the response for this evaluation form.
-        """
+        """Validate the response for this evaluation form."""
         return form_validators.validate_evaluation_form_response(self.form_definition, data)
 
     @property
     def definition(self) -> dict:
+        """Return the form definition with default values filled in."""
         return form_validators.EvaluationForm(**self.form_definition).model_dump()

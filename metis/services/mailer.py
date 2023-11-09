@@ -105,9 +105,6 @@ def schedule_invitation_email(invitation_type: str, content_object: "Contact") -
 
 def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
     education = evaluation.internship.project.education
-    evaluation_type = (
-        "Finale evaluatie" if evaluation.is_final else f"Tussentijdse evaluatie #{evaluation.intermediate}"
-    )
     subject = "[Metis] Nieuwe evaluatie ontvangen"
     body = dedent(
         f"""
@@ -117,7 +114,7 @@ def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
 
         Je kan deze bekijken op <https://metis.ugent.be/nl/stages/{education.code}/>
 
-        - **{evaluation_type}**
+        - **{evaluation.name}**
         - Opgeslagen door: {evaluation.created_by.name}
         - Opgeslagen op: {date_filter(evaluation.created_at, 'DATETIME_FORMAT')}
         """

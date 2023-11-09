@@ -5,7 +5,10 @@
         <p class="q-pa-lg">{{ triageQuestion }}</p>
         <q-option-group
           v-model="mutableTriage"
-          :options="[{ label: 'Ja', value: true }, { label: 'Nee', value: false }]"
+          :options="[
+            { label: 'Ja', value: true },
+            { label: 'Nee', value: false },
+          ]"
           color="ugent"
           dense
           inline
