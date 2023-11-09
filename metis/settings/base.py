@@ -71,7 +71,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "dnt.middleware.DoNotTrackMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",

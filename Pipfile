@@ -7,14 +7,12 @@ name = "pypi"
 python_version = "3.11"
 
 [packages]
-bcrypt = "*"
-django = "*"
+django = {extras = ["bcrypt"], version = "*"}
 djangorestframework = "*"
 django-allauth = "*"
 django-compressor = "*"
 django-cors-headers = "*"
 django-countries = "*"
-django-dnt = "*"
 django-ical = "*"
 django-libsass = "*"
 django-modeltranslation = "*"
@@ -41,7 +39,7 @@ sentry-sdk = {extras = ["django"], version = "*"}
 tzdata = "*"
 uritemplate = "*"
 whitenoise = "*"
-xhtml2pdf = "*"
+xhtml2pdf = "==0.2.11"
 
 [dev-packages]
 django-debug-toolbar = "*"
@@ -51,5 +49,6 @@ phonenumbers = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-django = "*"
+responses = "*"
 ruff = "*"
 sqlalchemy = "*"
