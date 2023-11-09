@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
 
-from metis.services.cryptography import EncryptedTextField
+from metis.utils.cryptography import EncryptedTextField
 
 from ..base import NonEditableMixin
 

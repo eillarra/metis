@@ -7,15 +7,30 @@ from allauth.socialaccount.models import SocialApp
 
 
 class GraphToken(NamedTuple):
+    """Represents an access token for the Microsoft Graph API.
+
+    Attributes:
+        token_type: The type of the access token.
+        access_token: The access token string.
+        expires_at: The datetime at which the token expires.
+    """
+
     token_type: str
     access_token: str
     expires_at: datetime.datetime
 
     def has_expired(self) -> bool:
+        """Checks if the token has expired.
+
+        Returns:
+            A boolean indicating whether the token has expired.
+        """
         return self.expires_at < datetime.datetime.now()
 
 
 class GraphAPI:
+    """A class for interacting with the Microsoft Graph API."""
+
     def __init__(self) -> None:
         try:
             app = SocialApp.objects.get(provider="ugent")
@@ -35,10 +50,10 @@ class GraphAPI:
         self.session.close()
 
     def _get_token(self) -> GraphToken:
-        """
-        Gets an access token for the Microsoft Graph API.
+        """Gets an access token for the Microsoft Graph API.
 
-        :return: A GraphToken object containing the access token and token type.
+        Returns:
+            A GraphToken object containing the access token and token type.
         """
         if self._token and not self._token.has_expired():
             return self._token
@@ -67,11 +82,13 @@ class GraphAPI:
         raise NotImplementedError
 
     def find_user_by_email(self, email: str) -> tuple[str | None, bool]:
-        """
-        Finds a user in Azure AD by their email address.
+        """Finds a user in Azure AD by their email address.
 
-        :param str email: The email address of the user to find.
-        :return: A tuple containing the user's id and status (enabled), or None if the user was not found.
+        Args:
+            email: The email address of the user to find.
+
+        Returns:
+            A tuple containing the user's id and status (enabled), or (None, False) if the user was not found.
         """
         token = self._get_token()
         response = self.session.get(
@@ -89,12 +106,14 @@ class GraphAPI:
         )
 
     def register_email(self, email: str, *, send_invitation: bool = False) -> tuple[bool, str, bool]:
-        """
-        Registers a new email address and (optionally) sends an invitation to join the Metis platform.
+        """Registers a new email address and (optionally) sends an invitation to join the Metis platform.
 
-        :param str email: The email address to register.
-        :param bool send_invitation: Whether or not to send an invitation email. Defaults to False.
-        :return: A tuple containing a bool indicating success or failure, a user id, and account enabled status.
+        Args:
+            email: The email address to register.
+            send_invitation: Whether or not to send an invitation email. Defaults to False.
+
+        Returns:
+            A tuple containing a bool indicating success or failure, a user id, and account enabled status.
         """
         existing_user_id, enabled = self.find_user_by_email(email)
         if existing_user_id:

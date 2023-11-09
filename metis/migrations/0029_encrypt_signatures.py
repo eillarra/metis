@@ -2,7 +2,7 @@
 
 from django.db import migrations
 
-import metis.services.cryptography
+import metis.utils.cryptography
 
 
 def encrypt_existing_signatures(apps, schema_editor):
@@ -12,7 +12,7 @@ def encrypt_existing_signatures(apps, schema_editor):
     updates = []
 
     for signature in Signature.objects.all():
-        signature.signed_text = metis.services.cryptography.encrypt(signature.signed_text)
+        signature.signed_text = metis.utils.cryptography.encrypt(signature.signed_text)
         updates.append(signature)
 
     Signature.objects.bulk_update(updates, ["signed_text"])
@@ -30,6 +30,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="signature",
             name="signed_text",
-            field=metis.services.cryptography.EncryptedTextField(),
+            field=metis.utils.cryptography.EncryptedTextField(),
         ),
     ]
