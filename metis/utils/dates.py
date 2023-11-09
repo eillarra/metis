@@ -38,26 +38,26 @@ def remind_deadline(moment: datetime, deadline: datetime, remind_before: list[in
     Args:
         moment: The moment to check.
         deadline: The deadline to check.
-        remind_before: The number of days before the deadline to remind. Defaults to [0, 1, 3, 7].
+        remind_before: The number of days before the deadline to remind. Defaults to [0, 3, 7].
 
     Returns:
         A boolean indicating whether or not the deadline should be reminded.
     """
-    if moment > deadline:
+    if moment >= deadline:
         return False
 
     if remind_before is None:
-        remind_before = [0, 1, 3, 7]
+        remind_before = [0, 3, 7]
 
     remind_before.sort(reverse=True)
     date = moment.date()
     deadline_date = deadline.date()
 
-    if (deadline_date - date).days in [0, 1]:
+    if (deadline_date - date).days == 0:
         return True
 
-    if (deadline_date - date).days in remind_before:
-        return not is_weekend(date) and not is_holiday(date)
+    if (deadline_date - date).days in remind_before and not (is_weekend(date) or is_holiday(date)):
+        return True
 
     return False
 
@@ -86,9 +86,6 @@ def get_time_difference(time1: time, time2: time) -> time:
     Returns:
         The time difference between the two times.
     """
-    if time1 > time2:
-        time1, time2 = time2, time1
-
     diff = datetime.combine(date.today(), time2) - datetime.combine(date.today(), time1)
     return time(diff.seconds // 3600, (diff.seconds // 60) % 60)
 

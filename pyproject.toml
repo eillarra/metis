@@ -18,6 +18,7 @@ addopts = "--cov=metis --cov-report=html"
 markers = [
   "api: mark a test as an `api` test",
   "site: mark a test as an `site` test",
+  "unit: mark a test as an `unit` test",
 ]
 DJANGO_SETTINGS_MODULE = "metis.settings.test"
 

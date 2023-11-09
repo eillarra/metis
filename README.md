@@ -1,6 +1,6 @@
 # METIS
 
-[![github-tests-badge]][github-tests]
+[![github-tests-py-badge]][github-tests-py]
 [![codecov-badge]][codecov]
 [![license-badge]](LICENSE)
 
@@ -65,8 +65,8 @@ yarn dev
 
 [codecov]: https://app.codecov.io/gh/eillarra/metis
 [codecov-badge]: https://codecov.io/gh/eillarra/metis/branch/main/graph/badge.svg?token=xZLoEWNzgu
-[github-tests]: https://github.com/eillarra/metis/actions?query=workflow%3Atests
-[github-tests-badge]: https://github.com/eillarra/metis/actions/workflows/tests.yml/badge.svg?branch=main
+[github-tests-py]: https://github.com/eillarra/metis/actions?query=workflow%3Atests-py
+[github-tests-py-badge]: https://github.com/eillarra/metis/actions/workflows/tests_py.yml/badge.svg?branch=main
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 
 [django]: https://www.djangoproject.com/
