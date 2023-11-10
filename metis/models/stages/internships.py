@@ -118,7 +118,9 @@ class Internship(RemarksMixin, BaseModel):
     track = models.ForeignKey("metis.Track", related_name="internships", null=True, on_delete=models.SET_NULL)
 
     student = models.ForeignKey("metis.Student", related_name="internships", null=True, on_delete=models.PROTECT)
-    project_place = models.ForeignKey("metis.ProjectPlace", related_name="internships", on_delete=models.PROTECT)
+    project_place = models.ForeignKey(
+        "metis.ProjectPlace", related_name="internships", null=True, on_delete=models.PROTECT
+    )
     start_date = models.DateField()
     end_date = models.DateField()
     is_approved = models.BooleanField(default=False)
@@ -133,6 +135,7 @@ class Internship(RemarksMixin, BaseModel):
         """Validate the internship data.
 
         Things to check:
+        - only if status is `preplanning`, the place can be None  # TODO
         - the place is one of the places available for the project
         - the selected student is part of the selected project
         - the selected period is part of the selected project
@@ -151,6 +154,8 @@ class Internship(RemarksMixin, BaseModel):
             raise ValidationError("The chosen program internship is not part of the chosen track.")
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError("The chosen start date is after the chosen end date.")
+        if not self.place and self.status != self.PREPLANNING:
+            raise ValidationError("A place is required if the internship is not in preplanning status.")
 
         validate_discipline_choice(self)
         return super().clean()

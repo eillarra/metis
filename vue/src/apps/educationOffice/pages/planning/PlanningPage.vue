@@ -33,7 +33,7 @@
       :bg-color="selectedDiscipline !== null ? 'blue-1' : 'white'"
     />
     <track-select as-filter v-model="selectedTrack" :programs="programs" class="col-6 col-md-2" />
-    <!--<date-range-filter v-model="selectedDateRange" class="col-6 col-md-2" />-->
+    <date-range-filter v-model="selectedDateRange" class="col-6 col-md-2" />
     <q-btn-toggle
       v-show="false"
       v-model="showTable"
@@ -63,7 +63,7 @@ import { storeToRefs } from 'pinia';
 
 import { useStore } from '../../store.js';
 
-// import DateRangeFilter from '@/components/DateRangeFilter.vue';
+import DateRangeFilter from '@/components/DateRangeFilter.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
 import TrackSelect from '../../components/TrackSelect.vue';
 import InternshipsCalendar from './InternshipsCalendar.vue';
@@ -123,11 +123,10 @@ const filteredInternships = computed<Internship[]>(() => {
       if (!selectedDateRange.value) return true;
 
       const start = new Date(obj.start_date);
-      const end = new Date(obj.end_date);
       const filterStart = new Date(selectedDateRange.value.from);
       const filterEnd = new Date(selectedDateRange.value.to);
 
-      return start.getTime() >= filterStart.getTime() && end.getTime() <= filterEnd.getTime();
+      return start.getTime() >= filterStart.getTime() && start.getTime() <= filterEnd.getTime();
     });
 });
 </script>

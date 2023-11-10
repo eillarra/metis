@@ -5,7 +5,7 @@
     :query-columns="queryColumns"
     :form-component="InternshipDialog"
     :create-form-component="InternshipCreateForm"
-    sort-by="name"
+    sort-by="start_date"
     open-dialog
   />
 </template>

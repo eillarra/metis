@@ -190,7 +190,7 @@ export const useStore = defineStore('educationOffice', () => {
   );
 
   const internships = computed<Internship[]>(() => {
-    if (!project.value || !projectPlaces.value.length || !students.value.length) {
+    if (!project.value || !students.value.length) {
       return [];
     }
 

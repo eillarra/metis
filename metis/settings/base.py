@@ -85,6 +85,8 @@ WSGI_APPLICATION = "metis.wsgi.application"
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 db = urlparse(os.environ.get("DATABASE_URL"))
+sparta_db = urlparse(os.environ.get("SPARTA_DATABASE_URL"))
+
 DATABASES = {
     "default": {
         "ENGINE": "mysql.connector.django",
@@ -93,7 +95,15 @@ DATABASES = {
         "PASSWORD": unquote(db.password or ""),
         "HOST": db.hostname,
         "PORT": db.port,
-    }
+    },
+    "sparta": {
+        "ENGINE": "mysql.connector.django",
+        "NAME": sparta_db.path[1:],
+        "USER": sparta_db.username,
+        "PASSWORD": sparta_db.password,
+        "HOST": sparta_db.hostname,
+        "PORT": sparta_db.port,
+    },
 }
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
