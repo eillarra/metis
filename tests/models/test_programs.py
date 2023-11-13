@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import pytest
 from django.core.exceptions import ValidationError
 
@@ -115,6 +117,7 @@ def test_previously_covered_disciplines(
     new_internship,
     audiology_program,
     logopedics_program,
+    now,
 ):
     test_program = audiology_program if program == "audio" else logopedics_program
     project = ProjectFactory(program=test_program)
@@ -122,8 +125,9 @@ def test_previously_covered_disciplines(
     track = Track.objects.get(program=test_program, name=f"Track {track_name}") if track_name else None
     place = test_program.education.places.first()
     project_place = ProjectPlaceFactory(project=project, place=place)
+    today = now.date
 
-    for data in internships_done:
+    for idx, data in enumerate(internships_done):
         program_internship = ProgramInternship.objects.get(block__program=test_program, name=f"Internship {data[0]}")
         period = PeriodFactory(project=project, program_internship=program_internship)
         internship = InternshipFactory(
@@ -133,6 +137,7 @@ def test_previously_covered_disciplines(
             student=student,
             project_place=project_place,
             discipline=Discipline.objects.get(education=test_program.education, code=data[1]),
+            start_date=today + timedelta(days=idx * 10),
         )
         internship.clean()
         internship.save()
@@ -151,6 +156,7 @@ def test_previously_covered_disciplines(
         student=student,
         project_place=project_place,
         discipline=Discipline.objects.get(education=test_program.education, code=new_internship[1]),
+        start_date=today + timedelta(days=90),
     )
 
     assert len(new_internship.get_covered_disciplines()) == len(internships_done)
@@ -168,7 +174,7 @@ def test_previously_covered_disciplines(
     ],
 )
 def test_validate_discipline_choice(
-    program, track_name, internships_done, failing_internship, audiology_program, logopedics_program
+    program, track_name, internships_done, failing_internship, audiology_program, logopedics_program, now
 ):
     test_program = audiology_program if program == "audio" else logopedics_program
     project = ProjectFactory(program=test_program)
@@ -177,8 +183,9 @@ def test_validate_discipline_choice(
     Discipline.objects.create(education=track.program.education, code="not_a_discipline", name="None")
     place = test_program.education.places.first()
     project_place = ProjectPlaceFactory(project=project, place=place)
+    today = now.date
 
-    for data in internships_done:
+    for idx, data in enumerate(internships_done):
         program_internship = ProgramInternship.objects.get(block__program=test_program, name=f"Internship {data[0]}")
         period = PeriodFactory(project=project, program_internship=program_internship)
         internship = InternshipFactory(
@@ -188,6 +195,7 @@ def test_validate_discipline_choice(
             student=student,
             project_place=project_place,
             discipline=Discipline.objects.get(education=test_program.education, code=data[1]),
+            start_date=today + timedelta(days=idx * 10),
         )
         internship.clean()
         internship.save()
@@ -204,6 +212,7 @@ def test_validate_discipline_choice(
             student=student,
             project_place=project_place,
             discipline=Discipline.objects.get(education=test_program.education, code=failing_internship[1]),
+            start_date=today + timedelta(days=90),
         )
         new_internship.clean()
         new_internship.save()

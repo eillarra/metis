@@ -211,8 +211,7 @@ class Internship(RemarksMixin, BaseModel):
         return self.track.get_available_disciplines() if self.track else Discipline.objects.none()
 
     def get_covered_disciplines(self) -> models.QuerySet:
-        """
-        If a track exists, it returns a list of disciplines that have already been covered by this student.
+        """If a track exists, it returns a list of disciplines that have already been covered by this student.
 
         Returns:
             QuerySet: A QuerySet of Discipline objects.
@@ -222,7 +221,9 @@ class Internship(RemarksMixin, BaseModel):
 
         skip = {self.CANCELLED, self.UNSUCCESSFUL}
         past_internships = (
-            self.student.internships.exclude(pk=self.pk).exclude(status__in=skip).filter(track=self.track)
+            self.student.internships.exclude(pk=self.pk)
+            .exclude(status__in=skip)
+            .filter(track=self.track, start_date__lt=self.start_date)
         )
         return Discipline.objects.filter(internships__in=past_internships)
 

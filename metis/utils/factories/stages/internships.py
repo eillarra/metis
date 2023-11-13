@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import factory
 
 from metis.models.stages.internships import Internship
@@ -16,6 +18,8 @@ class InternshipFactory(factory.django.DjangoModelFactory):
     period = factory.SubFactory(PeriodFactory)
     student = factory.SubFactory(StudentFactory)
     project_place = factory.SubFactory(ProjectPlaceFactory)
+    start_date = factory.Faker("date_object")
+    end_date = factory.LazyAttribute(lambda o: o.start_date + timedelta(days=20))
 
     @factory.post_generation
     def validate_and_save(self, create, extracted, **kwargs):
