@@ -6,10 +6,10 @@
     sort-by="name"
     :rows-per-page="10"
     in-dialog
-    :selection="questioningIsOpen && questioning.has_email ? 'multiple' : 'none'"
+    :selection="questioningIsOpen && showActions ? 'multiple' : 'none'"
     v-model:selected="selected"
   >
-    <template #selected-action v-if="questioningIsOpen && questioning.has_email">
+    <template #selected-action v-if="questioningIsOpen && showActions">
       <div class="col-6 col-md-2 ugent__create-btn">
         <q-btn
           unelevated
@@ -45,6 +45,7 @@ const { now } = storeToRefs(useCommonStore());
 const props = defineProps<{
   questioning: Questioning;
   students: Student[];
+  showActions?: boolean;
 }>();
 
 const selected = ref([]);

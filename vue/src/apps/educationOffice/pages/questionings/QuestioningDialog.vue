@@ -27,7 +27,7 @@
             <q-icon name="mail_outline" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('email_template') }}</q-item-section>
-          <q-item-section v-if="!obj.has_email" side style="padding-left: 0">
+          <q-item-section v-if="!hasEmail" side style="padding-left: 0">
             <q-icon name="radio_button_checked" color="orange" size="12px" />
           </q-item-section>
         </q-item>
@@ -60,11 +60,13 @@
             v-if="props.obj.type.startsWith('project_place_')"
             :questioning="props.obj"
             :project-places="(objectsPendingResponse as ProjectPlace[])"
+            :show-actions="hasEmail"
           />
           <pending-students-table
             v-if="props.obj.type.startsWith('student_')"
             :questioning="props.obj"
             :students="(objectsPendingResponse as Student[])"
+            :show-actions="hasEmail"
           />
         </q-tab-panel>
         <q-tab-panel name="documents">
@@ -81,7 +83,7 @@
           <div class="row q-col-gutter-sm q-mb-sm">
             <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('email_template') }}</h4>
           </div>
-          <q-banner v-if="!obj.has_email" class="bg-yellow-2">{{ $t('form.questioning.no_email_template') }}</q-banner>
+          <q-banner v-if="!hasEmail" class="bg-yellow-2">{{ $t('form.questioning.no_email_template') }}</q-banner>
           <q-input v-model="obj.email_subject" :label="$t('field.subject')" class="q-mb-md" />
           <markdown-toast-editor v-model="obj.email_body" />
         </q-tab-panel>
@@ -125,6 +127,7 @@ const responses = ref<CustomFormResponse[]>([]);
 const tab = ref('responses');
 const obj = ref<Questioning>(props.obj);
 
+const hasEmail = computed(() => !!obj.value.email_subject && !!obj.value.email_body);
 const responseObjectIds = computed<Set<number>>(() => new Set(responses.value.map((response) => response.object_id)));
 const targetObjects = computed(() => {
   if (!props.obj) return [];
