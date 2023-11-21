@@ -11,18 +11,11 @@ The Metis api/website uses [Django][django] and the [Django REST Framework][drf]
 
 ### Application dependencies
 
-The application uses [Pipenv][pipenv] to manage Python packages. While in development, you will need to install
-all dependencies (includes packages like `debug_toolbar`):
+The application uses [Poetry][poetry] to manage application dependencies.
 
 ```bash
-pipenv install --dev
-pipenv shell
-```
-
-Update dependencies (and manually update `requirements.txt`):
-
-```bash
-pipenv update --dev && pipenv lock && pipenv requirements
+poetry lock
+poetry install --no-root
 ```
 
 ### Run the app in development mode
@@ -72,5 +65,5 @@ yarn dev
 [django]: https://www.djangoproject.com/
 [drf]: https://www.django-rest-framework.org/
 [inertia]: https://inertiajs.com/
-[pipenv]: https://docs.pipenv.org/#install-pipenv-today
+[poetry]: https://python-poetry.org/
 [vue]: https://vuejs.org/
