@@ -5,22 +5,18 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
 
-from metis.utils.cryptography import EncryptedTextField
-
 from ..base import NonEditableMixin
 
 
 class Signature(NonEditableMixin, models.Model):
-    """
-    A signature.
-    """
+    """A signature."""
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="signatures")
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
     user = models.ForeignKey("metis.User", related_name="signatures", on_delete=models.PROTECT)
-    signed_text = EncryptedTextField()
+    signed_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
 
