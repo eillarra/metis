@@ -33,7 +33,7 @@ AWS_IS_GZIPPED = True
 
 STORAGES = {
     "default": {
-        "BACKEND": "storages.backends.s3.S3Storage",
+        "BACKEND": "metis.services.s3.S3Storage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -46,9 +46,7 @@ STORAGES = {
 
 
 def before_send(event, hint):
-    """
-    Ignore some exceptions.
-    """
+    """Ignore some exceptions."""
     if "exc_info" in hint:
         errors_to_ignore = (DisallowedHost,)
         exc_type, exc_value, tb = hint["exc_info"]

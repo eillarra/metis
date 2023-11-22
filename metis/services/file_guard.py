@@ -26,7 +26,12 @@ def check_file_access(file: "models.File", user: "models.User") -> bool:
     if isinstance(file.content_object, models.Project):
         project: models.Project = file.content_object
 
-        if file.code == "stagegids":
+        if file.code and file.code.startswith("place:"):
             return models.Contact.objects.filter(place__in=project.places.all(), user=user).exists()
+
+        if file.code and file.code.startswith("student:"):
+            return models.Student.objects.filter(project=project, user=user).exists()
+
+        return project.can_be_managed_by(user)
 
     raise NotImplementedError("No access control implemented yet for this object type.")

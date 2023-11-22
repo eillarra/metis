@@ -4,7 +4,9 @@
     <div class="col"></div>
   </div>
   <ul>
-    <li v-if="stagegids">STAGEGIDS: <a :href="stagegids.url" target="_blank">Stagegids</a></li>
+    <li v-for="file in files" :key="file.id">
+      <a :href="file.url" target="_blank">{{ file.description }}</a>
+    </li>
   </ul>
 </template>
 
@@ -14,5 +16,7 @@ import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
 
-const stagegids = computed<File>(() => page.props.files.find((file: File) => file.code === 'stagegids'));
+const files = computed<RelatedFile[]>(() =>
+  ((page.props.files as RelatedFile[]) ?? []).filter((file) => file.code.startsWith('place:'))
+);
 </script>

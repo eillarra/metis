@@ -11,4 +11,6 @@ class FileSerializer(serializers.ModelSerializer):
         exclude = (
             "content_type",
             "object_id",
+            "file",
         )
+ 

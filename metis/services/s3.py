@@ -2,6 +2,14 @@ import os
 
 import boto3
 import requests
+from storages.backends.s3 import S3Storage as BaseS3Storage
+
+
+class S3Storage(BaseS3Storage):
+    def url(self, name, parameters=None, expire=None, http_method=None):
+        url = super().url(name, parameters, expire, http_method)
+        bucket_url = f'{os.environ.get("S3_ENDPOINT_URL")}/{os.environ.get("S3_BUCKET_NAME")}/'
+        return url.replace(bucket_url, "/media/")
 
 
 def get_s3_client():
