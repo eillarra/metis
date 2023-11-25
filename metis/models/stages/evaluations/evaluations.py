@@ -27,9 +27,10 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
     is_approved = models.BooleanField(default=False)
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_internship_evaluation"
         unique_together = ("internship", "intermediate")
+        ordering = ("created_at",)
 
     def clean(self) -> None:
         """Validates the evaluation data using the form definition."""
