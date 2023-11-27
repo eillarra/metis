@@ -2,6 +2,8 @@ from allauth.socialaccount.providers.microsoft.provider import MicrosoftGraphPro
 
 
 class UgentMicrosoftProvider(MicrosoftGraphProvider):
+    """UGent Microsoft provider."""
+
     id = "ugent"
     name = "UGent"
 
