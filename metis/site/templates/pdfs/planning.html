@@ -1,0 +1,62 @@
+{% extends 'pdf.html' %}
+
+{% load markdown %}
+
+
+{% block content %}
+  <h3 class="title">Planning</h3>
+
+  {{ ranks }}
+
+  <table class="text-body2">
+    <thead>
+      <tr>
+        <th class="text-left" style="width: 30%">Student</th>
+        <th class="text-left" style="width: 60%">Plaats</th>
+        <th class="text-center">Keuze</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student, project_place, rank in planning %}
+        <tr>
+          <td>{{ student.user.name }}</td>
+          <td>{{ project_place.place }}</td>
+          <td class="text-center">{{ rank }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <pdf:nextpage />
+
+  <h3 class="title">Beschikbaarheid</h3>
+  <table class="text-body2">
+    <thead>
+      <tr>
+        <th class="text-left" style="width: 70%">Plaats</th>
+        <th class="text-center">Beschikbaarheid</th>
+        <th class="text-center">Studenten</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for project_place, assigned_places, availability in full_list_of_places %}
+        {% if availability == assigned_places %}
+          <tr class="text-strong">
+        {% elif availability > 0 and assigned_places == 0 %}
+          <tr class="text-red">
+        {% else %}
+          <tr>
+        {% endif %}
+          <td>{{ project_place.place }}</td>
+          <td class="text-center">{{ availability }}</td>
+          <td class="text-center">{{ assigned_places }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
+
+{% block footer %}
+  {{ questioning.type }} - planning
+{% endblock %}

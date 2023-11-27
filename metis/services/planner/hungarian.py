@@ -7,28 +7,18 @@ def hungarian_optimizer(
     project_place_availability: dict[int, int],
     preassigned_pairs: list[tuple[int, int]] | None = None,
 ) -> list[tuple[int, int, int]]:
-    """
-    Given a list of tuples with top project place choices for several students, a list of
-    project_place availability and a list of predefined pairs, returns a list of tuples that
-    maximizes the top choices.
-
-    The function uses the Hungarian algorithm to optimize the matching of students and projects,
-    with the constraint that the predefined pairs must be included in the result.
+    """Hungarian algorithm for optimizing the matching of students and project places.
 
     Args:
-        student_tops (list[tuple[int, list[int]]]): A list of tuples where the first element is the student_id
-            and the second element the tops (project_place_ids), sorted by preference.
-        project_place_availability (dict[int, int]): A dictionary with the project_place_id as key and the
-            max availability as value.
-        predefined_pairs (list[tuple[int, int]]): A list of pairs (student_id, project_place_id) that must be
-            included in the final results.
+        student_tops: A list of tuples (student_id, top_choices) where top_choices is a list of project_place_ids
+        project_place_availability: A dictionary of project_place_id: availability pairs, where availability is the
+            max number of students that can be matched to the project place.
+        preassigned_pairs: A list of tuples (student_id, project_place_id) that must be included in the result.
 
     Returns:
-        list[tuple[int, int, int]]: A list of tuples (student_id, project_place_id, rank) that maximizes
-            the top choices, subject to the constraint that the predefined pairs are included in the result.
-            The third element shows the rank of the project place in the student's top choices.
+        An optimized list of tuples (student_id, project_place_id, rank) where rank is the rank of the project place
+        in the student's top choices, or -1 if the student was preassigned to the project place.
     """
-
     pairs = []
 
     # Create a list of students
@@ -62,7 +52,7 @@ def hungarian_optimizer(
                 if project_place_id not in project_place_availability:
                     continue
                 i = student_ids.index(student_id)
-                for j in range(project_place_ids.count(project_place_id)):
+                for j in range(project_place_availability[project_place_id]):
                     k = project_place_ids.index(project_place_id) + j
                     cost_matrix[i][k] = np.exp(rank)  # add a penalty for the rank
                     rank_matrix[i][k] = rank

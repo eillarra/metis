@@ -55,6 +55,7 @@ export default {
   other: 'Other',
   pending: 'Pending',
   period: 'Period | Periods',
+  planner: 'Planner | Planners',
   planning: 'Planning',
   profile: 'Profile | Profiles',
   program: 'Program | Programs',

@@ -54,6 +54,7 @@ export default {
   other: 'Andere',
   pending: 'In afwachting',
   period: 'Periode | Periodes',
+  planner: 'Planner | Planners',
   planning: 'Stageplanning',
   profile: 'Profiel | Profielen',
   program: "Programma | Programma's",

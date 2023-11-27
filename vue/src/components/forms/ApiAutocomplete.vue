@@ -9,10 +9,11 @@
     :hint="hint"
     input-debounce="250"
     use-input
-    hide-selected
+    :hide-selected="!multiple"
     fill-input
     @filter="search"
     :multiple="multiple"
+    :use-chips="multiple"
     :clearable="clearable"
     :placeholder="`${$q.lang.label.search}...`"
   >

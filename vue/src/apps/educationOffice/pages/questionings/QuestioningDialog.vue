@@ -21,6 +21,18 @@
           </q-item-section>
           <q-item-section>{{ $t('document', 9) }}</q-item-section>
         </q-item>
+        <q-item
+          v-if="obj.type == 'student_tops'"
+          clickable
+          @click="tab = 'planner'"
+          :active="tab == 'planner'"
+          active-class="bg-ugent text-white"
+        >
+          <q-item-section avatar>
+            <q-icon :name="iconRobot" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('planner') }}</q-item-section>
+        </q-item>
         <q-item-label header>{{ $t('configuration') }}</q-item-label>
         <q-item clickable @click="tab = 'email'" :active="tab == 'email'" active-class="bg-ugent text-white">
           <q-item-section avatar>
@@ -79,6 +91,12 @@
             </li>
           </ul>
         </q-tab-panel>
+        <q-tab-panel name="planner">
+          <div class="row q-col-gutter-sm q-mb-sm">
+            <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('planner') }}</h4>
+          </div>
+          <planner-view :questioning="obj" :students="(targetObjects as Student[])" :project-places="projectPlaces" />
+        </q-tab-panel>
         <q-tab-panel name="email">
           <div class="row q-col-gutter-sm q-mb-sm">
             <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('email_template') }}</h4>
@@ -112,8 +130,11 @@ import FullDialog from '@/components/FullDialog.vue';
 import MarkdownToastEditor from '@/components/forms/MarkdownToastEditor.vue';
 import PendingProjectPlacesTable from './sections/PendingProjectPlacesTable.vue';
 import PendingStudentsTable from './sections/PendingStudentsTable.vue';
+import PlannerView from './sections/PlannerView.vue';
 import RespondedProjectPlacesTable from './sections/RespondedProjectPlacesTable.vue';
 import RespondedStudentsTable from './sections/RespondedStudentsTable.vue';
+
+import { iconRobot } from '@/icons';
 
 const props = defineProps<{
   obj: Questioning;

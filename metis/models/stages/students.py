@@ -14,9 +14,7 @@ if TYPE_CHECKING:
 
 
 class Student(FormResponsesMixin, RemarksMixin, BaseModel):
-    """
-    A Student is a User that is linked to a Project.
-    """
+    """A Student is a User that is linked to a Project."""
 
     user = models.ForeignKey("metis.User", related_name="student_set", on_delete=models.PROTECT)
     project = models.ForeignKey("metis.Project", related_name="students", on_delete=models.PROTECT)
@@ -46,3 +44,7 @@ class Student(FormResponsesMixin, RemarksMixin, BaseModel):
     def internships(self) -> list["ProgramInternship"]:
         """TODO: does this make any sense?"""
         return self.block.internships.filter(block=self.block)
+
+    @property
+    def name(self) -> str:
+        return self.user.name
