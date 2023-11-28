@@ -228,7 +228,7 @@ class TestForOfficeMember(TestForAuthenticated):
         project.place_set.add(ProjectPlaceFactory(place=place))
         assert project.places.count() == 1
 
-        url = reverse("v1:education-place-detail", args=[place.id, project.id])
+        url = reverse("v1:education-place-detail", args=[education.id, place.id])
         response = api_client.delete(url)
         assert response.status_code == status.FORBIDDEN
         assert project.places.count() == 1
