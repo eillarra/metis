@@ -2,6 +2,7 @@ type ApiEndpoint = string;
 
 interface ApiObject {
   id: number;
+  self: ApiEndpoint;
 }
 
 interface ApiObjectUpdated {

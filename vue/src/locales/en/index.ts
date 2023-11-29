@@ -175,6 +175,7 @@ export default {
       deleted: 'Evaluation deleted',
       save: 'Save evaluation',
       saved: 'Evaluation information saved',
+      show_points: 'Show points',
     },
     internship: {
       create: {

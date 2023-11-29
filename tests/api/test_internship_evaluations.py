@@ -135,19 +135,20 @@ class TestForMentor(TestForAuthenticated):
     def _get_evaluation_create_data(self, internship):
         form = get_audio_internship_evaluation_form_klinisch()
         data = {
-            "grade": 3,
+            "global_score": "zg",
+            "global_remarks": "global remarks",
             "sections": {},
         }
 
         for section in form["sections"]:
             data["sections"][section["code"]] = {
-                "grade": 3,
-                "grades": {},
+                "score": "zg",
+                "scores": {},
                 "remarks": "test",
             }
 
             for item in section["items"]:
-                data["sections"][section["code"]]["grades"][item["value"]] = (3, None)
+                data["sections"][section["code"]]["scores"][item["value"]] = ("zg", None)
 
         return {
             "internship_id": internship.id,

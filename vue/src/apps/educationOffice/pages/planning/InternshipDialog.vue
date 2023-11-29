@@ -79,7 +79,7 @@
           <timesheets-view :internship="obj" />
         </q-tab-panel>
         <q-tab-panel name="evaluations">
-          <evaluations-view :internship="obj" />
+          <evaluations-view :internship="obj" show-points />
         </q-tab-panel>
         <q-tab-panel name="remarks">
           <remarks-view :api-endpoints="remarkEndpoints" />

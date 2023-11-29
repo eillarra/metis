@@ -43,7 +43,9 @@ from metis.services.configurator import validate_education_configuration
         },
     ],
 )
+@pytest.mark.unit
 def test_config_is_invalid(config):
+    """Test that an invalid configuration raises a ValueError."""
     with pytest.raises(ValueError):
         validate_education_configuration(config)
 
@@ -65,5 +67,7 @@ def test_config_is_invalid(config):
         },
     ],
 )
+@pytest.mark.unit
 def test_config_valid(config):
+    """Test that a valid configuration does not raise an exception."""
     validate_education_configuration(config)

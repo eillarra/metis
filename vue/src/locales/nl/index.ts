@@ -174,6 +174,7 @@ export default {
       deleted: 'Evaluatie verwijderd',
       save: 'Evaluatie opslaan',
       saved: 'Evaluatie informatie opgeslagen',
+      show_points: 'Punten tonen',
     },
     internship: {
       create: {

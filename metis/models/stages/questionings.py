@@ -3,7 +3,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
-from metis.services.form_builder import validators as form_validators
+from metis.services.form_builder.custom_forms import validate_form_definition, validate_form_response
+from metis.services.form_builder.tops import validate_tops_form_definition, validate_tops_form_response
 
 from ..base import BaseModel
 from ..rel.remarks import RemarksMixin
@@ -17,9 +18,9 @@ class QuestioningManager(models.Manager):
 
 
 class Questioning(RemarksMixin, BaseModel):
-    """
-    In a Project, questionings define the moments when students / places have to fill in a form.
-    The dates can be assigned to the whole project or to a Period (and thus to a specific Block).
+    """In a Project, questionings define the moments when students / places have to fill in a form.
+
+    The questioning can be assigned to the whole project or to a Period (and thus to a specific Block).
     """
 
     PROJECT_PLACE_AVAILABILITY = "project_place_availability"
@@ -49,10 +50,11 @@ class Questioning(RemarksMixin, BaseModel):
 
     objects = QuestioningManager()
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_project_questionings"
 
     def clean(self) -> None:
+        """Validate the data."""
         if self.period and self.period.project != self.project:
             raise ValidationError("The period must belong to the same project.")
         if not self.form_definition and self.type in self.TYPES_WITH_FORM:
@@ -60,20 +62,18 @@ class Questioning(RemarksMixin, BaseModel):
         if self.form_definition:
             try:
                 if self.type == self.STUDENT_TOPS:
-                    form_validators.validate_tops_form_definition(self.form_definition)
+                    validate_tops_form_definition(self.form_definition)
                 else:
-                    form_validators.validate_form_definition(self.form_definition)
+                    validate_form_definition(self.form_definition)
             except ValueError as exc:
                 raise ValidationError({"form_definition": str(exc)}) from exc
         return super().clean()
 
     def clean_response_data(self, data: dict) -> dict:
-        """
-        Clean the response for this form.
-        """
+        """Validate a response for this evaluation form."""
         if self.type == self.STUDENT_TOPS:
-            return form_validators.validate_tops_form_response(self.form_definition, data, self.project)
-        return form_validators.validate_form_response(self.form_definition, data)
+            return validate_tops_form_response(self.form_definition, data, self.project)
+        return validate_form_response(self.form_definition, data)
 
     @property
     def file_url(self) -> str:
@@ -81,14 +81,17 @@ class Questioning(RemarksMixin, BaseModel):
 
     @property
     def has_email(self) -> bool:
+        """Returns whether this questioning has an email template."""
         return bool(self.email_subject and self.email_body)
 
     @property
     def is_active(self) -> bool:
+        """Returns whether this questioning is active."""
         return self.start_at <= timezone.now() <= self.end_at
 
     @property
     def response_rate(self) -> float:
+        """Returns the response rate for this questioning."""
         return self.responses.count() / self.get_target_group_size()  # type: ignore
 
     def get_support_data(self) -> dict:
@@ -97,6 +100,7 @@ class Questioning(RemarksMixin, BaseModel):
         return {}
 
     def get_target_group(self) -> models.QuerySet["ProjectPlace"] | models.QuerySet["Student"]:
+        """Returns the target group for this questioning."""
         if self.type in {self.PROJECT_PLACE_AVAILABILITY, self.PROJECT_PLACE_INFORMATION}:
             return get_project_places_for_questioning(self)
         if self.type in {self.STUDENT_INFORMATION, self.STUDENT_TOPS}:
@@ -104,14 +108,12 @@ class Questioning(RemarksMixin, BaseModel):
         raise ValueError(f"Invalid type: {self.type}")
 
     def get_target_group_size(self) -> int:
+        """Returns the size of the target group for this questioning."""
         return self.get_target_group().count()
 
 
 def get_project_places_for_questioning(questioning: Questioning) -> models.QuerySet["ProjectPlace"]:
-    """
-    Returns the places that should be notified for a given questioning.
-    """
-
+    """Returns the places that should be notified for a given questioning."""
     valid_types = {Questioning.PROJECT_PLACE_AVAILABILITY, Questioning.PROJECT_PLACE_INFORMATION}
 
     if questioning.type not in valid_types:
@@ -124,10 +126,7 @@ def get_project_places_for_questioning(questioning: Questioning) -> models.Query
 
 
 def get_students_for_questioning(questioning: Questioning) -> models.QuerySet["Student"]:
-    """
-    Returns the students that should be notified for a given questioning.
-    """
-
+    """Returns the students that should be notified for a given questioning."""
     valid_types = {Questioning.STUDENT_INFORMATION, Questioning.STUDENT_TOPS}
 
     if questioning.type not in valid_types:

@@ -2,7 +2,10 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from metis.models.base import BaseModel
-from metis.services.form_builder import validators as form_validators
+from metis.services.form_builder.evaluations import (
+    validate_evaluation_form_definition,
+    validate_evaluation_form_response,
+)
 
 
 class EvaluationForm(BaseModel):
@@ -30,16 +33,16 @@ class EvaluationForm(BaseModel):
     def clean(self) -> None:
         """Validate the form definition."""
         try:
-            form_validators.validate_evaluation_form_definition(self.form_definition)
+            validate_evaluation_form_definition(self.form_definition)
         except ValueError as exc:
             raise ValidationError({"form_definition": str(exc)}) from exc
         return super().clean()
 
     def clean_response_data(self, data: dict) -> dict:
-        """Validate the response for this evaluation form."""
-        return form_validators.validate_evaluation_form_response(self.form_definition, data)
+        """Validate a response for this evaluation form."""
+        return validate_evaluation_form_response(self.form_definition, data)
 
     @property
     def definition(self) -> dict:
         """Return the form definition with default values filled in."""
-        return form_validators.EvaluationForm(**self.form_definition).model_dump()
+        return validate_evaluation_form_definition(self.form_definition).model_dump()

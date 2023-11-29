@@ -12,17 +12,20 @@ def get_audio_internship_evaluation_form_klinisch() -> dict:
     return {
         "description": description,
         "intermediate_evaluations": 1,
-        "grades":[
-            {"value": None, "label": {"nl": "n.v.t.", "en": "N/A"}},
-            {"value": 1, "label": {"nl": "Onvoldoende", "en": "Insufficient"}},
-            {"value": 3, "label": {"nl": "Net voldoende", "en": "Just sufficient"}},
-            {"value": 5, "label": {"nl": "Voldoende", "en": "Sufficient"}},
-            {"value": 6, "label": {"nl": "Goed", "en": "Good"}},
-            {"value": 8, "label": {"nl": "Zeer goed", "en": "Very good"}},
-            {"value": 9, "label": {"nl": "Uitmuntend", "en": "Excellent"}},
+        "scores":[
+            {"value": None, "label": {"nl": "n.v.t.", "en": "N/A"}, "points": None},
+            {"value": "onv", "label": {"nl": "Onvoldoende", "en": "Insufficient"}, "points": 1},
+            {"value": "onv/nv", "label": {"nl": "Onvoldoende / Net voldoende", "en": "Insufficient / Just sufficient"}, "points": 2, "only_for_global_score": True},
+            {"value": "nv", "label": {"nl": "Net voldoende", "en": "Just sufficient"}, "points": 3},
+            {"value": "nv/vol", "label": {"nl": "Net voldoende / Voldoende", "en": "Just sufficient / Sufficient"}, "points": 4, "only_for_global_score": True},
+            {"value": "vol", "label": {"nl": "Voldoende", "en": "Sufficient"}, "points": 5},
+            {"value": "vol/g", "label": {"nl": "Voldoende / Goed", "en": "Sufficient / Good"}, "points": 5.5, "only_for_global_score": True},
+            {"value": "g", "label": {"nl": "Goed", "en": "Good"}, "points": 6},
+            {"value": "g/zg", "label": {"nl": "Goed / Zeer goed", "en": "Good / Very good"}, "points": 7, "only_for_global_score": True},
+            {"value": "zg", "label": {"nl": "Zeer goed", "en": "Very good"}, "points": 8},
+            {"value": "zg/u", "label": {"nl": "Zeer goed / Uitmuntend", "en": "Very good / Excellent"}, "points": 8.5, "only_for_global_score": True},
+            {"value": "u", "label": {"nl": "Uitmuntend", "en": "Excellent"}, "points": 9},
         ],
-        "global_section_evaluation": True,
-        "global_evaluation": True,
         "sections": [
             {
                 "code": "onderzoeken",
@@ -43,7 +46,7 @@ def get_audio_internship_evaluation_form_klinisch() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "dossierstudies",
@@ -59,7 +62,7 @@ def get_audio_internship_evaluation_form_klinisch() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "verslaggeving",
@@ -75,7 +78,7 @@ def get_audio_internship_evaluation_form_klinisch() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "algemene_vaardigheden",
@@ -89,8 +92,7 @@ def get_audio_internship_evaluation_form_klinisch() -> dict:
                     {"value": "aangepast_taalgebruik", "label": {"nl": "Aangepast mondeling taalgebruik (op maat van gesprekspartner)", "en": "Adapted oral language use (tailored to interlocutor)"}},
                     {"value": "correctheid_schrijven", "label": {"nl": "Correctheid van het schrijven", "en": "Correctness of writing"}},
                 ],
-                "cross_items": [],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "sociale_vaardigheden",
@@ -110,8 +112,7 @@ def get_audio_internship_evaluation_form_klinisch() -> dict:
                     {"value": "flexibiliteit", "label": {"nl": "Flexibiliteit", "en": "Flexibility"}},
                     {"value": "deontologie", "label": {"nl": "Deontologie", "en": "Deontology"}},
                 ],
-                "cross_items": [],
-                "add_remarks": True,
+                "with_remarks": True,
             }
         ],
     }
@@ -121,17 +122,20 @@ def get_audio_internship_evaluation_form_protetisch() -> dict:
     return {
         "description": description,
         "intermediate_evaluations": 1,
-        "grades":[
-            {"value": None, "label": {"nl": "n.v.t.", "en": "N/A"}},
-            {"value": 1, "label": {"nl": "Onvoldoende", "en": "Insufficient"}},
-            {"value": 3, "label": {"nl": "Net voldoende", "en": "Just sufficient"}},
-            {"value": 5, "label": {"nl": "Voldoende", "en": "Sufficient"}},
-            {"value": 6, "label": {"nl": "Goed", "en": "Good"}},
-            {"value": 8, "label": {"nl": "Zeer goed", "en": "Very good"}},
-            {"value": 9, "label": {"nl": "Uitmuntend", "en": "Excellent"}},
+        "scores":[
+            {"value": None, "label": {"nl": "n.v.t.", "en": "N/A"}, "points": None},
+            {"value": "onv", "label": {"nl": "Onvoldoende", "en": "Insufficient"}, "points": 1},
+            {"value": "onv/nv", "label": {"nl": "Onvoldoende / Net voldoende", "en": "Insufficient / Just sufficient"}, "points": 2, "only_for_global_score": True},
+            {"value": "nv", "label": {"nl": "Net voldoende", "en": "Just sufficient"}, "points": 3},
+            {"value": "nv/vol", "label": {"nl": "Net voldoende / Voldoende", "en": "Just sufficient / Sufficient"}, "points": 4, "only_for_global_score": True},
+            {"value": "vol", "label": {"nl": "Voldoende", "en": "Sufficient"}, "points": 5},
+            {"value": "vol/g", "label": {"nl": "Voldoende / Goed", "en": "Sufficient / Good"}, "points": 5.5, "only_for_global_score": True},
+            {"value": "g", "label": {"nl": "Goed", "en": "Good"}, "points": 6},
+            {"value": "g/zg", "label": {"nl": "Goed / Zeer goed", "en": "Good / Very good"}, "points": 7, "only_for_global_score": True},
+            {"value": "zg", "label": {"nl": "Zeer goed", "en": "Very good"}, "points": 8},
+            {"value": "zg/u", "label": {"nl": "Zeer goed / Uitmuntend", "en": "Very good / Excellent"}, "points": 8.5, "only_for_global_score": True},
+            {"value": "u", "label": {"nl": "Uitmuntend", "en": "Excellent"}, "points": 9},
         ],
-        "global_section_evaluation": True,
-        "global_evaluation": True,
         "sections": [
             {
                 "code": "onderzoeken",
@@ -148,7 +152,7 @@ def get_audio_internship_evaluation_form_protetisch() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "protetisch_handelen",
@@ -166,7 +170,7 @@ def get_audio_internship_evaluation_form_protetisch() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "dossierstudies",
@@ -182,7 +186,7 @@ def get_audio_internship_evaluation_form_protetisch() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "verslaggeving",
@@ -198,7 +202,7 @@ def get_audio_internship_evaluation_form_protetisch() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "algemene_vaardigheden",
@@ -212,8 +216,7 @@ def get_audio_internship_evaluation_form_protetisch() -> dict:
                     {"value": "aangepast_taalgebruik", "label": {"nl": "Aangepast mondeling taalgebruik (op maat van gesprekspartner)", "en": "Adapted oral language use (tailored to interlocutor)"}},
                     {"value": "correctheid_schrijven", "label": {"nl": "Correctheid van het schrijven", "en": "Correctness of writing"}},
                 ],
-                "cross_items": [],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "sociale_vaardigheden",
@@ -233,8 +236,7 @@ def get_audio_internship_evaluation_form_protetisch() -> dict:
                     {"value": "flexibiliteit", "label": {"nl": "Flexibiliteit", "en": "Flexibility"}},
                     {"value": "deontologie", "label": {"nl": "Deontologie", "en": "Deontology"}},
                 ],
-                "cross_items": [],
-                "add_remarks": True,
+                "with_remarks": True,
             }
         ],
     }
@@ -244,17 +246,20 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
     return {
         "description": description,
         "intermediate_evaluations": 2,
-        "grades":[
-            {"value": None, "label": {"nl": "n.v.t.", "en": "N/A"}},
-            {"value": 1, "label": {"nl": "Onvoldoende", "en": "Insufficient"}},
-            {"value": 3, "label": {"nl": "Net voldoende", "en": "Just sufficient"}},
-            {"value": 5, "label": {"nl": "Voldoende", "en": "Sufficient"}},
-            {"value": 6, "label": {"nl": "Goed", "en": "Good"}},
-            {"value": 8, "label": {"nl": "Zeer goed", "en": "Very good"}},
-            {"value": 9, "label": {"nl": "Uitmuntend", "en": "Excellent"}},
+        "scores":[
+            {"value": None, "label": {"nl": "n.v.t.", "en": "N/A"}, "points": None},
+            {"value": "onv", "label": {"nl": "Onvoldoende", "en": "Insufficient"}, "points": 1},
+            {"value": "onv/nv", "label": {"nl": "Onvoldoende / Net voldoende", "en": "Insufficient / Just sufficient"}, "points": 2, "only_for_global_score": True},
+            {"value": "nv", "label": {"nl": "Net voldoende", "en": "Just sufficient"}, "points": 3},
+            {"value": "nv/vol", "label": {"nl": "Net voldoende / Voldoende", "en": "Just sufficient / Sufficient"}, "points": 4, "only_for_global_score": True},
+            {"value": "vol", "label": {"nl": "Voldoende", "en": "Sufficient"}, "points": 5},
+            {"value": "vol/g", "label": {"nl": "Voldoende / Goed", "en": "Sufficient / Good"}, "points": 5.5, "only_for_global_score": True},
+            {"value": "g", "label": {"nl": "Goed", "en": "Good"}, "points": 6},
+            {"value": "g/zg", "label": {"nl": "Goed / Zeer goed", "en": "Good / Very good"}, "points": 7, "only_for_global_score": True},
+            {"value": "zg", "label": {"nl": "Zeer goed", "en": "Very good"}, "points": 8},
+            {"value": "zg/u", "label": {"nl": "Zeer goed / Uitmuntend", "en": "Very good / Excellent"}, "points": 8.5, "only_for_global_score": True},
+            {"value": "u", "label": {"nl": "Uitmuntend", "en": "Excellent"}, "points": 9},
         ],
-        "global_section_evaluation": True,
-        "global_evaluation": True,
         "sections": [
             {
                 "code": "algemeen_kenis",
@@ -268,7 +273,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "dossierstudies",
@@ -283,7 +288,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "behandelingsplannen",
@@ -297,7 +302,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "verslaggeving_observaties",
@@ -312,7 +317,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "therapievoorbereiding",
@@ -326,7 +331,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "therapeutisch_handelen",
@@ -341,7 +346,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "verslaggeving_behandelingen",
@@ -355,7 +360,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "onderzoek",
@@ -370,7 +375,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "taal_spraak",
@@ -387,7 +392,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "actief", "label": {"nl": "Actief", "en": "Active"}},
                     {"value": "passief", "label": {"nl": "Pasief", "en": "Passive"}},
                 ],
-                "add_remarks": True,
+                "with_remarks": True,
             },
             {
                 "code": "sociale_vaardigheden",
@@ -408,8 +413,7 @@ def get_logo_internship_evaluation_form_ma1() -> dict:
                     {"value": "deontologie", "label": {"nl": "Deontologie", "en": "Deontology"}},
                     {"value": "accuratesse", "label": {"nl": "Accuratesse / stiptheid", "en": "Accuracy / punctuality"}},
                 ],
-                "cross_items": [],
-                "add_remarks": True,
+                "with_remarks": True,
             }
         ],
     }

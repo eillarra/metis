@@ -17,8 +17,13 @@
 </style>
 
 <template>
-  <div class="row q-col-gutter-sm q-mb-lg">
-    <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
+  <div class="row reverse q-col-gutter-lg q-mb-sm">
+    <div v-if="props.showPoints" class="col-12 col-md text-right ugent__create-btn">
+      <q-btn unelevated color="blue-1" class="text-ugent">
+        <q-toggle v-model="pointsToggle" :label="$t('form.evaluation.show_points')" class="q-pr-md" />
+      </q-btn>
+    </div>
+    <h4 class="col-12 col-md-6 q-mt-none q-mb-none">
       {{ $t('evaluation', 9) }}
     </h4>
   </div>
@@ -43,7 +48,7 @@
       <thead>
         <tr>
           <th class="text-left">
-            <h6 class="q-ma-none">{{ section.title.nl }}</h6>
+            <h6 v-if="section.title" class="q-ma-none">{{ section.title[l] }}</h6>
           </th>
           <th v-for="evaluation in evaluations" :key="evaluation.id" class="text-center">
             <span v-if="evaluation.intermediate === 0">Einde</span>
@@ -53,14 +58,14 @@
       </thead>
       <tbody>
         <tr v-for="item in section.items" :key="item.value">
-          <td>{{ item.label.nl }}</td>
+          <td>{{ item.label[l] }}</td>
           <td v-for="evaluation in evaluations" :key="evaluation.id" class="text-center dense">
-            <span v-if="evaluation.data[section.code].grades[item.value][0]">
-              {{ scoreTexts[evaluation.data[section.code].grades[item.value][0]] || '-' }}
+            <span v-if="evaluation.data.sections[section.code].scores[item.value][0]">
+              {{ scoreTexts[evaluation.data.sections[section.code].scores[item.value][0]] || '-' }}
               <q-badge
-                v-if="evaluation.data[section.code].grades[item.value][1]"
+                v-if="evaluation.data.sections[section.code].scores[item.value][1]"
                 outline
-                :label="evaluation.data[section.code].grades[item.value][1][0].toUpperCase() || '-'"
+                :label="(evaluation.data.sections[section.code].scores[item.value][1] as string)[0].toUpperCase() || '-'"
                 color="dark"
                 class="q-ml-xs"
               />
@@ -73,19 +78,20 @@
         <tr>
           <td><small>Deelscore</small></td>
           <td v-for="evaluation in evaluations" :key="evaluation.id" class="text-center dense">
-            <strong v-if="evaluation.data[section.code].grade">
-              {{ scoreTexts[evaluation.data[section.code].grade] || '-' }}
+            <strong v-if="evaluation.data.sections[section.code].score">
+              {{ scoreTexts[evaluation.data.sections[section.code].score] || '-' }}
             </strong>
             <span v-else>-</span>
           </td>
         </tr>
-        <tr>
+        <tr v-if="section.with_remarks">
           <td :colspan="1 + evaluations.length" class="force-wrap bg-grey-3 text-body2">
             <p class="q-my-sm">
               <span v-for="evaluation in evaluations" :key="evaluation.id">
                 <q-badge v-if="evaluation.intermediate === 0" outline color="dark">Einde</q-badge>
                 <q-badge v-else outline color="dark">#{{ evaluation.intermediate }}</q-badge>
-                <span class="q-ml-sm">{{ evaluation.data[section.code].remarks || '-' }}</span><br>
+                <span class="q-ml-sm">{{ evaluation.data.sections[section.code].remarks || '-' }}</span>
+                <br />
               </span>
             </p>
           </td>
@@ -106,8 +112,8 @@
         <tr>
           <td><strong>Algemene beoordeling</strong></td>
           <td v-for="evaluation in evaluations" :key="evaluation.id" class="text-center dense text-weight-bold">
-            <span v-if="evaluation.data.grade__final">
-              {{ completeGradesDict[evaluation.data.grade__final].label.nl || '-' }}
+            <span v-if="evaluation.data.global_score">
+              {{ scoreTexts[evaluation.data.global_score] || '-' }}
             </span>
             <span v-else>-</span>
           </td>
@@ -120,7 +126,8 @@
               <span v-for="evaluation in evaluations" :key="evaluation.id">
                 <q-badge v-if="evaluation.intermediate === 0" outline color="dark">Einde</q-badge>
                 <q-badge v-else outline color="dark">#{{ evaluation.intermediate }}</q-badge>
-                <span class="q-ml-sm">{{ evaluation.data.remarks__final || '-'}}</span><br>
+                <span class="q-ml-sm">{{ evaluation.data.global_remarks || '-' }}</span>
+                <br />
               </span>
             </p>
           </td>
@@ -132,22 +139,28 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios.ts';
 
+const { locale } = useI18n();
+
 const props = defineProps<{
   internship: Internship;
+  showPoints?: boolean;
 }>();
 
+const l = ref<'en' | 'nl'>(locale.value as 'en' | 'nl');
 const evaluations = ref<Evaluation[]>([]);
 const formDefinition = computed<EvaluationFormDefinition | null>(() =>
   evaluations.value.length ? (evaluations.value[0].form_definition as EvaluationFormDefinition) : null
 );
+const pointsToggle = ref<boolean>(false);
 
 const scoreTexts = computed<Record<number, string>>(() => {
   var texts: Record<number, string> = {};
-  formDefinition.value?.grades.forEach((grade) => {
-    texts[grade.value] = grade.label.nl;
+  formDefinition.value?.scores.forEach((score: EvaluationScore) => {
+    texts[score.value] = pointsToggle.value ? `${score.points}` || '-' : score.label[l.value];
   });
   return texts;
 });
@@ -160,46 +173,5 @@ function fetchEvaluations() {
 
 onMounted(() => {
   fetchEvaluations();
-});
-
-/* this function adds subgrades between grades with value >, where value is something in between (one decimal) and label is always '/'. it generates a new list where we have grades and subgrades */
-/* TODO: this is repeated so we should move it to a function */
-const completeGrades = computed<Record<number | null, number>>(() => {
-  const grades = formDefinition.value?.grades;
-
-  // Initialize the new list of grades
-  let newGrades: typeof grades = [];
-
-  // Iterate over the grades
-  for (let i = 0; i < grades.length; i++) {
-    // If the current grade is not null, add it to the new list
-    if (grades[i].value !== null) {
-      newGrades.push(grades[i]);
-    }
-
-    // If it's not the last grade and both current and next grades are not null, add a new grade to the list
-    if (i < grades.length - 1 && grades[i].value !== null && grades[i + 1].value !== null) {
-      let prevGrade = grades[i];
-      let nextGrade = grades[i + 1];
-      let newGrade = {
-        label: {
-          en: prevGrade.label.en + ' / ' + nextGrade.label.en,
-          nl: prevGrade.label.nl + ' / ' + nextGrade.label.nl,
-        },
-        value: (grades[i].value + nextGrade.value) / 2,
-      };
-      newGrades.push(newGrade);
-    }
-  }
-
-  return newGrades;
-});
-
-const completeGradesDict = computed<Record<number | null, any>>(() => {
-  let dict: Record<number | null, number> = {};
-  completeGrades.value.forEach((grade) => {
-    dict[grade.value] = grade;
-  });
-  return dict;
 });
 </script>
