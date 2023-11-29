@@ -6,5 +6,7 @@ from .base import BaseModelAdmin
 
 
 @admin.register(EmailTemplate)
-class FacultyAdmin(BaseModelAdmin):
+class EmailTemplateAdmin(BaseModelAdmin):
+    """EmailTemplate model representation on admin."""
+
     list_filter = ("education",)

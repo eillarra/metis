@@ -2,8 +2,8 @@ from django.contrib import admin
 
 
 class BaseModelAdmin(admin.ModelAdmin):
-    """
-    Base model admin class.
+    """Base model admin class.
+
     All models that extend the BaseModel class should extend this class in the admin area to get user info populated.
     """
 

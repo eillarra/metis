@@ -13,4 +13,3 @@ class FileSerializer(serializers.ModelSerializer):
             "object_id",
             "file",
         )
- 

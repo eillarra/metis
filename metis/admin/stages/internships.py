@@ -10,7 +10,9 @@ from ..rel.remarks import RemarksInline
 
 @admin.register(Internship)
 class InternshipAdmin(BaseModelAdmin):
-    # date_hierarchy = "start_date"
+    """Internship model representation on admin."""
+
+    date_hierarchy = "start_date"
     list_display = ("id", "project", "student_name", "track", "period", "place", "discipline")
     list_filter = (
         ("project", admin.RelatedOnlyFieldListFilter),
@@ -22,6 +24,7 @@ class InternshipAdmin(BaseModelAdmin):
     inlines = (RemarksInline,)
 
     def get_queryset(self, request):
+        """Return queryset with prefetched related models."""
         return (
             super()
             .get_queryset(request)
@@ -29,8 +32,9 @@ class InternshipAdmin(BaseModelAdmin):
             .prefetch_related("project", "track", "period", "project_place__place", "discipline")
         )
 
-    def student_name(self, obj):
+    def student_name(self, obj) -> str:
+        """Return link to User admin."""
         url = reverse("admin:metis_user_changelist")
         if obj.student:
-            return format_html(f'<a href="{url}{obj.student_id}/" target="admin_user">{obj.student.user.name}</a>')
+            return format_html(f'<a href="{url}{obj.student.user_id}/" target="admin_user">{obj.student.user.name}</a>')
         return "-"
