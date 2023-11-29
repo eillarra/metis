@@ -23,6 +23,9 @@ class Signature(NonEditableMixin, models.Model):
     class Meta:
         db_table = "metis_log_signature"
 
+    def __str__(self) -> str:
+        return str(self.uuid)
+
     def get_absolute_url(self):
         return reverse("signature_pdf", kwargs={"uuid": self.uuid})
 

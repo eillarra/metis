@@ -25,6 +25,9 @@ class PhoneNumber(models.Model):
     class Meta:
         db_table = "metis_rel_phone_number"
 
+    def __str__(self) -> str:
+        return self.number
+
 
 class PhoneNumbersMixin(models.Model):
     phone_numbers = GenericRelation(PhoneNumber)

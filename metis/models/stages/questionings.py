@@ -44,8 +44,8 @@ class Questioning(RemarksMixin, BaseModel):
     end_at = models.DateTimeField()
 
     form_definition = models.JSONField(default=dict)
-    email_subject = models.CharField(max_length=255, null=True, blank=True)
-    email_body = models.TextField(null=True, blank=True)
+    email_subject = models.CharField(max_length=255, default="", blank=True)
+    email_body = models.TextField(default="", blank=True)
     email_add_office_in_bcc = models.BooleanField(default=False)
 
     objects = QuestioningManager()

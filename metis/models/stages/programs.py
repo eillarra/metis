@@ -116,3 +116,6 @@ class TrackInternship(models.Model):
     class Meta:
         db_table = "metis_program_track_internships"
         ordering = ["track", "position"]
+
+    def __str__(self) -> str:
+        return f"{self.track} / {self.program_internship}"

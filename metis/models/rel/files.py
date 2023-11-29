@@ -24,15 +24,18 @@ class File(models.Model):
 
     file = models.FileField(upload_to=get_upload_path)
     position = models.PositiveSmallIntegerField(default=0)
-    code = models.CharField(max_length=32, null=True, blank=True)
+    code = models.CharField(max_length=32, null=True, blank=True)  # noqa: DJ001
     version = models.PositiveSmallIntegerField(default=1)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(default="", blank=True)
 
     class Meta:
         db_table = "metis_rel_file"
         indexes = [models.Index(fields=["file"])]
         ordering = ["content_type", "object_id", "position"]
         unique_together = ("content_type", "object_id", "code", "version")
+
+    def __str__(self) -> str:
+        return f"{self.file.name} (v{self.version})"
 
     def delete(self, *args, **kwargs):
         try:

@@ -52,6 +52,9 @@ class DisciplineConstraint(models.Model):
     class Meta:
         db_table = "metis_discipline_constraint"
 
+    def __str__(self) -> str:
+        return f"{self.content_object} ({self.min_count}..{self.max_count})"
+
 
 @receiver(post_save, sender=DisciplineConstraint)
 def check_constraints(sender, instance, **kwargs):

@@ -30,8 +30,8 @@ class Case(FilesMixin, RemarksMixin, BaseModel):
     submission_date = models.DateField()  # automatic on final submission? this seems to be same as created_at
 
     reviewer_is_approved = models.BooleanField(default=False)
-    reviewer_name = models.CharField(max_length=160, null=True, blank=True)
-    reviewer_email = models.EmailField(null=True, blank=True)
+    reviewer_name = models.CharField(max_length=160, default="", blank=True)
+    reviewer_email = models.EmailField(default="", blank=True)
 
     class Meta:
         db_table = "metis_internship_case"

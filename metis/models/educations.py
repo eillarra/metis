@@ -27,9 +27,9 @@ class Education(BaseModel):
     code = models.CharField(max_length=16, unique=True)
     name = models.CharField(max_length=160)
     short_name = models.CharField(max_length=80)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(default="", blank=True)
     office_members = models.ManyToManyField("metis.User", related_name="education_set", blank=True)
-    office_email = models.EmailField(blank=True, null=True)
+    office_email = models.EmailField(default="", blank=True)
     config = models.JSONField(default=dict)
 
     def clean(self) -> None:

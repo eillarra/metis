@@ -20,10 +20,13 @@ class Address(models.Model):
     postcode = models.CharField(max_length=16)
     country = CountryField()
     mapbox_feature = models.JSONField(null=True, blank=True)
-    label = models.CharField(max_length=160, null=True, blank=True)
+    label = models.CharField(max_length=160, default="", blank=True)
 
     class Meta:
         db_table = "metis_rel_address"
+
+    def __str__(self) -> str:
+        return self.full_address
 
     @property
     def feature(self) -> MapboxFeature | None:

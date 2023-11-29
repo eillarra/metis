@@ -20,7 +20,7 @@ class Student(FormResponsesMixin, RemarksMixin, BaseModel):
     project = models.ForeignKey("metis.Project", related_name="students", on_delete=models.PROTECT)
     block = models.ForeignKey("metis.ProgramBlock", related_name="students", on_delete=models.PROTECT)
     track = models.ForeignKey("metis.Track", related_name="students", null=True, blank=True, on_delete=models.SET_NULL)
-    number = models.CharField(max_length=8, null=True, blank=True)
+    number = models.CharField(max_length=8, default="", blank=True)
 
     is_active = models.BooleanField(default=True)
 

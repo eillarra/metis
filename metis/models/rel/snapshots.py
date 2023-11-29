@@ -29,6 +29,9 @@ class Snapshot(models.Model):
     class Meta:
         db_table = "metis_rel_snapshot"
 
+    def __str__(self) -> str:
+        return f"{self.content_type} #{self.object_id} ({self.created_at})"
+
 
 def save_snapshot(sender: type["BaseModel"], instance: models.Model, *, user: Optional["User"]) -> None:
     """

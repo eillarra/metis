@@ -27,6 +27,9 @@ class Link(models.Model):
     class Meta:
         db_table = "metis_rel_link"
 
+    def __str__(self) -> str:
+        return self.url
+
 
 class LinksMixin(models.Model):
     links_cache = None

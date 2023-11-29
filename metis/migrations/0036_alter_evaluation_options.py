@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('metis', '0035_rename_signed_text_signature_signed_text_encrypted'),
+        ("metis", "0035_rename_signed_text_signature_signed_text_encrypted"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='evaluation',
-            options={'ordering': ('created_at',)},
+            name="evaluation",
+            options={"ordering": ("created_at",)},
         ),
     ]

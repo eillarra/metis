@@ -17,7 +17,7 @@ class EmailTemplate(BaseModel):
     code = models.CharField(max_length=64)
     subject = models.CharField(max_length=255)
     body = models.TextField()
-    obj_class = models.CharField(max_length=64, null=True, blank=True)
+    obj_class = models.CharField(max_length=64, default="", blank=True)
     add_office_in_bcc = models.BooleanField(default=False)
 
     class Meta:
