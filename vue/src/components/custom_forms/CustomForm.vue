@@ -1,16 +1,18 @@
 <template>
   <dialog-form icon="fact_check" :title="formTitle" :subtitle="subtitle">
     <template #page>
-      <div v-if="addressesApiEndpoint" class="q-px-lg q-mt-md q-mb-xl">
+      <!-- TODO: control this with a new configurable element at form level, we can use it for addresses, files, etc.-->
+      <!--<div v-if="addressesApiEndpoint" class="q-px-lg q-mt-md q-mb-xl">
         <h5 class="text-h6 text-grey-8 text-weight-regular q-mt-none q-mb-md">
           {{ $t('address', 9) }}
         </h5>
         <address-cards :api-endpoint="addressesApiEndpoint" />
-      </div>
+      </div>-->
       <div v-for="(fieldset, idx) in visibleFieldsets" :key="idx" class="q-px-lg q-mt-md q-mb-lg">
         <h5 v-if="fieldset.legend" class="text-h6 text-grey-8 text-weight-regular q-mt-none q-mb-md">
           {{ getTextValue(fieldset.legend) }}
         </h5>
+        <marked-div v-if="formDescription" :text="formDescription" class="q-mb-xl" />
         <div class="q-gutter-y-sm">
           <div v-for="field in fieldset.fields" :key="field.code || field.component" class="q-pb-md">
             <p class="text-body2">
@@ -115,6 +117,7 @@ import { cloneDeep } from 'lodash-es';
 import { api } from '@/axios';
 import { notify } from '@/notify';
 
+import MarkedDiv from '../MarkedDiv.vue';
 import DialogForm from '../forms/DialogForm.vue';
 import AddressCards from '../rel/AddressCards.vue';
 
@@ -142,6 +145,13 @@ const formTitle = computed<string>(() => {
     return locale.value === 'en' ? definition.value.title.en : definition.value.title.nl;
   }
   return 'Form';
+});
+
+const formDescription = computed<string | null>(() => {
+  if (definition.value.description) {
+    return locale.value === 'en' ? definition.value.description.en : definition.value.description.nl;
+  }
+  return null;
 });
 
 const existingResponse = computed<CustomFormResponse | undefined>(() => {

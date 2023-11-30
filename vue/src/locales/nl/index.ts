@@ -113,6 +113,7 @@ export default {
     save: 'Opslaan',
     create: 'Aanmaken',
     update: 'Bijwerken',
+    fill_in: 'Invullen',
     invite: 'Uitnodigen',
     search: 'Zoeken',
     sign: 'Ondertekenen',

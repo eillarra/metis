@@ -18,7 +18,14 @@
         </template>
         <template #action>
           <q-spinner v-if="!dataLoaded" color="yellow" size="2em" />
-          <q-btn v-else @click="openQuestioning(questioning)" outline square color="ugent" :label="$t(`form.update`)" />
+          <q-btn
+            v-else
+            @click="openQuestioning(questioning)"
+            outline
+            square
+            color="ugent"
+            :label="questioning.id in questioningsWithResponse ? $t(`form.update`) : $t(`form.fill_in`)"
+          />
         </template>
       </q-banner>
     </div>
@@ -46,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios';
@@ -74,6 +81,14 @@ const dialogQuestioning = ref<boolean>(false);
 
 const selectedQuestioning = ref<Questioning>();
 const formDataResponses = ref<CustomFormResponse[]>();
+
+const questioningsWithResponse = computed<Set<number>>(() => {
+  const ids = new Set<number>();
+  formDataResponses.value?.forEach((response: CustomFormResponse) => {
+    ids.add(response.questioning);
+  });
+  return ids;
+});
 
 function openQuestioning(questioning: Questioning) {
   selectedQuestioning.value = questioning;

@@ -18,7 +18,7 @@ import { formatDate } from '@/utils/dates';
 import DataTable from '@/components/tables/DataTable.vue';
 import QuestioningDialog from './QuestioningDialog.vue';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const props = defineProps<{
   questionings: Questioning[];
@@ -34,9 +34,9 @@ const columns = [
     sort: (a: string, b: string) => a.localeCompare(b),
   },
   {
-    name: 'type',
-    field: 'type',
-    label: t('field.type'),
+    name: 'title',
+    field: 'title',
+    label: t('field.title'),
     align: 'left',
     sortable: true,
     headerClasses: 'sticky-left',
@@ -81,7 +81,9 @@ const rows = computed(() => {
     return {
       _self: obj,
       period: obj.Period?.full_name ?? '-',
-      type: t(`questionings.type.${obj.type}`),
+      title: obj.form_definition.title
+        ? obj.form_definition.title[locale.value as 'nl' | 'en']
+        : t(`questionings.type.${obj.type}`),
       start_at: formatDate(obj.start_at),
       end_at: formatDate(obj.end_at),
       is_open: obj.is_active,

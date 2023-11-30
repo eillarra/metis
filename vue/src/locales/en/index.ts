@@ -114,6 +114,7 @@ export default {
     save: 'Save',
     create: 'Create',
     update: 'Update',
+    fill_in: 'Fill in',
     invite: 'Invite',
     search: 'Search',
     sign: 'Sign',
