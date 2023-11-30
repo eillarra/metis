@@ -72,6 +72,7 @@ export default {
   student: 'Student | Studenten',
   task: 'Taak | Taken',
   my_tasks: 'Mijn taken',
+  template: 'Sjabloon | Sjablonen',
   text: 'Tekst | Teksten',
   timesheet: 'Stagetijd | Tijdenlijst',
   track: 'Traject | Trajecten',

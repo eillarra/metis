@@ -73,6 +73,7 @@ export default {
   student: 'Student | Students',
   task: 'Task | Tasks',
   my_tasks: 'My tasks',
+  template: 'Template | Templates',
   text: 'Text | Texts',
   timesheet: 'Timesheet | Timesheets',
   track: 'Track | Tracks',

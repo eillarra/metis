@@ -8,6 +8,7 @@ from django.views import View
 from metis.api.serializers import (
     AuthStudentSerializer,
     EducationTinySerializer,
+    FileSerializer,
     InternshipFullInertiaSerializer,
     ProjectSerializer,
 )
@@ -52,6 +53,7 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
 
         base = {
             "education": EducationTinySerializer(self.get_education()).data,
+            "files": FileSerializer(last_project.files.all(), many=True, context={"request": request}).data,
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
             "student_set": AuthStudentSerializer(
                 self.get_student_set(request.user), many=True, context={"request": request}
