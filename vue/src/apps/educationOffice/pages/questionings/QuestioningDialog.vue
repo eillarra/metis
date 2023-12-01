@@ -86,9 +86,8 @@
             <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('document', 9) }}</h4>
           </div>
           <ul>
-            <li>
-              <a :href="`/nl/files/q/${obj.id}.pdf`" target="_blank">Antwoorden (PDF)</a>
-            </li>
+            <li><a :href="`/nl/files/q/${obj.id}.pdf`" target="_blank">Antwoorden (PDF)</a></li>
+            <li><a :href="`/nl/files/q/${obj.id}.xlsx`" target="_blank">Antwoorden (Excel)</a></li>
           </ul>
         </q-tab-panel>
         <q-tab-panel name="planner">

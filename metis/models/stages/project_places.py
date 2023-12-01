@@ -26,6 +26,9 @@ class ProjectPlace(FormResponsesMixin, RemarksMixin, TextEntriesMixin, BaseModel
         db_table = "metis_project_places"
         unique_together = ("project", "place")
 
+    def __str__(self) -> str:
+        return self.name
+
     def clean(self) -> None:
         """
         Things to check:
@@ -40,6 +43,11 @@ class ProjectPlace(FormResponsesMixin, RemarksMixin, TextEntriesMixin, BaseModel
 
     def can_be_managed_by(self, user) -> bool:
         return self.project.can_be_managed_by(user) or self.place.can_be_managed_by(user)
+
+    @property
+    def name(self) -> str:
+        """Name of the place."""
+        return self.place.name
 
 
 class ProjectPlaceAvailability(BaseModel):

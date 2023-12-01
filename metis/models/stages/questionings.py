@@ -76,22 +76,38 @@ class Questioning(RemarksMixin, BaseModel):
         return validate_form_response(self.form_definition, data)
 
     @property
+    def title(self) -> str:
+        """Returns the title of this questioning."""
+        try:
+            return self.form_definition["title"]["nl"]
+        except (KeyError, TypeError):
+            return self.type.replace("_", " ").capitalize()
+
+    @property
     def file_url(self) -> str:
         return reverse("questioning_file", kwargs={"questioning_id": self.id, "file_type": "pdf"})
 
     @property
     def has_email(self) -> bool:
-        """Returns whether this questioning has an email template."""
+        """A boolean indicating whether this questioning has an email."""
         return bool(self.email_subject and self.email_body)
 
     @property
     def is_active(self) -> bool:
-        """Returns whether this questioning is active."""
+        """A boolean indicating whether this questioning is active."""
         return self.start_at <= timezone.now() <= self.end_at
 
     @property
+    def random_seed(self) -> int | None:
+        """The random seed for this questioning, that can be used by a planner."""
+        try:
+            return int(self.responses.order_by("created_at").first().created_at.timestamp())
+        except AttributeError:
+            return None
+
+    @property
     def response_rate(self) -> float:
-        """Returns the response rate for this questioning."""
+        """The response rate for this questioning."""
         return self.responses.count() / self.get_target_group_size()  # type: ignore
 
     def get_support_data(self) -> dict:

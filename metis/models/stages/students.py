@@ -29,7 +29,7 @@ class Student(FormResponsesMixin, RemarksMixin, BaseModel):
         unique_together = ("user", "project", "block")
 
     def __str__(self):
-        return f"{self.user} ({self.project})"
+        return self.name
 
     def can_be_managed_by(self, user):
         return self.project.can_be_managed_by(user) or self.user == user
@@ -47,4 +47,10 @@ class Student(FormResponsesMixin, RemarksMixin, BaseModel):
 
     @property
     def name(self) -> str:
+        """Name of the student."""
         return self.user.name
+
+    @property
+    def reverse_name(self) -> str:
+        """Name in reverse order, e.g. 'Doe, John'."""
+        return self.user.reverse_name

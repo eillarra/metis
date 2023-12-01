@@ -32,6 +32,11 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
         return self.get_full_name() or self.username
 
     @property
+    def reverse_name(self) -> str:
+        """Name in reverse order, e.g. 'Doe, John'."""
+        return f"{self.last_name}, {self.first_name}"
+
+    @property
     def is_contact(self) -> bool:
         return self.contact_set.exists()  # type: ignore
 

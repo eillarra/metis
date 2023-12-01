@@ -19,16 +19,20 @@
       </div>
     {% endif %}
 
-    {% if questioning.type == 'student_tops' %}
+    {% if questioning.type == 'student_information' or questioning.type == 'student_tops' %}
       {% with response.content_object as student %}
         <code>
-          Tops gekozen door {{ student.user.name }} op {{ response.created_at }} via metis.ugent.be<br />
+          {% if questioning.type == 'student_tops' %}
+            Tops gekozen door {{ student.user.name }} op {{ response.created_at }} via metis.ugent.be<br />
+          {% else %}
+            Bevraging ingevuld door {{ student.user.name }} op {{ response.created_at }} via metis.ugent.be<br />
+          {% endif %}
           Laatst bijgewerkt op {{ response.updated_at }}
         </code>
         <pdf:spacer height="20" />
         <h3 class="title">{{ student.user.name }}</h3>
         <div class="text-smaller">
-          Email: &lt;<a href="mailto:{{ response.created_by.email }}" class="inherit">{{ response.created_by.email }}</a>&gt;<br />
+          Email: &lt;<a href="mailto:{{ student.user.email }}" class="inherit">{{ student.user.email }}</a>&gt;<br />
           Studentennummer: {{ student.number }}<br />
         </div>
       {% endwith %}
