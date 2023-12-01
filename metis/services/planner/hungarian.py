@@ -1,3 +1,5 @@
+from random import Random
+
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
@@ -6,7 +8,8 @@ def hungarian_optimizer(
     student_tops: list[tuple[int, list[int]]],
     project_place_availability: dict[int, int],
     preassigned_pairs: list[tuple[int, int]] | None = None,
-) -> list[tuple[int, int, int]]:
+    seed: int | None = None,
+) -> list[tuple[int, int, int, bool]]:
     """Hungarian algorithm for optimizing the matching of students and project places.
 
     Args:
@@ -14,12 +17,18 @@ def hungarian_optimizer(
         project_place_availability: A dictionary of project_place_id: availability pairs, where availability is the
             max number of students that can be matched to the project place.
         preassigned_pairs: A list of tuples (student_id, project_place_id) that must be included in the result.
+        seed: A seed for the randomizer.
 
     Returns:
-        An optimized list of tuples (student_id, project_place_id, rank) where rank is the rank of the project place
-        in the student's top choices, or -1 if the student was preassigned to the project place.
+        An optimized list of tuples (student_id, project_place_id, rank, preassigned) where rank is the rank
+        of the project place (top) in the student's top choices, or -1 if the student was preassigned
+        to the project place.
     """
     pairs = []
+
+    if seed:
+        randomizer = Random(seed)
+        randomizer.shuffle(student_tops)
 
     # Create a list of students
     student_ids = [student_id for student_id, choices in student_tops if choices is not None]
@@ -62,12 +71,20 @@ def hungarian_optimizer(
 
     # Pair up the row and column indices into a list of tuples, and add the rank
     pairs = [
-        (student_ids[i], project_place_ids[j], int(rank_matrix[i][j]) + 1)
+        (int(student_ids[i]), int(project_place_ids[j]), int(rank_matrix[i][j]) + 1, bool(0))  # type hack
         for i, j in zip(row_idx, col_idx, strict=True)
     ]
 
     # Add the preassigned pairs to the list of pairs
     if preassigned_pairs is not None:
-        pairs.extend([(i, j, -1) for i, j in preassigned_pairs])
+        student_tops_dict = {}
+        for student_id, choices in student_tops:
+            if choices is None:
+                continue
+            for rank, project_place_id in enumerate(choices):
+                student_tops_dict[(student_id, project_place_id)] = int(rank + 1)
+
+        for i, j in preassigned_pairs:
+            pairs.append((i, j, student_tops_dict[(i, j)], True))
 
     return pairs
