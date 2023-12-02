@@ -67,6 +67,7 @@ export default {
   questioning: 'Questioning | Questionings',
   region: 'Region | Regions',
   remark: 'Remark | Remarks',
+  check_remarks: 'Check remarks for more information.',
   response: 'Response | Responses',
   signature: 'Signature | Signatures',
   staff: 'Staff | Staff',
@@ -212,6 +213,7 @@ export default {
       deleted: 'Internship place deleted',
       save: 'Save place',
       saved: 'Internship place information saved',
+      add_flag: 'Mark place as problematic',
     },
     questioning: {
       confirm_send_emails:

@@ -39,6 +39,15 @@
               :place-types="education.place_types"
               :label="$t('place_type')"
             />
+            <q-toggle
+              v-model="obj.place.is_flagged"
+              :label="$t('form.place.add_flag')"
+              left-label
+              color="orange"
+              class="q-mt-lg"
+              checked-icon="flag"
+            />
+            <div v-if="obj.place.is_flagged" class="text-caption">{{ $t('check_remarks') }}</div>
           </div>
         </q-tab-panel>
         <q-tab-panel name="addresses">

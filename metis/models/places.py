@@ -15,23 +15,27 @@ if TYPE_CHECKING:
 
 
 class PlaceType(BaseModel):
+    """Place types are used to group places for a education."""
+
     education = models.ForeignKey("metis.Education", related_name="place_types", on_delete=models.CASCADE)
     name = models.CharField(max_length=160)
     position = models.PositiveSmallIntegerField(default=0)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_education_place_types"
         ordering = ["education", "position", "name"]
 
 
 class PlaceTypeTranslationOptions(TranslationOptions):
+    """Translation options for PlaceType."""
+
     fields = ("name",)
 
 
 class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, TextEntriesMixin, BaseModel):
-    """
-    The stagebureau works with their own list of places.
-    Contacts or remarks are specific to each Education.
+    """Places where internships can be done.
+
+    This collection of places is specific to each education, so are the contacts and remarks.
     """
 
     education = models.ForeignKey("metis.Education", related_name="places", on_delete=models.PROTECT)
@@ -39,13 +43,15 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
     name = models.CharField(max_length=160)
     code = models.CharField(max_length=160)
     parent = models.ForeignKey("self", related_name="children", on_delete=models.SET_NULL, null=True, blank=True)
+    is_flagged = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_education_places"
         ordering = ["education", "code"]
         unique_together = ("education", "code")
 
     def clean(self) -> None:
+        """Validate that the parent and type are in the same education."""
         if self.parent and self.parent.education != self.education:
             raise ValidationError("Parent place must be in the same education.")
         if self.type and self.type.education != self.education:
@@ -66,8 +72,8 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
 
 
 class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
-    """
-    Contact information for a place.
+    """Contact information for a place.
+
     Contacts can have administrative rights for a place for a education (`is_staff`).
     Contacts can also be designed as mentors. These mentors can be then assigned to specific internships.
     Contacts that are no staff or mentor have limited read-only access to the place information.
@@ -79,7 +85,7 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
     is_staff = models.BooleanField(default=False)
     is_mentor = models.BooleanField(default=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_education_contacts"
         unique_together = ("place", "user")
 
@@ -96,4 +102,5 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
 
     @property
     def education(self) -> "Education":
+        """The education of the place."""
         return self.place.education

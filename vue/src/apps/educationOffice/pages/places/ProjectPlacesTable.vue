@@ -76,6 +76,7 @@ const columns = [
 const rows = computed(() => {
   return props.projectPlaces.map((obj: ProjectPlace) => ({
     _self: obj,
+    _class: obj.place.is_flagged ? 'bg-orange-1' : '',
     name: obj.place.name,
     code: obj.place.code,
     type: obj.place.Type?.name || '-',

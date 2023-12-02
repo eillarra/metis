@@ -66,6 +66,7 @@ export default {
   questioning: 'Bevraging | Bevragingen',
   region: "Regio | Regio's",
   remark: 'Opmerking | Opmerkingen',
+  check_remarks: 'Opmerkingen controleren voor meer informatie.',
   response: 'Antwoord | Antwoorden',
   signature: 'Handtekening | Handtekeningen',
   staff: 'Secretariaat | Secretariaten',
@@ -211,6 +212,7 @@ export default {
       deleted: 'Stageplaats verwijderd',
       save: 'Stageplaats opslaan',
       saved: 'Stageplaats informatie opgeslagen',
+      add_flag: 'Stageplaats als problematisch markeren',
     },
     questioning: {
       confirm_send_emails:
