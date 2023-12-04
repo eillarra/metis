@@ -17,7 +17,7 @@
         <q-separator />
       </div>
       <div v-show="!mutableTriage">
-        <p class="q-pa-lg" v-if="formDescription">{{ formDescription }}</p>
+        <marked-div v-if="formDescription" :text="formDescription" class="q-pa-lg" />
         <div class="q-px-lg q-mb-lg q-gutter-y-md">
           <div v-for="num in choices" :key="num">
             <q-select
@@ -74,6 +74,7 @@ import { useI18n } from 'vue-i18n';
 import { api } from '@/axios';
 import { notify } from '@/notify';
 
+import MarkedDiv from '../MarkedDiv.vue';
 import DialogForm from '../forms/DialogForm.vue';
 
 const { t, locale } = useI18n();
