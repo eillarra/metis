@@ -3,21 +3,20 @@
 from django.db import migrations, models
 
 
-class Migration(migrations.Migration):
-
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
-        ('metis', '0043_student_oasis_data'),
+        ("metis", "0043_student_oasis_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='absence',
-            name='comments',
-            field=models.TextField(blank=True, default=''),
+            model_name="absence",
+            name="comments",
+            field=models.TextField(blank=True, default=""),
         ),
         migrations.AddField(
-            model_name='timesheet',
-            name='comments',
-            field=models.TextField(blank=True, default=''),
+            model_name="timesheet",
+            name="comments",
+            field=models.TextField(blank=True, default=""),
         ),
     ]

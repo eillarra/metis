@@ -11,6 +11,21 @@ if TYPE_CHECKING:
     from metis.models import Contact, Education, EmailTemplate, Evaluation, User
 
 
+def get_template(education: "Education", code: str, language: str = "nl") -> Optional["EmailTemplate"]:
+    """Get an email template for an education."""
+    from metis.models import EmailTemplate
+
+    try:
+        return EmailTemplate.objects.get(code=code, education=education, language=language)
+    except EmailTemplate.DoesNotExist:
+        try:
+            return EmailTemplate.objects.get(code=code, education=None, language=language)
+        except EmailTemplate.DoesNotExist:
+            send_email_to_admins(f"Email template not found for {education} EOM", f"{code} - {language}")
+
+    return None
+
+
 def render_context(body: str, context: dict) -> str:
     """Render a body with a context."""
     templ = Template(body)
@@ -38,19 +53,25 @@ def schedule_email(
     log_template: Optional["EmailTemplate"] = None,
     log_user: Optional["User"] = None,
     log_education: Optional["Education"] = None,
+    tags: list[str] | None = None,
 ):
     from metis.models.emails import EmailLog
+
+    tags = tags or []
+
+    if log_user and f"to.id:{log_user.pk}" not in tags:
+        tags.append(f"to.id:{log_user.pk}")
 
     EmailLog.objects.create(
         template=log_template,
         from_email=from_email,
         to=to,
-        to_user=log_user,
         bcc=bcc or [],
         reply_to=reply_to or [],
         subject=subject,
         body=text_content,
-        education=log_template.education if log_template else log_education,
+        education=log_template.education if (log_template and log_template.education) else log_education,
+        tags=tags,
     )
 
 

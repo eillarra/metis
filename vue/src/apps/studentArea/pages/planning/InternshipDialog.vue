@@ -112,7 +112,7 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="evaluations">
-          <evaluations-view :internship="obj" />
+          <evaluations-view :internship="obj" show-periods />
         </q-tab-panel>
         <q-tab-panel name="timesheets">
           <timesheets-view

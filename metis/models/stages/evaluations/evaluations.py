@@ -1,3 +1,4 @@
+from datetime import date
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
@@ -32,7 +33,7 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
         ordering = ("created_at",)
 
     def clean(self) -> None:
-        """Validates the evaluation data using the form definition."""
+        """Validate the evaluation data using the form definition."""
         if self.is_approved:
             raise ValidationError("Cannot modify an approved evaluation.")
         if self.intermediate > self.form.definition["intermediate_evaluations"]:
@@ -67,10 +68,15 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
             % {"num": self.intermediate}
         )
 
+    @property
+    def evaluation_periods(self) -> list[tuple[int, date, date]]:
+        """The evaluation periods for the associated internship."""
+        return self.internship.get_evaluation_periods(self.form)
+
     def can_be_viewed_by(self, user: "User") -> bool:
-        """Returns whether the user can view this evaluation."""
+        """Return whether the user can view this evaluation."""
         return self.internship.can_be_viewed_by(user)
 
     def get_absolute_url(self) -> str:
-        """Returns the absolute URL of the evaluation PDF."""
+        """Return the absolute URL of the evaluation PDF."""
         return reverse("evaluation_pdf", kwargs={"uuid": self.uuid})

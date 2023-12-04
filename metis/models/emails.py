@@ -18,8 +18,8 @@ class EmailTemplate(BaseModel):
     code = models.CharField(max_length=64)
     subject = models.CharField(max_length=255)
     body = models.TextField()
-    obj_class = models.CharField(max_length=64, default="", blank=True)
     add_office_in_bcc = models.BooleanField(default=False)
+    language = models.CharField(max_length=2, default="nl")
 
     class Meta:  # noqa: D106
         db_table = "metis_email_template"
@@ -56,15 +56,13 @@ class EmailLog(models.Model):
     template = models.ForeignKey(EmailTemplate, related_name="logs", on_delete=models.SET_NULL, null=True, blank=True)
     from_email = models.CharField(max_length=255)
     to = models.JSONField(default=list)
-    to_user = models.ForeignKey(
-        "metis.User", related_name="email_logs", on_delete=models.SET_NULL, null=True, blank=True
-    )
     bcc = models.JSONField(default=list)
     reply_to = models.JSONField(default=list)
     subject = models.CharField(max_length=255)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     sent_at = models.DateTimeField(null=True, blank=True)
+    tags = models.JSONField(default=list)
 
     class Meta:  # noqa: D106
         db_table = "metis_log_email"

@@ -47,6 +47,9 @@ export default {
   evaluation: 'Evaluatie | Evaluaties',
   evaluation_intermediate: 'Tussentijdse evaluatie | Tussentijdse evaluaties',
   evaluation_final: 'Eindevaluatie | Eindevaluaties',
+  evaluation_period: 'Evaluatieperiode | Evaluatieperiodes',
+  section_score: 'Deelscore',
+  global_score: 'Algemene beoordeling',
   history: 'Historiek',
   internship: 'Stage | Stages',
   internship_status: {
@@ -190,6 +193,7 @@ export default {
       approve: 'Evaluatie doorsturen',
       approved: 'Evaluatie doorgestuurd',
       not_found: 'Geen evaluatie gevonden',
+      not_available: 'Geen evaluatie beschikbaar',
     },
     internship: {
       create: {

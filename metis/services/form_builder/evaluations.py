@@ -22,6 +22,7 @@ class EvaluationItem(BaseModel):
 
     value: str
     label: Translation
+    score_help_texts: list[tuple[str, Translation]] = []
 
 
 class EvaluationSection(BaseModel):
@@ -65,8 +66,10 @@ class EvaluationForm(BaseModel):
     def get_valid_scores(self, *, section_only: bool = False) -> set[str]:
         """Return a set of valid score values.
 
-        Parameters:
+        Parameters
+        ----------
             section_only: if True, only return the score values for sections
+
         """
         if section_only:
             return {score.value for score in self.scores if not score.only_for_global_score}

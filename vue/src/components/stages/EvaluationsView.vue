@@ -27,8 +27,15 @@
       </q-btn>
     </div>
   </div>
-  <div v-if="!loading && !evaluations.length" class="text-grey text-h6 q-mb-lg">
+  <div v-if="!loading && !evaluations.length">
     <big-message :text="$t('form.evaluation.not_found')" icon="remove_done" />
+    <div v-if="showPeriods" class="text-center">
+      {{ $t('evaluation_period', 9) }}:<br />
+      <span v-for="period in evaluationPeriods" :key="period.intermediate">
+        <strong>{{ period.name }}</strong
+        >: {{ period.start }} - {{ period.end }}<br />
+      </span>
+    </div>
   </div>
   <div v-else class="row q-col-gutter-md q-mb-lg">
     <div class="col-12 col-md-3" v-for="evaluation in evaluations" :key="evaluation.id">
@@ -57,7 +64,7 @@
             <h6 v-if="section.title" class="q-ma-none">{{ section.title[l] }}</h6>
           </th>
           <th v-for="evaluation in evaluations" :key="evaluation.id" class="text-center">
-            <span v-if="evaluation.intermediate === 0">Einde</span>
+            <span v-if="evaluation.intermediate === 0">{{ $t('evaluation_final') }}</span>
             <span v-else>#{{ evaluation.intermediate }}</span>
           </th>
         </tr>
@@ -109,7 +116,9 @@
           <td :colspan="1 + evaluations.length" class="force-wrap bg-grey-3 text-body2">
             <p class="q-my-sm">
               <span v-for="evaluation in evaluations" :key="evaluation.id">
-                <q-badge v-if="evaluation.intermediate === 0" outline color="dark">Einde</q-badge>
+                <q-badge v-if="evaluation.intermediate === 0" outline color="dark">{{
+                  $t('evaluation_final')
+                }}</q-badge>
                 <q-badge v-else outline color="dark">#{{ evaluation.intermediate }}</q-badge>
                 <span class="q-ml-sm">{{ evaluation.data.sections[section.code].remarks || '-' }}</span>
                 <br />
@@ -124,7 +133,7 @@
         <tr>
           <th></th>
           <th v-for="evaluation in evaluations" :key="evaluation.id" class="text-center">
-            <span v-if="evaluation.intermediate === 0">Einde</span>
+            <span v-if="evaluation.intermediate === 0">{{ $t('evaluation_final') }}</span>
             <span v-else>#{{ evaluation.intermediate }}</span>
           </th>
         </tr>
@@ -150,7 +159,9 @@
           <td :colspan="1 + evaluations.length" class="force-wrap bg-light-blue-2 text-body2">
             <p class="q-my-sm">
               <span v-for="evaluation in evaluations" :key="evaluation.id">
-                <q-badge v-if="evaluation.intermediate === 0" outline color="dark">Einde</q-badge>
+                <q-badge v-if="evaluation.intermediate === 0" outline color="dark">{{
+                  $t('evaluation_final')
+                }}</q-badge>
                 <q-badge v-else outline color="dark">#{{ evaluation.intermediate }}</q-badge>
                 <span class="q-ml-sm">{{ evaluation.data.global_remarks || '-' }}</span>
                 <br />
@@ -168,14 +179,16 @@ import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios.ts';
+import { formatDate } from '@/utils/dates';
 
 import BigMessage from '@/components/BigMessage.vue';
 
-const { locale } = useI18n();
+const { t, locale } = useI18n();
 
 const props = defineProps<{
   internship: Internship;
   showPoints?: boolean;
+  showPeriods?: boolean;
 }>();
 
 const l = ref<'en' | 'nl'>(locale.value as 'en' | 'nl');
@@ -185,6 +198,21 @@ const formDefinition = computed<EvaluationFormDefinition | null>(() =>
   evaluations.value.length ? (evaluations.value[0].form_definition as EvaluationFormDefinition) : null
 );
 const pointsToggle = ref<boolean>(false);
+const evaluationPeriods = ref<EvaluationPeriod[]>(
+  !props.showPeriods
+    ? []
+    : props.internship.evaluation_periods?.map((period) => {
+        return {
+          intermediate: period[0],
+          name: period[0] > 0 ? t('evaluation_intermediate') + ' #' + period[0] : t('evaluation_final'),
+          is_final: period[0] == 0,
+          start_at: new Date(period[1]),
+          end_at: new Date(period[2]),
+          start: formatDate(period[1]),
+          end: formatDate(period[2]),
+        };
+      }) || []
+);
 
 const scoreTexts = computed<Record<number, string>>(() => {
   var texts: Record<number, string> = {};

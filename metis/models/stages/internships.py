@@ -1,5 +1,6 @@
 import math
 from collections import Counter
+from datetime import date, datetime, time, timedelta
 from hashlib import sha1
 from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
@@ -26,14 +27,54 @@ if TYPE_CHECKING:
     from .programs import Program
 
 
+def get_evaluation_periods(
+    start_date: date, end_date: date, intermediates: int = 0
+) -> list[tuple[int, datetime, datetime]]:
+    """Get the evaluation periods based on the start and end date of the internship and a number of intermediates.
+
+    If there are no intermediates, only a final evaluation is returned.
+    Evaluation periods are calculated as a week, approximately 4 days before and 3 days after the end of the internship.
+
+    :param start_date: The start date of the internship.
+    :param end_date: The end date of the internship.
+    :param intermediates: The number of intermediate evaluations.
+    :return: A list of tuples with the start and end date of the evaluation periods.
+    """
+    evaluation_periods = []
+
+    if intermediates > 0:
+        duration = (end_date - start_date).days
+        days_before, days_after = 4, 4
+        evaluation_block = duration // (intermediates + 1)
+
+        for i in range(intermediates):
+            intermediate = start_date + timedelta(days=evaluation_block * (i + 1))
+            start = timezone.make_aware(
+                datetime.combine(intermediate - timedelta(days=days_before), time(6, 0)),
+                timezone.get_current_timezone(),
+            )
+            end = timezone.make_aware(
+                datetime.combine(intermediate + timedelta(days=days_after), time(23, 59)),
+                timezone.get_current_timezone(),
+            )
+            evaluation_periods.append((i + 1, start, end))
+
+    final_start = timezone.make_aware(
+        datetime.combine(end_date - timedelta(days=days_before), time(6, 0)), timezone.get_current_timezone()
+    )
+    final_end = timezone.make_aware(
+        datetime.combine(end_date + timedelta(days=days_after), time(23, 59)), timezone.get_current_timezone()
+    )
+    evaluation_periods.append((0, final_start, final_end))
+
+    return evaluation_periods
+
+
 def get_remaining_discipline_constraints(obj: "Internship") -> list[dict]:
     """Calculate the remaining discipline constraints based on the track constraints.
 
-    Args:
-        obj (Internship): An instance of the Internship class.
-
-    Returns:
-        List[Dict]: A list of remaining DisciplineConstraint objects.
+    :param obj: An instance of the Internship class.
+    :return: A list of remaining DisciplineConstraint objects.
     """
     covered_counts = obj.get_counter_for_disciplines()
     remaining_constraints = []
@@ -206,7 +247,7 @@ class Internship(RemarksMixin, BaseModel):
         return self.project.can_be_managed_by(user)
 
     def can_be_viewed_by(self, user) -> bool:
-        """Returns whether the user can view this internship."""
+        """Check if the user can view this internship."""
         return (
             self.student.user == user
             or self.mentors.filter(user=user).exists()
@@ -223,9 +264,9 @@ class Internship(RemarksMixin, BaseModel):
         """The education of the internship."""
         return self.project.education
 
-    @property
+    @cached_property
     def evaluation_form(self) -> Optional["EvaluationForm"]:
-        """The evaluation form for this internship."""
+        """The evaluation form for this internship."""  # noqa: D401
         qs = self.project.evaluation_forms.all()
 
         if self.period and qs.filter(period=self.period).exists():
@@ -238,9 +279,17 @@ class Internship(RemarksMixin, BaseModel):
 
         return qs.first()
 
+    @property
+    def evaluation_periods(self) -> list[tuple[int, datetime, datetime]]:
+        """The evaluation periods for the internship."""
+        if not self.evaluation_form:
+            return []
+
+        return self.get_evaluation_periods(self.evaluation_form)
+
     @cached_property
     def place(self) -> Optional["Place"]:
-        """The place of the internship."""
+        """The place of the internship."""  # noqa: D401
         return self.project_place.place if self.project_place else None
 
     @property
@@ -274,13 +323,13 @@ class Internship(RemarksMixin, BaseModel):
         return sha1(f"{self.uuid}{settings.SECRET_KEY}".encode()).hexdigest()
 
     def accepts_cases(self) -> bool:
+        """Check if the internship accepts cases."""
         raise NotImplementedError
 
     def get_available_disciplines(self) -> models.QuerySet:
-        """Returns a set of all available disciplines included in the constraints.
+        """Return a set of all available disciplines included in the constraints.
 
-        Returns:
-            QuerySet: A QuerySet of Discipline objects.
+        :return: A QuerySet of Discipline objects.
         """
         program_disciplines = self.period.program_internship.get_available_disciplines()
 
@@ -292,8 +341,7 @@ class Internship(RemarksMixin, BaseModel):
     def get_covered_disciplines(self) -> models.QuerySet:
         """If a track exists, it returns a list of disciplines that have already been covered by this student.
 
-        Returns:
-            QuerySet: A QuerySet of Discipline objects.
+        :return: A QuerySet of Discipline objects.
         """
         if self.track is None or self.student is None:
             return Discipline.objects.none()
@@ -307,15 +355,20 @@ class Internship(RemarksMixin, BaseModel):
         return Discipline.objects.filter(internships__in=past_internships)
 
     def get_counter_for_disciplines(self) -> Counter:
-        """Returns a dictionary of discipline IDs and their count for this internship.
+        """Return a dictionary of discipline IDs and their count for this internship.
 
-        Returns:
-            Dict: A dictionary of disciplines and their count for this internship.
+        :return: A dictionary of disciplines and their count for this internship.
         """
         if not self.track:
             return Counter()
 
         return Counter(self.get_covered_disciplines().values_list("id", flat=True))
+
+    def get_evaluation_periods(self, evaluation_form: "EvaluationForm") -> list[tuple[int, datetime, datetime]]:
+        """Get the evaluation periods for the internship."""
+        return get_evaluation_periods(
+            self.start_date, self.end_date, evaluation_form.definition["intermediate_evaluations"]
+        )
 
     def get_secret_generated_file_url(self, template_code: str) -> str:
         """Get the secret URL for the internship."""

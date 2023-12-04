@@ -48,6 +48,9 @@ export default {
   evaluation: 'Evaluation | Evaluations',
   evaluation_intermediate: 'Intermediate evaluation | Intermediate evaluations',
   evaluation_final: 'Final evaluation | Final evaluations',
+  evaluation_period: 'Evaluation period | Evaluation periods',
+  section_score: 'Section score',
+  global_score: 'Global score',
   history: 'History',
   internship: 'Internship | Internships',
   internship_status: {
@@ -191,6 +194,7 @@ export default {
       approve: 'Submit evaluation',
       approved: 'Evaluation submitted',
       not_found: 'No evaluation found',
+      not_available: 'No evaluation available',
     },
     internship: {
       create: {

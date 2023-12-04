@@ -18,7 +18,7 @@ class EvaluationFormSerializer(BaseModelSerializer):
 
     definition = serializers.JSONField(read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = EvaluationForm
         exclude = ("form_definition", "created_at", "created_by")
 
@@ -32,8 +32,9 @@ class EvaluationSerializer(RemarksMixin, BaseModelSerializer):
     url = serializers.CharField(read_only=True, source="get_absolute_url")
     name = serializers.CharField(read_only=True)
     form_definition = serializers.JSONField(read_only=True, source="form.definition")
+    evaluation_periods = serializers.JSONField(read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Evaluation
         exclude = ("created_at", "created_by")
         read_only_fields = ("is_approved",)

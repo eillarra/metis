@@ -47,6 +47,7 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
     start_date = serializers.DateField()
     end_date = serializers.DateField()
     mentors = MentorTinySerializer(many=True, read_only=True)
+    evaluation_periods = serializers.JSONField(read_only=True)
 
     class Meta:  # noqa: D106
         model = Internship

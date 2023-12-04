@@ -54,6 +54,7 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
     def get_props(self, request, *args, **kwargs):
         """Get the props for the Vue app."""
         projects = self.get_education().projects.filter(students__user=request.user)
+
         try:
             last_project = projects.get(name="AJ23-24")  # TODO: clean
         except Project.DoesNotExist:
@@ -81,7 +82,6 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
         from metis.api.serializers import AuthUserSerializer, ProjectTinySerializer, TextEntrySerializer
 
         try:
-            project = Project.objects.get(education=self.get_education(), name="AJ22-23")
             place_ids = list(
                 Internship.objects.filter(student__in=self.get_student_set(request.user)).values_list(
                     "project_place__place_id", flat=True
@@ -96,8 +96,12 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
             place_ids = None
             discipline_ids = None
 
-        period_id = 11 if self.get_education().code == "audio" else 20
-        project = Project.objects.get(education=self.get_education(), name="AJ23-24")
+        project = last_project
+        period_id = {
+            "audio": 12,
+            "logo": 21,
+            "gezbev": 31,
+        }.get(self.get_education().code, None)
 
         temp_props = {
             "academic_year": project.academic_year,

@@ -117,7 +117,7 @@
           <mentors-view :editable="userIsAdmin" :obj="obj" @update:obj="(obj: Internship) => updateObj(obj)" />
         </q-tab-panel>
         <q-tab-panel name="evaluations">
-          <evaluations-view :internship="obj" />
+          <evaluations-view :internship="obj" show-periods />
         </q-tab-panel>
         <q-tab-panel name="evaluationsForm">
           <evaluations-form :internship="obj" />

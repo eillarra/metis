@@ -1,3 +1,13 @@
+interface EvaluationPeriod {
+  intermediate: number;
+  name: string;
+  is_final: boolean;
+  start_at: Date;
+  end_at: Date;
+  start: string;
+  end: string;
+}
+
 interface EvaluationScore {
   value: str | null;
   label: Translation;
@@ -8,6 +18,7 @@ interface EvaluationScore {
 interface EvaluationItem {
   value: string;
   label: Translation;
+  score_help_texts: [string, Translation][];
 }
 
 interface EvaluationSection {

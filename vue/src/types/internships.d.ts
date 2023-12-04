@@ -18,6 +18,8 @@ interface Internship extends ApiObject {
   updated_at: string;
   updated_by: UserTiny | null;
   // -----
+  evaluation_periods?: [number, string, string][];
+  // -----
   Student?: Student;
   Track?: Track;
   Period?: Period;
@@ -42,4 +44,5 @@ interface Evaluation extends ApiObject {
   // -----
   form_definition?: EvaluationFormDefinition;
   Form?: EvaluationForm;
+  evaluation_periods?: [number, string, string][];
 }
