@@ -78,7 +78,10 @@ class ProjectPlaceInformationPdf(PdfReport):
 class StudentInformationPdf(PdfReport):
     def __init__(self, period_id: int):
         self.period = Period.objects.get(id=period_id)
-        self.places_dict = {project_place.id: project_place.place.name for project_place in self.period.project_places}
+        self.places_dict = {
+            project_place.id: project_place.place.name
+            for project_place in self.period.get_project_places(ignore_availability=True)
+        }
 
     def get_pdf(self) -> bytes:
         with PdfWrap() as pdf:

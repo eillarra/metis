@@ -104,9 +104,9 @@ class Project(FilesMixin, TextEntriesMixin, BaseModel):
 
     @property
     def project_places(self) -> models.QuerySet["ProjectPlace"]:
-        """
-        ProjectPlaces for this project.
-        It is just an alias for the place_set to use similar syntax as for periods.
+        """ProjectPlaces for this project.
+
+        This is just an alias for the place_set to use similar syntax as for periods.
         """
         return self.place_set.all()  # type: ignore
 
@@ -117,9 +117,7 @@ class Project(FilesMixin, TextEntriesMixin, BaseModel):
 
 
 class Period(BaseModel):
-    """
-    A first proposal is made based on the ProgramInternships defined at ProgramBlock level.
-    """
+    """A first proposal is made based on the ProgramInternships defined at ProgramBlock level."""
 
     project = models.ForeignKey(Project, related_name="periods", on_delete=models.CASCADE)
     program_internship = models.ForeignKey("metis.ProgramInternship", related_name="periods", on_delete=models.PROTECT)
@@ -161,16 +159,22 @@ class Period(BaseModel):
         """
         return self.is_open or (self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date())
 
+    def get_project_places(self, *, ignore_availability: bool = False) -> models.QuerySet["ProjectPlace"]:
+        """Get ProjectPlaces for this period.
+
+        Args:
+            ignore_availability: If True, return all ProjectPlaces, even if they have no availability.
+        """
+        if ignore_availability:
+            return self.project.project_places
+        return self.project.project_places.filter(availability_set__period=self, availability_set__min__gt=0)
+
     @property
     def project_places(self) -> models.QuerySet["ProjectPlace"]:
-        """
-        ProjectPlaces that have availability for this period.
-        """
-        return self.project.place_set.filter(availability_set__period=self, availability_set__min__gt=0)  # type: ignore
+        """ProjectPlaces that have availability for this period."""
+        return self.get_project_places(ignore_availability=False)
 
     @property
     def students(self, *, active: bool = True) -> models.QuerySet["Student"]:
-        """
-        Students that are enrolled in this period's Block.
-        """
+        """Students that are enrolled in this period's Block."""
         return self.project.students.filter(is_active=active, block=self.program_internship.block)  # type: ignore
