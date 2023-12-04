@@ -3,8 +3,6 @@ from uuid import uuid4
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import pgettext_lazy
 
@@ -14,6 +12,7 @@ from metis.models.rel.signatures import SignaturesMixin
 
 
 if TYPE_CHECKING:
+    from metis.models.rel.signatures import Signature
     from metis.models.users import User
 
 
@@ -34,19 +33,34 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
 
     def clean(self) -> None:
         """Validates the evaluation data using the form definition."""
+        if self.is_approved:
+            raise ValidationError("Cannot modify an approved evaluation.")
         if self.intermediate > self.form.definition["intermediate_evaluations"]:
             raise ValidationError("Intermediate evaluation number is too high.")
         self.data = self.form.clean_response_data(self.data)
         return super().clean()
 
+    @classmethod
+    def approve(cls, evaluation: "Evaluation", signature: "Signature") -> None:
+        """Approve an evaluation, without calling clean() on the model. A signature is required."""
+        if not signature or not signature.content_object == evaluation:
+            raise ValidationError("A signature is required to approve an evaluation.")
+
+        updated = bool(cls.objects.filter(id=evaluation.pk).update(is_approved=True))
+
+        if updated:
+            from metis.services.mailer import schedule_evaluation_notification
+
+            schedule_evaluation_notification(evaluation)
+
     @property
     def is_final(self) -> bool:
-        """Returns whether this is the final evaluation."""
+        """Boolean indicating whether this is the final evaluation."""
         return self.intermediate == 0
 
     @property
     def name(self) -> str:
-        """Returns the evaluation name (type)."""
+        """Evaluation name or type."""
         return (
             pgettext_lazy("evaluations.Evaluation.name", "Final evaluation")
             if self.is_final
@@ -64,12 +78,3 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
     def get_absolute_url(self) -> str:
         """Returns the absolute URL of the evaluation PDF."""
         return reverse("evaluation_pdf", kwargs={"uuid": self.uuid})
-
-
-@receiver(post_save, sender=Evaluation)
-def evaluation_post_save(sender, instance, created, *args, **kwargs):
-    """Schedule a notification email when an evaluation is created."""
-    if created:
-        from metis.services.mailer import schedule_evaluation_notification
-
-        schedule_evaluation_notification(instance)

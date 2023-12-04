@@ -20,18 +20,21 @@ class Signature(NonEditableMixin, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_log_signature"
 
     def __str__(self) -> str:
         return str(self.uuid)
 
     def get_absolute_url(self):
+        """Get the URL of the PDF version of the signature."""
         return reverse("signature_pdf", kwargs={"uuid": self.uuid})
 
 
 class SignaturesMixin(models.Model):
+    """Mixin for models that can be signed."""
+
     signatures = GenericRelation(Signature)
 
-    class Meta:
+    class Meta:  # noqa: D106
         abstract = True

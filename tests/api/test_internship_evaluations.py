@@ -86,17 +86,21 @@ def user(db):
 
 @pytest.mark.api
 class TestForAnonymous:
+    """Tests for anonymous users."""
+
     expected_status_codes: dict[str, status] = {
         "evaluation_list": status.FORBIDDEN,
         "evaluation_create": status.FORBIDDEN,
         "evaluation_update": status.FORBIDDEN,
         "evaluation_delete": status.FORBIDDEN,
+        "evaluation_approve": status.FORBIDDEN,
     }
 
     def _get_evaluation_create_data(self, internship):
         return {}
 
     def test_list_evaluations(self, api_client, education, internship):
+        """Test listing evaluations for an internship."""
         url = reverse(
             "v1:project-internship-evaluation-list", args=[education.id, internship.project_id, internship.id]
         )
@@ -104,6 +108,7 @@ class TestForAnonymous:
         assert response.status_code == self.expected_status_codes["evaluation_list"]
 
     def test_create_evaluation(self, api_client, education, internship):
+        """Test creating an evaluation for an internship."""
         url = reverse(
             "v1:project-internship-evaluation-list", args=[education.id, internship.project_id, internship.id]
         )
@@ -117,19 +122,34 @@ class TestForAnonymous:
         if response.status_code == status.CREATED:
             assert response.data["internship"] == internship.id
 
+    def test_approve_evaluation(self, api_client, education, internship):
+        """Test approving an evaluation for an internship."""
+        url = reverse(
+            "v1:project-internship-evaluation-approve",
+            args=[education.id, internship.project_id, internship.id, 1],
+        )
+        response = api_client.post(url, {"signed_text": "signature"})
+        assert response.status_code == self.expected_status_codes["evaluation_approve"]
+
 
 class TestForAuthenticated(TestForAnonymous):
+    """Tests for authenticated users."""
+
     @pytest.fixture(autouse=True)
     def setup(self, api_client, user):
+        """Log in as user."""
         api_client.force_authenticate(user=user)
 
 
 class TestForMentor(TestForAuthenticated):
+    """Tests for internship mentors."""
+
     expected_status_codes = {
         "evaluation_list": status.OK,
         "evaluation_create": status.CREATED,
         "evaluation_update": status.OK,
         "evaluation_delete": status.NO_CONTENT,
+        "evaluation_approve": status.FORBIDDEN,
     }
 
     def _get_evaluation_create_data(self, internship):
@@ -159,42 +179,73 @@ class TestForMentor(TestForAuthenticated):
 
     @pytest.fixture(autouse=True)
     def setup(self, api_client, internship):
+        """Log in as mentor."""
         api_client.force_authenticate(user=internship.mentors.first().user)
+
+    def test_approve_evaluation(self, api_client, education, internship):
+        """Test approving an evaluation for an internship."""
+        self.test_create_evaluation(api_client, education, internship)
+        evaluation = internship.evaluations.first()
+        url = reverse(
+            "v1:project-internship-evaluation-approve",
+            args=[education.id, internship.project_id, internship.id, 1],
+        )
+        response = api_client.post(url, {"signed_text": "signature"})
+        assert response.status_code == self.expected_status_codes["evaluation_approve"]
+
+        if response.status_code == status.NO_CONTENT:
+            assert evaluation.signatures.first().signed_text == "signature"
 
 
 class TestForPlaceAdmin(TestForMentor):
+    """Tests for internship place admins."""
+
+    expected_status_codes = {**TestForMentor.expected_status_codes, "evaluation_approve": status.NO_CONTENT}
+
     @pytest.fixture(autouse=True)
     def setup(self, api_client, place_admin):
+        """Log in as place admin."""
         api_client.force_authenticate(user=place_admin)
 
 
 class TestForStudent(TestForAuthenticated):
+    """Tests for internship students."""
+
     expected_status_codes = {
         "evaluation_list": status.OK,
         "evaluation_create": status.FORBIDDEN,
         "evaluation_update": status.FORBIDDEN,
         "evaluation_delete": status.FORBIDDEN,
+        "evaluation_approve": status.FORBIDDEN,
     }
 
     @pytest.fixture(autouse=True)
     def setup(self, api_client, internship):
+        """Log in as student."""
         api_client.force_authenticate(user=internship.student.user)
 
 
 class TestForOtherEducationOfficeMember(TestForAuthenticated):
+    """Tests for office members of other educations."""
+
     @pytest.fixture(autouse=True)
     def setup(self, api_client, office_member_of_other_education):
+        """Log in as office member of other education."""
         api_client.force_authenticate(user=office_member_of_other_education)
 
 
 class TestForOfficeMember(TestForAuthenticated):
+    """Tests for office members of the internship's education."""
+
     expected_status_codes = {
         "evaluation_list": status.OK,
         "evaluation_create": status.FORBIDDEN,
         "evaluation_update": status.FORBIDDEN,
         "evaluation_delete": status.FORBIDDEN,
+        "evaluation_approve": status.FORBIDDEN,
     }
 
     @pytest.fixture(autouse=True)
     def setup(self, api_client, office_member):
+        """Log in as office member."""
         api_client.force_authenticate(user=office_member)

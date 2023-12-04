@@ -1,18 +1,24 @@
-from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from http import HTTPStatus as status
 
-from metis.models import Evaluation
+from rest_framework.decorators import action
+from rest_framework.permissions import SAFE_METHODS, BasePermission
+from rest_framework.response import Response
+
+from metis.models import Evaluation, Signature
 
 from ...serializers import EvaluationSerializer
 from .internships import InternshipNestedModelViewSet
 
 
-class EvaluationPermissions(IsAuthenticated):
-    def has_permission(self, request, view):
-        internship = view.get_internship()
+class EvaluationPermissions(BasePermission):
+    """Permissions for evaluations."""
 
+    def has_permission(self, request, view):
+        """Checks if the user has permission to access the view."""
         if not bool(request.user and request.user.is_authenticated):
             return False
+
+        internship = view.get_internship()
 
         if request.method in SAFE_METHODS:
             return (
@@ -30,18 +36,31 @@ class EvaluationPermissions(IsAuthenticated):
         return internship.mentors.filter(user=request.user).exists()
 
     def has_object_permission(self, request, view, obj):
+        """Checks if the user has permission to manipulate the Evaluation object."""
         if request.method in SAFE_METHODS:
             return True
+
+        if request.method == "POST" and request.resolver_match.url_name == "project-internship-evaluation-approve":
+            return obj.internship.place.contacts.filter(user=request.user, is_admin=True).exists()
 
         return obj.internship.mentors.filter(user=request.user).exists()
 
 
 class EvaluationViewSet(InternshipNestedModelViewSet):
+    """API endpoint for evaluations."""
+
     queryset = Evaluation.objects.prefetch_related("internship__project__education")
     pagination_class = None
     permission_classes = (EvaluationPermissions,)
     serializer_class = EvaluationSerializer
 
-    @action(detail=False, methods=["post"])
+    @action(detail=True, methods=["post"])
     def approve(self, request, *args, **kwargs):
-        raise NotImplementedError
+        """Approves an evaluation."""
+        evaluation = self.get_object()
+        signed_text = request.data.get("signed_text", "")
+
+        signature = Signature.objects.create(content_object=evaluation, user=request.user, signed_text=signed_text)
+        Evaluation.approve(evaluation, signature)
+
+        return Response(status=status.NO_CONTENT)

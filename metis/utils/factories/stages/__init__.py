@@ -7,3 +7,4 @@ from .places import *
 from .programs import *
 from .projects import *
 from .students import *
+from .timesheets import *

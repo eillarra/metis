@@ -1,7 +1,7 @@
 from http import HTTPStatus as status
 
 from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework.response import Response
 
 from metis.models import Absence, Signature, Timesheet
@@ -10,12 +10,18 @@ from ...serializers import AbsenceSerializer, TimesheetSerializer
 from .internships import InternshipNestedModelViewSet
 
 
-class TimesheetPermissions(IsAuthenticated):
+class TimesheetPermissions(BasePermission):
+    """Permissions for timesheets."""
+
     def has_permission(self, request, view):
+        """Checks if the user has permission to access the view."""
+        if not bool(request.user and request.user.is_authenticated):
+            return False
+
         internship = view.get_internship()
 
         if request.method in SAFE_METHODS:
-            return bool(request.user and request.user.is_authenticated) and (
+            return (
                 internship.place.can_be_managed_by(request.user)
                 or internship.student.user == request.user
                 or internship.mentors.filter(user=request.user).exists()
@@ -30,6 +36,7 @@ class TimesheetPermissions(IsAuthenticated):
         return internship.student.user == request.user
 
     def has_object_permission(self, request, view, obj):
+        """Checks if the user has permission to manipulate the Timesheet object."""
         if request.method in SAFE_METHODS:
             return True
 
@@ -37,6 +44,8 @@ class TimesheetPermissions(IsAuthenticated):
 
 
 class AbsenceViewSet(InternshipNestedModelViewSet):
+    """API endpoint for absences."""
+
     queryset = Absence.objects.prefetch_related("internship__project__education", "files")
     pagination_class = None
     permission_classes = (TimesheetPermissions,)
@@ -44,6 +53,8 @@ class AbsenceViewSet(InternshipNestedModelViewSet):
 
 
 class TimesheetViewSet(InternshipNestedModelViewSet):
+    """API endpoint for timesheets."""
+
     queryset = Timesheet.objects.prefetch_related("internship__project__education")
     pagination_class = None
     permission_classes = (TimesheetPermissions,)
@@ -51,6 +62,7 @@ class TimesheetViewSet(InternshipNestedModelViewSet):
 
     @action(detail=False, methods=["post"])
     def approve(self, request, *args, **kwargs):
+        """Approves timesheets."""
         internship = self.get_internship()
         timesheet_ids = request.data.get("ids", [])
         signed_text = request.data.get("signed_text", "")

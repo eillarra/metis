@@ -7,6 +7,7 @@ from django.db import models
 from metis.models.base import BaseModel
 from metis.models.rel.files import FilesMixin
 from metis.models.rel.remarks import RemarksMixin
+from metis.models.rel.signatures import SignaturesMixin
 from metis.utils.dates import get_minutes_difference, get_time_difference, sum_times
 
 
@@ -42,10 +43,10 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
         cls.objects.filter(id=absence.pk).update(is_approved=True)
 
 
-class Timesheet(BaseModel):
-    """
-    A timesheet for a student during their internship.
-    At least one of the time field "couples" must be filled in (am or pm).
+class Timesheet(SignaturesMixin, BaseModel):
+    """A timesheet for a student during their internship.
+
+    At least one of the time field "pairs" must be filled in (am or pm).
     """
 
     internship = models.ForeignKey("metis.Internship", related_name="timesheets", on_delete=models.CASCADE)
@@ -61,6 +62,9 @@ class Timesheet(BaseModel):
         unique_together = (("internship", "date"),)
 
     def clean(self) -> None:
+        """Validate the timesheet."""
+        if self.is_approved:
+            raise ValidationError("Cannot modify an approved timesheet.")
         if self.date < self.internship.start_date or self.date > self.internship.end_date:
             raise ValidationError("Timesheet date must be within internship start and end dates.")
         if not self.start_time_am and not self.start_time_pm and not self.end_time_am and not self.end_time_pm:
@@ -95,9 +99,7 @@ class Timesheet(BaseModel):
 
     @property
     def duration(self) -> time:
-        """
-        return duration as dateime.time for the total hours worked on the timesheet
-        """
+        """Duration as dateime.time for the total of hours worked on the timesheet."""
         am_diff = time(0, 0)
         pm_diff = time(0, 0)
 

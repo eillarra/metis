@@ -13,6 +13,7 @@ from metis.utils.factories import (
     ProjectFactory,
     ProjectPlaceFactory,
     StudentFactory,
+    TimesheetFactory,
     UserFactory,
 )
 from metis.utils.fixtures.programs import create_audiology_program
@@ -80,19 +81,24 @@ def user(db):
 
 @pytest.mark.api
 class TestForAnonymous:
+    """Tests for anonymous users."""
+
     expected_status_codes: dict[str, status] = {
         "timesheet_list": status.FORBIDDEN,
         "timesheet_create": status.FORBIDDEN,
         "timesheet_update": status.FORBIDDEN,
         "timesheet_delete": status.FORBIDDEN,
+        "timesheet_approve": status.FORBIDDEN,
     }
 
     def test_list_timesheets(self, api_client, education, internship):
+        """Test listing timesheets for an internship."""
         url = reverse("v1:project-internship-timesheet-list", args=[education.id, internship.project_id, internship.id])
         response = api_client.get(url)
         assert response.status_code == self.expected_status_codes["timesheet_list"]
 
     def test_create_timesheet(self, api_client, education, internship):
+        """Test creating a timesheet for an internship."""
         url = reverse("v1:project-internship-timesheet-list", args=[education.id, internship.project_id, internship.id])
         response = api_client.post(
             url,
@@ -108,59 +114,93 @@ class TestForAnonymous:
             assert response.data["internship"] == internship.id
             assert response.data["date"] == str(internship.start_date)
 
+    def test_approve_timesheets(self, api_client, education, internship):
+        """Test approving timesheets for an internship."""
+        timesheet = TimesheetFactory.create(
+            internship=internship, date=internship.start_date, start_time_am="8:00", end_time_am="12:00"
+        )
+        url = reverse(
+            "v1:project-internship-timesheet-approve", args=[education.id, internship.project_id, internship.id]
+        )
+        response = api_client.post(url, {"ids": [timesheet.id], "signed_text": "signature"})
+        assert response.status_code == self.expected_status_codes["timesheet_approve"]
+
+        if response.status_code == status.NO_CONTENT:
+            assert internship.timesheets.first().signatures.first().signed_text == "signature"
+
 
 class TestForAuthenticated(TestForAnonymous):
+    """Tests for authenticated users."""
+
     @pytest.fixture(autouse=True)
     def setup(self, api_client, user):
+        """Log in as user."""
         api_client.force_authenticate(user=user)
 
 
 class TestForMentor(TestForAuthenticated):
+    """Tests for mentors."""
+
     expected_status_codes = {
         "timesheet_list": status.OK,
         "timesheet_create": status.FORBIDDEN,
         "timesheet_update": status.FORBIDDEN,
         "timesheet_delete": status.FORBIDDEN,
+        "timesheet_approve": status.NO_CONTENT,
     }
 
     @pytest.fixture(autouse=True)
     def setup(self, api_client, internship):
+        """Log in as mentor."""
         api_client.force_authenticate(user=internship.mentors.first().user)
 
 
 class TestForPlaceAdmin(TestForMentor):
+    """Tests for place admins."""
+
     @pytest.fixture(autouse=True)
     def setup(self, api_client, place_admin):
+        """Log in as place admin."""
         api_client.force_authenticate(user=place_admin)
 
 
 class TestForStudent(TestForAuthenticated):
+    """Tests for students."""
+
     expected_status_codes = {
         "timesheet_list": status.OK,
         "timesheet_create": status.CREATED,
         "timesheet_update": status.OK,
         "timesheet_delete": status.NO_CONTENT,
+        "timesheet_approve": status.FORBIDDEN,
     }
 
     @pytest.fixture(autouse=True)
     def setup(self, api_client, internship):
+        """Log in as student."""
         api_client.force_authenticate(user=internship.student.user)
 
 
 class TestForOtherEducationOfficeMember(TestForAuthenticated):
+    """Tests for office members of other educations."""
+
     @pytest.fixture(autouse=True)
     def setup(self, api_client, office_member_of_other_education):
         api_client.force_authenticate(user=office_member_of_other_education)
 
 
 class TestForOfficeMember(TestForAuthenticated):
+    """Tests for office members of the internship's education."""
+
     expected_status_codes = {
         "timesheet_list": status.OK,
         "timesheet_create": status.FORBIDDEN,
         "timesheet_update": status.FORBIDDEN,
         "timesheet_delete": status.FORBIDDEN,
+        "timesheet_approve": status.FORBIDDEN,
     }
 
     @pytest.fixture(autouse=True)
     def setup(self, api_client, office_member):
+        """Log in as office member."""
         api_client.force_authenticate(user=office_member)
