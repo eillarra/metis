@@ -25,6 +25,9 @@ class PlaceType(BaseModel):
         db_table = "metis_education_place_types"
         ordering = ["education", "position", "name"]
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class PlaceTypeTranslationOptions(TranslationOptions):
     """Translation options for PlaceType."""
@@ -68,7 +71,13 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
 
     @property
     def agreement(self) -> "File":
+        """The agreement file for the place."""
         return self.get_file("agreement")
+
+    @property
+    def risk_analysis(self) -> "File":
+        """The risk analysis file for the place."""
+        return self.get_file("risk_analysis")
 
 
 class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):

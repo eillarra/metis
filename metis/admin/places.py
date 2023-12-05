@@ -3,6 +3,7 @@ from django.contrib import admin
 from metis.models.places import Place, PlaceType
 
 from .base import BaseModelAdmin
+from .rel.files import FilesInline
 from .rel.remarks import RemarksInline
 
 
@@ -14,7 +15,7 @@ class PlaceAdmin(BaseModelAdmin):
     list_display = ("id", "code", "name", "education")
     list_filter = ("type", "education")
     # form
-    inlines = (RemarksInline,)
+    inlines = (FilesInline, RemarksInline)
     raw_id_fields = ("parent",)
 
     def get_queryset(self, request):
