@@ -1,8 +1,9 @@
 from collections.abc import Generator
 from typing import Literal
 
-from django.utils.html import conditional_escape
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
+
+from metis.utils.html import sanitize
 
 
 class Translation(BaseModel):
@@ -186,7 +187,7 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
     # users normally shouldn't be able to enter HTML, but we can't be sure
     # TODO: if we expect HTML, we should create a valid field type for it
 
-    return _escape_html(data)
+    return _sanitize_html(data)
 
 
 def _validate_options(available_options: set[str], data: dict, field_code: str) -> None:
@@ -202,14 +203,14 @@ def _validate_options(available_options: set[str], data: dict, field_code: str) 
         raise ValueError(f"Duplicate values for field `{field_code}`")
 
 
-def _escape_html(data: dict) -> dict:
+def _sanitize_html(data: dict) -> dict:
     for key, value in data.items():
         if isinstance(value, str):
-            data[key] = conditional_escape(value)
+            data[key] = sanitize(value)
         if isinstance(value, list):
             for i, item in enumerate(value):
                 if isinstance(item, str):
-                    data[key][i] = conditional_escape(item)
+                    data[key][i] = sanitize(item)
         if isinstance(value, dict):
-            data[key] = _escape_html(value)
+            data[key] = _sanitize_html(value)
     return data
