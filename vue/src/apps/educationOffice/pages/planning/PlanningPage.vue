@@ -1,6 +1,10 @@
 <template>
   <div class="row q-col-gutter-sm q-mb-lg">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('allocation') }}</h3>
+    <h3 class="text-ugent col-12 col-md-3 q-mb-none use-default-q-btn">{{ $t('allocation') }}
+      <a v-show="internships.length" :href="projectExcelPath" target="_blank">
+        <q-btn round outline :icon="iconDownload" size="sm" color="primary" class="q-ml-md q-pa-xs" />
+      </a>
+    </h3>
     <div class="col"></div>
     <period-select as-filter :periods="periodOptions" v-model="selectedPeriod" class="col-6 col-md-2" />
     <q-select
@@ -55,7 +59,9 @@ import TrackSelect from '../../components/TrackSelect.vue';
 import InternshipsCalendar from './InternshipsCalendar.vue';
 import InternshipsTable from './InternshipsTable.vue';
 
-const { programs, internships } = storeToRefs(useStore());
+import { iconDownload } from '@/icons';
+
+const { project, programs, internships } = storeToRefs(useStore());
 
 const showTable = ref<boolean>(true);
 const selectedBlock = ref<number | null>(null);
@@ -63,6 +69,10 @@ const selectedDateRange = ref<QuasarDateRange | null>(null);
 const selectedDiscipline = ref<number | null>(null);
 const selectedPeriod = ref<number | null>(null);
 const selectedTrack = ref<number | null>(null);
+
+const projectExcelPath = computed(() => {
+  return `/nl/files/project_${project.value?.id}.xlsx`;
+});
 
 const disciplineOptions = computed(() => {
   const ids: Set<number> = new Set();

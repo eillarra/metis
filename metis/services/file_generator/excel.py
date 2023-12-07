@@ -4,8 +4,6 @@ from typing import NamedTuple
 import pandas as pd
 from django.http import HttpResponse
 
-from metis.models import Period
-
 
 class ExcelSheet(NamedTuple):
     """A sheet of an Excel file."""
@@ -47,51 +45,3 @@ class Excel:
         buffer.seek(0)  # rewind the buffer
 
         return ExcelResponse(buffer.read(), filename=f"{self.get_filename()}.xlsx")
-
-
-class PeriodIntershipsExcel:
-    """Generate an Excel file with all the internships of a period."""
-
-    def __init__(self, period: Period) -> None:
-        self.period = period
-
-    def get_response(self) -> HttpResponse:
-        """Generate an Excel file with all the internships of a period."""
-        columns = [
-            "status",
-            "student_number",
-            "student_name",
-            "student_email",
-            "place_name",
-            "place_admin",
-            "admin_email",
-            "mentors",
-            "mentor_emails",
-        ]
-        rows = []
-
-        for internship in self.period.internships.all():
-            admin = internship.place.contacts.filter(is_admin=True).first()
-            mentors = internship.mentors.all()
-            internship_data = {
-                "status": internship.status,
-                "student_number": internship.student.number,
-                "student_name": internship.student.user.name,
-                "student_email": internship.student.user.email,
-                "place_name": internship.place.name,
-                "place_admin": admin.user.name if admin else "",
-                "admin_email": admin.user.email if admin else "",
-                "mentors": ", ".join([mentor.user.name for mentor in mentors]),
-                "mentor_emails": ", ".join([mentor.user.email for mentor in mentors]),
-            }
-
-            rows.append(internship_data)
-
-        df = pd.DataFrame(rows, columns=columns)
-        df = df.fillna("")
-        buffer = BytesIO()
-        with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
-            df.to_excel(writer)
-        buffer.seek(0)
-
-        return ExcelResponse(buffer.read(), filename=f"p{self.period.pk}_internships.xlsx")

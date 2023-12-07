@@ -29,15 +29,16 @@ def test_get_minutes_difference(time1, time2, expected):
 @pytest.mark.parametrize(
     "times, expected",
     [
-        ([], "00:00"),
-        (["00:00", "00:00", "00:00"], "00:00"),
-        (["00:01", "00:01", "00:01"], "00:03"),
-        (["10:00", "12:00"], "22:00"),
-        (["00:01", "00:01", "00:01", "00:57"], "01:00"),
+        ([], (0, 0)),
+        (["00:00", "00:00", "00:00"], (0, 0)),
+        (["00:01", "00:01", "00:01"], (0, 3)),
+        (["10:00", "12:00"], (22, 0)),
+        (["00:01", "00:01", "00:01", "00:57"], (1, 0)),
+        (["13:23", "08:11", "10:01", "03:55"], (35, 30)),
     ],
 )
 @pytest.mark.unit
 def test_sum_times(times, expected):
     """Test the sum_times function."""
     times = [maya.parse(t).datetime().time() for t in times]
-    assert sum_times(times) == maya.parse(expected).datetime().time()
+    assert sum_times(times) == expected

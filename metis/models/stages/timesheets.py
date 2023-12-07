@@ -16,9 +16,7 @@ if TYPE_CHECKING:
 
 
 class Absence(FilesMixin, RemarksMixin, BaseModel):
-    """
-    An absence during a student's internship.
-    """
+    """An absence during a student's internship."""
 
     internship = models.ForeignKey("metis.Internship", related_name="absences", on_delete=models.CASCADE)
     start_at = models.DateTimeField()
@@ -99,7 +97,7 @@ class Timesheet(SignaturesMixin, BaseModel):
 
     @property
     def duration(self) -> time:
-        """Duration as dateime.time for the total of hours worked on the timesheet."""
+        """Duration as datetime.time for the total of hours worked on the timesheet."""
         am_diff = time(0, 0)
         pm_diff = time(0, 0)
 
@@ -108,4 +106,6 @@ class Timesheet(SignaturesMixin, BaseModel):
         if self.start_time_pm and self.end_time_pm:
             pm_diff = get_time_difference(self.start_time_pm, self.end_time_pm)
 
-        return sum_times([am_diff, pm_diff])
+        hours, minutes = sum_times([am_diff, pm_diff])
+
+        return time(hours, minutes)

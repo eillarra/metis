@@ -7,6 +7,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 
+from metis.utils.dates import sum_times
+
 from ..base import BaseModel
 from ..disciplines import Discipline
 from ..rel.remarks import RemarksMixin
@@ -19,8 +21,7 @@ if TYPE_CHECKING:
 
 
 def get_remaining_discipline_constraints(obj: "Internship") -> list[dict]:
-    """
-    Calculate the remaining discipline constraints based on the track constraints.
+    """Calculate the remaining discipline constraints based on the track constraints.
 
     Args:
         obj (Internship): An instance of the Internship class.
@@ -28,7 +29,6 @@ def get_remaining_discipline_constraints(obj: "Internship") -> list[dict]:
     Returns:
         List[Dict]: A list of remaining DisciplineConstraint objects.
     """
-
     covered_counts = obj.get_counter_for_disciplines()
     remaining_constraints = []
 
@@ -60,9 +60,7 @@ def get_remaining_discipline_constraints(obj: "Internship") -> list[dict]:
 
 
 def validate_discipline_choice(obj: "Internship") -> None:
-    """
-    TODO: this needs refactoring.
-    """
+    """TODO: this needs refactoring."""
     """
     Validate if the chosen discipline for an internship is available and meets the constraints.
 
@@ -99,9 +97,7 @@ def validate_discipline_choice(obj: "Internship") -> None:
 
 
 class Internship(RemarksMixin, BaseModel):
-    """
-    An internship by a student.
-    """
+    """An internship for a student."""
 
     PREPLANNING = "preplanning"
     CONCEPT = "concept"
@@ -132,7 +128,8 @@ class Internship(RemarksMixin, BaseModel):
     # reviewers (beoordelaars)
 
     def clean(self) -> None:
-        """
+        """Validate the internship data.
+
         Things to check:
         - the place is one of the places available for the project
         - the selected student is part of the selected project
@@ -169,10 +166,12 @@ class Internship(RemarksMixin, BaseModel):
 
     @property
     def is_active(self) -> bool:
+        """A boolean indicating whether the internship is active or not."""
         return self.start_date <= timezone.now().date() <= self.end_date
 
     @property
     def evaluation_form(self) -> Optional["EvaluationForm"]:
+        """The evaluation form for this internship."""
         qs = self.project.evaluation_forms.all()
 
         if self.period and qs.filter(period=self.period).exists():
@@ -187,18 +186,39 @@ class Internship(RemarksMixin, BaseModel):
 
     @cached_property
     def place(self) -> "Place":
+        """The place of the internship."""
         return self.project_place.place
 
     @property
     def program(self) -> Optional["Program"]:
+        """The program of the internship."""
         return self.period.program_internship.block.program if self.period else None
+
+    @property
+    def total_hours(self) -> tuple[int, int]:
+        """The total amount of (hours, minutes) worked during the internship."""
+        return sum_times([timesheet.duration for timesheet in self.timesheets.all()])
+
+    @property
+    def global_score(self):
+        """Global score as defined in the evaluation_form."""
+        try:
+            evaluation = self.evaluations.filter(intermediate=0).first()
+            evaluation_form = self.evaluation_form
+
+            if not evaluation_form:
+                return None
+
+            scores = {score["value"]: score for score in evaluation_form.definition["scores"]}
+            return scores[evaluation.data["global_score"]]
+        except Exception:
+            return None
 
     def accepts_cases(self) -> bool:
         raise NotImplementedError
 
     def get_available_disciplines(self) -> models.QuerySet:
-        """
-        Returns a set of all available disciplines included in the constraints.
+        """Returns a set of all available disciplines included in the constraints.
 
         Returns:
             QuerySet: A QuerySet of Discipline objects.
@@ -228,8 +248,7 @@ class Internship(RemarksMixin, BaseModel):
         return Discipline.objects.filter(internships__in=past_internships)
 
     def get_counter_for_disciplines(self) -> Counter:
-        """
-        Returns a dictionary of discipline IDs and their count for this internship.
+        """Returns a dictionary of discipline IDs and their count for this internship.
 
         Returns:
             Dict: A dictionary of disciplines and their count for this internship.
@@ -241,9 +260,7 @@ class Internship(RemarksMixin, BaseModel):
 
 
 class Mentor(BaseModel):
-    """
-    A Mentor is a User that is linked to an Internship.
-    """
+    """A Mentor is a User that is linked to an Internship."""
 
     internship = models.ForeignKey(Internship, related_name="mentors", on_delete=models.CASCADE)
     user = models.ForeignKey("metis.User", related_name="mentorships", on_delete=models.PROTECT)
@@ -254,8 +271,7 @@ class Mentor(BaseModel):
         unique_together = ("internship", "user")
 
     def clean(self) -> None:
-        """
-        TODO: check if there are issues when a contact is removed after the internship has been created.
+        """TODO: check if there are issues when a contact is removed after the internship has been created.
         Normally we don't need to change this entry anymore, so it should be ok.
         """
         if not self.internship.place.contacts.filter(user_id=self.user_id, is_mentor=True).exists():  # type: ignore

@@ -90,19 +90,23 @@ def get_time_difference(time1: time, time2: time) -> time:
     return time(diff.seconds // 3600, (diff.seconds // 60) % 60)
 
 
-def sum_times(times: list[time]) -> time:
+def sum_times(times: list[time]) -> tuple[int, int]:
     """Sum a list of times.
 
     Args:
         times: The list of times to sum.
 
     Returns:
-        The sum of the given times, in time.
+        The sum of the given times, as a tuple of hours and minutes.
     """
-    total = datetime.combine(date.today(), time())
+    hours = 0
+    minutes = 0
 
     for t in times:
-        minutes = total.minute + t.minute
-        total = time(total.hour + t.hour + minutes // 60, minutes % 60)
+        minutes += t.minute
+        hours += t.hour
 
-    return time(total.hour, total.minute)
+    hours += minutes // 60
+    minutes = minutes % 60
+
+    return hours, minutes
