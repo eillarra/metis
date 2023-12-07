@@ -1,7 +1,10 @@
 .DS_Store
 ._*
 
-# Django
+# Python
+
+.python-version
+.venv
 
 __pycache__
 *.py[cod]
@@ -17,7 +20,7 @@ dev.db
 htmlcov
 test-reports
 
-# Vue
+# Vue / TypeScript
 
 .vite
 node_modules
