@@ -18,7 +18,7 @@ class InternshipAdmin(BaseModelAdmin):
         ("project", admin.RelatedOnlyFieldListFilter),
         ("track", admin.RelatedOnlyFieldListFilter),
     )
-    search_fields = ("student__first_name", "student__last_name")
+    search_fields = ("student__user__first_name", "student__user__last_name")
     # form
     raw_id_fields = ("period", "student", "project_place")
     inlines = (RemarksInline,)
