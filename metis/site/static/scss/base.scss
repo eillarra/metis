@@ -196,6 +196,10 @@ code, kbd, pre, samp,
   }
 }
 
+.q-card.metis__dashcard {
+  height: 60px;
+}
+
 @media (min-width: 600px) {
   .metis-cookies-notify {
     max-width: 360px;
@@ -207,6 +211,13 @@ code, kbd, pre, samp,
   max-width: 100%;
 }
 
+.cursor-help {
+  cursor: help;
+}
+
+.q-tooltip {
+  font-size: small;
+}
 
 /* Drawer */
 

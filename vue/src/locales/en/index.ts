@@ -38,6 +38,11 @@ export default {
   contact_only: 'Only a contact',
   discipline: 'Discipline | Disciplines',
   document: 'Document | Documents',
+  download: {
+    excel: 'Download as Excel',
+    pdf: 'Download as PDF',
+  },
+  draft: 'Draft | Drafts',
   email_template: 'Email template | Email templates',
   evaluation: 'Evaluation | Evaluations',
   evaluation_intermediate: 'Intermediate evaluation | Intermediate evaluations',
@@ -179,6 +184,8 @@ export default {
       save: 'Save evaluation',
       saved: 'Evaluation information saved',
       show_points: 'Show points',
+      approve: 'Submit evaluation',
+      approved: 'Evaluation submitted',
     },
     internship: {
       create: {

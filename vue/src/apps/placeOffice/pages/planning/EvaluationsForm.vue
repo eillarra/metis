@@ -2,126 +2,157 @@
   <div v-if="formDefinition && evaluation && !processing" class="q-pb-xl">
     <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
       {{ title }}
+      <q-badge v-if="!evaluation.is_approved" color="orange" class="q-ml-sm" style="vertical-align: middle">{{
+        $t('draft')
+      }}</q-badge>
     </h4>
-    <div v-if="formDefinition.description">
-      <h6 class="q-mb-md">Werkwijze</h6>
-      <p>{{ formDefinition.description[l] }}</p>
+    <div v-if="evaluation.is_approved">
+      <big-message :text="$t('form.evaluation.approved')" icon="done_outline" />
     </div>
-    <div v-for="section in formDefinition.sections" :key="section.code">
-      <h6 v-if="section.title" class="q-mb-none">{{ section.title[l] }}</h6>
-      <q-markup-table flat dense>
+    <div v-else>
+      <div v-if="formDefinition.description">
+        <h6 class="q-mb-md">Werkwijze</h6>
+        <p>{{ formDefinition.description[l] }}</p>
+      </div>
+      <div v-for="section in formDefinition.sections" :key="section.code">
+        <h6 v-if="section.title" class="q-mb-none">{{ section.title[l] }}</h6>
+        <q-markup-table flat dense>
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th v-for="score in sectionScores" :key="score.value">{{ score.label[l] }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in section.items" :key="item.value">
+              <td>{{ item.label[l] }}</td>
+              <td class="q-table--col-auto-width">
+                <div class="q-px-xl">
+                  <q-radio
+                    v-for="ci in section.cross_items"
+                    :key="ci.value"
+                    v-model="evaluation.data.sections[section.code].scores[item.value][1]"
+                    :disable="processing"
+                    size="xs"
+                    :label="ci.label[l]"
+                    :val="ci.value"
+                  />
+                </div>
+              </td>
+              <td v-for="score in sectionScores" :key="score.value" class="q-table--col-auto-width text-center">
+                <q-radio
+                  v-model="evaluation.data.sections[section.code].scores[item.value][0]"
+                  :val="score.value"
+                  :disable="processing"
+                  size="xs"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="bg-light-blue-1">Deelscore</td>
+              <td v-for="score in sectionScores" :key="score.value" class="text-center bg-light-blue-1">
+                <q-radio
+                  v-if="score.value"
+                  v-model="evaluation.data.sections[section.code].score"
+                  :val="score.value"
+                  :disable="processing"
+                  size="xs"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+        <div v-if="section.with_remarks" class="q-mt-md">
+          <q-input
+            v-model="evaluation.data.sections[section.code].remarks"
+            dense
+            filled
+            :label="$t('remark', 9)"
+            type="textarea"
+          />
+        </div>
+      </div>
+      <q-markup-table flat bordered class="q-my-lg">
         <thead>
           <tr>
             <th></th>
             <th></th>
-            <th v-for="score in sectionScores" :key="score.value">{{ score.label[l] }}</th>
+            <th v-for="score in formDefinition.scores" :key="score.value">
+              <span v-if="score.only_for_global_score">/</span>
+              <span v-else-if="score.value">{{ score.label[l] }}</span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in section.items" :key="item.value">
-            <td>{{ item.label[l] }}</td>
-            <td class="q-table--col-auto-width">
-              <div class="q-px-xl">
-                <q-radio
-                  v-for="ci in section.cross_items"
-                  :key="ci.value"
-                  v-model="evaluation.data.sections[section.code].scores[item.value][1]"
-                  :disable="processing"
-                  size="xs"
-                  :label="ci.label[l]"
-                  :val="ci.value"
-                />
-              </div>
-            </td>
-            <td v-for="score in sectionScores" :key="score.value" class="q-table--col-auto-width text-center">
-              <q-radio
-                v-model="evaluation.data.sections[section.code].scores[item.value][0]"
-                :val="score.value"
-                :disable="processing"
-                size="xs"
-              />
-            </td>
-          </tr>
           <tr>
-            <td colspan="2" class="bg-light-blue-1">Deelscore</td>
-            <td v-for="score in sectionScores" :key="score.value" class="text-center bg-light-blue-1">
+            <td colspan="2" class="bg-light-green-1 text-left text-bold">Algemene beoordeling</td>
+            <td
+              v-for="score in formDefinition.scores"
+              :key="score.value"
+              class="q-table--col-auto-width text-center bg-light-green-1"
+            >
               <q-radio
-                v-if="score.value"
-                v-model="evaluation.data.sections[section.code].score"
+                v-if="score.value && score.points"
+                v-model="evaluation.data.global_score"
                 :val="score.value"
-                :disable="processing"
+                :disable="sectionsWithLowScore > 0 && score.points > (lowestScore?.points || 0)"
                 size="xs"
               />
             </td>
           </tr>
         </tbody>
       </q-markup-table>
-      <div v-if="section.with_remarks" class="q-mt-md">
-        <q-input
-          v-model="evaluation.data.sections[section.code].remarks"
-          dense
-          filled
-          :label="$t('remark', 9)"
-          type="textarea"
-        />
-      </div>
-    </div>
-    <q-markup-table flat bordered class="q-my-lg">
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-          <th v-for="score in formDefinition.scores" :key="score.value">
-            <span v-if="score.only_for_global_score">/</span>
-            <span v-else-if="score.value">{{ score.label[l] }}</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td colspan="2" class="bg-light-green-1 text-left text-bold">Algemene beoordeling</td>
-          <td
-            v-for="score in formDefinition.scores"
-            :key="score.value"
-            class="q-table--col-auto-width text-center bg-light-green-1"
-          >
-            <q-radio
-              v-if="score.value && score.points"
-              v-model="evaluation.data.global_score"
-              :val="score.value"
-              :disable="sectionsWithLowScore > 0 && score.points > (lowestScore?.points || 0)"
-              size="xs"
+      <q-input v-model="evaluation.data.global_remarks" dense filled :label="title" type="textarea" />
+      <q-page-sticky expand position="bottom" class="bg-white z-top">
+        <div class="full-width full-height text-right q-pr-lg q-pb-lg">
+          <q-separator class="q-my-lg" />
+          <p v-if="sectionsWithLowScore > 0" class="q-ml-md text-left text-body1 text-red text-bold">
+            Als een of merdere deelscores een onvoldoende hebben (of geen score), kan de algemene beoordeling niet hoger
+            zijn dan een onvoldoende.
+          </p>
+          <div class="q-gutter-sm">
+            <q-btn
+              v-if="evaluation.self"
+              unelevated
+              color="blue-1"
+              :label="`&nbsp;${$t('form.evaluation.approve')}`"
+              icon="done_outline"
+              class="text-ugent"
+              :disable="evaluation.is_approved"
+              @click="signatureVisible = true"
             />
-          </td>
-        </tr>
-      </tbody>
-    </q-markup-table>
-    <q-input v-model="evaluation.data.global_remarks" dense filled :label="title" type="textarea" />
-    <q-page-sticky expand position="bottom" class="bg-white z-top">
-      <div class="full-width full-height text-right q-pr-lg q-pb-lg">
-        <q-separator class="q-my-lg" />
-        <p v-if="sectionsWithLowScore > 0" class="q-ml-md text-left text-body1 text-red text-bold">
-          Als een of merdere deelscores een onvoldoende hebben (of geen score), kan de algemene beoordeling niet hoger
-          zijn dan een onvoldoende.
-        </p>
-        <q-btn
-          @click="saveEvaluation"
-          :disable="sending || !evaluation.data.global_score"
-          unelevated
-          color="ugent"
-          :label="$t('form.save')"
-        />
-      </div>
-    </q-page-sticky>
+            <q-btn
+              @click="saveEvaluation"
+              :disable="sending || !evaluation.data.global_score || evaluation.is_approved"
+              unelevated
+              color="ugent"
+              :label="$t('form.save')"
+            />
+            <signature-dialog
+              v-if="evaluation.self"
+              v-model="signatureVisible"
+              :title="$t('form.evaluation.approve')"
+              :text-to-sign="textToSign"
+              :callback="approveEvaluation"
+            />
+          </div>
+        </div>
+      </q-page-sticky>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { usePage } from '@inertiajs/vue3';
 
 import { api } from '@/axios.ts';
 import { notify } from '@/notify';
+
+import BigMessage from '@/components/BigMessage.vue';
+import SignatureDialog from '@/components/SignatureDialog.vue';
 
 const { t, locale } = useI18n();
 
@@ -129,7 +160,13 @@ const props = defineProps<{
   internship: Internship;
 }>();
 
+// --
+const page = usePage();
+const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_user as DjangoAuthenticatedUser);
+// --
+
 const l = ref<'en' | 'nl'>(locale.value as 'en' | 'nl');
+const signatureVisible = ref(false);
 const intermediate = {
   /* temporary */ // TODO: remove
   0: 0,
@@ -155,6 +192,14 @@ const formDefinition = computed<EvaluationFormDefinition | undefined>(
 
 const sectionScores = computed<EvaluationScore[]>(() => {
   return formDefinition.value?.scores.filter((score) => !score.only_for_global_score) || [];
+});
+
+const scoreTexts = computed<Record<number, string>>(() => {
+  var texts: Record<number, string> = {};
+  formDefinition.value?.scores.forEach((score: EvaluationScore) => {
+    texts[score.value] = score.label[l.value];
+  });
+  return texts;
 });
 
 /**
@@ -186,6 +231,21 @@ const sectionsWithLowScore = computed<number>(() => {
     }
   });
   return count;
+});
+
+const textToSign = computed<string>(() => {
+  let text = `Ondergetekende,
+
+${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value.email}) medewerker op stageplaats ${
+    props.internship.Place?.name
+  } bevestigt dat student ${props.internship.Student?.User?.name} met studentennummer ${
+    props.internship.Student?.number
+  } een score van **"${scoreTexts.value[evaluation.value?.data.global_score] || '-'}"** heeft behaald voor de **${
+    title.value
+  }**.
+`;
+
+  return text;
 });
 
 const updateEvaluationData = () => {
@@ -245,6 +305,26 @@ function saveEvaluation() {
       .then((res) => {
         notify.success(t('form.evaluation.create.success'));
         evaluation.value = res.data;
+      })
+      .finally(() => {
+        sending.value = false;
+      });
+  }
+}
+
+function approveEvaluation() {
+  sending.value = true;
+
+  if (evaluation.value && evaluation.value.self) {
+    saveEvaluation();
+
+    api
+      .post(`${evaluation.value.self}approve/`, { signed_text: textToSign.value })
+      .then(() => {
+        notify.success(t('form.evaluation.approved'));
+        if (evaluation.value) {
+          evaluation.value.is_approved = true;
+        }
       })
       .finally(() => {
         sending.value = false;

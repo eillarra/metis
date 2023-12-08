@@ -173,6 +173,12 @@ body {
   font-family: 'UGent Panno Medium', 'Arial', sans-serif;
   text-transform: none;
 
+  &:not(.q-btn--round) .q-icon {
+    font-size: 1em;
+    margin-right: 0.25em;
+    width: 0.75em;
+  }
+
   &:not(.q-date *, .q-table__control *, .q-editor__toolbar-group *, .q-banner *, .use-default-q-btn *) {
     font-size: $panno-body-font-size;
     line-height: 15px;

@@ -35,6 +35,7 @@ interface Evaluation extends ApiObject {
   url: string;
   form: number;
   data: EvaluationData;
+  is_approved: boolean;
   // -----
   form_definition?: EvaluationFormDefinition;
   Form?: EvaluationForm;

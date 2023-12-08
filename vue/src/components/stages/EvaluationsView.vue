@@ -27,13 +27,16 @@
       </q-btn>
     </div>
   </div>
-  <div class="row q-col-gutter-md q-mb-lg text-right">
+  <div class="row q-col-gutter-md q-mb-lg">
     <div class="col-12 col-md-3" v-for="evaluation in evaluations" :key="evaluation.id">
-      <q-card flat class="bg-grey-2 q-pa-md">
-        <span class="text-h5 text-ugent">
-          <a :href="evaluation.url" target="_blank"><q-icon name="download" /></a>
-        </span>
-        <small class="float-left">{{ evaluation.name }}</small>
+      <q-card flat class="bg-grey-2 q-pa-md metis__dashcard">
+        <a v-if="evaluation.is_approved" :href="evaluation.url" target="_blank" class="text-h5 text-ugent float-right">
+          <q-icon name="download" />
+        </a>
+        <q-icon v-else name="draw" class="text-h5 text-grey-6 float-right cursor-help">
+          <q-tooltip :delay="250">{{ $t('draft') }}</q-tooltip>
+        </q-icon>
+        <small>{{ evaluation.name }}<strong v-if="!evaluation.is_approved"></strong></small>
       </q-card>
     </div>
   </div>

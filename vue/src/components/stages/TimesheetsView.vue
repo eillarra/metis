@@ -1,32 +1,36 @@
 <template>
   <div class="row q-col-gutter-sm q-mb-none">
-    <h4 class="col-12 col-md-6 q-mt-none q-mb-lg">
+    <h4 class="col-12 col-md-6 q-mt-none q-mb-lg use-default-q-btn">
       {{ $t('timesheet', 9) }}
+      <!--<a v-show="timesheets.length" href="#" target="_blank">
+        <q-btn round outline :icon="iconDownload" size="sm" color="primary" class="q-ml-md q-pa-xs">
+          <q-tooltip :delay="250">{{ $t('download.pdf') }}</q-tooltip>
+        </q-btn>
+      </a>-->
     </h4>
-    <div v-if="approvable" class="col-12 col-md text-right ugent__create-btn">
+    <div v-if="approvable" class="col-12 col-md text-right">
       <q-btn
         unelevated
         color="blue-1"
         :label="`&nbsp;${$t('form.approve')}`"
         icon="done_outline"
         class="text-ugent"
-        style="padding: 0 30px !important"
         :disable="selectedPendingApproval.length === 0"
         @click="dialogVisible = true"
       />
     </div>
   </div>
-  <div class="row q-col-gutter-md q-mb-lg text-right">
+  <div class="row q-col-gutter-md q-mb-lg">
     <div class="col-12 col-md-3">
-      <q-card flat class="bg-grey-2 q-pa-md">
-        <span class="text-h5 text-ugent">{{ totalTime }}</span>
-        <small class="float-left">{{ $t('form.timesheet.help.time_total') }}</small>
+      <q-card flat class="bg-grey-2 q-pa-md metis__dashcard">
+        <span class="text-h5 text-ugent float-right">{{ totalTime }}</span>
+        <small>{{ $t('form.timesheet.help.time_total') }}</small>
       </q-card>
     </div>
     <div class="col-12 col-md-3">
-      <q-card flat class="bg-grey-2 q-pa-md">
-        <span class="text-h5 text-grey-8">{{ totalPendingApproval }}</span>
-        <small class="float-left">{{ $t('form.timesheet.help.time_pending') }}</small>
+      <q-card flat class="bg-grey-2 q-pa-md metis__dashcard">
+        <span class="text-h5 text-grey-8 float-right">{{ totalPendingApproval }}</span>
+        <small>{{ $t('form.timesheet.help.time_pending') }}</small>
       </q-card>
     </div>
   </div>
@@ -41,49 +45,12 @@
     v-model:selected="selected"
   >
   </data-table>
-  <q-dialog v-model="dialogVisible">
-    <q-layout view="hHh lpR fFf" container class="bg-white metis__dialog-editor" style="height: 600px">
-      <q-header class="bg-white q-pt-sm">
-        <q-toolbar class="text-primary q-pl-lg q-pr-sm">
-          <q-icon name="notes" />
-          <q-toolbar-title>{{ $t('form.timesheet.approve') }}</q-toolbar-title>
-          <q-space />
-          <q-btn flat dense v-close-popup icon="close" style="padding: 8px" />
-        </q-toolbar>
-      </q-header>
-      <q-page-container>
-        <markdown-toast-viewer v-model="finalText" :source-text="signedText" class="q-px-lg" />
-      </q-page-container>
-      <q-footer class="bg-white text-dark q-pa-lg">
-        <q-list class="q-my-md">
-          <q-item tag="label" v-ripple>
-            <q-item-section avatar top>
-              <q-checkbox v-model="acceptanceChecked" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Gelezen en goedgekeurd</q-item-label>
-              <q-item-label class="text-body2">
-                Handtekening - door 'Gelezen en goedgekeurd' aan te vinken en op de knop 'ondertekenen' te klikken
-                onderteken je dit document en erken je uitdrukkelijk dat deze dezelfde juridische waarde heeft en
-                juridisch bindend is op dezelfde manier als een origineel ondertekende versie.
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-        <small></small>
-        <div class="flex q-gutter-sm">
-          <q-space />
-          <q-btn
-            @click="approveTimesheets"
-            unelevated
-            color="ugent"
-            :label="$t('form.sign')"
-            :disable="!acceptanceChecked"
-          />
-        </div>
-      </q-footer>
-    </q-layout>
-  </q-dialog>
+  <signature-dialog
+    v-model="dialogVisible"
+    :title="$t('form.timesheet.approve')"
+    :text-to-sign="textToSign"
+    :callback="approveTimesheets"
+  />
 </template>
 
 <script setup lang="ts">
@@ -95,8 +62,10 @@ import { api } from '@/axios.ts';
 import { notify } from '@/notify';
 import { sumHours } from '@/utils/dates';
 
-import MarkdownToastViewer from '@/components/forms/MarkdownToastViewer.vue';
+import SignatureDialog from '@/components/SignatureDialog.vue';
 import DataTable from '@/components/tables/DataTable.vue';
+
+import { iconDownload } from '@/icons';
 
 const props = defineProps<{
   internship: Internship;
@@ -105,15 +74,15 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const timesheets = ref<Timesheet[]>([]);
-const selected = ref<Timesheet[]>([]);
-const dialogVisible = ref(false);
-const acceptanceChecked = ref(false);
-
 // --
 const page = usePage();
 const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_user as DjangoAuthenticatedUser);
 // --
+
+const timesheets = ref<Timesheet[]>([]);
+const selected = ref<Timesheet[]>([]);
+const dialogVisible = ref(false);
+const acceptanceChecked = ref(false);
 
 const selectedPendingApproval = computed(() => {
   return selected.value
@@ -121,8 +90,7 @@ const selectedPendingApproval = computed(() => {
     .sort((a, b) => (a._self as Timesheet).date.localeCompare((b._self as Timesheet).date));
 });
 
-const finalText = ref<string>('');
-const signedText = computed<string>(() => {
+const textToSign = computed<string>(() => {
   let text = `Ondergetekende,
 
 ${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value.email}) medewerker op stageplaats ${props.internship.Place?.name} bevestigt dat student ${props.internship.Student?.User?.name} met studentennummer ${props.internship.Student?.number} hier stage heeft gelopen op:
@@ -219,7 +187,7 @@ function approveTimesheets() {
 
   const ids = selected.value.map((obj) => (obj._self as Timesheet).id);
 
-  api.post(`${props.internship.rel_timesheets}approve/`, { ids: ids, signed_text: signedText.value }).then(() => {
+  api.post(`${props.internship.rel_timesheets}approve/`, { ids: ids, signed_text: textToSign.value }).then(() => {
     notify.success(t('form.timesheet.approved'));
     fetchTimesheets();
     reset();

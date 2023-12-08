@@ -37,6 +37,11 @@ export default {
   contact_only: 'Enkel een contactpersoon',
   discipline: 'Discipline | Disciplines',
   document: 'Document | Documenten',
+  download: {
+    excel: 'Als Excel downloaden',
+    pdf: 'Als PDF downloaden',
+  },
+  draft: 'Concept | Concepten',
   email_template: 'E-mail template | E-mail templates',
   evaluation: 'Evaluatie | Evaluaties',
   evaluation_intermediate: 'Tussentijdse evaluatie | Tussentijdse evaluaties',
@@ -178,6 +183,8 @@ export default {
       save: 'Evaluatie opslaan',
       saved: 'Evaluatie informatie opgeslagen',
       show_points: 'Punten tonen',
+      approve: 'Evaluatie doorsturen',
+      approved: 'Evaluatie doorgestuurd',
     },
     internship: {
       create: {

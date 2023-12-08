@@ -3,12 +3,6 @@
   padding: 0 !important;
   min-height: 40px !important;
 
-  .q-icon {
-    font-size: 1em;
-    margin-right: 0.25em;
-    width: 0.75em;
-  }
-
   &:hover {
     background-color: #e6f0ff !important;
     color: white;

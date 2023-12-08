@@ -3,7 +3,9 @@
     <h3 class="text-ugent col-12 col-md-3 q-mb-none use-default-q-btn">
       {{ $t('allocation') }}
       <a v-show="internships.length" :href="projectExcelPath" target="_blank">
-        <q-btn round outline :icon="iconDownload" size="sm" color="primary" class="q-ml-md q-pa-xs" />
+        <q-btn round outline :icon="iconDownload" size="sm" color="primary" class="q-ml-md q-pa-xs">
+          <q-tooltip :delay="250">{{ $t('download.excel') }}</q-tooltip>
+        </q-btn>
       </a>
     </h3>
     <div class="col"></div>
