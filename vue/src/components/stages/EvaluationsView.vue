@@ -17,7 +17,7 @@
 </style>
 
 <template>
-  <div class="row reverse q-col-gutter-lg q-mb-sm">
+  <div class="row q-col-gutter-lg q-mb-sm" :class="{ reverse: props.showPoints }">
     <div v-if="props.showPoints" class="col-12 col-md text-right ugent__create-btn">
       <q-btn unelevated color="blue-1" class="text-ugent">
         <q-toggle v-model="pointsToggle" :label="$t('form.evaluation.show_points')" class="q-pr-md" />

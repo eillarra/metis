@@ -250,12 +250,13 @@ export default {
       signed: 'Tekst ondertekend',
     },
     timesheet: {
+      title: 'Tijdenlijst bijwerken',
       help: {
         time_total: 'Totaal aantal uren',
         time_pending: 'Aantal uren niet goedgekeurd',
         choose_date: 'Kies een datum',
         calendar_colors:
-          'Kies een datum om een stagetijd toe te voegen of te bewerken. Oranje dagen zijn nog niet goedgekeurd door de mentor(en) en kunnen nog bewerkt worden. Groene dagen zijn goedgekeurd en kunnen niet meer bewerkt worden.',
+          'Kies een datum om een stagetijd toe te voegen of te bijwerken. Oranje dagen zijn nog niet goedgekeurd door de mentor(en) en kunnen nog bewerkt worden. Groene dagen zijn goedgekeurd en kunnen niet meer bewerkt worden.',
       },
       create: {
         new: 'Nieuwe stagetijd aanmaken',
@@ -263,7 +264,7 @@ export default {
       },
       approve: 'Stagetijd(en) goedkeuren',
       approved: 'Stagetijd(en) goedgekeurd',
-      edit: 'Stagetijd bewerken',
+      edit: 'Stagetijd bijwerken',
       saved: 'Stagetijd informatie opgeslagen',
     },
   },

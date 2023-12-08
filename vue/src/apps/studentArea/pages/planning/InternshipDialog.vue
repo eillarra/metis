@@ -26,6 +26,18 @@
           </q-item-section>
           <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
         </q-item>
+        <q-item-label header>{{ $t('form.update') }}</q-item-label>
+        <q-item
+          clickable
+          @click="tab = 'timesheetsForm'"
+          :active="tab == 'timesheetsForm'"
+          active-class="bg-ugent text-white"
+        >
+          <q-item-section avatar>
+            <q-icon name="more_time" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
+        </q-item>
       </q-list>
     </template>
     <template #page>
@@ -76,14 +88,17 @@
             </div>
           </div>
         </q-tab-panel>
-        <q-tab-panel name="timesheets">
-          <div class="row q-col-gutter-sm q-mb-lg">
-            <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('timesheet', 9) }}</h4>
-          </div>
-          <timesheets-view :internship="obj" />
-        </q-tab-panel>
         <q-tab-panel name="evaluations">
           <evaluations-view :internship="obj" />
+        </q-tab-panel>
+        <q-tab-panel name="timesheets">
+          <timesheets-view :internship="obj" />
+        </q-tab-panel>
+        <q-tab-panel name="timesheetsForm">
+          <div class="row q-col-gutter-sm q-mb-lg">
+            <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('form.timesheet.title') }}</h4>
+          </div>
+          <timesheets-form :internship="obj" />
         </q-tab-panel>
       </q-tab-panels>
     </template>
@@ -98,7 +113,8 @@ import FullDialog from '@/components/FullDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
-import TimesheetsView from './timesheets/TimesheetsView.vue';
+import TimesheetsView from '@/components/stages/TimesheetsView.vue';
+import TimesheetsForm from './TimesheetsForm.vue';
 
 const props = defineProps<{
   obj: Internship;

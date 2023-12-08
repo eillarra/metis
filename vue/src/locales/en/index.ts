@@ -251,6 +251,7 @@ export default {
       signed: 'Text signed',
     },
     timesheet: {
+      title: 'Update timesheets',
       help: {
         time_total: 'Total time',
         time_pending: 'Time pending approval',
