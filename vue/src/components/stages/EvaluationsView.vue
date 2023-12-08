@@ -17,15 +17,15 @@
 </style>
 
 <template>
-  <div class="row q-col-gutter-lg q-mb-sm" :class="{ reverse: props.showPoints }">
+  <div class="row q-col-gutter-lg q-mb-none">
+    <h4 class="col-12 col-md-6 q-mt-none q-mb-lg">
+      {{ $t('evaluation', 9) }}
+    </h4>
     <div v-if="props.showPoints" class="col-12 col-md text-right ugent__create-btn">
       <q-btn unelevated color="blue-1" class="text-ugent">
         <q-toggle v-model="pointsToggle" :label="$t('form.evaluation.show_points')" class="q-pr-md" />
       </q-btn>
     </div>
-    <h4 class="col-12 col-md-6 q-mt-none q-mb-none">
-      {{ $t('evaluation', 9) }}
-    </h4>
   </div>
   <div class="row q-col-gutter-md q-mb-lg text-right">
     <div class="col-12 col-md-3" v-for="evaluation in evaluations" :key="evaluation.id">

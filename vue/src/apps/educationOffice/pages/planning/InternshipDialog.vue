@@ -36,7 +36,7 @@
           <q-item-section avatar>
             <q-icon name="checklist" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section>{{ $t('evaluation') }}</q-item-section>
+          <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
         </q-item>
         <q-item-label header>{{ $t('other') }}</q-item-label>
         <q-item clickable @click="tab = 'remarks'" :active="tab == 'remarks'" active-class="bg-ugent text-white">

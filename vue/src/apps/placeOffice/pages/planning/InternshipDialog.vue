@@ -30,6 +30,18 @@
           <q-item-section avatar>
             <q-icon name="checklist" size="xs"></q-icon>
           </q-item-section>
+          <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
+        </q-item>
+        <q-item-label header>{{ $t('form.update') }}</q-item-label>
+        <q-item
+          clickable
+          @click="tab = 'evaluationsForm'"
+          :active="tab == 'evaluationsForm'"
+          active-class="bg-ugent text-white"
+        >
+          <q-item-section avatar>
+            <q-icon name="playlist_add_check" size="xs"></q-icon>
+          </q-item-section>
           <q-item-section>{{ $t('evaluation') }}</q-item-section>
         </q-item>
       </q-list>
@@ -54,11 +66,14 @@
         <q-tab-panel name="mentors">
           <mentors-view :editable="userIsAdmin" :obj="obj" @update:obj="(obj: Internship) => updateObj(obj)" />
         </q-tab-panel>
-        <q-tab-panel name="timesheets">
-          <timesheets-view :internship="obj" approvable />
-        </q-tab-panel>
         <q-tab-panel name="evaluations">
           <evaluations-view :internship="obj" />
+        </q-tab-panel>
+        <q-tab-panel name="evaluationsForm">
+          <evaluations-form :internship="obj" />
+        </q-tab-panel>
+        <q-tab-panel name="timesheets">
+          <timesheets-view :internship="obj" approvable />
         </q-tab-panel>
       </q-tab-panels>
     </template>
@@ -74,9 +89,10 @@ import { useStore } from '../../store.js';
 
 import FullDialog from '@/components/FullDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
+import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';
-import EvaluationsView from './EvaluationsView.vue';
+import EvaluationsForm from './EvaluationsForm.vue';
 
 const props = defineProps<{
   obj: Internship;

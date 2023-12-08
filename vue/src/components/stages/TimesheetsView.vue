@@ -1,15 +1,16 @@
 <template>
-  <div class="row q-col-gutter-sm q-mb-lg">
-    <h4 class="col-12 col-md q-mt-none q-mb-none">
+  <div class="row q-col-gutter-sm q-mb-none">
+    <h4 class="col-12 col-md-6 q-mt-none q-mb-lg">
       {{ $t('timesheet', 9) }}
     </h4>
-    <div v-if="approvable" class="col-12 col-md-2 text-right ugent__create-btn">
+    <div v-if="approvable" class="col-12 col-md text-right ugent__create-btn">
       <q-btn
         unelevated
         color="blue-1"
         :label="`&nbsp;${$t('form.approve')}`"
         icon="done_outline"
-        class="text-ugent full-width"
+        class="text-ugent"
+        style="padding: 0 30px !important"
         :disable="selectedPendingApproval.length === 0"
         @click="dialogVisible = true"
       />
