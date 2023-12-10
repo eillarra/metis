@@ -164,7 +164,7 @@
       </template>
       <template #body-cell-email="props">
         <!-- Custom email field -->
-        <q-td :props="props" auto-width>
+        <q-td :props="props" auto-width :class="props.row._class || ''">
           <a :href="`mailto:${props.row.email}`" target="_blank" rel="noopener" class="inherit">{{
             props.row.email
           }}</a>
@@ -180,13 +180,13 @@
       </template>
       <template #body-cell-remove="props">
         <!-- Remove icon -->
-        <q-td :props="props" auto-width>
+        <q-td :props="props" auto-width :class="props.row._class || ''">
           <q-icon @click="removeRow(props.row)" name="backspace" :size="iconSize" color="red" class="cursor-pointer" />
         </q-td>
       </template>
       <template #body-cell-edit="props">
         <!-- Edit icon -->
-        <q-td :props="props" auto-width>
+        <q-td :props="props" auto-width :class="props.row._class || ''">
           <q-icon
             @click="selectObj(props.row)"
             :name="openDialog ? 'open_in_browser' : 'edit'"
@@ -198,7 +198,7 @@
       </template>
       <template #body-cell-download="props">
         <!-- Download icon -->
-        <q-td :props="props" auto-width>
+        <q-td :props="props" auto-width :class="props.row._class || ''">
           <a :href="props.row.download" target="_blank" rel="noopener" class="inherit">
             <q-icon name="download" :size="iconSize" color="ugent" class="cursor-pointer" />
           </a>
