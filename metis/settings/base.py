@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from django.contrib.messages import constants as messages
 
@@ -90,7 +90,7 @@ DATABASES = {
         "ENGINE": "mysql.connector.django",
         "NAME": db.path[1:],
         "USER": db.username,
-        "PASSWORD": db.password,
+        "PASSWORD": unquote(db.password or ""),
         "HOST": db.hostname,
         "PORT": db.port,
     }
