@@ -53,7 +53,6 @@
               <td colspan="2" class="bg-light-blue-1">Deelscore</td>
               <td v-for="score in sectionScores" :key="score.value" class="text-center bg-light-blue-1">
                 <q-radio
-                  v-if="score.value"
                   v-model="evaluation.data.sections[section.code].score"
                   :val="score.value"
                   :disable="processing"
@@ -119,7 +118,7 @@
               :label="`&nbsp;${$t('form.evaluation.approve')}`"
               icon="done_outline"
               class="text-ugent"
-              :disable="evaluation.is_approved"
+              :disable="evaluation.is_approved || sectionsWithLowScore > 0"
               @click="signatureVisible = true"
             />
             <q-btn
@@ -221,15 +220,22 @@ const lowestScore = computed<EvaluationScore | null>(() => {
  * Returns the number of sections with a low score (== 'onv' or null)
  */
 const sectionsWithLowScore = computed<number>(() => {
+  if (evaluation.value?.data.global_score == lowestScore.value?.value) {
+    // we don't care if the final evaluation is the lowest possible anyway
+    return 0;
+  }
+
   let count = 0;
+
   formDefinition.value?.sections.forEach((section) => {
     if (
       evaluation.value?.data.sections[section.code].score == lowestScore.value?.value ||
-      evaluation.value?.data.sections[section.code].score == null
+      evaluation.value?.data.sections[section.code].score === undefined
     ) {
       count++;
     }
   });
+
   return count;
 });
 
@@ -256,7 +262,7 @@ const updateEvaluationData = () => {
       self: '',
       data: {
         global_remarks: '',
-        global_score: null,
+        global_score: undefined,
         sections: {},
       },
       intermediate: intermediate,
@@ -267,7 +273,7 @@ const updateEvaluationData = () => {
     if (!evaluation.value.data.sections[section.code]) {
       evaluation.value.data.sections[section.code] = {
         remarks: '',
-        score: null,
+        score: undefined,
         scores: {},
       };
     }

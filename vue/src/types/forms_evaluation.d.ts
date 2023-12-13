@@ -36,10 +36,10 @@ interface EvaluationForm extends ApiObjectUpdated {
 }
 
 interface EvaluationData {
-  global_score: string | null;
+  global_score: string | null | undefined;
   sections: {
     [key: string]: {
-      score: string | null;
+      score: string | null | undefined;
       scores: {
         [key: string]: [string | null, string | null];
       };
