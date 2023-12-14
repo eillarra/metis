@@ -45,27 +45,34 @@ class EducationViewSet(RetrieveModelMixin, GenericViewSet):
 
 
 class EducationNestedModelViewSet(BaseModelViewSet):
+    """Base viewset for education child models."""
+
     _education = None
 
     def get_queryset(self):
+        """Get queryset for education child models."""
         return super().get_queryset().filter(education=self.get_education())
 
     def get_education(self) -> "Education":
+        """Get education object."""
         if not self._education:
             self._education = Education.objects.get(id=self.kwargs["parent_lookup_education_id"])
         return self._education
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) -> None:
+        """Create model instance."""
         self.validate(serializer)
         serializer.save(education=self.get_education(), created_by=self.request.user)
 
-    def perform_update(self, serializer):
+    def perform_update(self, serializer) -> None:
+        """Update model instance."""
         self.validate(serializer)
         serializer.save(education=self.get_education(), updated_by=self.request.user)
 
     def validate(self, serializer) -> None:
+        """Validate model instance."""
         try:
-            ModelClass = serializer.Meta.model
-            ModelClass(education=self.get_education(), **serializer.validated_data).clean()
+            Model = serializer.Meta.model
+            Model(education=self.get_education(), **serializer.validated_data).clean()
         except Exception as exc:
             raise ValidationError(str(exc)) from exc

@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from metis.models import Education, Internship, Mentor, Project, User
+from metis.models import Education, Internship, Mentor, Project, Signature, User
 
 from ...permissions import IsEducationOfficeMember
 from ...serializers import InternshipSerializer, MentorTinySerializer
@@ -13,12 +13,17 @@ from ..base import BaseModelViewSet
 from .projects import ProjectNestedModelViewSet
 
 
-class CanManageMentors(IsAuthenticated):
+class CanManageInternshipPlace(IsAuthenticated):
+    """Permission class for managing a place."""
+
     def has_object_permission(self, request, view, obj):
+        """Checks if the user has permission to manipulate the Internship object."""
         return obj.place.can_be_managed_by(request.user)
 
 
 class InternshipViewSet(ProjectNestedModelViewSet):
+    """API endpoint for managing internships."""
+
     queryset = Internship.objects.prefetch_related("project__education", "mentors__user", "updated_by")
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
@@ -32,21 +37,23 @@ class InternshipViewSet(ProjectNestedModelViewSet):
 
         return user_id
 
-    @action(detail=True, methods=["post"], permission_classes=(CanManageMentors,))
+    @action(detail=True, methods=["post"], permission_classes=(CanManageInternshipPlace,))
     def add_mentor(self, request, *args, **kwargs):
+        """Add mentor to internship."""
         user_id = self._check_user_id(request)
         mentor = Mentor.objects.create(internship=self.get_object(), user_id=user_id, created_by=request.user)
         serializer = MentorTinySerializer(mentor)
         return Response(serializer.data, status=status.CREATED, headers=self.get_success_headers(serializer.data))
 
-    @action(detail=True, methods=["post"], permission_classes=(CanManageMentors,))
+    @action(detail=True, methods=["post"], permission_classes=(CanManageInternshipPlace,))
     def remove_mentor(self, request, *args, **kwargs):
+        """Remove mentor from internship."""
         user_id = self._check_user_id(request)
         mentor = Mentor.objects.get(internship=self.get_object(), user_id=user_id)
         mentor.delete()
         return Response(status=status.NO_CONTENT)
 
-    @action(detail=True, methods=["post"], permission_classes=(CanManageMentors,))
+    @action(detail=True, methods=["post"], permission_classes=(CanManageInternshipPlace,))
     def approve(self, request, *args, **kwargs):
         """Approve internship."""
         internship = self.get_object()
@@ -59,33 +66,52 @@ class InternshipViewSet(ProjectNestedModelViewSet):
 
 
 class InternshipNestedModelViewSet(BaseModelViewSet):
+    """Base viewset for internship child models."""
+
     _internship = None
 
     def get_queryset(self):
+        """Get queryset for internship child models."""
         return super().get_queryset().filter(internship=self.get_internship())
 
     def get_education(self) -> "Education":
+        """Get education from internship object."""
         return self.get_project().education
 
     def get_project(self) -> "Project":
+        """Get project from internship object."""
         return self.get_internship().project
 
     def get_internship(self) -> "Internship":
+        """Get internship object."""
         if not self._internship:
-            self._internship = Internship.objects.get(id=self.kwargs["parent_lookup_internship_id"])
+            self._internship = Internship.objects.select_related("project__education").get(
+                id=self.kwargs["parent_lookup_internship_id"]
+            )
         return self._internship
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) -> None:
+        """Create model instance."""
         self.validate(serializer)
         serializer.save(internship=self.get_internship(), created_by=self.request.user)
 
-    def perform_update(self, serializer):
+    def perform_update(self, serializer) -> None:
+        """Update model instance."""
         self.validate(serializer)
         serializer.save(internship=self.get_internship(), updated_by=self.request.user)
 
-    def validate(self, serializer) -> None:
+    def validate(self, serializer, *, check_is_approved: bool = False) -> None:
+        """Validate model instance.
+
+        Args:
+            serializer: Serializer instance.
+            check_is_approved: If True, extra checks for is_approved are performed, as this cannot be updated normally.
+        """
         try:
-            ModelClass = serializer.Meta.model
-            ModelClass(internship=self.get_internship(), **serializer.validated_data).clean()
+            data = serializer.validated_data
+            if check_is_approved:
+                data["is_approved"] = self.get_object().is_approved
+            Model = serializer.Meta.model
+            Model(internship=self.get_internship(), **data).clean()
         except Exception as exc:
             raise ValidationError(str(exc)) from exc

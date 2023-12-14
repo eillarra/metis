@@ -21,7 +21,7 @@ from metis.utils.fixtures.programs import create_audiology_program
 
 
 @pytest.fixture
-def education(db):
+def education(db):  # noqa: D103
     program = create_audiology_program()
     place = PlaceFactory.create(education=program.education)
     ContactFactory.create(place=place, is_mentor=True)
@@ -38,12 +38,12 @@ def education(db):
 
 
 @pytest.fixture
-def project_place(db, education):
+def project_place(db, education):  # noqa: D103
     return education.projects.first().place_set.first()
 
 
 @pytest.fixture
-def internship(db, education, project_place):
+def internship(db, project_place):  # noqa: D103
     student = StudentFactory.create(project=project_place.project)
     period = project_place.project.periods.first()
     available_disciplines = period.program_internship.get_available_disciplines()
@@ -59,14 +59,14 @@ def internship(db, education, project_place):
 
 
 @pytest.fixture
-def office_member(db, education):
+def office_member(db, education):  # noqa: D103
     user = UserFactory.create()
     education.office_members.add(user)
     return user
 
 
 @pytest.fixture
-def office_member_of_other_education(db):
+def office_member_of_other_education(db):  # noqa: D103
     user = UserFactory.create()
     education2 = EducationFactory.create()
     education2.office_members.add(user)  # type: ignore
@@ -74,13 +74,13 @@ def office_member_of_other_education(db):
 
 
 @pytest.fixture
-def place_admin(db, internship):
+def place_admin(db, internship):  # noqa: D103
     admin = ContactFactory.create(place=internship.place, is_admin=True)
     return admin.user
 
 
 @pytest.fixture
-def user(db):
+def user(db):  # noqa: D103
     return UserFactory.create()
 
 
@@ -195,6 +195,20 @@ class TestForMentor(TestForAuthenticated):
 
         if response.status_code == status.NO_CONTENT:
             assert evaluation.signatures.first().signed_text == "signature"
+
+    def test_update_approved_evaluation(self, api_client, education, internship):
+        """Test updating an approved evaluation for an internship."""
+        self.test_create_evaluation(api_client, education, internship)
+        evaluation = internship.evaluations.first()
+        evaluation.is_approved = True
+        evaluation.save()
+
+        url = reverse(
+            "v1:project-internship-evaluation-detail",
+            args=[education.id, internship.project_id, internship.id, evaluation.id],
+        )
+        response = api_client.put(url, self._get_evaluation_create_data(internship))
+        assert response.status_code == status.BAD_REQUEST
 
 
 class TestForPlaceAdmin(TestForMentor):

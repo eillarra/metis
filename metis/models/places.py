@@ -63,8 +63,13 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
     def __str__(self) -> str:
         return self.name
 
+    def user_is_admin(self, user) -> bool:
+        """Check if the user is admin for this place."""
+        return self.contacts.filter(user=user, is_admin=True).exists()
+
     def can_be_managed_by(self, user) -> bool:
-        return self.education.can_be_managed_by(user) or self.contacts.filter(user=user, is_admin=True).exists()
+        """Check if the user can manage this place."""
+        return self.education.can_be_managed_by(user) or self.user_is_admin(user)
 
     def get_office_url(self) -> str:
         return reverse("place_office", args=[self.pk])

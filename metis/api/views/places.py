@@ -20,6 +20,8 @@ if TYPE_CHECKING:
 
 
 class PlaceViewSet(EducationNestedModelViewSet):
+    """API endpoint for managing places."""
+
     queryset = Place.objects.select_related("updated_by").prefetch_related(
         "education", "contacts__user", "contacts__updated_by"
     )
@@ -47,36 +49,46 @@ class PlaceViewSet(EducationNestedModelViewSet):
 
 
 class PlaceNestedModelViewSet(BaseModelViewSet):
+    """Base viewset for place child models."""
+
     _place = None
 
     def get_queryset(self):
+        """Get queryset for place child models."""
         return super().get_queryset().filter(place=self.get_place())
 
     def get_education(self) -> "Education":
+        """Get education from place object."""
         return self.get_place().education
 
     def get_place(self) -> "Place":
+        """Get place object."""
         if not self._place:
             self._place = Place.objects.select_related("education").get(id=self.kwargs["parent_lookup_place_id"])
         return self._place
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) -> None:
+        """Create model instance."""
         self.validate(serializer)
         serializer.save(place=self.get_place(), created_by=self.request.user)
 
-    def perform_update(self, serializer):
+    def perform_update(self, serializer) -> None:
+        """Update model instance."""
         self.validate(serializer)
         serializer.save(place=self.get_place(), updated_by=self.request.user)
 
     def validate(self, serializer) -> None:
+        """Validate model instance."""
         try:
-            ModelClass = serializer.Meta.model
-            ModelClass(place=self.get_place(), **serializer.validated_data).clean()
+            Model = serializer.Meta.model
+            Model(place=self.get_place(), **serializer.validated_data).clean()
         except Exception as exc:
             raise ValidationError(str(exc)) from exc
 
 
 class ContactViewSet(PlaceNestedModelViewSet):
+    """API endpoint for managing contacts."""
+
     queryset = Contact.objects.select_related("user")
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
@@ -84,5 +96,6 @@ class ContactViewSet(PlaceNestedModelViewSet):
 
     @action(detail=True, methods=["post"])
     def invite(self, request, *args, **kwargs):
+        """Invite contact to place."""
         schedule_invitation_email("contact", self.get_object())
         return Response(status=status.NO_CONTENT)

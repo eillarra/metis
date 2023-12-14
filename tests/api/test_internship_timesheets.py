@@ -20,7 +20,7 @@ from metis.utils.fixtures.programs import create_audiology_program
 
 
 @pytest.fixture
-def education(db):
+def education(db):  # noqa: D103
     program = create_audiology_program()
     place = PlaceFactory.create(education=program.education)
     ContactFactory.create(place=place, is_mentor=True)
@@ -33,12 +33,12 @@ def education(db):
 
 
 @pytest.fixture
-def project_place(db, education):
+def project_place(db, education):  # noqa: D103
     return education.projects.first().place_set.first()
 
 
 @pytest.fixture
-def internship(db, education, project_place):
+def internship(db, project_place):  # noqa: D103
     student = StudentFactory.create(project=project_place.project)
     period = project_place.project.periods.first()
     available_disciplines = period.program_internship.get_available_disciplines()
@@ -54,14 +54,14 @@ def internship(db, education, project_place):
 
 
 @pytest.fixture
-def office_member(db, education):
+def office_member(db, education):  # noqa: D103
     user = UserFactory.create()
     education.office_members.add(user)
     return user
 
 
 @pytest.fixture
-def office_member_of_other_education(db):
+def office_member_of_other_education(db):  # noqa: D103
     user = UserFactory.create()
     education2 = EducationFactory.create()
     education2.office_members.add(user)  # type: ignore
@@ -69,13 +69,13 @@ def office_member_of_other_education(db):
 
 
 @pytest.fixture
-def place_admin(db, internship):
+def place_admin(db, internship):  # noqa: D103
     admin = ContactFactory.create(place=internship.place, is_admin=True)
     return admin.user
 
 
 @pytest.fixture
-def user(db):
+def user(db):  # noqa: D103
     return UserFactory.create()
 
 
@@ -179,6 +179,28 @@ class TestForStudent(TestForAuthenticated):
     def setup(self, api_client, internship):
         """Log in as student."""
         api_client.force_authenticate(user=internship.student.user)
+
+    def test_update_approved_timesheet(self, api_client, education, internship):
+        """Test updating an approved timesheet."""
+        self.test_create_timesheet(api_client, education, internship)
+        timesheet = internship.timesheets.first()
+        timesheet.is_approved = True
+        timesheet.save()
+
+        url = reverse(
+            "v1:project-internship-timesheet-detail",
+            args=[education.id, internship.project_id, internship.id, timesheet.id],
+        )
+        response = api_client.put(
+            url,
+            {
+                "date": str(internship.start_date),
+                "start_time_am": "8:00",
+                "end_time_am": "12:00",
+                "is_approved": False,
+            },
+        )
+        assert response.status_code == status.BAD_REQUEST
 
 
 class TestForOtherEducationOfficeMember(TestForAuthenticated):

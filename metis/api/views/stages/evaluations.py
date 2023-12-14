@@ -27,13 +27,7 @@ class EvaluationPermissions(BasePermission):
                 or internship.mentors.filter(user=request.user).exists()
             )
 
-        if request.method == "POST":
-            return (
-                internship.mentors.filter(user=request.user).exists()
-                or internship.place.contacts.filter(user=request.user, is_admin=True).exists()
-            )
-
-        return internship.mentors.filter(user=request.user).exists()
+        return internship.place.user_is_admin(request.user) or internship.mentors.filter(user=request.user).exists()
 
     def has_object_permission(self, request, view, obj):
         """Checks if the user has permission to manipulate the Evaluation object."""
@@ -41,9 +35,12 @@ class EvaluationPermissions(BasePermission):
             return True
 
         if request.method == "POST" and request.resolver_match.url_name == "project-internship-evaluation-approve":
-            return obj.internship.place.contacts.filter(user=request.user, is_admin=True).exists()
+            return obj.internship.place.user_is_admin(request.user)
 
-        return obj.internship.mentors.filter(user=request.user).exists()
+        return (
+            obj.internship.place.user_is_admin(request.user)
+            or obj.internship.mentors.filter(user=request.user).exists()
+        )
 
 
 class EvaluationViewSet(InternshipNestedModelViewSet):
@@ -53,6 +50,11 @@ class EvaluationViewSet(InternshipNestedModelViewSet):
     pagination_class = None
     permission_classes = (EvaluationPermissions,)
     serializer_class = EvaluationSerializer
+
+    def perform_update(self, serializer) -> None:
+        """Update model instance, performing extra `is_approved` check."""
+        self.validate(serializer, check_is_approved=True)
+        serializer.save(internship=self.get_internship(), updated_by=self.request.user)
 
     @action(detail=True, methods=["post"])
     def approve(self, request, *args, **kwargs):

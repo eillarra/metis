@@ -29,8 +29,8 @@ class TimesheetPermissions(BasePermission):
 
         if request.method == "POST" and request.resolver_match.url_name == "project-internship-timesheet-approve":
             return (
-                internship.mentors.filter(user=request.user).exists()
-                or internship.place.contacts.filter(user=request.user, is_admin=True).exists()
+                internship.place.user_is_admin(request.user)
+                or internship.mentors.filter(user=request.user).exists()
             )
 
         return internship.student.user == request.user
@@ -60,14 +60,19 @@ class TimesheetViewSet(InternshipNestedModelViewSet):
     permission_classes = (TimesheetPermissions,)
     serializer_class = TimesheetSerializer
 
+    def perform_update(self, serializer) -> None:
+        """Update model instance, performing extra `is_approved` check."""
+        self.validate(serializer, check_is_approved=True)
+        serializer.save(internship=self.get_internship(), updated_by=self.request.user)
+
     @action(detail=False, methods=["post"])
     def approve(self, request, *args, **kwargs):
-        """Approves timesheets."""
+        """Approve timesheet(s)."""
         internship = self.get_internship()
         timesheet_ids = request.data.get("ids", [])
         signed_text = request.data.get("signed_text", "")
 
-        for timesheet in internship.timesheets.filter(id__in=timesheet_ids, is_approved=False):
+        for timesheet in Timesheet.objects.filter(internship=internship, id__in=timesheet_ids, is_approved=False):
             signature = Signature.objects.create(content_object=timesheet, user=request.user, signed_text=signed_text)
             Timesheet.approve(timesheet, signature)
 

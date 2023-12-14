@@ -5,10 +5,12 @@ from .users import UserTinySerializer
 
 
 class BaseTranslatedModelSerializer(serializers.ModelSerializer):
+    """Base model serializer for all translated model serializers."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        for field in self.Meta.model._meta.fields:
+        for field in self.Meta.model._meta.fields:  # type: ignore
             if isinstance(field, TranslationField):
                 try:
                     self.fields.pop(field.name)
@@ -17,15 +19,16 @@ class BaseTranslatedModelSerializer(serializers.ModelSerializer):
 
 
 class BaseModelSerializer(BaseTranslatedModelSerializer):
+    """Base model serializer for all model serializers."""
+
     updated_by = UserTinySerializer(read_only=True)
 
 
 class NestedHyperlinkField(serializers.HyperlinkedIdentityField):
-    """
-    A field that returns the absolute URL to an API endpoint.
-    Normally we should use HyperlinkedIdentityField, but it doesn't support
-    nested routes. In this case we pass the view name and the kwargs to
-    have an absolute URL calculated.
+    """A field that returns the absolute URL to an API endpoint.
+
+    Normally we should use HyperlinkedIdentityField, but it doesn't support nested routes.
+    In this case we pass the view name and the kwargs to have an absolute URL calculated.
     """
 
     def __init__(self, view_name: str, nested_lookup: dict, *args, **kwargs):
@@ -34,6 +37,7 @@ class NestedHyperlinkField(serializers.HyperlinkedIdentityField):
         super().__init__(view_name=view_name, *args, **kwargs)
 
     def get_url(self, obj, view_name, request, format):
+        """Return the URL for the given object."""
         if hasattr(obj, "pk") and obj.pk in (None, ""):  # pragma: no cover
             return None
 
