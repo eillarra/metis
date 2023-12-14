@@ -16,6 +16,7 @@ from ..rel.remarks import RemarksMixin
 
 if TYPE_CHECKING:
     from ..places import Place
+    from ..rel.signatures import Signature
     from .evaluations import EvaluationForm
     from .programs import Program
 
@@ -120,6 +121,7 @@ class Internship(RemarksMixin, BaseModel):
     project_place = models.ForeignKey("metis.ProjectPlace", related_name="internships", on_delete=models.PROTECT)
     start_date = models.DateField()
     end_date = models.DateField()
+    is_approved = models.BooleanField(default=False)
 
     discipline = models.ForeignKey("metis.Discipline", related_name="internships", null=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=CONCEPT)
@@ -154,14 +156,40 @@ class Internship(RemarksMixin, BaseModel):
         return super().clean()
 
     def save(self, *args, **kwargs) -> None:
+        """Save the internship.
+
+        Some fields are automatically filled in when the internship is created:
+        - start_date and end_date are filled in based on the period (if not already set)
+        - is_approved is set to True if the education has automatic_internship_approval enabled
+        """
         if not self.pk and self.period:
             if not self.start_date:
                 self.start_date = self.period.start_date
             if not self.end_date:
                 self.end_date = self.period.end_date
+
+        if (
+            not self.pk
+            and self.project.education.configuration
+            and self.project.education.configuration["automatic_internship_approval"]
+        ):
+            self.is_approved = True
+
         super().save(*args, **kwargs)
 
+    @classmethod
+    def approve(cls, internship: "Internship", signature: "Signature") -> None:
+        """Approve an internship, without calling clean() on the model. A signature is required.
+
+        This is done by the Place admin.
+        """
+        if not signature or not signature.content_object == internship:
+            raise ValidationError("A signature is required to approve an internship.")
+
+        cls.objects.filter(pk=internship.pk).update(is_approved=True)
+
     def can_be_managed_by(self, user) -> bool:
+        """Check if the user can manage this internship."""
         return self.project.can_be_managed_by(user)
 
     @property
@@ -200,7 +228,7 @@ class Internship(RemarksMixin, BaseModel):
         return sum_times([timesheet.duration for timesheet in self.timesheets.all()])
 
     @property
-    def global_score(self):
+    def global_score(self) -> dict | None:
         """Global score as defined in the evaluation_form."""
         try:
             evaluation = self.evaluations.filter(intermediate=0).first()

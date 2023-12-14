@@ -28,6 +28,10 @@ class EducationConfig(BaseModel):
         default=True,
         description="Whether a user can be in different Blocks for the same Project",
     )
+    automatic_internship_approval: bool = Field(
+        default=True,
+        description="Whether internships are automatically approved when they are created",
+    )
     project_text_types: list[ProjectTextEntryType]
     place_text_types: list[PlaceTextEntryType] = []
     place_set_disciplines_per_block: bool = Field(

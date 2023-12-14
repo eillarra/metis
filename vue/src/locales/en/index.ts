@@ -199,6 +199,10 @@ export default {
       deleted_student: 'Student removed from internship',
       save: 'Save internship',
       saved: 'Internship information saved',
+      approve: 'Approve internship',
+      approved: 'Internship approved',
+      approve_msg_admin: 'You have to approve this internship before you can access all the information.',
+      approve_msg_contact: 'Contact the internship coordinator to approve this internship',
     },
     mentor: {
       added: 'Mentor added',

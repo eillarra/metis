@@ -112,7 +112,14 @@ const columns = [
 const rows = computed(() => {
   return props.internships.map((obj: Internship) => ({
     _self: obj,
-    _class: obj.status === 'cancelled' ? 'bg-red-1' : obj.status === 'unsuccessful' ? 'bg-orange-1' : '',
+    _class:
+      obj.status === 'cancelled'
+        ? 'bg-red-1'
+        : obj.status === 'unsuccessful'
+        ? 'bg-orange-1'
+        : !obj.is_approved
+        ? 'bg-yellow-1'
+        : '',
     student_name: (obj.Student?.User as StudentUser)?.name || '-',
     student_number: obj.Student?.number || '-',
     place_name: obj.Place?.name || '-',

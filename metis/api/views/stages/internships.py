@@ -46,6 +46,17 @@ class InternshipViewSet(ProjectNestedModelViewSet):
         mentor.delete()
         return Response(status=status.NO_CONTENT)
 
+    @action(detail=True, methods=["post"], permission_classes=(CanManageMentors,))
+    def approve(self, request, *args, **kwargs):
+        """Approve internship."""
+        internship = self.get_object()
+        signed_text = request.data.get("signed_text", "")
+
+        signature = Signature.objects.create(content_object=internship, user=request.user, signed_text=signed_text)
+        Internship.approve(internship, signature)
+
+        return Response(status=status.NO_CONTENT)
+
 
 class InternshipNestedModelViewSet(BaseModelViewSet):
     _internship = None

@@ -13,6 +13,7 @@ interface Internship extends ApiObject {
   end_date: string;
   project_place: number;
   status: string;
+  is_approved: boolean;
   updated_at: string;
   updated_by: UserTiny | null;
   // -----

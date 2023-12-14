@@ -198,6 +198,10 @@ export default {
       deleted_student: 'Student verwijderd uit stage',
       save: 'Stage opslaan',
       saved: 'Stage informatie opgeslagen',
+      approve: 'Stage goedkeuren',
+      approved: 'Stage goedgekeurd',
+      approve_msg_admin: 'Je moet deze stage goedkeuren voor je alle informatie kan zien.',
+      approve_msg_contact: 'Contacteer het stageplaats beheerder om deze stage goed te keuren',
     },
     mentor: {
       added: 'Mentor toegevoegd',
