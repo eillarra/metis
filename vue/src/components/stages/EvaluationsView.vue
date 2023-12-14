@@ -33,7 +33,7 @@
         <a v-if="evaluation.is_approved" :href="evaluation.url" target="_blank" class="text-h5 text-ugent float-right">
           <q-icon name="download" />
         </a>
-        <q-icon v-else name="draw" class="text-h5 text-grey-6 float-right cursor-help">
+        <q-icon v-else name="draw" class="text-h5 text-grey float-right cursor-help">
           <q-tooltip :delay="250">{{ $t('draft') }}</q-tooltip>
         </q-icon>
         <small>{{ evaluation.name }}<strong v-if="!evaluation.is_approved"></strong></small>
@@ -62,8 +62,18 @@
       <tbody>
         <tr v-for="item in section.items" :key="item.value">
           <td>{{ item.label[l] }}</td>
-          <td v-for="evaluation in evaluations" :key="evaluation.id" class="text-center dense">
-            <span v-if="evaluation.data.sections[section.code].scores[item.value][0]">
+          <td
+            v-for="evaluation in evaluations"
+            :key="evaluation.id"
+            class="text-center dense"
+            :class="{ 'text-grey': !evaluation.is_approved }"
+          >
+            <span
+              v-if="
+                evaluation.data.sections[section.code].scores[item.value] &&
+                evaluation.data.sections[section.code].scores[item.value][0]
+              "
+            >
               {{ scoreTexts[evaluation.data.sections[section.code].scores[item.value][0]] || '-' }}
               <q-badge
                 v-if="evaluation.data.sections[section.code].scores[item.value][1]"
@@ -80,7 +90,12 @@
       <tfoot>
         <tr>
           <td><small>Deelscore</small></td>
-          <td v-for="evaluation in evaluations" :key="evaluation.id" class="text-center dense">
+          <td
+            v-for="evaluation in evaluations"
+            :key="evaluation.id"
+            class="text-center dense"
+            :class="{ 'text-grey': !evaluation.is_approved }"
+          >
             <strong v-if="evaluation.data.sections[section.code].score">
               {{ scoreTexts[evaluation.data.sections[section.code].score] || '-' }}
             </strong>
@@ -115,7 +130,7 @@
         <tr>
           <td><strong>Algemene beoordeling</strong></td>
           <td v-for="evaluation in evaluations" :key="evaluation.id" class="text-center dense text-weight-bold">
-            <span v-if="evaluation.data.global_score">
+            <span v-if="evaluation.data.global_score && evaluation.is_approved">
               {{ scoreTexts[evaluation.data.global_score] || '-' }}
             </span>
             <span v-else>-</span>
