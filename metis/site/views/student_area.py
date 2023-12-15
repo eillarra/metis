@@ -60,7 +60,7 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
             ).data,
             "internships": InternshipFullInertiaSerializer(
                 Internship.objects.filter(
-                    student__user=request.user, project=last_project, status=Internship.DEFINITIVE
+                    student__user=request.user, project=last_project, status=Internship.DEFINITIVE, is_approved=True
                 ),
                 many=True,
                 context={"request": request},
