@@ -294,7 +294,11 @@ export default {
   tasks: {
     intro: 'Please complete the following tasks in a timely manner. I you have any questions, you can contact {email}.',
     place: {
-      missing_mentors: {
+      internships_not_approved: {
+        text: 'There is an internship that has not been approved yet. | There are {count} internships that have not been approved yet.',
+        btn_label: 'Approve internships',
+      },
+      internships_missing_mentors: {
         text: 'There is an internship without mentor(s). | There are {count} internships without mentor(s).',
         btn_label: 'Add mentor(s)',
       },

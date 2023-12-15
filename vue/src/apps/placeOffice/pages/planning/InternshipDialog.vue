@@ -5,10 +5,10 @@
         <q-item-label header>{{ $t('internship') }}</q-item-label>
         <q-item
           clickable
+          :disable="!obj.is_approved"
           @click="tab = 'info'"
           :active="tab == 'info'"
           active-class="bg-ugent text-white"
-          :disable="!obj.is_approved"
         >
           <q-item-section avatar>
             <q-icon name="info_outline" size="xs"></q-icon>
@@ -17,10 +17,10 @@
         </q-item>
         <q-item
           clickable
+          :disable="!obj.is_approved"
           @click="tab = 'mentors'"
           :active="tab == 'mentors'"
           active-class="bg-ugent text-white"
-          :disable="!obj.is_approved"
         >
           <q-item-section avatar>
             <q-icon name="people_outline" size="xs"></q-icon>
@@ -29,10 +29,10 @@
         </q-item>
         <q-item
           clickable
+          :disable="!hasStarted || !obj.is_approved"
           @click="tab = 'timesheets'"
           :active="tab == 'timesheets'"
           active-class="bg-ugent text-white"
-          :disable="!obj.is_approved"
         >
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
@@ -41,10 +41,10 @@
         </q-item>
         <q-item
           clickable
+          :disable="!hasStarted || !obj.is_approved"
           @click="tab = 'evaluations'"
           :active="tab == 'evaluations'"
           active-class="bg-ugent text-white"
-          :disable="!obj.is_approved"
         >
           <q-item-section avatar>
             <q-icon name="checklist" size="xs"></q-icon>
@@ -54,10 +54,10 @@
         <q-item-label header>{{ $t('form.update') }}</q-item-label>
         <q-item
           clickable
+          :disable="!hasStarted || !obj.is_approved"
           @click="tab = 'evaluationsForm'"
           :active="tab == 'evaluationsForm'"
           active-class="bg-ugent text-white"
-          :disable="!obj.is_approved"
         >
           <q-item-section avatar>
             <q-icon name="playlist_add_check" size="xs"></q-icon>
@@ -155,19 +155,28 @@ const props = defineProps<{
 
 const store = useStore();
 
-const { userIsAdmin } = storeToRefs(store);
+const { education, userIsAdmin } = storeToRefs(store);
 
 const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');
 const internshipName = computed<string>(
   () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`
 );
+const hasStarted = computed<boolean>(() => {
+  if (!obj.value.start_date) return false;
+  return new Date(obj.value.start_date) <= new Date();
+});
+
 const sending = ref<boolean>(false);
 const signatureVisible = ref<boolean>(false);
 
 const textToSign = computed<string>(() => {
   /* TODO: this should come from the backend */
-  return `Als u na het kennismakingsgesprek met de student besloten heeft om de student te ontvangen voor stage dit academiejaar (periode april – juni) vragen we om u akkoord te verklaren met de stage door hieronder 'Gelezen en goedgekeurd' aan te vinken.`;
+  if (education.value?.code == 'gezveb') {
+    return `Als u na het kennismakingsgesprek met de student besloten heeft om de student te ontvangen voor stage dit academiejaar (periode april – juni) vragen we om u akkoord te verklaren met de stage door hieronder 'Gelezen en goedgekeurd' aan te vinken.`;
+  }
+
+  return `Stageplaats ${obj.value.Place?.name} is bereid om student ${obj.value.Student?.User?.name} van de UGent (studentennummer ${obj.value.Student?.number}) te begeleiden tijdens de stage ${education.value?.short_name} van ${obj.value.start_date} tot ${obj.value.start_date}.`;
 });
 
 function updateObj(obj: Internship) {

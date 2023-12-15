@@ -2,8 +2,14 @@
   <div class="q-mb-xl">
     <h3 class="text-ugent col-12 col-md-3 q-mb-lg">{{ $t('my_tasks') }}</h3>
     <div v-if="userIsAdmin && internshipsWithoutMentors.length">
-      - {{ $t('tasks.place.missing_mentors.text', { count: internshipsWithoutMentors.length }) }}
-      <router-link :to="{ name: 'planning' }">{{ $t('tasks.place.missing_mentors.btn_label') }}</router-link>
+      - {{ $t('tasks.place.internships_missing_mentors.text', { count: internshipsWithoutMentors.length }) }}
+      <router-link :to="{ name: 'planning' }">{{
+        $t('tasks.place.internships_missing_mentors.btn_label')
+      }}</router-link>
+    </div>
+    <div v-if="userIsAdmin && internshipsNotApproved.length">
+      - {{ $t('tasks.place.internships_not_approved.text', { count: internshipsNotApproved.length }) }}
+      <router-link :to="{ name: 'planning' }">{{ $t('tasks.place.internships_not_approved.btn_label') }}</router-link>
     </div>
     <project-place-task-box
       v-if="userIsAdmin && activeQuestionings.length"
@@ -32,5 +38,9 @@ const { education, place, userIsAdmin, activeQuestionings, project, projectPlace
 
 const internshipsWithoutMentors = computed<Internship[]>(() => {
   return (internships.value as Internship[]).filter((internship) => !internship.mentors.length);
+});
+
+const internshipsNotApproved = computed<Internship[]>(() => {
+  return (internships.value as Internship[]).filter((internship) => !internship.is_approved);
 });
 </script>

@@ -9,15 +9,22 @@
       </a>
     </h3>
     <div class="col"></div>
-    <period-select as-filter :periods="periodOptions" v-model="selectedPeriod" class="col-6 col-md-2" />
+    <period-select
+      as-filter
+      v-show="periodOptions.length > 1"
+      v-model="selectedPeriod"
+      :periods="periodOptions"
+      class="col-6 col-md-2"
+    />
     <q-select
+      v-show="disciplineOptions.length > 1"
       v-model="selectedDiscipline"
+      :options="disciplineOptions"
       :disable="!disciplineOptions.length"
       clearable
       dense
       rounded
       outlined
-      :options="disciplineOptions"
       :label="$t('discipline')"
       options-dense
       emit-value
@@ -25,7 +32,7 @@
       class="col-6 col-md-2"
       :bg-color="selectedDiscipline !== null ? 'blue-1' : 'white'"
     />
-    <track-select as-filter :programs="programs" v-model="selectedTrack" class="col-6 col-md-2" />
+    <track-select as-filter v-model="selectedTrack" :programs="programs" class="col-6 col-md-2" />
     <!--<date-range-filter v-model="selectedDateRange" class="col-6 col-md-2" />-->
     <q-btn-toggle
       v-show="false"

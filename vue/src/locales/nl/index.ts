@@ -294,7 +294,11 @@ export default {
     intro:
       'Vriendelijk verzoek om onderstaande taken tijdig uit te voeren. Bij vragen kan u contact opnemen met {email}.',
     place: {
-      missing_mentors: {
+      internships_not_approved: {
+        text: 'Er is een stage die nog niet goedgekeurd is. | Er zijn {count} stages die nog niet goedgekeurd zijn.',
+        btn_label: 'Stages goedkeuren',
+      },
+      internships_missing_mentors: {
         text: 'Er is een stage zonder mentor(en). | Er zijn {count} stages zonder mentor(en).',
         btn_label: 'Mentor(en) toevoegen',
       },

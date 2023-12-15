@@ -107,6 +107,12 @@ const columns = [
     label: t('mentor', 9),
     align: 'center',
   },
+  {
+    name: 'is_approved',
+    field: 'is_approved',
+    label: t('field.approved'),
+    align: 'center',
+  },
 ];
 
 const rows = computed(() => {
@@ -131,6 +137,7 @@ const rows = computed(() => {
     start_date: obj.start_date,
     end_date: obj.end_date,
     has_mentors: obj.mentors.filter((mentor: Mentor) => mentor.user.last_login).length > 0,
+    is_approved: obj.is_approved,
   }));
 });
 </script>

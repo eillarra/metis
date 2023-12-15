@@ -29,6 +29,7 @@
         </q-item>
         <q-item
           clickable
+          :disable="!hasStarted"
           @click="tab = 'evaluations'"
           :active="tab == 'evaluations'"
           active-class="bg-ugent text-white"
