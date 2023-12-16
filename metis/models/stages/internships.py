@@ -186,7 +186,8 @@ class Internship(RemarksMixin, BaseModel):
         if not signature or not signature.content_object == internship:
             raise ValidationError("A signature is required to approve an internship.")
 
-        cls.objects.filter(pk=internship.pk).update(is_approved=True)
+        if not internship.is_approved:
+            cls.objects.filter(id=internship.id).update(is_approved=True)  # type: ignore
 
     def can_be_managed_by(self, user) -> bool:
         """Check if the user can manage this internship."""

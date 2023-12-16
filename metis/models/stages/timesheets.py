@@ -38,7 +38,9 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
         """Approve an absence, without calling clean() on the model. A signature is required."""
         if not signature or not signature.content_object == absence:
             raise ValidationError("A signature is required to approve an absence.")
-        cls.objects.filter(id=absence.pk).update(is_approved=True)
+
+        if not absence.is_approved:
+            cls.objects.filter(id=absence.id).update(is_approved=True)  # type: ignore
 
 
 class Timesheet(SignaturesMixin, BaseModel):
@@ -93,7 +95,9 @@ class Timesheet(SignaturesMixin, BaseModel):
         """Approve a timesheet, without calling clean() on the model. A signature is required."""
         if not signature or not signature.content_object == timesheet:
             raise ValidationError("A signature is required to approve a timesheet.")
-        cls.objects.filter(id=timesheet.pk).update(is_approved=True)
+
+        if not timesheet.is_approved:
+            cls.objects.filter(id=timesheet.id).update(is_approved=True)  # type: ignore
 
     @property
     def duration(self) -> time:

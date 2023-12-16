@@ -186,6 +186,10 @@ function updateObj(obj: Internship) {
 function approveInternship() {
   sending.value = true;
 
+  if (obj.value.is_approved) {
+    return;
+  }
+
   api
     .post(`${obj.value.self}approve/`, { signed_text: textToSign.value })
     .then(() => {

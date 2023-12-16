@@ -46,11 +46,10 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
         if not signature or not signature.content_object == evaluation:
             raise ValidationError("A signature is required to approve an evaluation.")
 
-        updated = bool(cls.objects.filter(id=evaluation.pk).update(is_approved=True))
-
-        if updated:
+        if not evaluation.is_approved:
             from metis.services.mailer import schedule_evaluation_notification
 
+            cls.objects.filter(id=evaluation.id).update(is_approved=True)  # type: ignore
             schedule_evaluation_notification(evaluation)
 
     @property

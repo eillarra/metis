@@ -117,8 +117,8 @@ def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
         Je kan deze bekijken op <https://metis.ugent.be/nl/stages/{education.code}/>
 
         - **{evaluation.name}**
-        - Opgeslagen door: {evaluation.created_by.name}
-        - Opgeslagen op: {date_filter(evaluation.created_at, 'DATETIME_FORMAT')}
+        - Opgeslagen door: {evaluation.updated_by.name}
+        - Opgeslagen op: {date_filter(evaluation.updated_at, 'DATETIME_FORMAT')}
         """
     )
 

@@ -321,9 +321,11 @@ function saveEvaluation() {
 function approveEvaluation() {
   sending.value = true;
 
-  if (evaluation.value && evaluation.value.self) {
-    saveEvaluation();
+  if (evaluation.value?.is_approved) {
+    return;
+  }
 
+  if (evaluation.value?.self) {
     api
       .post(`${evaluation.value.self}approve/`, { signed_text: textToSign.value })
       .then(() => {
