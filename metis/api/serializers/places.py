@@ -3,7 +3,7 @@ from rest_framework import serializers
 from metis.models import Contact, Place, PlaceType, User
 
 from .base import BaseModelSerializer, BaseTranslatedModelSerializer, NestedHyperlinkField
-from .rel import AddressesMixin, AddressSerializer, RemarksMixin, TextEntriesMixin
+from .rel import AddressesMixin, AddressSerializer, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
 from .users import UserLastLoginSerializer
 
 
@@ -21,23 +21,27 @@ education_place_lookup_fields = {
 
 
 class ContactSerializer(RemarksMixin, BaseModelSerializer):
+    """Contact serializer."""
+
     self = NestedHyperlinkField("v1:education-place-contact-detail", nested_lookup=education_place_lookup_fields)
     user = UserLastLoginSerializer(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(source="user", queryset=User.objects.all(), write_only=True)
     place = serializers.PrimaryKeyRelatedField(read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Contact
         exclude = ("created_at", "created_by")
 
 
-class PlaceSerializer(AddressesMixin, RemarksMixin, TextEntriesMixin, BaseModelSerializer):
+class PlaceSerializer(AddressesMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin, BaseModelSerializer):
+    """Place serializer."""
+
     self = NestedHyperlinkField("v1:education-place-detail", nested_lookup=education_lookup_fields)
     rel_contacts = NestedHyperlinkField("v1:education-place-contact-list", nested_lookup=education_lookup_fields_pk)
     education = serializers.PrimaryKeyRelatedField(read_only=True)
     contacts = ContactSerializer(many=True, read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Place
         exclude = ("created_at", "created_by")
 

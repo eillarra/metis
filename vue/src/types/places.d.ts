@@ -7,6 +7,12 @@ interface Address extends ApiObject {
   mapbox_feature: object;
 }
 
+interface PhoneNumber extends ApiObject {
+  self: ApiEndpoint;
+  type: string;
+  number: string;
+}
+
 interface PlaceType extends ApiObject {
   name: string;
 }
@@ -15,6 +21,7 @@ interface Place extends ApiObject {
   self: ApiEndpoint;
   rel_addresses: ApiEndpoint;
   rel_contacts: ApiEndpoint;
+  rel_phone_numbers: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   rel_texts: ApiEndpoint;
   parent: null | ApiEndpoint;
@@ -23,6 +30,7 @@ interface Place extends ApiObject {
   name: string;
   code: string;
   contacts: Contact[];
+  phone_numbers: PhoneNumber[];
   updated_at: string;
   updated_by: UserTiny | null;
   remark_count: number;

@@ -56,6 +56,14 @@
                   <readonly-field :label="$t('field.start_date')" :value="obj.start_date" class="col-12 col-md" />
                   <readonly-field :label="$t('field.end_date')" :value="obj.end_date" class="col-12 col-md" />
                 </div>
+                <div v-if="obj.Place?.phone_numbers.length" class="q-my-lg">
+                  <strong>Telefonnummers</strong>
+                  <q-list dense class="q-mt-sm">
+                    <q-item v-for="phone in obj.Place?.phone_numbers" :key="phone.id">
+                      {{ phone.number }} ({{ phone.type }})
+                    </q-item>
+                  </q-list>
+                </div>
                 <q-field
                   v-for="(address, i) in obj.Place?.addresses"
                   :key="address.id"

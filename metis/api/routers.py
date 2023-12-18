@@ -30,6 +30,9 @@ class Router(NestedRouterMixin, DefaultRouter):
             basename="form-response",
             parents_query_lookups=rel_routes_pql,
         )
+        rel_routes.register(
+            "phone-numbers", views.PhoneNumberViewSet, basename="phone-number", parents_query_lookups=rel_routes_pql
+        )
         rel_routes.register("texts", views.TextEntryViewSet, basename="text", parents_query_lookups=rel_routes_pql)
         rel_routes.register("remarks", views.RemarkViewSet, basename="remark", parents_query_lookups=rel_routes_pql)
 
