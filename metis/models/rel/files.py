@@ -18,6 +18,8 @@ def get_upload_path(instance, filename):
 
 
 class File(models.Model):
+    """A file attached to a model."""
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="files")
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
@@ -59,12 +61,29 @@ class File(models.Model):
 
 
 class FilesMixin(models.Model):
+    """A mixin to add files to a model."""
+
     files = GenericRelation(File)
 
-    class Meta:
+    class Meta:  # noqa: D106
         abstract = True
 
+    def get_latest_files(self) -> list[File]:
+        """Returns the latest version only of each file.
+
+        We are not dealing with a lot of files and DISTINCT ON is not supported by MySQL,
+        so this should fine to get the latest version of the files.
+        """
+        files = self.files.all()
+        versions = {}
+
+        for file in files:
+            versions[file.code] = max(versions.get(file.code, 0), file.version)
+
+        return [file for file in files if file.code and file.version == versions[file.code]]
+
     def get_file(self, code: str, version: int | None = None) -> File:
+        """Returns a file by its code and version."""
         if version is not None:
             return self.files.get(code=code, version=version)
         return self.files.filter(code=code).order_by("-version").first()
