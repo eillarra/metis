@@ -20,11 +20,13 @@ from .reports.periods import PeriodReportMixin
 
 
 class StudentAreaFirewallMixin(View):
+    """Mixin to check if the user has the necessary permissions to access this page."""
+
     @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):  # noqa: D102
         student_set = self.get_student_set(request.user)
 
-        if not student_set.filter(project__education=self.get_education()).exists():  # type: ignore
+        if not student_set.exists():  # type: ignore
             messages.error(
                 request,
                 "You don't have the necessary permissions to access this page.",
@@ -34,11 +36,13 @@ class StudentAreaFirewallMixin(View):
         return super().dispatch(request, *args, **kwargs)
 
     def get_education(self) -> Education:
+        """Get the education."""
         if not hasattr(self, "education"):
             self.education = get_object_or_404(Education, code=self.kwargs.get("education_code"))
         return self.education
 
     def get_student_set(self, user):
+        """Get the student set for the user."""
         if not hasattr(self, "student_set"):
             self.student_set = user.student_set.filter(project__education=self.get_education())
         return self.student_set
@@ -48,6 +52,7 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
     vue_entry_point = "apps/studentArea/main.ts"
 
     def get_props(self, request, *args, **kwargs):
+        """Get the props for the Vue app."""
         projects = self.get_education().projects.filter(students__user=request.user)
         last_project = projects.get(name="AJ23-24")  # TODO: clean
 
@@ -133,3 +138,15 @@ class StudentAreaPeriodReportView(StudentAreaFirewallMixin, PeriodReportMixin, V
             raise PermissionDenied
 
         return super().get(request, *args, **kwargs)
+
+
+class StudentProposeInternshipPlaceView(StudentAreaFirewallMixin, InertiaView):
+    """Page to propose an internship place (when status is PREPLANNING)."""
+
+    vue_entry_point = "apps/studentProposePlace/main.ts"
+
+    def get_props(self, request, *args, **kwargs):
+        """Get the props for the Vue app."""
+        return {
+            "education": EducationTinySerializer(self.get_education()).data,
+        }

@@ -10,6 +10,8 @@ class DummyViewSet(ViewSet):
 
 
 class Router(NestedRouterMixin, DefaultRouter):
+    """Router for Metis API."""
+
     def __init__(self, version="v1"):
         super().__init__()
 
@@ -118,3 +120,8 @@ class Router(NestedRouterMixin, DefaultRouter):
         # self.register("user/student/internships", views.PlaceViewSet, basename="student-internship")
         self.register("user/student/projects", views.AuthStudentViewSet, basename="student-set")
         self.register("user/student/signatures", views.AuthStudentSignatureViewSet, basename="student-signature")
+        self.register(
+            "user/student/preplanned-internships",
+            views.AuthStudentProposeInternshipPlaceViewSet,
+            basename="student-preplanned-internship",
+        )

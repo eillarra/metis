@@ -39,7 +39,7 @@ class ProjectViewSet(EducationNestedModelViewSet):
         if not emails:
             return Response({"emails": ["Must provide emails"]}, status=status.BAD_REQUEST)
 
-        user = User.create_from_invitation(name=request.data.get("name"), emails=emails)
+        user = User.create_from_name_emails(name=request.data.get("name"), emails=emails)
         student = Student.objects.create(project=self.get_object(), user=user, created_by=self.request.user, **data)
         self.get_object().students.add(student)
 

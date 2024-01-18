@@ -85,6 +85,14 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
         return self.get_file("risk_analysis")
 
 
+def find_place_by_name(name: str, education: "Education") -> Place | None:
+    """Find a place by name."""
+    try:
+        return Place.objects.get(name=name, education=education)
+    except Place.DoesNotExist:
+        return None
+
+
 class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
     """Contact information for a place.
 

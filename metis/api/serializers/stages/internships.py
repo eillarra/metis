@@ -8,7 +8,7 @@ from ..places import PlaceInertiaSerializer
 from ..rel.remarks import RemarksMixin
 from ..users import UserLastLoginSerializer
 from .evaluations import EvaluationFormSerializer
-from .projects import PeriodSerializer
+from .projects import PeriodSerializer, ProjectSerializer
 from .students import StudentInertiaSerializer
 
 
@@ -32,6 +32,8 @@ class MentorTinySerializer(BaseModelSerializer):
 
 
 class InternshipSerializer(RemarksMixin, BaseModelSerializer):
+    """Internship serializer."""
+
     self = NestedHyperlinkField("v1:project-internship-detail", nested_lookup=project_lookup_fields)
     rel_absences = NestedHyperlinkField("v1:project-internship-absence-list", nested_lookup=internship_lookup_fields)
     rel_evaluations = NestedHyperlinkField(
@@ -51,6 +53,8 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
 
 
 class InternshipInertiaSerializer(InternshipSerializer):
+    """Internship serializer for inertia."""
+
     Discipline = DisciplineSerializer(read_only=True, source="discipline")
     Period = PeriodSerializer(read_only=True, source="period")
     Student = StudentInertiaSerializer(read_only=True, source="student")
@@ -58,4 +62,12 @@ class InternshipInertiaSerializer(InternshipSerializer):
 
 
 class InternshipFullInertiaSerializer(InternshipInertiaSerializer):
+    """Internship serializer for inertia, with nested place."""
+
     Place = PlaceInertiaSerializer(read_only=True, source="place")
+
+
+class PreplanningInternshipSerializer(InternshipFullInertiaSerializer):
+    """Internship serializer for preplanning."""
+
+    Project = ProjectSerializer(read_only=True, source="project")

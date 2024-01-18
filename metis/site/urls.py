@@ -15,6 +15,11 @@ urlpatterns = [
     ),
     path("stages/<slug:education_code>/", views.StudentAreaView.as_view(), name="student_area"),
     path(
+        "stages/<slug:education_code>/stageplaats/",
+        views.StudentProposeInternshipPlaceView.as_view(),
+        name="student_propose_place",
+    ),
+    path(
         "stages/<slug:education_code>/files/p/<int:period_id>/<slug:code>.<slug:file_type>",
         views.StudentAreaPeriodReportView.as_view(),
         name="student_area_report",

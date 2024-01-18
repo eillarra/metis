@@ -177,8 +177,8 @@ class Internship(RemarksMixin, BaseModel):
             not self.pk
             and self.project.education.configuration
             and self.project.education.configuration["automatic_internship_approval"]
-        ):
-            self.is_approved = True
+        ):  # TODO: imporve this taking status into account (preplanning should not be approved)
+            self.is_approved = self.status != self.PREPLANNING
 
         super().save(*args, **kwargs)
 
@@ -300,7 +300,7 @@ class Mentor(BaseModel):
     user = models.ForeignKey("metis.User", related_name="mentorships", on_delete=models.PROTECT)
     is_primary = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_internship_mentors"
         unique_together = ("internship", "user")
 

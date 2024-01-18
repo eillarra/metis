@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 
 
 class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
+    """Custom user model."""
+
     def __str__(self) -> str:
         return f"{self.username} ({self.name})"
 
@@ -53,7 +55,8 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
         return cls.objects.get(username="metis")
 
     @classmethod
-    def create_from_invitation(cls, name: str, emails: list[str]) -> "User":
+    def create_from_name_emails(cls, name: str, emails: list[str]) -> "User":
+        """Create a user from a name and a list of emails."""
         if not emails or not all(emails):
             raise ValueError("At least one email is required")
 
@@ -86,6 +89,7 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
 
 
 def find_user_by_email(email: str) -> User | None:
+    """Find a user by email address."""
     try:
         return EmailAddress.objects.get(email__iexact=email).user
     except EmailAddress.DoesNotExist:
@@ -94,6 +98,7 @@ def find_user_by_email(email: str) -> User | None:
 
 @receiver(pre_social_login)
 def link_to_existing_user(sender, request, sociallogin, **kwargs):
+    """Link social login to existing user."""
     if sociallogin.is_existing:
         return
 

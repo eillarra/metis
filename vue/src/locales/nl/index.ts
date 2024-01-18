@@ -98,6 +98,7 @@ export default {
     status: 'Status | Statussen',
     student_number: 'Studentennummer | Studentennummers',
     number: 'Nummer | Nummers',
+    phone_number: 'Telefoonnummer | Telefoonnummers',
     created_at: 'Aangemaakt op',
     created_by: 'Aangemaakt door',
     updated_at: 'Laatst bijgewerkt',
@@ -202,6 +203,7 @@ export default {
       approved: 'Stage goedgekeurd',
       approve_msg_admin: 'Je moet deze stage goedkeuren voor je alle informatie kan zien.',
       approve_msg_contact: 'Contacteer het stageplaats beheerder om deze stage goed te keuren',
+      propose_place: 'Stageplaats voorstellen',
     },
     mentor: {
       added: 'Mentor toegevoegd',

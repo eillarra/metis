@@ -96,6 +96,7 @@ export default {
     title: 'Title | Titles',
     student_number: 'Student number | Student numbers',
     number: 'Number | Numbers',
+    phone_number: 'Phone number | Phone numbers',
     subject: 'Subject | Subjects',
     type: 'Type | Types',
     status: 'Status | Statuses',
@@ -203,6 +204,7 @@ export default {
       approved: 'Internship approved',
       approve_msg_admin: 'You have to approve this internship before you can access all the information.',
       approve_msg_contact: 'Contact the internship coordinator to approve this internship',
+      propose_place: 'Propose internship place',
     },
     mentor: {
       added: 'Mentor added',
