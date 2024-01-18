@@ -66,7 +66,7 @@ def get_period_sheet(period: "Period") -> list["ExcelSheet"]:
     )
 
     for internship in internships:
-        admin = internship.place.contacts.filter(is_admin=True).first()
+        admin = internship.place.contacts.filter(is_admin=True).first() if internship.place else None
         mentors = internship.mentors.all()
         total_hours = internship.total_hours
         formatted_hours = f"{total_hours[0]:02d}:{total_hours[1]:02d}"
@@ -82,7 +82,7 @@ def get_period_sheet(period: "Period") -> list["ExcelSheet"]:
             "discipline": internship.discipline.name,
             "start_date": internship.start_date,
             "end_date": internship.end_date,
-            "place_name": internship.place.name,
+            "place_name": internship.place.name if internship.place else "-",
             "total_hours": formatted_hours,
             "evaluation": global_score["label"]["nl"] if global_score else "-",
             "evaluation_points": global_score["points"] if global_score else "-",

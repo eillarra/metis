@@ -219,9 +219,9 @@ class Internship(RemarksMixin, BaseModel):
         return qs.first()
 
     @cached_property
-    def place(self) -> "Place":
+    def place(self) -> Optional["Place"]:
         """The place of the internship."""
-        return self.project_place.place
+        return self.project_place.place if self.project_place else None
 
     @property
     def program(self) -> Optional["Program"]:
