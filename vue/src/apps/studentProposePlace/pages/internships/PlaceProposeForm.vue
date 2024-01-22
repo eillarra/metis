@@ -6,7 +6,7 @@
           <div v-if="obj.Place">
             <div class="text-h text-weight-bold q-my-sm">{{ obj.Place?.name }}</div>
             Stageplaats is toegekend, gelieve het akkoord document te sturen naar
-            <a mailto="metis.helpdesk@ugent.be">metis.helpdesk@ugent.be</a> (binnenkort kan dit online).
+            <a mailto="helpdesk.metis@ugent.be">helpdesk.metis@ugent.be</a> (binnenkort kan dit online).
           </div>
           <div v-else>
             <p>
