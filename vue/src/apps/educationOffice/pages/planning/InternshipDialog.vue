@@ -9,7 +9,13 @@
           </q-item-section>
           <q-item-section>Info</q-item-section>
         </q-item>
-        <q-item clickable @click="tab = 'mentors'" :active="tab == 'mentors'" active-class="bg-ugent text-white">
+        <q-item
+          clickable
+          :disable="!obj.Place"
+          @click="tab = 'mentors'"
+          :active="tab == 'mentors'"
+          active-class="bg-ugent text-white"
+        >
           <q-item-section avatar>
             <q-icon name="people_outline" size="xs"></q-icon>
           </q-item-section>
@@ -40,6 +46,18 @@
           <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
         </q-item>
         <q-item-label header>{{ $t('other') }}</q-item-label>
+        <q-item clickable @click="tab = 'actions'" :active="tab == 'actions'" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="ads_click" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('action', 9) }}</q-item-section>
+        </q-item>
+        <q-item :disabled="true" clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="mail_outline" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('field.email', 9) }}</q-item-section>
+        </q-item>
         <q-item clickable @click="tab = 'remarks'" :active="tab == 'remarks'" active-class="bg-ugent text-white">
           <q-item-section avatar>
             <q-icon name="chat_bubble_outline" size="xs"></q-icon>
@@ -57,19 +75,26 @@
     <template #page>
       <q-tab-panels v-model="tab" class="q-pb-lg">
         <q-tab-panel name="info">
-          <div class="q-gutter-sm">
-            <readonly-field :label="$t('project')" :value="projectName" />
-            <readonly-field :label="$t('student')" :value="obj.Student?.User?.name || '-'" />
-            <period-select v-model="obj.period" :periods="filteredPeriods" :label="$t('period')" />
-            <discipline-select
-              v-if="education"
-              v-model="obj.discipline"
-              :disciplines="education.disciplines"
-              :label="$t('discipline')"
-            />
-            <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
-              <date-select v-model="obj.start_date" :label="$t('field.start_date')" clearable class="col-12 col-md" />
-              <date-select v-model="obj.end_date" :label="$t('field.end_date')" clearable class="col-12 col-md" />
+          <div class="row q-col-gutter-xl">
+            <div class="col-12 col-md-8">
+              <div class="q-gutter-sm">
+                <readonly-field :label="$t('project')" :value="projectName" />
+                <readonly-field :label="$t('student')" :value="obj.Student?.User?.name || '-'" />
+                <period-select v-model="obj.period" :periods="filteredPeriods" :label="$t('period')" />
+                <discipline-select
+                  v-if="education"
+                  v-model="obj.discipline"
+                  :disciplines="education.disciplines"
+                  :label="$t('discipline')"
+                />
+                <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
+                  <date-select v-model="obj.start_date" :label="$t('field.start_date')" clearable class="col-12 col-md" />
+                  <date-select v-model="obj.end_date" :label="$t('field.end_date')" clearable class="col-12 col-md" />
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md">
+              <place-box :place="(obj.Place as Place)"></place-box>
             </div>
           </div>
         </q-tab-panel>
@@ -82,6 +107,9 @@
         <q-tab-panel name="evaluations">
           <evaluations-view :internship="obj" show-points />
         </q-tab-panel>
+        <q-tab-panel name="actions">
+          <internship-actions :internship="obj" />
+        </q-tab-panel>
         <q-tab-panel name="remarks">
           <remarks-view :api-endpoints="remarkEndpoints" />
         </q-tab-panel>
@@ -92,8 +120,6 @@
     </template>
     <template #footer>
       <div v-if="tab == 'info'" class="flex q-gutter-sm q-pa-lg">
-        <q-btn @click="deleteInternship" outline color="red" :label="$t('form.internship.delete')" />
-        <q-btn v-if="obj.student" @click="deleteStudent" outline color="red" :label="$t('form.student.delete')" />
         <q-space />
         <q-btn @click="save" unelevated color="ugent" :label="$t('form.internship.save')" />
       </div>
@@ -107,13 +133,13 @@ import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios';
-import { confirm } from '@/dialog';
 import { notify } from '@/notify';
 
 import { useStore } from '../../store.js';
 
-import DateSelect from '@/components/forms/DateSelect.vue';
 import FullDialog from '@/components/FullDialog.vue';
+import PlaceBox from '@/components/PlaceBox.vue';
+import DateSelect from '@/components/forms/DateSelect.vue';
 import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
@@ -122,6 +148,7 @@ import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
+import InternshipActions from './InternshipActions.vue';
 
 const emit = defineEmits(['delete:obj']);
 
@@ -137,7 +164,7 @@ const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');
 const projectName = computed<string>(() => (project.value ? project.value.name : ''));
 const internshipName = computed<string>(
-  () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`
+  () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name || ''} (${obj.value.Discipline?.name})`
 );
 const hasStarted = computed<boolean>(() => {
   if (!obj.value.start_date) return false;
@@ -180,26 +207,5 @@ function save() {
 
 function updateObj(obj: Internship) {
   store.updateObj('projectInternship', obj);
-}
-
-function deleteInternship() {
-  confirm(t('form.internship.confirm_delete'), () => {
-    api.delete(obj.value.self).then(() => {
-      store.deleteObj('projectInternship', obj.value);
-      notify.success(t('form.internship.deleted'));
-      emit('delete:obj');
-    });
-  });
-}
-
-function deleteStudent() {
-  confirm(t('form.internship.confirm_delete_student'), () => {
-    api.patch(obj.value.self, { student: null }).then(() => {
-      obj.value.student = null;
-      obj.value.Student = undefined;
-      store.updateObj('projectInternship', obj.value);
-      notify.success(t('form.internship.deleted_student'));
-    });
-  });
 }
 </script>

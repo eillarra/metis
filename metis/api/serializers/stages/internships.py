@@ -42,12 +42,13 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
     rel_timesheets = NestedHyperlinkField(
         "v1:project-internship-timesheet-list", nested_lookup=internship_lookup_fields
     )
+    uuid = serializers.UUIDField(read_only=True)
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     start_date = serializers.DateField()
     end_date = serializers.DateField()
     mentors = MentorTinySerializer(many=True, read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Internship
         exclude = ("created_at", "created_by")
 

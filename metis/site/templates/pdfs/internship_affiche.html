@@ -1,0 +1,31 @@
+{% extends 'pdf.html' %}
+
+{% load dict %}
+{% load markdown %}
+
+
+{% block content %}
+  <div style="margin: 0 2em; font-size: 1.25rem;">
+    <div class="text-center">
+      <h4 class="text-ge">
+        <strong>Faculteit Geneeskunde en Gezondheidswetenschappen</strong>
+        <br>VAKGROEP VOLKSGEZONDHEID EN EERSTELIJNSZORG</h4>
+      <h3 style="font-size: 1.5rem">AAN DE PATIËNTEN VAN DEZE PRAKTIJK</h3>
+    </div>
+    <p>Uw huisarts is door de universiteit erkend als opleider van toekomstige artsen. Dit betekent dat hij/zij een kwaliteitsvolle zorg aanbiedt aan de patiënten en zich inzet voor de vorming van bekwame artsen.</p>
+    <p>Wij waarderen het dat u, als patiënt(e) die hier op spreekuur komt, wilt meewerken aan deze opleiding.</p>
+    <p class="text-ugent">
+      <strong>U kan uiteraard steeds uw huisarts alleen ontmoeten indien u dat wenst.</strong>
+    </p>
+    <p>Tijdens de periode <strong>{{ internship.start_date }} - {{ internship.end_date }}</strong> zal</p>
+    <h1 style="font-size: 2.5em" class="text-center">{{ internship.student.name }}</h1>
+    <p>meestal aanwezig zijn bij raadplegingen en huisbezoeken.</p>
+    <p>Wij danken U voor de medewerking.</p>
+    <p>Prof. dr. A. De Sutter<br>
+    Coördinator stages huisartsgeneeskunde</p>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {{ internship.uuid }}
+{% endblock %}

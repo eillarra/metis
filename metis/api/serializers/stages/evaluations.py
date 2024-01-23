@@ -14,6 +14,8 @@ internship_lookup_fields = {
 
 
 class EvaluationFormSerializer(BaseModelSerializer):
+    """Evaluation form serializer."""
+
     definition = serializers.JSONField(read_only=True)
 
     class Meta:
@@ -22,7 +24,10 @@ class EvaluationFormSerializer(BaseModelSerializer):
 
 
 class EvaluationSerializer(RemarksMixin, BaseModelSerializer):
+    """Evaluation serializer."""
+
     self = NestedHyperlinkField("v1:project-internship-evaluation-detail", nested_lookup=internship_lookup_fields)
+    uuid = serializers.UUIDField(read_only=True)
     internship = serializers.PrimaryKeyRelatedField(read_only=True)
     url = serializers.CharField(read_only=True, source="get_absolute_url")
     name = serializers.CharField(read_only=True)

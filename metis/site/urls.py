@@ -32,6 +32,7 @@ urlpatterns = [
     path("files/q/<int:questioning_id>.<slug:file_type>", views.QuestioningFileView.as_view(), name="questioning_file"),
     path("files/q/planning/<int:questioning_id>.xlsx", views.PlanningFileView.as_view(), name="planning_file"),
     path("files/e/<uuid:uuid>.pdf", views.EvaluationPdfView.as_view(), name="evaluation_pdf"),
+    path("files/i/<uuid:uuid>_<slug:template_code>.pdf", views.InternshipPdfView.as_view(), name="internship_pdf"),
     path("files/s/<uuid:uuid>.pdf", views.SignaturePdfView.as_view(), name="signature_pdf"),
 ]
 

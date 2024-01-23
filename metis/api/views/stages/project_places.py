@@ -10,6 +10,8 @@ from .projects import ProjectNestedModelViewSet
 
 
 class ProjectPlaceViewSet(ProjectNestedModelViewSet):
+    """API endpoint for managing project places."""
+
     queryset = ProjectPlace.objects.select_related("place").prefetch_related(
         "availability_set",
         "disciplines",
@@ -17,6 +19,8 @@ class ProjectPlaceViewSet(ProjectNestedModelViewSet):
         "place__contacts__updated_by",
         "place__education__updated_by",
         "place__updated_by",
+        "place__addresses",
+        "place__phone_numbers",
         "updated_by",
     )
     pagination_class = None
@@ -26,18 +30,19 @@ class ProjectPlaceViewSet(ProjectNestedModelViewSet):
     filter_backends = (SearchFilter,)
     search_fields = ("place__name", "place__code")
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer):  # noqa: D102
         # TODO: activate validation
         # self.validate(serializer)
         serializer.save(project=self.get_project(), created_by=self.request.user)
 
-    def perform_update(self, serializer):
+    def perform_update(self, serializer):  # noqa: D102
         # TODO: activate validation
         # self.validate(serializer)
         serializer.save(project=self.get_project(), updated_by=self.request.user)
 
     @action(detail=True, methods=["put"])
     def availability(self, request, *args, **kwargs):
+        """Update availability for a project place."""
         project_place = self.get_object()
 
         try:

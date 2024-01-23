@@ -7,9 +7,7 @@ from metis.services.mapbox import MapboxFeature
 
 
 class Address(models.Model):
-    """
-    A physical address.
-    """
+    """Reusable address model."""
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="addresses")
     object_id = models.PositiveIntegerField()
@@ -19,10 +17,11 @@ class Address(models.Model):
     city = models.CharField(max_length=40)
     postcode = models.CharField(max_length=16)
     country = CountryField()
-    mapbox_feature = models.JSONField(null=True, blank=True)
     label = models.CharField(max_length=160, default="", blank=True)
 
-    class Meta:
+    mapbox_feature = models.JSONField(null=True, blank=True)
+
+    class Meta:  # noqa: D106
         db_table = "metis_rel_address"
 
     def __str__(self) -> str:
@@ -30,14 +29,18 @@ class Address(models.Model):
 
     @property
     def feature(self) -> MapboxFeature | None:
+        """The Mapbox feature for this address."""
         return MapboxFeature(self.mapbox_feature) if self.mapbox_feature else None
 
     @property
     def full_address(self) -> str:
+        """The full address string."""
         return self.feature.full_address if self.feature else f"{self.address}, {self.postcode} {self.city}"
 
 
 class AddressesMixin(models.Model):
+    """Addresses mixin."""
+
     addresses = GenericRelation(Address)
 
     class Meta:

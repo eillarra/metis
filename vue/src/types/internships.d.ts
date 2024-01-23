@@ -4,6 +4,7 @@ interface Internship extends ApiObject {
   rel_evaluations: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   rel_timesheets: ApiEndpoint;
+  uuid: string;
   student: number | null;
   track: number | null;
   period: number | null;
@@ -31,6 +32,7 @@ interface Mentor extends ApiObject {
 }
 
 interface Evaluation extends ApiObject {
+  uuid: string;
   intermediate: number;
   name: string;
   url: string;

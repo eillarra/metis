@@ -41,7 +41,10 @@ class PlaceOfficeView(InertiaView):
     def get_props(self, request, *args, **kwargs):
         place = self.get_object()
         projects = Project.objects.filter_by_place(place, prefetch_related=True)
-        last_project = projects.get(name="AJ23-24")  # TODO: clean
+        try:
+            last_project = projects.get(name="AJ23-24")  # TODO: clean
+        except Project.DoesNotExist:
+            last_project = projects.first()
         is_admin = place.contacts.filter(user=request.user, is_admin=True).exists()
 
         internships = Internship.objects.prefetch_related(

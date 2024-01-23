@@ -1,6 +1,7 @@
 import math
 from collections import Counter
 from typing import TYPE_CHECKING, Optional
+from uuid import uuid4
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -128,6 +129,8 @@ class Internship(RemarksMixin, BaseModel):
     discipline = models.ForeignKey("metis.Discipline", related_name="internships", null=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=CONCEPT)
 
+    uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
+
     # evaluation_deadline = models.DateField()  # this can be used for cases > reviews
     # reviewers (beoordelaars)
 
@@ -154,7 +157,7 @@ class Internship(RemarksMixin, BaseModel):
             raise ValidationError("The chosen program internship is not part of the chosen track.")
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError("The chosen start date is after the chosen end date.")
-        if not self.place and self.status != self.PREPLANNING:
+        if not self.project_place and self.status != self.PREPLANNING:
             raise ValidationError("A place is required if the internship is not in preplanning status.")
 
         validate_discipline_choice(self)
@@ -197,6 +200,14 @@ class Internship(RemarksMixin, BaseModel):
     def can_be_managed_by(self, user) -> bool:
         """Check if the user can manage this internship."""
         return self.project.can_be_managed_by(user)
+
+    def can_be_viewed_by(self, user) -> bool:
+        """Returns whether the user can view this internship."""
+        return (
+            self.student.user == user
+            or self.mentors.filter(user=user).exists()
+            or (self.place.can_be_managed_by(user) if self.place else False)
+        )
 
     @property
     def is_active(self) -> bool:

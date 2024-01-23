@@ -4,7 +4,7 @@ interface Address extends ApiObject {
   postcode: string;
   city: string;
   country: string;
-  mapbox_feature: object;
+  mapbox_feature?: object;
 }
 
 interface PhoneNumber extends ApiObject {
@@ -29,6 +29,7 @@ interface Place extends ApiObject {
   type: number;
   name: string;
   code: string;
+  addresses: Address[];
   contacts: Contact[];
   phone_numbers: PhoneNumber[];
   updated_at: string;
@@ -36,7 +37,6 @@ interface Place extends ApiObject {
   remark_count: number;
   is_flagged: boolean;
   // -----
-  addresses?: Address[];
   Type?: PlaceType;
 }
 
@@ -56,7 +56,7 @@ interface ProjectPlaceTiny extends ApiObject {
   Place?: Place;
   Project?: Project;
   // -----
-  _periods: Set<number>;
+  _periods?: Set<number>;
 }
 
 interface ProjectPlace extends ProjectPlaceTiny {

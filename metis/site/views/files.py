@@ -12,12 +12,13 @@ from metis.services.s3 import get_s3_response
 
 
 class MediaFileView(View):
-    """
-    Serves private S3 files, checking user permissions beforehand if needed.
+    """Base view for serving private S3 files.
+
+    Permissions are checked if needed.
     """
 
     @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):  # noqa: D102
         if not request.user.has_file_access(self.get_object()):  # type: ignore
             raise PermissionDenied("You don't have the necessary permissions to access this file.")
         return super().dispatch(request, *args, **kwargs)

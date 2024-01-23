@@ -10,10 +10,7 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D106
         model = PhoneNumber
-        exclude = (
-            "content_type",
-            "object_id",
-        )
+        exclude = ("content_type", "object_id")
 
 
 class PhoneNumbersMixin(serializers.ModelSerializer):

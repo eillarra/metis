@@ -23,7 +23,7 @@ class PlaceViewSet(EducationNestedModelViewSet):
     """API endpoint for managing places."""
 
     queryset = Place.objects.select_related("updated_by").prefetch_related(
-        "education", "contacts__user", "contacts__updated_by"
+        "education", "contacts__user", "contacts__updated_by", "addresses", "phone_numbers"
     )
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
@@ -34,6 +34,7 @@ class PlaceViewSet(EducationNestedModelViewSet):
 
     @action(detail=True, methods=["post"])
     def invite(self, request, *args, **kwargs):
+        """Invite contacts to place."""
         emails = request.data.get("emails")
         data = request.data.get("data", {})
 

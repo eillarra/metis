@@ -68,15 +68,8 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
         )
 
     def can_be_viewed_by(self, user: "User") -> bool:
-        """Returns whether the user can view this evaluation.
-
-        TODO: see if this can be integrated with the API permissions.
-        """
-        return (
-            self.internship.place.can_be_managed_by(user)
-            or self.internship.student.user == user
-            or self.internship.mentors.filter(user=user).exists()
-        )
+        """Returns whether the user can view this evaluation."""
+        return self.internship.can_be_viewed_by(user)
 
     def get_absolute_url(self) -> str:
         """Returns the absolute URL of the evaluation PDF."""

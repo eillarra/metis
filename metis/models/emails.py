@@ -4,7 +4,8 @@ from .base import BaseModel
 
 
 class EmailTemplate(BaseModel):
-    """
+    """Email template model.
+
     Email templates are used to send emails to students, contacts, mentors, etc.
     Templates can be different by education; if no education is specified, the template is shared by all educations.
     """
@@ -20,7 +21,7 @@ class EmailTemplate(BaseModel):
     obj_class = models.CharField(max_length=64, default="", blank=True)
     add_office_in_bcc = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_email_template"
         ordering = ["education", "code"]
         unique_together = ("education", "code")
@@ -33,6 +34,7 @@ class EmailTemplate(BaseModel):
 
     @property
     def bcc(self) -> list[str]:
+        """Get bcc email address."""
         return (
             [self.education.office_email]
             if self.add_office_in_bcc and self.education and self.education.office_email
@@ -41,13 +43,12 @@ class EmailTemplate(BaseModel):
 
     @property
     def reply_to(self) -> list[str]:
+        """Get reply-to email address."""
         return [self.education.office_email] if self.education and self.education.office_email else [self.NO_REPLY]
 
 
 class EmailLog(models.Model):
-    """
-    Log of sent emails.
-    """
+    """Log of sent emails."""
 
     education = models.ForeignKey(
         "metis.Education", related_name="email_logs", on_delete=models.SET_NULL, null=True, blank=True
@@ -65,7 +66,7 @@ class EmailLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     sent_at = models.DateTimeField(null=True, blank=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_log_email"
 
     def __str__(self) -> str:
