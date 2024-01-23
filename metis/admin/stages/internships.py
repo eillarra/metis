@@ -5,6 +5,7 @@ from django.utils.html import format_html
 from metis.models.stages.internships import Internship
 
 from ..base import BaseModelAdmin
+from ..rel.files import FilesInline
 from ..rel.remarks import RemarksInline
 
 
@@ -21,7 +22,7 @@ class InternshipAdmin(BaseModelAdmin):
     search_fields = ("student__user__first_name", "student__user__last_name")
     # form
     raw_id_fields = ("period", "student", "project_place")
-    inlines = (RemarksInline,)
+    inlines = (FilesInline, RemarksInline)
 
     def get_queryset(self, request):
         """Return queryset with prefetched related models."""
