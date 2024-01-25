@@ -81,7 +81,7 @@ const selectedPeriod = ref<number | null>(null);
 const selectedTrack = ref<number | null>(null);
 
 const projectExcelPath = computed(() => {
-  return `/nl/files/project_${project.value?.id}.xlsx`;
+  return `/nl/files/p/proj_${project.value?.id}_planning.xlsx`;
 });
 
 const disciplineOptions = computed(() => {

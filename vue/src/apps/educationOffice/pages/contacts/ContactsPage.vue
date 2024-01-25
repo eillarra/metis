@@ -1,6 +1,13 @@
 <template>
   <div class="row q-col-gutter-sm q-mb-lg">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('contact', 9) }}</h3>
+    <h3 class="text-ugent col-12 col-md-3 q-mb-none use-default-q-btn">
+      {{ $t('contact', 9) }}
+      <a v-show="contacts.length" :href="contactsExcelPath" target="_blank">
+        <q-btn round outline :icon="iconDownload" size="sm" color="primary" class="q-ml-md q-pa-xs">
+          <q-tooltip :delay="250">{{ $t('download.excel') }}</q-tooltip>
+        </q-btn>
+      </a>
+    </h3>
     <div class="col"></div>
     <q-select
       v-model="selectedProfile"
@@ -33,10 +40,16 @@ import { useStore } from '../../store.js';
 
 import ContactsTable from './ContactsTable.vue';
 
+import { iconDownload } from '@/icons';
+
 const { t } = useI18n();
 const { project, contacts } = storeToRefs(useStore());
 
 const selectedProfile = ref<string | null>(null);
+
+const contactsExcelPath = computed(() => {
+  return `/nl/files/p/proj_${project.value?.id}_contacts.xlsx`;
+});
 
 const profileOptions = [
   {

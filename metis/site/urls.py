@@ -28,7 +28,7 @@ urlpatterns = [
     path("", views.HomeView.as_view(), name="homepage"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     # files  # TODO: refactor
-    path("files/project_<int:project_id>.xlsx", views.ProjectPlanningFileView.as_view(), name="project_planning_excel"),
+    path("files/p/proj_<int:project_id>_<slug:file_code>.xlsx", views.ProjectExcelView.as_view(), name="project_excel"),
     path("files/q/<int:questioning_id>.<slug:file_type>", views.QuestioningFileView.as_view(), name="questioning_file"),
     path("files/q/planning/<int:questioning_id>.xlsx", views.PlanningFileView.as_view(), name="planning_file"),
     path("files/e/<uuid:uuid>.pdf", views.EvaluationPdfView.as_view(), name="evaluation_pdf"),

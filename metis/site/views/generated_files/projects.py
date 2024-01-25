@@ -5,10 +5,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from metis.models import Project
-from metis.services.file_generator.projects import ProjectPlanningExcel
+from metis.services.file_generator.projects import ProjectContactsExcel, ProjectPlanningExcel
 
 
-class ProjectFileView(View):
+class ProjectExcelView(View):
     """Generate an Excel file for a project."""
 
     @method_decorator(login_required)
@@ -24,10 +24,12 @@ class ProjectFileView(View):
             self.object = get_object_or_404(Project, id=self.kwargs.get("project_id"))
         return self.object
 
-
-class ProjectPlanningFileView(ProjectFileView):
-    """Generate an Excel file with all the internships of a period."""
-
     def get(self, request, *args, **kwargs):
-        """Get a response with an Excel file with all the internships of a period."""
-        return ProjectPlanningExcel(self.get_object()).get_response()
+        """Get a response with an Excel file."""
+        code = self.kwargs.get("file_code")
+        if code == "planning":
+            return ProjectPlanningExcel(self.get_object()).get_response()
+        elif code == "contacts":
+            return ProjectContactsExcel(self.get_object()).get_response()
+        else:
+            raise NotImplementedError
