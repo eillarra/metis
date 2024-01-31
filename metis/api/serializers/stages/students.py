@@ -16,10 +16,13 @@ project_lookup_fields = {
 
 
 class StudentSerializer(FormResponsesMixin, RemarksMixin, BaseModelSerializer):
+    """Student serializer."""
+
     self = NestedHyperlinkField("v1:project-student-detail", nested_lookup=project_lookup_fields)
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(source="user", queryset=User.objects.all(), write_only=True)
+    photo_url = serializers.CharField(read_only=True)
 
     class Meta:
         model = Student
@@ -27,6 +30,8 @@ class StudentSerializer(FormResponsesMixin, RemarksMixin, BaseModelSerializer):
 
 
 class StudentUserSerializer(AddressesMixin, serializers.ModelSerializer):
+    """User serializer with all student information."""
+
     student_set = StudentSerializer(many=True)
 
     class Meta:
@@ -35,4 +40,6 @@ class StudentUserSerializer(AddressesMixin, serializers.ModelSerializer):
 
 
 class StudentInertiaSerializer(StudentSerializer):
+    """Student serializer for Inertia."""
+
     User = UserLastLoginSerializer(read_only=True, source="user")

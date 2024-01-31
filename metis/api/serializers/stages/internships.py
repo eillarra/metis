@@ -54,7 +54,7 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
 
 
 class InternshipInertiaSerializer(InternshipSerializer):
-    """Internship serializer for inertia."""
+    """Internship serializer for Inertia."""
 
     Discipline = DisciplineSerializer(read_only=True, source="discipline")
     Period = PeriodSerializer(read_only=True, source="period")
@@ -63,7 +63,7 @@ class InternshipInertiaSerializer(InternshipSerializer):
 
 
 class InternshipFullInertiaSerializer(InternshipInertiaSerializer):
-    """Internship serializer for inertia, with nested place."""
+    """Internship serializer for Inertia, with nested place."""
 
     Place = PlaceInertiaSerializer(read_only=True, source="place")
 

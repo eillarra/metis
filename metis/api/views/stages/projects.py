@@ -52,7 +52,10 @@ class ProjectViewSet(EducationNestedModelViewSet):
         students = (
             User.objects.filter(student_set__project=self.get_object())
             .prefetch_related(
-                "student_set__project__education", "student_set__block__internships", "student_set__updated_by"
+                "student_set__project__education",
+                "student_set__block__internships",
+                "student_set__updated_by",
+                "student_set__user__socialaccount_set",
             )
             .distinct()
         )

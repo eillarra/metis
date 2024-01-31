@@ -80,13 +80,13 @@ class InternshipViewSet(ProjectNestedModelViewSet):
         except EmailTemplate.DoesNotExist as exc:
             raise ValidationError({"code": "No valid email template code provided."}) from exc
 
-        to = internship.place.contacts.filter(is_admin=True)[0]  # TODO: service should decide
+        user = internship.place.contacts.filter(is_admin=True)[0].user  # TODO: service should decide
 
         schedule_template_email(
             template=email_template,
-            to=[to.user.email],
-            context={"internship": internship},
-            log_user=to.user,
+            to=[user.email],
+            context={"internship": internship, "user": user},
+            log_user=user,
         )
 
         return Response(status=status.NO_CONTENT)

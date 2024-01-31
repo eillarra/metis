@@ -26,7 +26,6 @@ import { usePage } from '@inertiajs/vue3';
 
 import { useStore } from '../../store.js';
 
-
 const page = usePage();
 const { education, internships } = storeToRefs(useStore());
 

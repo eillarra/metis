@@ -195,6 +195,7 @@ export default {
         new: 'Nieuwe stage aanmaken',
         success: 'Stage aangemaakt',
       },
+      confirm_cancel: 'Ben je zeker dat je deze stage wil annuleren?',
       delete: 'Stage verwijderen',
       confirm_delete: 'Ben je zeker dat je deze stage wil verwijderen?',
       deleted: 'Stage verwijderd',

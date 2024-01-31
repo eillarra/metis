@@ -52,7 +52,13 @@
           </q-item-section>
           <q-item-section>{{ $t('action', 9) }}</q-item-section>
         </q-item>
-        <q-item :disabled="true" clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
+        <q-item
+          :disabled="true"
+          clickable
+          @click="tab = 'emails'"
+          :active="tab == 'emails'"
+          active-class="bg-ugent text-white"
+        >
           <q-item-section avatar>
             <q-icon name="mail_outline" size="xs"></q-icon>
           </q-item-section>
@@ -88,7 +94,12 @@
                   :label="$t('discipline')"
                 />
                 <div class="row q-col-gutter-lg q-pt-sm q-pl-sm">
-                  <date-select v-model="obj.start_date" :label="$t('field.start_date')" clearable class="col-12 col-md" />
+                  <date-select
+                    v-model="obj.start_date"
+                    :label="$t('field.start_date')"
+                    clearable
+                    class="col-12 col-md"
+                  />
                   <date-select v-model="obj.end_date" :label="$t('field.end_date')" clearable class="col-12 col-md" />
                 </div>
               </div>

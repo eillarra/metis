@@ -196,6 +196,7 @@ export default {
         new: 'Create a new internship',
         success: 'Internship created',
       },
+      confirm_cancel: 'Are you sure you want to cancel this internship?',
       delete: 'Delete internship',
       confirm_delete: 'Are you sure you want to delete this internship?',
       deleted: 'Internship deleted',

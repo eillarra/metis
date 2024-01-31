@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 from django.utils.crypto import get_random_string
+from django.utils.functional import cached_property
 
 from metis.services.graph import GraphAPI
 from metis.services.mailer import send_email_to_admins
@@ -31,7 +32,23 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
 
     @property
     def name(self) -> str:
+        """Name of the user."""
         return self.get_full_name() or self.username
+
+    @cached_property
+    def ugent_id(self) -> str | None:
+        """UGent ID of the user."""
+        try:
+            return self.socialaccount_set.all()[0].uid  # type: ignore
+        except IndexError:
+            return None
+
+    @property
+    def photo_url(self) -> str | None:
+        """URL to the student's photo."""
+        # TODO: this is currently taken from SPARTA, but should be taken from OASIS / DICT in the future
+        # TODO: this is not protected on SPARTA, but it should
+        return f"https://sparta.ugent.be/_Document/PersonImage/{self.ugent_id}.jpeg" if self.ugent_id else None
 
     @property
     def reverse_name(self) -> str:

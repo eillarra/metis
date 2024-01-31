@@ -12,7 +12,7 @@ from metis.api.serializers import (
     InternshipFullInertiaSerializer,
     ProjectSerializer,
 )
-from metis.models import Education, Internship
+from metis.models import Education, Internship, Project
 from metis.services.reporter.pdf import ProjectPlaceInformationPdf
 
 from .inertia import InertiaView
@@ -54,7 +54,10 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
     def get_props(self, request, *args, **kwargs):
         """Get the props for the Vue app."""
         projects = self.get_education().projects.filter(students__user=request.user)
-        last_project = projects.get(name="AJ23-24")  # TODO: clean
+        try:
+            last_project = projects.get(name="AJ23-24")  # TODO: clean
+        except Project.DoesNotExist:
+            last_project = projects.first()
 
         base = {
             "education": EducationTinySerializer(self.get_education()).data,
@@ -76,7 +79,6 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
         # PROVISIONAL
         # --------------
         from metis.api.serializers import AuthUserSerializer, ProjectTinySerializer, TextEntrySerializer
-        from metis.models import Project
 
         try:
             project = Project.objects.get(education=self.get_education(), name="AJ22-23")

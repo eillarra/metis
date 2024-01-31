@@ -98,9 +98,23 @@ class AuthStudentProposeInternshipPlaceViewSet(CreateModelMixin, ListModelMixin,
         place = find_place_by_name(place_name, internship.project.education) or Place.objects.create(
             name=place_name, code=place_name, education=internship.project.education, created_by=request.user
         )
-        mentor = Mentor.objects.create(internship=internship, user=user, is_primary=True, created_by=request.user)
+        mentor, _ = Mentor.objects.get_or_create(
+            internship=internship,
+            user=user,
+            is_primary=True,
+            defaults={
+                "created_by": request.user,
+            },
+        )
 
-        Contact.objects.create(place=place, user=user, created_by=request.user, is_admin=True)
+        Contact.objects.get_or_create(
+            place=place,
+            user=user,
+            is_admin=True,
+            defaults={
+                "created_by": request.user,
+            },
+        )
 
         if place_contact_phone_number:
             PhoneNumber.objects.create(content_object=user, number=place_contact_phone_number, type=PhoneNumber.MOBILE)

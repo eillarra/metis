@@ -6,7 +6,11 @@ from .projects import ProjectNestedModelViewSet
 
 
 class StudentViewSet(ProjectNestedModelViewSet):
-    queryset = Student.objects.select_related("project", "user").prefetch_related("block__internships", "updated_by")
+    """API endpoint for managing students."""
+
+    queryset = Student.objects.select_related("project", "user").prefetch_related(
+        "block__internships", "updated_by", "user__socialaccount_set"
+    )
     pagination_class = None
     permission_classes = (IsEducationOfficeMember,)
     serializer_class = StudentSerializer

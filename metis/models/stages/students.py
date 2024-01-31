@@ -56,3 +56,8 @@ class Student(FormResponsesMixin, RemarksMixin, BaseModel):
     def reverse_name(self) -> str:
         """Name in reverse order, e.g. 'Doe, John'."""
         return self.user.reverse_name
+
+    @property
+    def photo_url(self) -> str | None:
+        """URL to the student's photo."""
+        return self.user.photo_url

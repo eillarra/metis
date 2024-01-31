@@ -19,6 +19,7 @@ from ..rel.remarks import RemarksMixin
 
 
 if TYPE_CHECKING:
+    from ..educations import Education
     from ..places import Place
     from ..rel.signatures import Signature
     from .evaluations import EvaluationForm
@@ -216,6 +217,11 @@ class Internship(RemarksMixin, BaseModel):
     def is_active(self) -> bool:
         """A boolean indicating whether the internship is active or not."""
         return self.start_date <= timezone.now().date() <= self.end_date
+
+    @property
+    def education(self) -> "Education":
+        """The education of the internship."""
+        return self.project.education
 
     @property
     def evaluation_form(self) -> Optional["EvaluationForm"]:

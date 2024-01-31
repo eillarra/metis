@@ -5,61 +5,38 @@
         <q-step :name="1" title="Plaats toevoegen" icon="business" active-icon="edit">
           <div v-if="obj.Place">
             <div class="text-h text-weight-bold q-my-sm">{{ obj.Place?.name }}</div>
-            Stageplaats is toegekend, gelieve het akkoord document te sturen naar
-            <a mailto="helpdesk.metis@ugent.be">helpdesk.metis@ugent.be</a> (binnenkort kan dit online).
+            Stageplaats is toegekend.
           </div>
           <div v-else>
             <p>
               Voeg de contactgegevens toe van de huisarts die je mentor zal zijn. Deze gegevens zullen gebruikt worden
               om een account aan te maken, dus zorg ervoor dat het emailadres correct is.
             </p>
-            <p>
-              Gelieve hierbij rekening te houden met de lijst van <strong>niet-te-contacteren praktijken</strong> (zie
-              Infosite Master GK - Inhoudsopgave
-              <a
-                target="_blank"
-                href="https://ufora.ugent.be/d2l/le/content/77826/Home?itemIdentifier=D2L.LE.Content.ContentObject.ModuleCO-56563"
-                >2de Master GE</a
-              >
-              -
-              <a
-                target="_blank"
-                href="https://ufora.ugent.be/d2l/le/content/77826/Home?itemIdentifier=D2L.LE.Content.ContentObject.ModuleCO-112404"
-                >Seniorstages 2023 - 2024 - 2025</a
-              >
-              -
-              <a
-                target="_blank"
-                href="https://ufora.ugent.be/d2l/le/content/77826/Home?itemIdentifier=D2L.LE.Content.ContentObject.ModuleCO-217751"
-                >Seniorstage Huisartsgeneeskunde</a
-              >).
-            </p>
-            <div class="q-gutter-sm q-mt-sm">
+            <form @submit.prevent.stop="proposePlace" class="q-gutter-sm q-mt-sm">
               <q-input v-model="formData.place_contact_name" dense :label="$t('contact')" />
               <q-input v-model.trim="formData.place_contact_email" dense :label="$t('field.email')" type="email" />
-              <q-input v-model="formData.place_contact_phone_number" dense :label="$t('field.phone_number')" />
+              <q-input
+                v-model="formData.place_contact_phone_number"
+                dense
+                :label="$t('field.phone_number')"
+                type="tel"
+              />
               <p class="q-mt-xl">
                 Indien de arts een andere naam heeft voor zijn/haar praktijk, gelieve deze hier aan te geven:
               </p>
               <q-input v-model="formData.place_name" dense :label="$t('place')" />
               <q-input v-model="formData.place_address" dense :label="$t('address')" />
-            </div>
+              <q-btn
+                type="submit"
+                unelevated
+                color="ugent"
+                :label="$t('form.internship.propose_place')"
+                :disable="!formData.place_contact_name || !formData.place_contact_email"
+              />
+            </form>
           </div>
         </q-step>
       </q-stepper>
-    </template>
-    <template #footer>
-      <div class="flex q-gutter-sm q-pa-lg">
-        <q-space />
-        <q-btn
-          v-if="!obj.Place"
-          unelevated
-          @click="proposePlace"
-          color="ugent"
-          :label="$t('form.internship.propose_place')"
-          :disable="!formData.place_contact_name || !formData.place_contact_email"
-        />
-      </div>
     </template>
   </dialog-form>
 </template>
@@ -104,7 +81,7 @@ function proposePlace() {
   api
     .post('/user/student/preplanned-internships/', formData.value)
     .then((res) => {
-      notify.success(t('form.internship.approved'));
+      notify.success(t('form.internship.saved'));
       obj.value = res.data;
     })
     .finally(() => {
