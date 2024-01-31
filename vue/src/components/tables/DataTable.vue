@@ -13,9 +13,16 @@
   .q-table {
     max-width: 100%;
 
+    th, td {
+      background-color: white;
+      max-width: 300px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
     th.sticky-left,
     td.sticky-left {
-      background-color: white;
       position: -webkit-sticky;
       position: sticky;
       left: 0;
@@ -24,7 +31,6 @@
 
     th.sticky-right,
     td.sticky-right {
-      background-color: white;
       position: -webkit-sticky;
       position: sticky;
       right: 0;
