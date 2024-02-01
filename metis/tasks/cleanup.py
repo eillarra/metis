@@ -4,5 +4,6 @@ from huey.contrib.djhuey import db_periodic_task
 
 
 @db_periodic_task(crontab(hour="*/4", minute="0"))
-def clear_expired_sessions():
-    return call_command("clearsessions")
+def clear_expired_sessions() -> None:
+    """Clear Django expired sessions."""
+    call_command("clearsessions")

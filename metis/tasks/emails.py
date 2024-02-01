@@ -19,12 +19,12 @@ EMAILS_PER_MINUTE = int(os.getenv("UGENT_EMAILS_PER_MINUTE", 2))
 
 
 @db_periodic_task(crontab(minute="*"))
-def send_email():
+def send_email() -> None:
     """Send the emails that are scheduled.
-    If we get access to mass mailing, use EMAILS_PER_MINUTE to adjust the amount of emails sent.
-    """
-    # TODO: see what should be done here and what in the service
 
+    TODO: if we get access to mass mailing, use EMAILS_PER_MINUTE to adjust the amount of emails sent
+    TODO: see what should be done here and what in the service
+    """
     emails = EmailLog.objects.filter(sent_at=None).order_by("created_at")[:EMAILS_PER_MINUTE]
 
     for email in emails:

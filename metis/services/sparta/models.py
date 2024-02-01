@@ -120,3 +120,6 @@ class SpartaInternship(SpartaModel):
     class Meta:  # noqa: D106
         db_table = "Training"
         managed = False
+
+    def __str__(self) -> str:
+        return f"{self.student} ({self.start_date} - {self.end_date})"
