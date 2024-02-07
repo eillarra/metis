@@ -34,6 +34,16 @@ urlpatterns = [
     path("files/e/<uuid:uuid>.pdf", views.EvaluationPdfView.as_view(), name="evaluation_pdf"),
     path("files/i/<uuid:uuid>_<slug:template_code>.pdf", views.InternshipPdfView.as_view(), name="internship_pdf"),
     path("files/s/<uuid:uuid>.pdf", views.SignaturePdfView.as_view(), name="signature_pdf"),
+    path(
+        "files/~i/<uuid:uuid>/<slug:secret>_<slug:template_code>.pdf",
+        views.InternshipPdfSecretView.as_view(),
+        name="internship_pdf_secret",
+    ),
+    path(
+        "files/~i/<uuid:uuid>/<slug:secret>/<path:file>",
+        views.InternshipMediaFileSecretView.as_view(),
+        name="internship_media_file_secret",
+    ),
 ]
 
 # Flatpages “catchall” pattern

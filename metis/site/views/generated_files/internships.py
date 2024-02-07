@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -8,16 +9,10 @@ from metis.models.stages.internships import Internship
 from metis.services.file_generator.pdf import render_pdf_template
 
 
-class InternshipPdfView(View):
+class InternshipPdfBaseView(View):
     """Internship PDF view."""
 
     template_name = "pdfs/internship.html"
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):  # noqa: D102
-        if not self.get_object().can_be_viewed_by(request.user):
-            raise PermissionDenied
-        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None) -> Internship:
         """Get the internship."""
@@ -34,3 +29,24 @@ class InternshipPdfView(View):
         """Get a response with an PDF file for the internship."""
         context = {"internship": self.get_object()}
         return render_pdf_template(request, self.get_template_name(), context)
+
+
+class InternshipPdfView(InternshipPdfBaseView):
+    """Internship PDF view."""
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):  # noqa: D102
+        if not self.get_object().can_be_viewed_by(request.user):
+            messages.error(request, "You don't have access to this document.")
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+
+class InternshipPdfSecretView(InternshipPdfBaseView):
+    """Internship PDF view, accessed using a secret link."""
+
+    def dispatch(self, request, *args, **kwargs):  # noqa: D102
+        if self.get_object().secret != kwargs.get("secret"):
+            messages.error(request, "You don't have access to this document.")
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
