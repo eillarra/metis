@@ -38,3 +38,7 @@ class Lacedeamon:
     def get_students(self) -> QuerySet["SpartaStudent"]:
         """Return a list of students."""
         return SpartaStudent.objects.filter(project=self.project_id)
+
+    def get_student_by_email(self, email: str) -> SpartaStudent | None:
+        """Return a student by email."""
+        return SpartaStudent.objects.filter(email=email).first()

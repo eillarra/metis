@@ -65,6 +65,18 @@ class SpartaStudent(SpartaModel):
         related_name="students",
     )
 
+    # OASIS data to sync until we get a proper API access
+
+    oasis_uuid = models.CharField(max_length=255, db_column="TrainingStudentOasisUUID")
+    image_filename = models.CharField(max_length=255, db_column="TrainingStudentImageName")
+    mobile = models.CharField(max_length=255, db_column="TrainingStudentMobile")
+    address_street = models.CharField(max_length=255, db_column="TrainingStudentAddressStreetName")
+    address_number = models.CharField(max_length=255, db_column="TrainingStudentAddressHouseNumber")
+    address_postcode = models.CharField(max_length=255, db_column="TrainingStudentAddressPostalCode")
+    address_city = models.CharField(max_length=255, db_column="TrainingStudentAddressCity")
+    address_country = models.CharField(max_length=255, db_column="TrainingStudentAddressCountryID")
+    address_alternative = models.CharField(max_length=255, db_column="TrainingStudentAlternativeAddress1")
+
     class Meta:  # noqa: D106
         db_table = "TrainingStudent"
         managed = False

@@ -4,9 +4,7 @@ from django.db import models
 
 
 class PhoneNumber(models.Model):
-    """
-    A phone number.
-    """
+    """A phone number."""
 
     MOBILE = "mobile"
     LANDLINE = "landline"
@@ -22,7 +20,7 @@ class PhoneNumber(models.Model):
     type = models.CharField(max_length=16, choices=TYPES)
     number = models.CharField(max_length=24)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_rel_phone_number"
 
     def __str__(self) -> str:
@@ -30,7 +28,9 @@ class PhoneNumber(models.Model):
 
 
 class PhoneNumbersMixin(models.Model):
+    """Phone numbers mixin."""
+
     phone_numbers = GenericRelation(PhoneNumber)
 
-    class Meta:
+    class Meta:  # noqa: D106
         abstract = True

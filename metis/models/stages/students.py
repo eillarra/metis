@@ -24,7 +24,9 @@ class Student(FormResponsesMixin, RemarksMixin, BaseModel):
 
     is_active = models.BooleanField(default=True)
 
-    class Meta:
+    oasis_data = models.JSONField(default=dict, blank=True)
+
+    class Meta:  # noqa: D106
         ordering = ["project", "block__position"]
         unique_together = ("user", "project", "block")
 

@@ -1,0 +1,33 @@
+{% extends 'pdf.html' %}
+
+{% load dict %}
+{% load markdown %}
+
+
+{% block content %}
+  <div style="margin: 0 5em; font-size: 1.25rem;">
+    <div class="text-center">
+      <h4 class="text-ge">
+        <strong>{{ internship.project.education.faculty }}</strong>
+        <br>VAKGROEP VOLKSGEZONDHEID EN EERSTELIJNSZORG</h4>
+      <h3 style="font-size: 1.5rem">INFOFICHE STAGIAIR</h3>
+    </div>
+    <h1 style="font-size: 2.5em">{{ internship.student.name }}</h1>
+    {% if internship.student.oasis_data.image_filename %}
+      <img src="https://sparta.ugent.be/_Document/PersonImage/{{ internship.student.oasis_data.image_filename }}" style="width: 3.5cm; amrgin: 0 auto">
+    {% endif %}
+    <p style="margin-top: 2em">
+      Naam student: {{ internship.student.reverse_name }}<br>
+      {% for phone_number in internship.student.user.phone_numbers.all %}
+        {% if phone_number.type == 'mobile' %}
+          GSM-nummer: {{ phone_number.number }}<br>
+        {% endif %}
+      {% endfor %}
+      E-mailadres: <a href="mailto:{{ internship.student.user.email }}" class="text-inherit">{{ internship.student.user.email }}</a><br>
+    </p>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {{ internship.uuid }}
+{% endblock %}

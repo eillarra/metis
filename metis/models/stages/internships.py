@@ -1,6 +1,6 @@
 import math
 from collections import Counter
-from hashlib import sha256
+from hashlib import sha1
 from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
@@ -265,7 +265,7 @@ class Internship(RemarksMixin, BaseModel):
     @property
     def secret(self) -> str:
         """A secret string for the internship."""
-        return sha256(f"{self.uuid}{settings.SECRET_KEY}".encode()).hexdigest()
+        return sha1(f"{self.uuid}{settings.SECRET_KEY}".encode()).hexdigest()
 
     def accepts_cases(self) -> bool:
         raise NotImplementedError
@@ -311,18 +311,25 @@ class Internship(RemarksMixin, BaseModel):
 
         return Counter(self.get_covered_disciplines().values_list("id", flat=True))
 
-    def get_secret_file_url(self, template: str) -> str:
+    def get_secret_generated_file_url(self, template_code: str) -> str:
         """Get the secret URL for the internship."""
-        return reverse("internship_pdf_secret", args=[self.uuid, self.secret, template])
+        return reverse("internship_pdf_secret", args=[self.uuid, self.secret, template_code])
 
-    def get_secret_affiche_url(self) -> str:
-        """Get the secret URL for the affiche. We need an extra method so it can be used in email templates."""
-        return self.get_secret_file_url("affiche")
-
-    def get_secret_stagegids_url(self) -> str:
+    def get_secret_file_url(self, file_code: str) -> str:
         """Get the secret URL for the stagegids. We need an extra method so it can be used in email templates."""
-        file = self.project.files.filter(code="place:stagegids").first()
+        file = self.project.files.filter(code=file_code).first()
         return reverse("internship_media_file_secret", args=[self.uuid, self.secret, file.file]) if file else "#"
+
+    def __getattr__(self, name: str) -> str:
+        """Handle dynamic method calls for secret URLs."""
+        if name.startswith("get_secret_url_"):
+            template_code = name[len("get_secret_url_") :]
+            return self.get_secret_generated_file_url(template_code)
+        if name.startswith("get_secret_file_url_"):
+            file_code = name[len("get_secret_file_url_") :]
+            file_code = file_code.replace("__", ":")
+            return self.get_secret_file_url(file_code)
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
 
 class Mentor(BaseModel):
