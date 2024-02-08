@@ -89,7 +89,7 @@ USE_ETAGS = True
 
 # https://docs.djangoproject.com/en/dev/topics/email/
 
-DEFAULT_FROM_EMAIL = "METIS <metis@ugent.be>"
+DEFAULT_FROM_EMAIL = "UGent <metis@ugent.be>"
 SERVER_EMAIL = "helpdesk.metis@ugent.be"
 EMAIL_SUBJECT_PREFIX = "[METIS] "
 

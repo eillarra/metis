@@ -35,7 +35,6 @@ class Command(BaseCommand):
 
                 schedule_template_email(
                     template=email_template,
-                    from_email=f"{education.short_name} UGent <metis@ugent.be>",
                     to=[admin_contact.user.email],
                     bcc=[mentor.user.email for mentor in mentors_no_admin],
                     context={
@@ -55,7 +54,6 @@ class Command(BaseCommand):
             for internship in internships.all():
                 schedule_template_email(
                     template=email_template,
-                    from_email=f"{education.short_name} UGent <metis@ugent.be>",
                     to=[internship.student.user.email],
                     context={
                         "internship": internship,
@@ -81,7 +79,6 @@ class Command(BaseCommand):
 
                     schedule_template_email(
                         template=email_template,
-                        from_email=f"{education.short_name} UGent <metis@ugent.be>",
                         to=[admin_contact.user.email],
                         bcc=[contact.user.email for contact in mentors_contacts_no_admin],
                         context={

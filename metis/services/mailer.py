@@ -21,7 +21,7 @@ def send_email_to_admins(subject: str, message: str = "") -> None:
     django_send_mail(
         subject if subject.startswith("[METIS] ") else f"[METIS] {subject}",
         message,
-        "Metis <metis@ugent.be>",
+        "UGent <metis@ugent.be>",
         settings.ADMINS,
         fail_silently=False,
     )
@@ -29,7 +29,7 @@ def send_email_to_admins(subject: str, message: str = "") -> None:
 
 def schedule_email(
     *,
-    from_email: str = "Metis <metis@ugent.be>",
+    from_email: str = "UGent <metis@ugent.be>",
     to: list[str],
     subject: str,
     text_content: str,
@@ -57,7 +57,6 @@ def schedule_email(
 def schedule_template_email(
     *,
     template: "EmailTemplate",
-    from_email: str = "Metis <metis@ugent.be>",
     to: list[str],
     bcc: list[str] | None = None,
     context: dict | None = None,
@@ -65,6 +64,12 @@ def schedule_template_email(
     log_education: Optional["Education"] = None,
 ) -> None:
     try:
+        from_email = (
+            f"{template.education.short_name} UGent <metis@ugent.be>"
+            if template.education
+            else "UGent <metis@ugent.be>"
+        )
+
         schedule_email(
             from_email=from_email,
             to=to,
@@ -97,7 +102,6 @@ def schedule_invitation_email(invitation_type: str, content_object: "Contact") -
         return
 
     schedule_template_email(
-        from_email=f"{contact.education.short_name} UGent <metis@ugent.be>",
         to=[contact.user.email],
         template=template,
         context={"contact": contact},
