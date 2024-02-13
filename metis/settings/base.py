@@ -89,22 +89,29 @@ sparta_db = urlparse(os.environ.get("SPARTA_DATABASE_URL"))
 
 DATABASES = {
     "default": {
-        "ENGINE": "mysql.connector.django",
+        "ENGINE": "django.db.backends.mysql",
         "NAME": db.path[1:],
         "USER": db.username,
         "PASSWORD": unquote(db.password or ""),
         "HOST": db.hostname,
         "PORT": db.port,
+        "OPTIONS": {
+            "ssl_mode": "REQUIRED",
+        },
     },
     "sparta": {
-        "ENGINE": "mysql.connector.django",
+        "ENGINE": "django.db.backends.mysql",
         "NAME": sparta_db.path[1:],
         "USER": sparta_db.username,
-        "PASSWORD": sparta_db.password,
+        "PASSWORD": unquote(sparta_db.password or ""),
         "HOST": sparta_db.hostname,
         "PORT": sparta_db.port,
+        "OPTIONS": {
+            "ssl_mode": "REQUIRED",
+        },
     },
 }
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
