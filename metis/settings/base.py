@@ -95,6 +95,7 @@ DATABASES = {
         "PASSWORD": unquote(db.password or ""),
         "HOST": db.hostname,
         "PORT": db.port,
+        "TIME_ZONE": "Europe/Brussels",
         "OPTIONS": {
             "ssl_mode": "REQUIRED",
         },
@@ -106,6 +107,7 @@ DATABASES = {
         "PASSWORD": unquote(sparta_db.password or ""),
         "HOST": sparta_db.hostname,
         "PORT": sparta_db.port,
+        "TIME_ZONE": "Europe/Brussels",
         "OPTIONS": {
             "ssl_mode": "REQUIRED",
         },
