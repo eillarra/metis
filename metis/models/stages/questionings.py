@@ -108,7 +108,10 @@ class Questioning(RemarksMixin, BaseModel):
     @property
     def response_rate(self) -> float:
         """The response rate for this questioning."""
-        return self.responses.count() / self.get_target_group_size()  # type: ignore
+        try:
+            return self.responses.count() / self.get_target_group_size()  # type: ignore
+        except ZeroDivisionError:
+            return 0.0
 
     def get_support_data(self) -> dict:
         if self.type == self.STUDENT_TOPS:
