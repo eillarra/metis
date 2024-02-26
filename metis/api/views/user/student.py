@@ -108,8 +108,12 @@ class AuthStudentProposeInternshipPlaceViewSet(CreateModelMixin, ListModelMixin,
         if place_address:
             Address.objects.create(content_object=place, address=place_address, city="-", postcode="-", country="BE")
 
-        internship.project_place = ProjectPlace.objects.create(  # type: ignore
-            project=internship.project, place=place, created_by=request.user
+        internship.project_place, _ = ProjectPlace.objects.get_or_create(  # type: ignore
+            project=internship.project,
+            place=place,
+            defaults={
+                "created_by": request.user,
+            },
         )
         internship.mentors.add(mentor)  # type: ignore
         internship.save()
