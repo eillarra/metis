@@ -34,8 +34,8 @@ class EvaluationPermissions(BasePermission):
         if request.method in SAFE_METHODS:
             return True
 
-        if request.method == "POST" and request.resolver_match.url_name == "project-internship-evaluation-approve":
-            return obj.internship.place.user_is_admin(request.user)
+        """if request.method == "POST" and request.resolver_match.url_name == "project-internship-evaluation-approve":
+            return obj.internship.place.user_is_admin(request.user)"""
 
         return (
             obj.internship.place.user_is_admin(request.user)
