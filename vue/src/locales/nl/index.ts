@@ -188,6 +188,7 @@ export default {
       show_points: 'Punten tonen',
       approve: 'Evaluatie doorsturen',
       approved: 'Evaluatie doorgestuurd',
+      not_found: 'Geen evaluatie gevonden',
     },
     internship: {
       create: {

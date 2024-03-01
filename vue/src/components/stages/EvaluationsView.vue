@@ -27,13 +27,16 @@
       </q-btn>
     </div>
   </div>
-  <div class="row q-col-gutter-md q-mb-lg">
+  <div v-if="!loading && !evaluations.length" class="text-grey text-h6 q-mb-lg">
+    <big-message :text="$t('form.evaluation.not_found')" icon="remove_done" />
+  </div>
+  <div v-else class="row q-col-gutter-md q-mb-lg">
     <div class="col-12 col-md-3" v-for="evaluation in evaluations" :key="evaluation.id">
       <q-card flat class="bg-grey-2 q-pa-md metis__dashcard">
         <a v-if="evaluation.is_approved" :href="evaluation.url" target="_blank" class="text-h5 text-ugent float-right">
           <q-icon name="download" />
         </a>
-        <q-icon v-else name="draw" class="text-h5 text-grey float-right cursor-help">
+        <q-icon v-else name="draw" class="text-h5 text-orange-8 float-right cursor-help">
           <q-tooltip :delay="250">{{ $t('draft') }}</q-tooltip>
         </q-icon>
         <small>{{ evaluation.name }}<strong v-if="!evaluation.is_approved"></strong></small>
@@ -66,7 +69,7 @@
             v-for="evaluation in evaluations"
             :key="evaluation.id"
             class="text-center dense"
-            :class="{ 'text-grey': !evaluation.is_approved }"
+            :class="{ 'text-orange-8': !evaluation.is_approved }"
           >
             <span
               v-if="
@@ -89,12 +92,12 @@
       </tbody>
       <tfoot>
         <tr>
-          <td><small>Deelscore</small></td>
+          <td class="bg-grey-1"><small>Deelscore</small></td>
           <td
             v-for="evaluation in evaluations"
             :key="evaluation.id"
-            class="text-center dense"
-            :class="{ 'text-grey': !evaluation.is_approved }"
+            class="text-center dense bg-grey-1"
+            :class="{ 'text-orange-8': !evaluation.is_approved }"
           >
             <strong v-if="evaluation.data.sections[section.code].score">
               {{ scoreTexts[evaluation.data.sections[section.code].score] || '-' }}
@@ -129,8 +132,13 @@
       <tbody>
         <tr>
           <td><strong>Algemene beoordeling</strong></td>
-          <td v-for="evaluation in evaluations" :key="evaluation.id" class="text-center dense text-weight-bold">
-            <span v-if="evaluation.data.global_score && evaluation.is_approved">
+          <td
+            v-for="evaluation in evaluations"
+            :key="evaluation.id"
+            class="text-center dense text-weight-bold"
+            :class="{ 'text-orange-8': !evaluation.is_approved }"
+          >
+            <span v-if="evaluation.data.global_score">
               {{ scoreTexts[evaluation.data.global_score] || '-' }}
             </span>
             <span v-else>-</span>
@@ -161,6 +169,8 @@ import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios.ts';
 
+import BigMessage from '@/components/BigMessage.vue';
+
 const { locale } = useI18n();
 
 const props = defineProps<{
@@ -169,6 +179,7 @@ const props = defineProps<{
 }>();
 
 const l = ref<'en' | 'nl'>(locale.value as 'en' | 'nl');
+const loading = ref<boolean>(true);
 const evaluations = ref<Evaluation[]>([]);
 const formDefinition = computed<EvaluationFormDefinition | null>(() =>
   evaluations.value.length ? (evaluations.value[0].form_definition as EvaluationFormDefinition) : null
@@ -186,6 +197,7 @@ const scoreTexts = computed<Record<number, string>>(() => {
 function fetchEvaluations() {
   api.get(props.internship.rel_evaluations).then((response) => {
     evaluations.value = response.data as Evaluation[];
+    loading.value = false;
   });
 }
 

@@ -189,6 +189,7 @@ export default {
       show_points: 'Show points',
       approve: 'Submit evaluation',
       approved: 'Evaluation submitted',
+      not_found: 'No evaluation found',
     },
     internship: {
       create: {
