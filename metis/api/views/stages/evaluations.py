@@ -51,6 +51,16 @@ class EvaluationViewSet(InternshipNestedModelViewSet):
     permission_classes = (EvaluationPermissions,)
     serializer_class = EvaluationSerializer
 
+    def get_queryset(self):
+        """Get queryset making sure that students can only see approved evaluations."""
+        qs = super().get_queryset()
+        internship = self.get_internship()
+
+        if self.request.user == internship.student.user and not internship.can_be_managed_by(self.request.user):
+            return qs.filter(is_approved=True)
+
+        return qs
+
     def perform_update(self, serializer) -> None:
         """Update model instance, performing extra `is_approved` check."""
         self.validate(serializer, check_is_approved=True)
