@@ -80,6 +80,7 @@
                   </template>
                   <template #append>
                     <a
+                      v-if="address.mapbox_feature"
                       @click.stop
                       :href="`https://www.google.com/maps/place/${address.mapbox_feature.center[1]}+${address.mapbox_feature.center[0]}`"
                       target="_blank"
