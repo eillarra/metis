@@ -149,7 +149,7 @@ class TestForMentor(TestForAuthenticated):
         "evaluation_create": status.CREATED,
         "evaluation_update": status.OK,
         "evaluation_delete": status.NO_CONTENT,
-        "evaluation_approve": status.FORBIDDEN,
+        "evaluation_approve": status.NO_CONTENT,
     }
 
     def _get_evaluation_create_data(self, internship):
@@ -213,8 +213,6 @@ class TestForMentor(TestForAuthenticated):
 
 class TestForPlaceAdmin(TestForMentor):
     """Tests for internship place admins."""
-
-    expected_status_codes = {**TestForMentor.expected_status_codes, "evaluation_approve": status.NO_CONTENT}
 
     @pytest.fixture(autouse=True)
     def setup(self, api_client, place_admin):
