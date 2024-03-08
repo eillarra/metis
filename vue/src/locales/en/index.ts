@@ -83,6 +83,7 @@ export default {
   template: 'Template | Templates',
   text: 'Text | Texts',
   timesheet: 'Timesheet | Timesheets',
+  logbook: 'Logbook | Logbooks',
   track: 'Track | Tracks',
   type: 'Type | Types',
   field: {
@@ -269,6 +270,7 @@ export default {
     },
     timesheet: {
       title: 'Update timesheets',
+      comments: 'Comments / Performed tasks',
       help: {
         time_total: 'Total time',
         time_pending: 'Time pending approval',

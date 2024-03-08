@@ -37,7 +37,8 @@
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
+          <q-item-section v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</q-item-section>
+          <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
         <q-item
           clickable
@@ -54,7 +55,6 @@
         <q-item-label header>{{ $t('form.update') }}</q-item-label>
         <q-item
           clickable
-          :disable="!hasStarted || !obj.is_approved"
           @click="tab = 'evaluationsForm'"
           :active="tab == 'evaluationsForm'"
           active-class="bg-ugent text-white"
@@ -123,7 +123,11 @@
           <evaluations-form :internship="obj" />
         </q-tab-panel>
         <q-tab-panel name="timesheets">
-          <timesheets-view :internship="obj" approvable />
+          <timesheets-view
+            :internship="obj"
+            :custom-title="education?.configuration?.timesheets_with_comments ? $t('logbook') : undefined"
+            approvable
+          />
         </q-tab-panel>
       </q-tab-panels>
     </template>

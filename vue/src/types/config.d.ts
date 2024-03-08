@@ -21,4 +21,5 @@ interface EducationConfig {
   project_text_types: ProjectTextEntryType[];
   place_text_types: PlaceTextEntryType[];
   place_contact_is_staff: boolean;
+  timesheets_with_comments: boolean;
 }

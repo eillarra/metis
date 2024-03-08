@@ -13,7 +13,8 @@
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
+          <q-item-section v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</q-item-section>
+          <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
         <q-item
           clickable
@@ -36,7 +37,8 @@
           <q-item-section avatar>
             <q-icon name="more_time" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
+          <q-item-section v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</q-item-section>
+          <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
       </q-list>
     </template>
@@ -101,11 +103,17 @@
           <evaluations-view :internship="obj" />
         </q-tab-panel>
         <q-tab-panel name="timesheets">
-          <timesheets-view :internship="obj" />
+          <timesheets-view
+            :internship="obj"
+            :custom-title="education?.configuration?.timesheets_with_comments ? $t('logbook') : undefined"
+          />
         </q-tab-panel>
         <q-tab-panel name="timesheetsForm">
           <div class="row q-col-gutter-sm q-mb-lg">
-            <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('form.timesheet.title') }}</h4>
+            <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
+              <span v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</span>
+              <span v-else>{{ $t('form.timesheet.title') }}</span>
+            </h4>
           </div>
           <timesheets-form :internship="obj" />
         </q-tab-panel>
@@ -117,6 +125,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+
+import { useStore } from '../../store.js';
 
 import FullDialog from '@/components/FullDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
@@ -128,6 +139,10 @@ import TimesheetsForm from './TimesheetsForm.vue';
 const props = defineProps<{
   obj: Internship;
 }>();
+
+const store = useStore();
+
+const { education } = storeToRefs(store);
 
 const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');

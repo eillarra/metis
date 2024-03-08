@@ -6,6 +6,7 @@ interface EducationTiny extends ApiObject {
   code: string;
   short_name: string;
   office_email?: string;
+  configuration: EducationConfig | null;
 }
 
 interface Education extends EducationTiny {
@@ -20,6 +21,5 @@ interface Education extends EducationTiny {
   disciplines: Discipline[];
   office_members: UserTiny[];
   office_email: string | null;
-  configuration: EducationConfig | null;
   place_types: PlaceType[];
 }

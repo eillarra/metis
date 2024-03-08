@@ -82,6 +82,7 @@ export default {
   template: 'Sjabloon | Sjablonen',
   text: 'Tekst | Teksten',
   timesheet: 'Stagetijd | Tijdenlijst',
+  logbook: 'Logboek | Logboeken',
   track: 'Traject | Trajecten',
   type: 'Type | Types',
   field: {
@@ -268,6 +269,7 @@ export default {
     },
     timesheet: {
       title: 'Tijdenlijst bijwerken',
+      comments: 'Opmerkingen / Uitgevoerde taken',
       help: {
         time_total: 'Totaal aantal uren',
         time_pending: 'Aantal uren niet goedgekeurd',

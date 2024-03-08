@@ -70,6 +70,15 @@
             :options="(hr, min) => limitTimeOptions(hr, min, obj.start_time_pm)"
           />
         </div>
+        <q-input
+          v-show="education?.configuration?.timesheets_with_comments"
+          v-model="obj.comments"
+          :label="$t('form.timesheet.comments')"
+          :readonly="obj.is_approved"
+          :disable="obj.is_approved"
+          type="textarea"
+          class="q-mt-md"
+        />
         <q-btn
           unelevated
           @click="createOrUpdateTimesheet"
@@ -93,7 +102,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+
+import { useStore } from '../../store.js';
 
 import { api } from '@/axios';
 import { notify } from '@/notify';
@@ -106,6 +118,7 @@ const props = defineProps<{
   internship: Internship;
 }>();
 
+const { education } = storeToRefs(useStore());
 const { t } = useI18n();
 
 const timesheets = ref<Timesheet[]>([]);
@@ -117,6 +130,7 @@ const obj = ref({
   start_time_pm: null as string | null,
   end_time_pm: null as string | null,
   is_approved: false,
+  comments: '',
 });
 
 const timesheetsByDate = computed<Record<string, Timesheet>>(() => {
@@ -170,6 +184,7 @@ function createTimesheet() {
       end_time_am: obj.value.end_time_am,
       start_time_pm: obj.value.start_time_pm,
       end_time_pm: obj.value.end_time_pm,
+      comments: obj.value.comments,
     })
     .then((response) => {
       timesheets.value.push(response.data);
@@ -186,6 +201,7 @@ function updateTimesheet() {
       end_time_am: obj.value.end_time_am,
       start_time_pm: obj.value.start_time_pm,
       end_time_pm: obj.value.end_time_pm,
+      comments: obj.value.comments,
     })
     .then((response) => {
       const index = timesheets.value.findIndex((timesheet) => timesheet.id == obj.value.id);

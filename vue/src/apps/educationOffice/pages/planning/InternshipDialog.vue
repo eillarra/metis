@@ -31,7 +31,8 @@
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section>{{ $t('timesheet', 9) }}</q-item-section>
+          <q-item-section v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</q-item-section>
+          <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
         <q-item
           clickable
@@ -113,7 +114,10 @@
           <mentors-view editable :obj="obj" @update:obj="(obj: Internship) => updateObj(obj)" />
         </q-tab-panel>
         <q-tab-panel name="timesheets">
-          <timesheets-view :internship="obj" />
+          <timesheets-view
+            :internship="obj"
+            :custom-title="education?.configuration?.timesheets_with_comments ? $t('logbook') : undefined"
+          />
         </q-tab-panel>
         <q-tab-panel name="evaluations">
           <evaluations-view :internship="obj" show-points />

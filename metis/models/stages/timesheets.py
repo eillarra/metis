@@ -22,11 +22,13 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
     is_approved = models.BooleanField(default=None, null=True, blank=True)
+    comments = models.TextField(blank=True, default="")
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_internship_absence"
 
     def clean(self) -> None:
+        """Validate the absence."""
         if self.start_at.date() < self.internship.start_date:
             raise ValidationError("Absence start date cannot be before internship start date.")
 
@@ -56,8 +58,9 @@ class Timesheet(SignaturesMixin, BaseModel):
     start_time_pm = models.TimeField(null=True, blank=True)
     end_time_pm = models.TimeField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)
+    comments = models.TextField(blank=True, default="")
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_internship_timesheet"
         unique_together = (("internship", "date"),)
 

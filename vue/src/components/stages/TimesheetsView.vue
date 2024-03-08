@@ -1,7 +1,8 @@
 <template>
   <div class="row q-col-gutter-sm q-mb-none">
     <h4 class="col-12 col-md-6 q-mt-none q-mb-lg use-default-q-btn">
-      {{ $t('timesheet', 9) }}
+      <span v-if="customTitle">{{ customTitle }}</span>
+      <span v-else>{{ $t('timesheet', 9) }}</span>
       <!--<a v-show="timesheets.length" href="#" target="_blank">
         <q-btn round outline :icon="iconDownload" size="sm" color="primary" class="q-ml-md q-pa-xs">
           <q-tooltip :delay="250">{{ $t('download.pdf') }}</q-tooltip>
@@ -70,6 +71,7 @@ import { iconDownload } from '@/icons';
 const props = defineProps<{
   internship: Internship;
   approvable?: boolean;
+  customTitle?: string | undefined;
 }>();
 
 const { t } = useI18n();

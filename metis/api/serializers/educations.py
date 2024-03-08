@@ -9,18 +9,26 @@ from .users import UserTinySerializer
 
 
 class FacultySerializer(BaseTranslatedModelSerializer):
+    """Serializer for the Faculty model."""
+
     class Meta:
         model = Faculty
         exclude = ("created_at", "created_by")
 
 
 class EducationTinySerializer(serializers.ModelSerializer):
+    """Tiny serializer for the Education model."""
+
+    configuration = serializers.JSONField(read_only=True)
+
     class Meta:
         model = Education
-        fields = ("id", "code", "short_name", "office_email")
+        fields = ("id", "code", "short_name", "office_email", "configuration")
 
 
 class EducationSerializer(BaseTranslatedModelSerializer):
+    """Serializer for the Education model."""
+
     url = serializers.URLField(source="get_office_url", read_only=True)
     self = serializers.HyperlinkedIdentityField(view_name="v1:education-detail", read_only=True)
     rel_places = serializers.HyperlinkedIdentityField(

@@ -2,11 +2,15 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 
 class Translation(BaseModel):
+    """A translation for a field label or description."""
+
     nl: str
     en: str
 
 
 class TextEntryType(BaseModel):
+    """A type of text entry for a project or place."""
+
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
     code: str
@@ -14,14 +18,20 @@ class TextEntryType(BaseModel):
 
 
 class ProjectTextEntryType(TextEntryType):
+    """A text entry type for a project."""
+
     signature_required: bool = True
 
 
 class PlaceTextEntryType(TextEntryType):
+    """A text entry type for a place."""
+
     editable_by_place: bool = True
 
 
 class EducationConfig(BaseModel):
+    """General configuration for an education."""
+
     model_config = ConfigDict(extra="forbid", validate_default=True)
 
     allow_different_blocks_per_user_in_project: bool = Field(
@@ -42,9 +52,14 @@ class EducationConfig(BaseModel):
         default=False,
         description="Whether staff level contacts are allowed, or just a simple contact > mentor > admin hierarchy",
     )
+    timesheets_with_comments: bool = Field(
+        default=False,
+        description="Whether timesheets should have daily comments",
+    )
 
     @field_validator("project_text_types")
     def validate_project_text_types(cls, v):
+        """Validate project_text_types checking for required entry codes."""
         required = {"project.internship_agreement", "project.privacy_agreement"}
         codes = {c.code for c in v}
         for code in required:
@@ -54,6 +69,7 @@ class EducationConfig(BaseModel):
 
 
 def validate_education_configuration(config):
+    """Validate an education configuration."""
     try:
         EducationConfig(**config)
     except (TypeError, ValidationError) as exc:
