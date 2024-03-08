@@ -52,6 +52,10 @@ class EducationConfig(BaseModel):
         default=False,
         description="Whether staff level contacts are allowed, or just a simple contact > mentor > admin hierarchy",
     )
+    student_update_dates: bool = Field(
+        default=False,
+        description="Whether students can update their internship dates",
+    )
     timesheets_with_comments: bool = Field(
         default=False,
         description="Whether timesheets should have daily comments",

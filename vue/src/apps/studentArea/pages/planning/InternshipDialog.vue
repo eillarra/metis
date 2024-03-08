@@ -54,9 +54,21 @@
                   :label="$t('place_type')"
                   :value="((obj.Place as Place).Type as PlaceType)?.name || '-'"
                 />
-                <div class="row q-col-gutter-x-lg q-pl-sm">
+                <div v-if="!education?.configuration?.student_update_dates" class="row q-col-gutter-x-lg q-pl-sm">
                   <readonly-field :label="$t('field.start_date')" :value="obj.start_date" class="col-12 col-md" />
                   <readonly-field :label="$t('field.end_date')" :value="obj.end_date" class="col-12 col-md" />
+                </div>
+                <div v-else>
+                  <div class="row q-col-gutter-x-lg">
+                    <date-select
+                      v-model="obj.start_date"
+                      :label="$t('field.start_date')"
+                      clearable
+                      class="col-12 col-md"
+                    />
+                    <date-select v-model="obj.end_date" :label="$t('field.end_date')" clearable class="col-12 col-md" />
+                  </div>
+                  <q-btn @click="saveDates" outline :label="$t('form.update')" color="primary" class="q-mt-md" />
                 </div>
                 <div v-if="obj.Place?.phone_numbers.length" class="q-my-lg">
                   <strong>Telefonnummers</strong>
@@ -127,9 +139,13 @@
 import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 
+import { api } from '@/axios';
+import { notify } from '@/notify';
+
 import { useStore } from '../../store.js';
 
 import FullDialog from '@/components/FullDialog.vue';
+import DateSelect from '@/components/forms/DateSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
@@ -149,4 +165,16 @@ const tab = ref<string>('info');
 const internshipName = computed<string>(
   () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`
 );
+
+function saveDates() {
+  api
+    .put(`/user/student/internships/${obj.value.id}/`, {
+      start_date: obj.value.start_date,
+      end_date: obj.value.end_date,
+    })
+    .then(() => {
+      store.updateObj('internship', obj.value);
+      notify.success('De stageperiode is aangepast');
+    });
+}
 </script>

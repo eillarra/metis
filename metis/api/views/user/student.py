@@ -1,9 +1,10 @@
+from datetime import datetime
 from http import HTTPStatus as status
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.mixins import CreateModelMixin, ListModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -15,7 +16,12 @@ from metis.models.stages import Internship, Mentor, ProjectPlace, Student
 from metis.models.users import User, find_user_by_email
 
 from ...permissions import IsAuthenticated
-from ...serializers import AuthSignatureSerializer, AuthStudentSerializer, PreplanningInternshipSerializer
+from ...serializers import (
+    AuthSignatureSerializer,
+    AuthStudentSerializer,
+    InternshipFullInertiaSerializer,
+    PreplanningInternshipSerializer,
+)
 
 
 class AuthStudentViewSet(ListModelMixin, GenericViewSet):
@@ -52,6 +58,41 @@ class AuthStudentSignatureViewSet(CreateModelMixin, ListModelMixin, GenericViewS
             content_type_id=self.request.data["content_type"],
             object_id=self.request.data["object_id"],
         )
+
+    @method_decorator(never_cache)
+    def list(self, request, *args, **kwargs) -> Response:
+        return super().list(request, *args, **kwargs)
+
+
+class AuthStudentInternshipViewSet(UpdateModelMixin, ListModelMixin, GenericViewSet):
+    queryset = Internship.objects.prefetch_related("project__education", "mentors__user", "updated_by")
+    pagination_class = None
+    permission_classes = (IsAuthenticated,)
+    serializer_class = InternshipFullInertiaSerializer
+
+    def get_queryset(self):
+        """Internships for the current student."""
+        return super().get_queryset().filter(student__user=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        """Update the start and end dates of the internship."""
+        instance = self.get_object()
+        data = request.data
+
+        if not instance.education.configuration["student_update_dates"]:
+            raise PermissionDenied("This education does not allow students to update dates")
+
+        try:
+            start_date = data["start_date"]
+            end_date = data["end_date"]
+        except KeyError as exc:
+            raise ValidationError(f"Missing required fields: {exc}") from exc
+
+        instance.start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        instance.end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+        instance.save()
+
+        return Response(self.serializer_class(instance, context={"request": request}).data, status=status.OK)
 
     @method_decorator(never_cache)
     def list(self, request, *args, **kwargs) -> Response:

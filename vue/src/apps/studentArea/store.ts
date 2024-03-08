@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { cloneDeep } from 'lodash-es';
 
 import { api } from '@/axios.ts';
 
@@ -65,10 +66,37 @@ export const useStore = defineStore('studentArea', () => {
     return project.value?.questionings.filter((date) => date.is_active && validTypes.includes(date.type)) ?? [];
   });
 
+  function updateCollection(type: string, action: string, obj: ApiObject) {
+    let collection: ApiObject[] = [];
+
+    switch (type) {
+      case 'internship':
+        collection = internships.value as Internship[];
+        break;
+      default:
+        break;
+    }
+
+    const idx: number = collection.findIndex((row: ApiObject) => row.id === obj.id);
+
+    switch (action) {
+      case 'update':
+        Object.assign(collection[idx], cloneDeep(obj));
+        break;
+      default:
+        break;
+    }
+  }
+
+  function updateObj(type: string, obj: ApiObject) {
+    updateCollection(type, 'update', obj);
+  }
+
   return {
     init,
     setData,
     fetchSignatures,
+    updateObj,
     education,
     internships,
     project,
