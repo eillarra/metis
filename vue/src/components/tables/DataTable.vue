@@ -221,7 +221,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, ComponentOptions, getCurrentInstance } from 'vue';
+import { computed, onMounted, ref, watch, ComponentOptions, ComponentPublicInstance, getCurrentInstance } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { copyToClipboard } from 'quasar';
@@ -230,13 +230,9 @@ import { Md5 } from 'ts-md5';
 
 import { notify } from '@/notify';
 import { storage } from '@/storage';
+import { mdiContentSavePlusOutline } from '@quasar/extras/mdi-v6';
 
 const emit = defineEmits(['update:selected', 'remove:row']);
-
-const parentName = computed<string>(() => {
-  const vm = getCurrentInstance()?.proxy as any;
-  return vm?.$parent?.$options.__name || '';
-});
 
 const router = useRouter();
 const route = useRoute();
@@ -304,9 +300,10 @@ const extendedColumns = computed(() => {
   return columns;
 });
 
-const fullPath = computed<string>(() => `${window.location.href.split('#')[0]}#${route.path}&${parentName.value}`);
-const queryStorageKey = computed<string>(() => Md5.hashStr(`data_table.query.${fullPath.value}`));
-const query = ref<string>(storage.get(queryStorageKey.value) || route.query.q?.toString() || '');
+const parentName = getCurrentInstance()?.parent?.type.__name || '';
+const fullPath = `${window.location.href.split('#')[0]}#${route.path}&${parentName}`;
+const queryStorageKey = Md5.hashStr(`data_table.query.${fullPath}`);
+const query = ref<string>(storage.get(queryStorageKey) || route.query.q?.toString() || '');
 const queriedRows = computed(() => {
   if (!query.value || !props.queryColumns) {
     return props.rows;
@@ -332,8 +329,8 @@ const queriedRows = computed(() => {
   });
 });
 
-const visibleColumnsStorageKey = computed<string>(() => Md5.hashStr(`data_table.visible_columns.${fullPath.value}`));
-const visibleColumns = ref<string[]>(props.hideToolbar ? [] : storage.get(visibleColumnsStorageKey.value) || []);
+const visibleColumnsStorageKey = Md5.hashStr(`data_table.visible_columns.${fullPath}`);
+const visibleColumns = ref<string[]>(props.hideToolbar ? [] : storage.get(visibleColumnsStorageKey) || []);
 
 const createDialogVisible = ref<boolean>(false);
 const selectedObj = ref<object | null>(null);
@@ -371,15 +368,15 @@ onMounted(() => {
 watch(query, (newVal) => {
   if (props.inDialog) return;
   router.push({ query: { q: newVal || undefined } });
-  storage.set(queryStorageKey.value, newVal);
+  storage.set(queryStorageKey, newVal);
 });
 
 watch(visibleColumns, (newVal) => {
-  storage.set(visibleColumnsStorageKey.value, newVal);
+  storage.set(visibleColumnsStorageKey, newVal);
 });
 
-if (storage.get(queryStorageKey.value)) {
-  router.push({ query: { q: storage.get(queryStorageKey.value) } });
+if (storage.get(queryStorageKey)) {
+  router.push({ query: { q: storage.get(queryStorageKey) } });
 }
 
 watch(selected, (val) => {

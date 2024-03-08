@@ -115,6 +115,14 @@ const columns = [
   },
 ];
 
+const statuses = {
+  preplanning: t('internship_status.preplanning'),
+  concept: t('internship_status.concept'),
+  definitive: t('internship_status.definitive'),
+  cancelled: t('internship_status.cancelled'),
+  unsuccessful: t('internship_status.unsuccessful'),
+};
+
 const rows = computed(() => {
   return props.internships.map((obj: Internship) => ({
     _self: obj,
@@ -133,7 +141,7 @@ const rows = computed(() => {
     period_name: obj.Period?.ProgramInternship ? `P${obj.Period.ProgramInternship.position}` : '-',
     track_name: obj.Track?.name || '-',
     disciplines: obj.Discipline ? [obj.Discipline] : [],
-    status: t(`internship_status.${obj.status}`),
+    status: statuses[obj.status as keyof typeof statuses] || obj.status,
     start_date: obj.start_date,
     end_date: obj.end_date,
     has_mentors: obj.mentors.filter((mentor: Mentor) => mentor.user.last_login).length > 0,

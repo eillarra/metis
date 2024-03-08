@@ -76,6 +76,13 @@ const columns = [
   },
 ];
 
+const formTitleByType = {
+  project_place_availability: t('questionings.type.project_place_availability'),
+  project_place_information: t('questionings.type.project_place_information'),
+  student_information: t('questionings.type.student_information'),
+  student_tops: t('questionings.type.student_tops'),
+};
+
 const rows = computed(() => {
   return props.questionings.map((obj: Questioning) => {
     return {
@@ -83,7 +90,7 @@ const rows = computed(() => {
       period: obj.Period?.full_name ?? '-',
       title: obj.form_definition.title
         ? obj.form_definition.title[locale.value as 'nl' | 'en']
-        : t(`questionings.type.${obj.type}`),
+        : formTitleByType[obj.type as keyof typeof formTitleByType] ?? obj.type,
       start_at: formatDate(obj.start_at),
       end_at: formatDate(obj.end_at),
       is_open: obj.is_active,
