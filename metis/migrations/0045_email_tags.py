@@ -3,7 +3,7 @@
 from django.db import migrations, models
 
 
-def update_tags(apps, schema_editor):
+def update_tags(apps, schema_editor) -> None:
     """Update tags for existing email logs."""
     EmailLog = apps.get_model("metis", "EmailLog")
     User = apps.get_model("metis", "User")

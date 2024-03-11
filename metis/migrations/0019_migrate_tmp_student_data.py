@@ -6,6 +6,7 @@ from metis.utils.fixtures.forms.students import get_audiologo_student_form
 
 
 def tmp_data_to_form_response(tmp_data) -> dict:
+    """Convert TmpData to a dictionary for FormResponse."""
     statuut = [
         "bijzonder_statuut" if tmp_data.has_special_status else None,
         "werkstudent" if tmp_data.is_werkstudent else None,
@@ -33,11 +34,8 @@ def tmp_data_to_form_response(tmp_data) -> dict:
     }
 
 
-def migrate_tmp_data(apps, schema_editor):
-    """
-    Create a new Questioning for student data on 2023-34 projects for "audio" and "logo".
-    """
-
+def migrate_tmp_data(apps, schema_editor) -> None:
+    """Create a new Questioning for student data on 2023-34 projects for 'audio' and 'logo'."""
     Project = apps.get_model("metis", "Project")
     Questioning = apps.get_model("metis", "Questioning")
     FormResponse = apps.get_model("metis", "FormResponse")
@@ -101,7 +99,7 @@ def migrate_tmp_data(apps, schema_editor):
     FormResponse.objects.bulk_update(form_responses, ["created_at", "updated_at"])
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0018_questionings"),
     ]

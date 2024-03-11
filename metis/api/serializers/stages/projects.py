@@ -17,23 +17,30 @@ project_lookup_fields = {
 
 
 class PeriodSerializer(BaseModelSerializer):
+    """Period serializer."""
+
     full_name = serializers.CharField(read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Period
         exclude = ("created_at", "created_by", "project")
 
 
 class ProjectTinySerializer(serializers.ModelSerializer):
+    """Tiny project serializer."""
+
     full_name = serializers.CharField(read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Project
         fields = ("id", "name", "full_name")
 
 
 class ProjectSerializer(TextEntriesMixin, BaseModelSerializer):
+    """Project serializer."""
+
     self = NestedHyperlinkField("v1:project-detail", nested_lookup=education_lookup_fields)
+    rel_emails = NestedHyperlinkField("v1:project-email-list", nested_lookup=project_lookup_fields)
     rel_internships = NestedHyperlinkField("v1:project-internship-list", nested_lookup=project_lookup_fields)
     rel_places = NestedHyperlinkField("v1:project-place-list", nested_lookup=project_lookup_fields)
     rel_questionings = NestedHyperlinkField("v1:project-questioning-list", nested_lookup=project_lookup_fields)
@@ -45,6 +52,6 @@ class ProjectSerializer(TextEntriesMixin, BaseModelSerializer):
     end_date = serializers.DateField(read_only=True)
     questionings = QuestioningTinySerializer(many=True, read_only=True)  # TODO: remove this and use separate endpoint
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Project
         exclude = ("created_at", "created_by", "places")

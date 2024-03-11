@@ -221,7 +221,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, ComponentOptions, ComponentPublicInstance, getCurrentInstance } from 'vue';
+import { computed, onMounted, ref, watch, ComponentOptions, getCurrentInstance } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { copyToClipboard } from 'quasar';
@@ -230,7 +230,6 @@ import { Md5 } from 'ts-md5';
 
 import { notify } from '@/notify';
 import { storage } from '@/storage';
-import { mdiContentSavePlusOutline } from '@quasar/extras/mdi-v6';
 
 const emit = defineEmits(['update:selected', 'remove:row']);
 

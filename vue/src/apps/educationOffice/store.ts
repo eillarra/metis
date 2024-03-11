@@ -6,6 +6,7 @@ import { api } from '@/axios.ts';
 
 export const useStore = defineStore('educationOffice', () => {
   const education = ref<Education | null>(null);
+  const emails = ref<Email[]>([]);
   const programs = ref<Program[]>([]);
   const projects = ref<Project[]>([]);
   const projectInternships = ref<Internship[]>([]);
@@ -210,6 +211,21 @@ export const useStore = defineStore('educationOffice', () => {
     await fetchInternships();
   }
 
+  async function fetchEmails() {
+    emails.value = [];
+
+    if (!project.value) {
+      return;
+    }
+
+    await api.get(project.value.rel_emails).then((res) => {
+      emails.value = res.data.map((obj: Email) => {
+        obj.tag_set = new Set(obj.tags);
+        return obj;
+      });
+    });
+  }
+
   async function fetchInternships() {
     projectInternships.value = [];
 
@@ -371,11 +387,13 @@ export const useStore = defineStore('educationOffice', () => {
   watch(selectedProjectId, (id) => {
     if (id) {
       init();
+      fetchEmails();
     }
   });
 
   return {
     init,
+    fetchEmails,
     fetchQuestionings,
     setData,
     createObj,
@@ -383,6 +401,7 @@ export const useStore = defineStore('educationOffice', () => {
     deleteObj,
     education,
     contacts,
+    emails,
     internships,
     places,
     programs,

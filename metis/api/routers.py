@@ -61,6 +61,12 @@ class Router(NestedRouterMixin, DefaultRouter):
             "projects", views.ProjectViewSet, basename="project", parents_query_lookups=["education_id"]
         )
         project_routes.register(
+            "emails",
+            views.ProjectEmailViewSet,
+            basename="project-email",
+            parents_query_lookups=["education_id", "project_id"],
+        )
+        project_routes.register(
             "places",
             views.ProjectPlaceViewSet,
             basename="project-place",

@@ -3,7 +3,7 @@
 from django.db import migrations, models
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0021_questioning_email_add_office_in_bcc_and_more"),
     ]

@@ -24,6 +24,8 @@ internship_lookup_fields = {
 
 
 class MentorTinySerializer(BaseModelSerializer):
+    """Tiny mentor serializer."""
+
     user = UserLastLoginSerializer(read_only=True)
 
     class Meta:

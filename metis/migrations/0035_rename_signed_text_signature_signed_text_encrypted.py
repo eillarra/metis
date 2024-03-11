@@ -3,7 +3,7 @@
 from django.db import migrations, models
 
 
-def unencrypt_signed_text(apps, schema_editor):
+def unencrypt_signed_text(apps, schema_editor) -> None:
     """Unencrypt signed_text from signed_text_encrypted."""
     Signature = apps.get_model("metis", "Signature")
 
@@ -17,7 +17,7 @@ def unencrypt_signed_text(apps, schema_editor):
     Signature.objects.bulk_update(updates, ["signed_text"])
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0034_alter_questioning_email_body_and_more"),
     ]

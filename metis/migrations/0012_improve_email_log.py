@@ -5,7 +5,8 @@ import django.utils.timezone
 from django.db import migrations, models
 
 
-def update_data(apps, schema_editor):
+def update_data(apps, schema_editor) -> None:
+    """Update data for existing email logs."""
     EmailLog = apps.get_model("metis", "EmailLog")
 
     for log in EmailLog.objects.all():
@@ -18,7 +19,7 @@ def update_data(apps, schema_editor):
         log.save()
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0011_project_place_availability"),
     ]

@@ -5,7 +5,8 @@ from django.conf import settings
 from django.db import migrations, models
 
 
-def migrate_to_content_object(apps, schema_editor):
+def migrate_to_content_object(apps, schema_editor) -> None:
+    """Migrate signatures to use content_type and object_id."""
     Signature = apps.get_model("metis", "Signature")
     ContentType = apps.get_model("contenttypes", "ContentType")
     ct = ContentType.objects.get_for_model(apps.get_model("metis", "TextEntry"))
@@ -22,7 +23,7 @@ def migrate_to_content_object(apps, schema_editor):
     Signature.objects.bulk_update(updates, ["content_type", "object_id", "user"])
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("contenttypes", "0002_remove_content_type_name"),
         ("metis", "0025_timesheets"),

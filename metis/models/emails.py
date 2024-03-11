@@ -1,6 +1,12 @@
+from typing import TYPE_CHECKING, Optional
+
 from django.db import models
 
 from .base import BaseModel
+
+
+if TYPE_CHECKING:
+    from .stages.internships import Internship
 
 
 class EmailTemplate(BaseModel):
@@ -50,8 +56,8 @@ class EmailTemplate(BaseModel):
 class EmailLog(models.Model):
     """Log of sent emails."""
 
-    education = models.ForeignKey(
-        "metis.Education", related_name="email_logs", on_delete=models.SET_NULL, null=True, blank=True
+    project = models.ForeignKey(
+        "metis.Project", related_name="email_logs", on_delete=models.SET_NULL, null=True, blank=True
     )
     template = models.ForeignKey(EmailTemplate, related_name="logs", on_delete=models.SET_NULL, null=True, blank=True)
     from_email = models.CharField(max_length=255)
@@ -69,3 +75,15 @@ class EmailLog(models.Model):
 
     def __str__(self) -> str:
         return f"{self.from_email} to {','.join(self.to)} - ({self.sent_at})"
+
+    @property
+    def internship(self) -> Optional["Internship"]:
+        """Get internship related to the email. Only if tags contain 'internship.id:{id}'."""
+        if self.project and any(tag.startswith("internship.id:") for tag in self.tags):
+            internship_id = next((tag.split(":")[1] for tag in self.tags if tag.startswith("internship.id:")), None)
+            if internship_id:
+                try:
+                    return self.project.internships.get(id=internship_id)
+                except self.project.internships.model.DoesNotExist:
+                    return None
+        return None

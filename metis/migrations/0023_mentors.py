@@ -5,7 +5,8 @@ from django.conf import settings
 from django.db import migrations, models
 
 
-def add_initial_mentors(apps, schema_editor):
+def add_initial_mentors(apps, schema_editor) -> None:
+    """Add initial mentors to internships."""
     Internship = apps.get_model("metis", "Internship")
     Mentor = apps.get_model("metis", "Mentor")
     User = apps.get_model("metis", "User")
@@ -30,7 +31,7 @@ def add_initial_mentors(apps, schema_editor):
             mentor.save()
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0022_projectplace_is_active"),
     ]

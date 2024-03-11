@@ -114,6 +114,8 @@ export default {
     start_time: 'Beginuur',
     end_time: 'Einduur',
     duration: 'Duur',
+    sent_at: 'Verstuurd op',
+    sent_to: 'Verstuurd naar',
   },
   form: {
     add: 'Toevoegen',

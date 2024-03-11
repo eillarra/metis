@@ -53,13 +53,7 @@
           </q-item-section>
           <q-item-section>{{ $t('action', 9) }}</q-item-section>
         </q-item>
-        <q-item
-          :disabled="true"
-          clickable
-          @click="tab = 'emails'"
-          :active="tab == 'emails'"
-          active-class="bg-ugent text-white"
-        >
+        <q-item clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
           <q-item-section avatar>
             <q-icon name="mail_outline" size="xs"></q-icon>
           </q-item-section>
@@ -125,6 +119,14 @@
         <q-tab-panel name="actions">
           <internship-actions :internship="obj" />
         </q-tab-panel>
+        <q-tab-panel name="emails">
+          <div class="row q-col-gutter-lg q-mb-none">
+            <h4 class="col-12 col-md-6 q-mt-none q-mb-lg">
+              {{ $t('field.email', 9) }}
+            </h4>
+          </div>
+          <emails-view :emails="emails" :tags="[`internship.id:${obj.id}`]" />
+        </q-tab-panel>
         <q-tab-panel name="remarks">
           <remarks-view :api-endpoints="remarkEndpoints" />
         </q-tab-panel>
@@ -143,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
@@ -154,6 +156,7 @@ import { useStore } from '../../store.js';
 
 import FullDialog from '@/components/FullDialog.vue';
 import PlaceBox from '@/components/PlaceBox.vue';
+import EmailsView from '@/components/emails/EmailsView.vue';
 import DateSelect from '@/components/forms/DateSelect.vue';
 import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
@@ -165,7 +168,7 @@ import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
 import InternshipActions from './InternshipActions.vue';
 
-const emit = defineEmits(['delete:obj']);
+defineEmits(['delete:obj']);
 
 const props = defineProps<{
   obj: Internship;
@@ -173,7 +176,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const store = useStore();
-const { education, project } = storeToRefs(store);
+const { education, project, emails } = storeToRefs(store);
 
 const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');
@@ -223,4 +226,6 @@ function save() {
 function updateObj(obj: Internship) {
   store.updateObj('projectInternship', obj);
 }
+
+onMounted(() => store.fetchEmails());
 </script>

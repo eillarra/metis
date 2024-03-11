@@ -5,7 +5,8 @@ from django.conf import settings
 from django.db import migrations, models
 
 
-def update_user_id(apps, schema_editor):
+def update_user_id(apps, schema_editor) -> None:
+    """Update user id for existing email logs."""
     EmailLog = apps.get_model("metis", "EmailLog")
     EmailAddress = apps.get_model("account", "EmailAddress")
 
@@ -18,7 +19,7 @@ def update_user_id(apps, schema_editor):
             pass
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0012_improve_email_log"),
     ]

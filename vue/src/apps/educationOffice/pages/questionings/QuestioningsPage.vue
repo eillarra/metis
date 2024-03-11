@@ -6,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useStore } from '../../store.js';
@@ -16,5 +17,5 @@ const store = useStore();
 
 const { questionings } = storeToRefs(store);
 
-store.fetchQuestionings();
+onMounted(() => store.fetchQuestionings());
 </script>

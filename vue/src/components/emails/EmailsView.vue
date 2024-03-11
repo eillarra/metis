@@ -1,0 +1,79 @@
+<template>
+  <data-table
+    :columns="columns"
+    :rows="rows"
+    :query-columns="queryColumns"
+    sort-by="-sent_at"
+    :form-component="EmailDialog"
+    :hide-toolbar="rows.length < 20"
+    open-dialog
+  />
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import { formatDate } from '@/utils/dates';
+
+import DataTable from '@/components/tables/DataTable.vue';
+import EmailDialog from './EmailDialog.vue';
+
+const { t } = useI18n();
+
+const props = defineProps<{
+  emails: Email[];
+  tags?: string[];
+}>();
+
+const queryColumns = ['to', 'subject'];
+
+const columns = [
+  {
+    name: 'sent_at',
+    field: 'sent_at',
+    required: true,
+    label: t('field.sent_at'),
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'subject',
+    field: 'subject',
+    required: true,
+    label: t('field.subject'),
+    align: 'left',
+  },
+  {
+    name: 'to',
+    field: 'to',
+    label: t('field.sent_to'),
+    align: 'left',
+  },
+  {
+    name: 'type',
+    field: 'type',
+    label: t('field.type'),
+    align: 'left',
+  },
+];
+
+const rows = computed(() => {
+  return props.emails
+    .filter((email: Email) => {
+      return (props.tags || []).every((tag: string) => {
+        return email.tag_set?.has(tag);
+      });
+    })
+    .map((email: Email) => {
+      return {
+        _self: email,
+        sent_at: formatDate(email.sent_at),
+        to: email.to.join(', '),
+        subject: email.subject,
+        // if a tag starting with `type:xxx` is present, use `xxx` as the type
+        type: (email.tags || []).find((tag: string) => tag.startsWith('type:'))?.split(':')[1] || '',
+      };
+    });
+});
+</script>

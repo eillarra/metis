@@ -4,7 +4,8 @@ import django.utils.timezone
 from django.db import migrations, models
 
 
-def update_internship_dates(apps, schema_editor):
+def update_internship_dates(apps, schema_editor) -> None:
+    """Update existing internships to have start and end dates."""
     Internship = apps.get_model("metis", "Internship")
 
     # bulk save to skip auto_now_add
@@ -18,7 +19,7 @@ def update_internship_dates(apps, schema_editor):
     Internship.objects.bulk_update(updates, ["start_date", "end_date"])
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0026_signature_with_content_object"),
     ]

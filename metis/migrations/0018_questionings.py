@@ -4,7 +4,8 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 
-def migrate_questionings(apps, schema_editor):
+def migrate_questionings(apps, schema_editor) -> None:
+    """Migrate questionings to have a form_definition."""
     ImportantDate = apps.get_model("metis", "ImportantDate")
 
     # bulk save to skip auto_now_add
@@ -17,7 +18,8 @@ def migrate_questionings(apps, schema_editor):
     ImportantDate.objects.bulk_update(updates, ["form_definition"])
 
 
-def migrate_responses(apps, schema_editor):
+def migrate_responses(apps, schema_editor) -> None:
+    """Migrate responses to use questionings."""
     CustomFormResponse = apps.get_model("metis", "CustomFormResponse")
 
     # bulk save to skip auto_now_add
@@ -30,7 +32,7 @@ def migrate_responses(apps, schema_editor):
     CustomFormResponse.objects.bulk_update(updates, ["questioning_id"])
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0017_fix_pending_migration"),
     ]

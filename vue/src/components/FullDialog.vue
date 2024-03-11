@@ -11,6 +11,14 @@
     padding: 12px 24px 12px 20px;
   }
 }
+
+.metis__full-dialog-layout.small {
+  height: 695px;
+
+  .q-dialog__inner--minimized > & {
+    max-width: 800px;
+  }
+}
 </style>
 
 <template>
@@ -29,7 +37,7 @@
         <slot name="tabs"></slot>
       </q-toolbar>
     </q-header>
-    <q-drawer v-model="drawer" :width="205">
+    <q-drawer v-if="!hideDrawer" v-model="drawer" :width="205">
       <q-scroll-area class="fit q-pl-lg">
         <div class="q-pb-xl">
           <slot name="menu"></slot>
@@ -54,6 +62,7 @@ defineProps<{
   icon: string;
   title: string | undefined;
   subtitle?: string | undefined;
+  hideDrawer?: boolean;
 }>();
 
 const drawer = ref(true);

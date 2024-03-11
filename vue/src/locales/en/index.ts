@@ -115,6 +115,8 @@ export default {
     start_time: 'Start time',
     end_time: 'End time',
     duration: 'Duration',
+    sent_at: 'Sent at',
+    sent_to: 'Sent to',
   },
   form: {
     add: 'Add',

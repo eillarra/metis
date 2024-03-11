@@ -4,7 +4,8 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 
-def update_project_ids(apps, schema_editor):
+def update_project_ids(apps, schema_editor) -> None:
+    """Update project ids for existing custom forms."""
     CustomForm = apps.get_model("metis", "CustomForm")
 
     for form in CustomForm.objects.all():
@@ -14,7 +15,7 @@ def update_project_ids(apps, schema_editor):
             form.save()
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0014_custom_place_types"),
     ]

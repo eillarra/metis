@@ -5,7 +5,7 @@ import uuid
 from django.db import migrations, models
 
 
-def generate_uuids(apps, schema_editor):
+def generate_uuids(apps, schema_editor) -> None:
     """Generate UUIDs for existing evaluations."""
     Evaluation = apps.get_model("metis", "Evaluation")
 
@@ -19,7 +19,7 @@ def generate_uuids(apps, schema_editor):
     Evaluation.objects.bulk_update(updates, ["uuid"])
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0032_absence_boolnull_approve"),
     ]

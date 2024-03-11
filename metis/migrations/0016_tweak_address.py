@@ -7,7 +7,8 @@ from django.db import migrations, models
 from metis.services.mapbox import Mapbox
 
 
-def update_mapbox_feature(apps, schema_editor):
+def update_mapbox_feature(apps, schema_editor) -> None:
+    """Update mapbox feature for existing addresses."""
     Address = apps.get_model("metis", "Address")
 
     with Mapbox() as mapbox:
@@ -22,7 +23,7 @@ def update_mapbox_feature(apps, schema_editor):
                 print(f"Error: {e}")
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0015_link_forms_to_projects"),
     ]

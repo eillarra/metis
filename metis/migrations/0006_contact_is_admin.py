@@ -3,7 +3,7 @@
 from django.db import migrations, models
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0005_remove_internship_is_valid_internship_status"),
     ]

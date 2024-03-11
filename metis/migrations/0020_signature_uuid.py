@@ -5,7 +5,8 @@ import uuid
 from django.db import migrations, models
 
 
-def generate_unique_uuids(apps, schema_editor):
+def generate_unique_uuids(apps, schema_editor) -> None:
+    """Generate unique UUIDs for existing signatures."""
     Signature = apps.get_model("metis", "Signature")
 
     for signature in Signature.objects.all():
@@ -13,7 +14,7 @@ def generate_unique_uuids(apps, schema_editor):
         signature.save(update_fields=["uuid"])
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0019_migrate_tmp_student_data"),
     ]

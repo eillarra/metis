@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import migrations, models
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("contenttypes", "0002_remove_content_type_name"),
         ("metis", "0009_student_is_active"),

@@ -3,7 +3,7 @@
 from django.db import migrations, models
 
 
-def update_existing_internships(apps, schema_editor):
+def update_existing_internships(apps, schema_editor) -> None:
     """Update existing internships to be approved."""
     Internship = apps.get_model("metis", "Internship")
     Internship.objects.filter(project__education__code__in=["audio", "logo"]).update(is_approved=True)

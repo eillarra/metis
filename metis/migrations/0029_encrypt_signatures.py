@@ -5,7 +5,8 @@ from django.db import migrations
 import metis.utils.cryptography
 
 
-def encrypt_existing_signatures(apps, schema_editor):
+def encrypt_existing_signatures(apps, schema_editor) -> None:
+    """Encrypt existing signatures."""
     Signature = apps.get_model("metis", "Signature")
 
     # bulk save to skip auto_now_add
@@ -18,7 +19,7 @@ def encrypt_existing_signatures(apps, schema_editor):
     Signature.objects.bulk_update(updates, ["signed_text"])
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0028_student_number"),
     ]

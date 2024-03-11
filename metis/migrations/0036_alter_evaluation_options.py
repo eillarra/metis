@@ -3,7 +3,7 @@
 from django.db import migrations
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration):  # noqa: D101
     dependencies = [
         ("metis", "0035_rename_signed_text_signature_signed_text_encrypted"),
     ]
