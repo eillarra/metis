@@ -16,7 +16,7 @@
     </template>
     <template #default v-if="!readonly">
       <q-menu anchor="top end" self="bottom right">
-        <q-time v-if="calendarType == 'time'" v-model="mutable" minimal :options="options" />
+        <q-time v-if="calendarType == 'time'" v-model="mutable" minimal :format24h="true" :options="options" />
         <q-date v-else v-model="mutable" mask="YYYY-MM-DD" minimal />
       </q-menu>
     </template>
@@ -32,7 +32,7 @@ const props = defineProps<{
   label?: string;
   type?: 'datetime' | 'date' | 'time' | undefined;
   modelValue: string | null;
-  options?: ((data: any) => void) | undefined;
+  options?: (hr: number, min: number | null, sec: number | null) => boolean | null | undefined;
   disable?: boolean;
   readonly?: boolean;
 }>();
