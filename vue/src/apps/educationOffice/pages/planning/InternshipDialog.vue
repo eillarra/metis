@@ -53,12 +53,6 @@
           </q-item-section>
           <q-item-section>{{ $t('action', 9) }}</q-item-section>
         </q-item>
-        <q-item clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
-          <q-item-section avatar>
-            <q-icon name="mail_outline" size="xs"></q-icon>
-          </q-item-section>
-          <q-item-section>{{ $t('field.email', 9) }}</q-item-section>
-        </q-item>
         <q-item clickable @click="tab = 'remarks'" :active="tab == 'remarks'" active-class="bg-ugent text-white">
           <q-item-section avatar>
             <q-icon name="chat_bubble_outline" size="xs"></q-icon>
@@ -70,6 +64,13 @@
             <q-icon name="commit" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('program') }}</q-item-section>
+        </q-item>
+        <q-item-label header>Logs</q-item-label>
+        <q-item clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="mail_outline" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('field.email', 9) }}</q-item-section>
         </q-item>
       </q-list>
     </template>

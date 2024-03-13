@@ -49,6 +49,13 @@
           </q-item-section>
           <q-item-section>{{ $t('form_builder') }}</q-item-section>
         </q-item>-->
+        <q-item-label header>Logs</q-item-label>
+        <q-item clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="mail_outline" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('field.email', 9) }}</q-item-section>
+        </q-item>
       </q-list>
     </template>
     <template #page>
@@ -104,6 +111,14 @@
           <q-input v-model="obj.email_subject" :label="$t('field.subject')" class="q-mb-md" />
           <markdown-toast-editor v-model="obj.email_body" />
         </q-tab-panel>
+        <q-tab-panel name="emails">
+          <div class="row q-col-gutter-lg q-mb-none">
+            <h4 class="col-12 col-md-6 q-mt-none q-mb-lg">
+              {{ $t('field.email', 9) }}
+            </h4>
+          </div>
+          <emails-view :emails="emails" :tags="[`questioning.id:${obj.id}`]" />
+        </q-tab-panel>
       </q-tab-panels>
     </template>
     <template #footer>
@@ -126,6 +141,7 @@ import { notify } from '@/notify';
 import { useStore } from '../../store.js';
 
 import FullDialog from '@/components/FullDialog.vue';
+import EmailsView from '@/components/emails/EmailsView.vue';
 import MarkdownToastEditor from '@/components/forms/MarkdownToastEditor.vue';
 import PendingProjectPlacesTable from './sections/PendingProjectPlacesTable.vue';
 import PendingStudentsTable from './sections/PendingStudentsTable.vue';
@@ -141,7 +157,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const store = useStore();
-const { projectPlaces, projectStudents } = storeToRefs(store);
+const { emails, projectPlaces, projectStudents } = storeToRefs(store);
 
 const responses = ref<CustomFormResponse[]>([]);
 const tab = ref('responses');

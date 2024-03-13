@@ -39,6 +39,7 @@
           </q-item-section>
           <q-item-section>{{ $t('document', 9) }}</q-item-section>
         </q-item>
+        <q-item-label header>Logs</q-item-label>
         <q-item clickable :to="{ name: 'emails' }" active-class="bg-ugent text-white">
           <q-item-section avatar>
             <q-icon name="mail_outline" size="xs"></q-icon>
