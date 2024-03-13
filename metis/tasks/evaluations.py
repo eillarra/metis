@@ -23,6 +23,9 @@ def schedule_evaluation_emails() -> None:
             continue
 
         for intermediate, start_at, end_at in evaluation_periods:
+            if not (start_at <= now <= end_at):
+                continue
+
             if internship.evaluations.filter(intermediate=intermediate).exists():  # type: ignore
                 continue
 
