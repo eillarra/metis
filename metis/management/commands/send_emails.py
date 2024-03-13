@@ -44,7 +44,7 @@ class Command(BaseCommand):
                         "period": internship.period,
                         "project": project,
                     },
-                    log_education=education,
+                    log_project=project,
                     log_user=admin_contact.user,
                 )
 
@@ -61,7 +61,7 @@ class Command(BaseCommand):
                         "period": internship.period,
                         "project": project,
                     },
-                    log_education=education,
+                    log_project=project,
                     log_user=internship.student.user,
                 )
 
@@ -86,6 +86,6 @@ class Command(BaseCommand):
                             "place": place,
                             "project": project,
                         },
-                        log_education=education,
+                        log_project=project,
                         log_user=admin_contact.user,
                     )

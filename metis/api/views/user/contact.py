@@ -20,6 +20,7 @@ class ContactPlaceViewSet(GenericViewSet):
 
     @action(detail=True, methods=["post"])
     def email(self, request, *args, **kwargs):
+        """Send an email to the place's office email."""
         from rest_framework import status
         from rest_framework.response import Response
 
@@ -36,7 +37,7 @@ class ContactPlaceViewSet(GenericViewSet):
             subject=f"[METIS] update for {place.name}",
             text_content=text,
             reply_to=[request.user.email],
-            log_education=place.education,
+            tags=[f"place.id:{place.id}", f"from.id:{request.user.id}"],
         )
 
         return Response(status=status.HTTP_204_NO_CONTENT)

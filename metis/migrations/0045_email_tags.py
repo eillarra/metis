@@ -13,13 +13,13 @@ def update_tags(apps, schema_editor) -> None:
 
     for email in EmailLog.objects.all():
         if email.to_user:
-            email.tags.append(f"to:{email.to_user.id}")
+            email.tags.append(f"user.id:{email.to_user.id}")
         else:
             try:
                 for e in email.to:
                     user = User.objects.filter(email=e).first()
                     if user:
-                        email.tags.append(f"to:{user.id}")
+                        email.tags.append(f"user.id:{user.id}")
             except AttributeError:
                 pass
         updates.append(email)

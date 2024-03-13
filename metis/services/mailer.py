@@ -8,7 +8,7 @@ from django.template.defaultfilters import date as date_filter
 
 
 if TYPE_CHECKING:
-    from metis.models import Contact, Education, EmailTemplate, Evaluation, User
+    from metis.models import Contact, Education, EmailTemplate, Evaluation, Project, User
 
 
 def get_template(education: "Education", code: str, language: str = "nl") -> Optional["EmailTemplate"]:
@@ -52,15 +52,15 @@ def schedule_email(
     reply_to: list[str] | None = None,
     log_template: Optional["EmailTemplate"] = None,
     log_user: Optional["User"] = None,
-    log_education: Optional["Education"] = None,
+    log_project: Optional["Project"] = None,
     tags: list[str] | None = None,
 ):
     from metis.models.emails import EmailLog
 
     tags = tags or []
 
-    if log_user and f"to.id:{log_user.pk}" not in tags:
-        tags.append(f"to.id:{log_user.pk}")
+    if log_user and f"user.id:{log_user.pk}" not in tags:
+        tags.append(f"user.id:{log_user.pk}")
 
     EmailLog.objects.create(
         template=log_template,
@@ -70,7 +70,7 @@ def schedule_email(
         reply_to=reply_to or [],
         subject=subject,
         body=text_content,
-        education=log_template.education if (log_template and log_template.education) else log_education,
+        project=log_project,
         tags=tags,
     )
 
@@ -82,7 +82,8 @@ def schedule_template_email(
     bcc: list[str] | None = None,
     context: dict | None = None,
     log_user: Optional["User"] = None,
-    log_education: Optional["Education"] = None,
+    log_project: Optional["Project"] = None,
+    tags: list[str] | None = None,
 ) -> None:
     try:
         from_email = (
@@ -100,7 +101,8 @@ def schedule_template_email(
             reply_to=template.reply_to,
             log_template=template,
             log_user=log_user,
-            log_education=log_education,
+            log_project=log_project,
+            tags=tags,
         )
 
     except Exception as e:
@@ -109,6 +111,11 @@ def schedule_template_email(
 
 
 def schedule_invitation_email(invitation_type: str, content_object: "Contact") -> None:
+    """Schedule an invitation email for a contact.
+
+    :param invitation_type: The type of invitation to send.
+    :param content_object: The contact to send the invitation to.
+    """
     from metis.models import EmailTemplate
 
     if invitation_type == "contact":
@@ -127,12 +134,17 @@ def schedule_invitation_email(invitation_type: str, content_object: "Contact") -
         template=template,
         context={"contact": contact},
         log_user=contact.user,
+        tags=["type:contact.invitation", f"user.id:{contact.user.id}", f"place.id:{contact.place.id}"],
     )
 
 
 def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
+    """Schedule an email notification for a new evaluation.
+
+    :param evaluation: The evaluation to notify about.
+    """
     education = evaluation.internship.project.education
-    subject = "[Metis] Nieuwe evaluatie ontvangen"
+    subject = f"{education.short_name} UGent - Nieuwe evaluatie ontvangen"
     body = dedent(
         f"""
         Beste {evaluation.internship.student.user.name},
@@ -154,6 +166,11 @@ def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
         reply_to=[education.office_email],
         subject=subject,
         text_content=body.strip(),
-        log_education=education,
+        log_project=evaluation.internship.project,
         log_user=evaluation.internship.student.user,
+        tags=[
+            "type:evaluation",
+            f"internship.id:{evaluation.internship.id}",
+            f"place.id:{evaluation.internship.place.id}",
+        ],
     )

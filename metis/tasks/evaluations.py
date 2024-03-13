@@ -44,11 +44,11 @@ def schedule_evaluation_emails() -> None:
             }
 
             tags = [
-                email_template.code,
+                "type:evaluation.reminder",
                 f"internship.id:{internship.id}",
                 f"intermediate:{intermediate}",
             ]
-            tags += [f"to.id:{mentor.user.id}" for mentor in mentors]
+            tags += [f"user.id:{mentor.user.id}" for mentor in mentors]
 
             if internship.place:
                 tags.append(f"place.id:{internship.place.pk}")
@@ -60,6 +60,6 @@ def schedule_evaluation_emails() -> None:
                 subject=render_context(email_template.subject, context),
                 text_content=render_context(email_template.body, context),
                 log_template=email_template,
-                log_education=education,
+                log_project=internship.project,
                 tags=tags,
             )

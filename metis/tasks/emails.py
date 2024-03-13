@@ -62,7 +62,9 @@ def schedule_active_questioning_emails(*, force_send: bool = False):
     This is an automated task that runs every day at 8:00.
 
     Args:
+    ----
         force_send: Whether to send the emails even if we are not in the remind window.
+
     """
     active_questionings = Questioning.objects.filter_active()
 
@@ -122,7 +124,13 @@ def schedule_project_place_information_email(questioning: Questioning, filtered_
                     subject=render_context(questioning.email_subject, context),
                     text_content=render_context(questioning.email_body, context),
                     log_user=admin.user,
-                    log_education=questioning.project.education,
+                    log_project=questioning.project,
+                    tags=[
+                        "type:questioning.reminder",
+                        f"questioning.id:{questioning.id}",
+                        f"user.id:{admin.user.id}",
+                        f"place.id:{place.id}",
+                    ],
                 )
 
 
@@ -147,5 +155,6 @@ def schedule_student_questioning_email(questioning: Questioning, filtered_ids: l
             subject=render_context(questioning.email_subject, {}),
             text_content=render_context(questioning.email_body, {}),
             log_user=student.user,
-            log_education=questioning.project.education,
+            log_project=questioning.project,
+            tags=["type:questioning.reminder", f"questioning.id:{questioning.id}", f"user.id:{student.user.id}"],
         )

@@ -87,6 +87,12 @@ class InternshipViewSet(ProjectNestedModelViewSet):
             to=[user.email],
             context={"internship": internship, "user": user},
             log_user=user,
+            tags=[
+                f"internship.id:{internship.id}",
+                f"place.id:{internship.place.id}",
+                f"user.id:{user.id}",
+                "type:internship.approve",  # TODO: in the future, we will have different types
+            ],
         )
 
         return Response(status=status.NO_CONTENT)
@@ -130,9 +136,8 @@ class InternshipNestedModelViewSet(BaseModelViewSet):
     def validate(self, serializer, *, check_is_approved: bool = False) -> None:
         """Validate model instance.
 
-        Args:
-            serializer: Serializer instance.
-            check_is_approved: If True, extra checks for is_approved are performed, as this cannot be updated normally.
+        :param serializer: Serializer instance.
+        :param check_is_approved: If True, extra checks for is_approved are performed, as this cannot be updated
         """
         try:
             data = serializer.validated_data
