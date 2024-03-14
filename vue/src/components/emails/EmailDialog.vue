@@ -70,18 +70,32 @@ const email = computed<FullEmail>(() => ({
   ...extraData.value,
 }));
 
+const userDict = computed<Record<EmailAddress, UserTiny>>(() => {
+  const userDict: Record<EmailAddress, UserTiny> = {};
+
+  if (extraData.value) {
+    extraData.value.internship?.mentors.forEach((mentor: Mentor) => {
+      userDict[mentor.user.email] = mentor.user;
+    });
+    const studentUser = extraData.value.internship?.Student?.User;
+    if (studentUser) {
+      userDict[studentUser.email] = studentUser;
+    }
+  }
+
+  return userDict;
+});
+
 const toNameEmails = computed<string>(() => {
   // if extraData.value is not yet set, return the original value
-  if (!extraData.value) {
+  if (!extraData.value || !Object.keys(userDict.value).length) {
     return props.obj.to.join(', ');
   }
   // else look the extraData.internship.mentors data and return matching names and emails, or just original email
   return props.obj.to
     .map((to: string) => {
-      const mentor: Mentor | undefined = extraData.value.internship?.mentors.find(
-        (mentor: Mentor) => mentor.user.email === to
-      );
-      return mentor ? `${mentor.user.name} <${mentor.user.email}>` : to;
+      const user = userDict.value[to];
+      return user ? `${user.name} <${to}>` : to;
     })
     .join(', ');
 });

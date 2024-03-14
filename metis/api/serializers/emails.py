@@ -3,7 +3,7 @@ from rest_framework import serializers
 from metis.models.emails import EmailLog
 
 from .base import NestedHyperlinkField
-from .stages.internships import InternshipSerializer
+from .stages.internships import InternshipWithStudentSerializer
 
 
 project_lookup_fields = {
@@ -25,7 +25,7 @@ class EmailTinySerializer(serializers.ModelSerializer):
 class EmailSerializer(serializers.ModelSerializer):
     """Email serializer."""
 
-    internship = InternshipSerializer(read_only=True)
+    internship = InternshipWithStudentSerializer(read_only=True)
 
     class Meta:  # noqa: D106
         model = EmailLog

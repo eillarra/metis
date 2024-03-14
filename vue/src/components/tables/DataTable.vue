@@ -151,6 +151,9 @@
             <q-icon v-if="props.value" name="check_circle" color="green" :size="iconSize" />
             <q-icon v-else name="block" color="grey" :size="iconSize" />
           </span>
+          <span v-else-if="props.col.name.endsWith('_badge')" class="q-gutter-x-xs">
+            <q-badge v-if="props.value" outline :label="props.value" color="dark" />
+          </span>
           <span v-else-if="props.col.name == 'disciplines'" class="q-gutter-x-xs">
             <q-badge outline v-for="d in props.value" :key="d.code" :label="d.name" color="dark" />
           </span>

@@ -56,12 +56,17 @@ class InternshipSerializer(RemarksMixin, BaseModelSerializer):
         exclude = ("created_at", "created_by")
 
 
-class InternshipInertiaSerializer(InternshipSerializer):
+class InternshipWithStudentSerializer(InternshipSerializer):
+    """Internship serializer with Student object."""
+
+    Student = StudentInertiaSerializer(read_only=True, source="student")
+
+
+class InternshipInertiaSerializer(InternshipWithStudentSerializer):
     """Internship serializer for Inertia."""
 
     Discipline = DisciplineSerializer(read_only=True, source="discipline")
     Period = PeriodSerializer(read_only=True, source="period")
-    Student = StudentInertiaSerializer(read_only=True, source="student")
     EvaluationForm = EvaluationFormSerializer(read_only=True, source="evaluation_form")
 
 

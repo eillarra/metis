@@ -26,7 +26,7 @@ const props = defineProps<{
   tags?: string[];
 }>();
 
-const queryColumns = ['to', 'subject'];
+const queryColumns = ['sent_to', 'subject', 'type'];
 
 const columns = [
   {
@@ -36,6 +36,7 @@ const columns = [
     label: t('field.sent_at'),
     align: 'left',
     sortable: true,
+    autoWidth: true,
   },
   {
     name: 'subject',
@@ -51,10 +52,11 @@ const columns = [
     align: 'left',
   },
   {
-    name: 'type',
+    name: 'type_badge',
     field: 'type',
     label: t('field.type'),
     align: 'left',
+    autoWidth: true,
   },
 ];
 
@@ -72,7 +74,7 @@ const rows = computed(() => {
         sent_to: email.to.join(', '),
         subject: email.subject,
         // if a tag starting with `type:xxx` is present, use `xxx` as the type
-        type: (email.tags || []).find((tag: string) => tag.startsWith('type:'))?.split(':')[1] || '',
+        type: (email.tags || []).find((tag: string) => tag.startsWith('type:'))?.split(':')[1] ?? null,
       };
     });
 });
