@@ -45,8 +45,8 @@ const columns = [
     align: 'left',
   },
   {
-    name: 'to',
-    field: 'to',
+    name: 'sent_to',
+    field: 'sent_to',
     label: t('field.sent_to'),
     align: 'left',
   },
@@ -69,7 +69,7 @@ const rows = computed(() => {
       return {
         _self: email,
         sent_at: formatDate(email.sent_at),
-        to: email.to.join(', '),
+        sent_to: email.to.join(', '),
         subject: email.subject,
         // if a tag starting with `type:xxx` is present, use `xxx` as the type
         type: (email.tags || []).find((tag: string) => tag.startsWith('type:'))?.split(':')[1] || '',

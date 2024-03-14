@@ -1,15 +1,17 @@
 <template>
   <full-dialog icon="mail_outline" :title="$t('field.email')" class="small" hide-drawer>
     <template #tabs>
-      <table class="q-px-md q-py-sm q-mt-md q-mb-lg bg-grey-2 full-width">
+      <table class="q-px-md q-py-sm q-mt-sm q-mb-lg bg-grey-2 full-width">
         <tr>
-          <td><strong>{{ $t('field.sent_at') }}:</strong></td>
-          <td>{{ formatDate(email.sent_at) }}</td>
+          <td class="text-no-wrap q-td q-table--col-auto-width q-pr-md"><strong>{{ $t('field.sent_at') }}:</strong></td>
+          <td colspan="2">{{ formatDate(email.sent_at) }}</td>
         </tr>
         <tr>
-          <td><strong>{{ $t('field.sent_to') }}:</strong></td>
+          <td class="text-no-wrap q-td q-table--col-auto-width q-pr-md"><strong>{{ $t('field.sent_to') }}:</strong></td>
           <td>
             <span>{{ toNameEmails }}</span>
+          </td>
+          <td class="q-td q-table--col-auto-width">
             <i
               @click="copyText(toNameEmails)"
               class="q-icon notranslate material-icons cursor-pointer q-ml-xs"
@@ -21,12 +23,20 @@
         </tr>
         <tr>
           <td><strong>{{ $t('field.subject') }}:</strong></td>
-          <td>{{ email.subject }}</td>
+          <td colspan="2">{{ email.subject }}</td>
+        </tr>
+        <tr>
+          <td><strong>Tags:</strong></td>
+          <td colspan="2">
+            <div class="q-gutter-x-xs">
+              <q-badge v-for="tag in sortedTags" :key="tag" outline color="dark">{{ tag }}</q-badge>
+            </div>
+          </td>
         </tr>
       </table>
     </template>
     <template #page>
-      <div class="q-mx-lg">
+      <div class="q-mx-lg q-pb-xl">
         <markdown-toast-viewer v-model="dummyBody" :source-text="email.body" class="q-px-md" />
       </div>
     </template>
@@ -76,6 +86,11 @@ const toNameEmails = computed<string>(() => {
     .join(', ');
 });
 
+const sortedTags = computed<string[]>(() => {
+  const tagsCopy = [...props.obj.tags];
+  return tagsCopy.sort();
+});
+
 function copyText(text: string) {
   copyToClipboard(text).then(() => {
     notify.info(t('copied_to_clipboard'));
@@ -87,7 +102,6 @@ function fetchEmail() {
     extraData.value = response.data;
   });
 }
-
 
 onMounted(() => {
   fetchEmail();

@@ -36,7 +36,7 @@
         <q-item-label header>{{ $t('configuration') }}</q-item-label>
         <q-item clickable @click="tab = 'email'" :active="tab == 'email'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="mail_outline" size="xs"></q-icon>
+            <q-icon name="forward_to_inbox" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('email_template') }}</q-item-section>
           <q-item-section v-if="!hasEmail" side style="padding-left: 0">
