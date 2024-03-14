@@ -6,6 +6,7 @@ from huey.contrib.djhuey import db_periodic_task
 
 from metis.models.stages.internships import Internship
 from metis.services.mailer import get_template, render_context, schedule_email
+from metis.utils.dates import remind_deadline
 
 
 @db_periodic_task(crontab(hour="8", minute="0"))
@@ -24,6 +25,9 @@ def schedule_evaluation_emails() -> None:
 
         for intermediate, start_at, end_at in evaluation_periods:
             if not (start_at <= now <= end_at):
+                continue
+
+            if not remind_deadline(now, end_at, remind_before=[0, 3, 5, 7]):
                 continue
 
             if internship.evaluations.filter(intermediate=intermediate).exists():  # type: ignore

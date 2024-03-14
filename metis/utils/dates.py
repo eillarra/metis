@@ -6,12 +6,9 @@ import holidays
 def is_holiday(date: date, country_code: str = "BE") -> bool:
     """Check if a given date is a holiday in a given country.
 
-    Args:
-        date: The date to check.
-        country_code: The country code to check. Defaults to Belgium.
-
-    Returns:
-        A boolean indicating whether or not the given date is a holiday in the given country.
+    :param date: The date to check.
+    :param country_code: The country code to check. Defaults to Belgium.
+    :return: A boolean indicating whether or not the given date is a holiday in the given country.
     """
     return date in holidays.country_holidays(country_code, years=date.year)
 
@@ -19,11 +16,8 @@ def is_holiday(date: date, country_code: str = "BE") -> bool:
 def is_weekend(date: date) -> bool:
     """Check if a given date is in the weekend.
 
-    Args:
-        date: The date to check.
-
-    Returns:
-        A boolean indicating whether or not the given date is in the weekend.
+    :param date: The date to check.
+    :return: A boolean indicating whether or not the given date is in the weekend.
     """
     return date.weekday() in [5, 6]
 
@@ -35,13 +29,10 @@ def remind_deadline(moment: datetime, deadline: datetime, remind_before: list[in
     is within the remind_before window. If the deadline is within the remind_before window, we only remind if we are
     not on a holiday or weekend.
 
-    Args:
-        moment: The moment to check.
-        deadline: The deadline to check.
-        remind_before: The number of days before the deadline to remind. Defaults to [0, 3, 7].
-
-    Returns:
-        A boolean indicating whether or not the deadline should be reminded.
+    :param moment: The moment to check.
+    :param deadline: The deadline to check.
+    :param remind_before: The number of days before the deadline to remind. Defaults to [0, 3, 7].
+    :return: A boolean indicating whether or not the deadline should be reminded.
     """
     if moment >= deadline:
         return False
@@ -65,12 +56,9 @@ def remind_deadline(moment: datetime, deadline: datetime, remind_before: list[in
 def get_minutes_difference(time1: time, time2: time) -> int:
     """Get the difference in minutes between two times.
 
-    Args:
-        time1: The first time.
-        time2: The second time.
-
-    Returns:
-        The difference in minutes between the two times.
+    :param time1: The first time.
+    :param time2: The second time.
+    :return: The difference in minutes between the two times.
     """
     diff = get_time_difference(time1, time2)
     return diff.hour * 60 + diff.minute
@@ -79,12 +67,9 @@ def get_minutes_difference(time1: time, time2: time) -> int:
 def get_time_difference(time1: time, time2: time) -> time:
     """Get the time difference between two times.
 
-    Args:
-        time1: The first time.
-        time2: The second time.
-
-    Returns:
-        The time difference between the two times.
+    :param time1: The first time.
+    :param time2: The second time.
+    :return: The time difference between the two times.
     """
     diff = datetime.combine(date.today(), time2) - datetime.combine(date.today(), time1)
     return time(diff.seconds // 3600, (diff.seconds // 60) % 60)
@@ -93,11 +78,8 @@ def get_time_difference(time1: time, time2: time) -> time:
 def sum_times(times: list[time]) -> tuple[int, int]:
     """Sum a list of times.
 
-    Args:
-        times: The list of times to sum.
-
-    Returns:
-        The sum of the given times, as a tuple of hours and minutes.
+    :param times: The list of times to sum.
+    :return: The sum of the given times, as a tuple of hours and minutes.
     """
     hours = 0
     minutes = 0
