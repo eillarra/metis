@@ -5,8 +5,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from metis.models import Education, EmailTemplate, Internship, Mentor, Project, Signature, User
-from metis.services.mailer import schedule_template_email
+from metis.models import Education, Internship, Mentor, Project, Signature, User
+from metis.services.mailer import get_template, schedule_template_email
 
 from ...permissions import IsEducationOfficeMember
 from ...serializers import InternshipSerializer, MentorTinySerializer
@@ -63,22 +63,32 @@ class InternshipViewSet(ProjectNestedModelViewSet):
         signature = Signature.objects.create(content_object=internship, user=request.user, signed_text=signed_text)
         Internship.approve(internship, signature)
 
+        # send email to student
+        user = internship.student.user
+        email_template = get_template(internship.project.education, "internship.approved")
+
+        if email_template is not None:
+            schedule_template_email(
+                template=email_template,
+                to=[user.email],
+                bcc=[internship.education.office_email],
+                context={"internship": internship, "user": user},
+                log_user=user,
+                log_project=internship.project,
+                tags=[f"internship.id:{internship.id}", f"user.id:{user.id}", "type:internship.approved"],
+            )
+
         return Response(status=status.NO_CONTENT)
 
     @action(detail=True, methods=["post"], permission_classes=(IsEducationOfficeMember,))
     def send_email(self, request, *args, **kwargs):
         """Send template email to internship."""
         internship = self.get_object()
-        email_code = request.data.get("code", None)
+        email_code = request.data.get("code", "_____invalid_code_____")
+        email_template = get_template(internship.project.education, email_code)
 
-        if email_code != "internship.approve":
-            # TODO: tmp check, this should be moved to a separate service, to support different emails per status
+        if email_template is None:
             raise ValidationError({"code": "No valid email template code provided."})
-
-        try:
-            email_template = EmailTemplate.objects.get(education=internship.project.education, code=email_code)
-        except EmailTemplate.DoesNotExist as exc:
-            raise ValidationError({"code": "No valid email template code provided."}) from exc
 
         user = internship.place.contacts.filter(is_admin=True)[0].user  # TODO: service should decide
 
@@ -87,11 +97,12 @@ class InternshipViewSet(ProjectNestedModelViewSet):
             to=[user.email],
             context={"internship": internship, "user": user},
             log_user=user,
+            log_project=internship.project,
             tags=[
                 f"internship.id:{internship.id}",
                 f"place.id:{internship.place.id}",
                 f"user.id:{user.id}",
-                "type:internship.approve",  # TODO: in the future, we will have different types
+                f"type:{email_code}",
             ],
         )
 

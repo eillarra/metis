@@ -92,12 +92,14 @@ def schedule_template_email(
             else "UGent <metis@ugent.be>"
         )
 
+        unique_bcc = list(set(template.bcc + (bcc or [])))  # Remove duplicate entries from bcc list
+
         schedule_email(
             from_email=from_email,
             to=to,
             subject=render_context(template.subject, context or {}),
             text_content=render_context(template.body, context or {}),
-            bcc=template.bcc + (bcc or []),
+            bcc=unique_bcc,
             reply_to=template.reply_to,
             log_template=template,
             log_user=log_user,

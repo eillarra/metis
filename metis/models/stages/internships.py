@@ -260,6 +260,16 @@ class Internship(RemarksMixin, BaseModel):
         return self.start_date <= timezone.now().date() <= self.end_date
 
     @property
+    def block_name(self) -> str:
+        """The name of the block of the internship."""
+        return self.period.program_internship.block.name if self.period else ""
+
+    @property
+    def duration_weeks(self) -> int:
+        """The duration of the internship in weeks."""
+        return (self.end_date - self.start_date).days // 7
+
+    @property
     def education(self) -> "Education":
         """The education of the internship."""
         return self.project.education
