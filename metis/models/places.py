@@ -47,6 +47,7 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
     code = models.CharField(max_length=160)
     parent = models.ForeignKey("self", related_name="children", on_delete=models.SET_NULL, null=True, blank=True)
     is_flagged = models.BooleanField(default=False)
+    default_language = models.CharField(max_length=2, default="nl")
 
     class Meta:  # noqa: D106
         db_table = "metis_education_places"
@@ -72,6 +73,7 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
         return self.education.can_be_managed_by(user) or self.user_is_admin(user)
 
     def get_office_url(self) -> str:
+        """Get the URL to the office view of the place."""
         return reverse("place_office", args=[self.pk])
 
     @property
@@ -115,11 +117,13 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
         return f"{self.user} ({self.place.code})"
 
     def save(self, *args, **kwargs) -> None:
+        """Set `is_staff` if `is_admin` is True."""
         if self.is_admin:
             self.is_staff = True
         super().save(*args, **kwargs)
 
     def can_be_managed_by(self, user) -> bool:
+        """Check if the user can manage this contact."""
         return self.place.can_be_managed_by(user)
 
     @property

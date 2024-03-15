@@ -44,7 +44,7 @@ def send_email():
             email.save()
         except SMTPRecipientsRefused as e:
             # set sent at as epoch 0 to prevent retrying
-            email.sent_at = datetime.datetime.utcfromtimestamp(0)
+            email.sent_at = datetime.datetime.fromtimestamp(0, datetime.UTC)
             email.save()
             send_email_to_admins("Email error", f"Recipient refused: {e}")
             raise e
