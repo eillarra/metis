@@ -30,9 +30,10 @@ class PlanningExcel(Excel):
 
     def _process_data(self):
         questioning = self.questioning
-        target_places = questioning.project.project_places.filter(
+        project_places_with_availability = questioning.project.project_places.filter(
             availability_set__period=questioning.period, availability_set__min__gt=0
-        ).exclude(id__in=self.options.places_to_skip or [])
+        )
+        target_places = project_places_with_availability.exclude(id__in=self.options.places_to_skip or [])
         target_student_ids = set(questioning.get_target_group().values_list("id", flat=True))
 
         # check if there are places of students to skip, based on options
@@ -54,7 +55,7 @@ class PlanningExcel(Excel):
             if response.data["tops"] is not None and response.object_id in target_student_ids
         ]
         project_place_availability = {
-            project_place.id: availabilities[project_place.id] for project_place in target_places
+            project_place.id: availabilities[project_place.id] for project_place in project_places_with_availability
         }
         student_tops_dict = {student_id: tops for student_id, tops in student_tops}
 
