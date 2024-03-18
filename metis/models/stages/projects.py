@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from django.utils.functional import cached_property
 
 from ..base import BaseModel
 from ..rel import FilesMixin, TextEntriesMixin
@@ -86,11 +85,11 @@ class Project(FilesMixin, TextEntriesMixin, BaseModel):
         except Exception:
             return self.name
 
-    @cached_property
+    @property
     def start_date(self) -> datetime.date:
         return self.periods.first().start_date
 
-    @cached_property
+    @property
     def end_date(self) -> datetime.date:
         return self.periods.last().end_date
 
@@ -110,7 +109,7 @@ class Project(FilesMixin, TextEntriesMixin, BaseModel):
         """
         return self.place_set.all()  # type: ignore
 
-    @cached_property
+    @property
     def required_texts(self) -> models.QuerySet["TextEntry"]:
         required_codes = {text_type["code"] for text_type in self.education.configuration["project_text_types"]}
         return self.texts.filter(code__in=required_codes)

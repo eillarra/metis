@@ -11,7 +11,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.functional import cached_property
 
 from metis.utils.dates import sum_times
 
@@ -275,7 +274,7 @@ class Internship(RemarksMixin, BaseModel):
         """The education of the internship."""
         return self.project.education
 
-    @cached_property
+    @property
     def evaluation_form(self) -> Optional["EvaluationForm"]:
         """The evaluation form for this internship."""  # noqa: D401
         qs = self.project.evaluation_forms.all()
@@ -298,9 +297,9 @@ class Internship(RemarksMixin, BaseModel):
 
         return self.get_evaluation_periods(self.evaluation_form)
 
-    @cached_property
+    @property
     def place(self) -> Optional["Place"]:
-        """The place of the internship."""  # noqa: D401
+        """The place of the internship."""
         return self.project_place.place if self.project_place else None
 
     @property
