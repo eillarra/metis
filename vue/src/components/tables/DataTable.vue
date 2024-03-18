@@ -154,6 +154,9 @@
           <span v-else-if="props.col.name.endsWith('_badge')" class="q-gutter-x-xs">
             <q-badge v-if="props.value" outline :label="props.value" color="dark" />
           </span>
+          <span v-else-if="props.col.name == 'steps'" class="q-gutter-x-xs">
+            <q-icon v-for="(step, k) in props.value" :key="k" :name="step.icon" :color="step.color" :size="iconSize" />
+          </span>
           <span v-else-if="props.col.name == 'disciplines'" class="q-gutter-x-xs">
             <q-badge outline v-for="d in props.value" :key="d.code" :label="d.name" color="dark" />
           </span>

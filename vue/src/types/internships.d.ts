@@ -17,6 +17,7 @@ interface Internship extends ApiObject {
   is_approved: boolean;
   updated_at: string;
   updated_by: UserTiny | null;
+  tags: string[];
   // -----
   evaluation_periods?: [number, string, string][];
   // -----

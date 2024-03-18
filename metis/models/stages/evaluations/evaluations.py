@@ -4,6 +4,8 @@ from uuid import uuid4
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import pgettext_lazy
 
@@ -48,10 +50,12 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
             raise ValidationError("A signature is required to approve an evaluation.")
 
         if not evaluation.is_approved:
+            from metis.models.stages.internships import Internship
             from metis.services.mailer.evaluations import schedule_evaluation_notification
 
             cls.objects.filter(id=evaluation.id).update(is_approved=True)  # type: ignore
             schedule_evaluation_notification(evaluation)
+            Internship.update_tags(evaluation.internship)
 
     @property
     def is_final(self) -> bool:
@@ -80,3 +84,11 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
     def get_absolute_url(self) -> str:
         """Return the absolute URL of the evaluation PDF."""
         return reverse("evaluation_pdf", kwargs={"uuid": self.uuid})
+
+
+@receiver(post_save, sender=Evaluation)
+def update_internship_tags(sender, instance, **kwargs):
+    """Update the tags of the associated internship when an evaluation is saved."""
+    from metis.models.stages.internships import Internship
+
+    Internship.update_tags(instance.internship)

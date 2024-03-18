@@ -70,6 +70,31 @@ def get_evaluation_periods(
     return evaluation_periods
 
 
+def get_internship_tags(obj: "Internship") -> list[str]:
+    """For an internship, process the tags.
+
+    :param obj: An instance of the Internship class.
+    :return: A list of tags.
+    """
+    tags = []
+    tags = [tag for tag in obj.tags if not tag.startswith("intermediate.")]
+
+    # evaluation tags
+    if obj.pk and obj.evaluation_form:
+        intermediates = obj.evaluation_form.definition["intermediate_evaluations"]
+        evaluations = obj.evaluations.all()
+
+        for i in range(0, intermediates + 1):
+            if evaluations.filter(intermediate=i, is_approved=True).exists():
+                tags.append(f"intermediate.{i}:approved")
+            elif evaluations.filter(intermediate=i, is_approved=False).exists():
+                tags.append(f"intermediate.{i}:not_approved")
+            else:
+                tags.append(f"intermediate.{i}:pending")
+
+    return list(set(tags))
+
+
 def get_remaining_discipline_constraints(obj: "Internship") -> list[dict]:
     """Calculate the remaining discipline constraints based on the track constraints.
 
@@ -175,6 +200,7 @@ class Internship(RemarksMixin, BaseModel):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=CONCEPT)
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
+    tags = models.JSONField(default=list)
 
     # evaluation_deadline = models.DateField()  # this can be used for cases > reviews
     # reviewers (beoordelaars)
@@ -228,6 +254,8 @@ class Internship(RemarksMixin, BaseModel):
         ):  # TODO: imporve this taking status into account (preplanning should not be approved)
             self.is_approved = self.status != self.PREPLANNING
 
+        self.tags = get_internship_tags(self)
+
         super().save(*args, **kwargs)
 
     @classmethod
@@ -241,6 +269,12 @@ class Internship(RemarksMixin, BaseModel):
 
         if not internship.is_approved:
             cls.objects.filter(id=internship.id).update(is_approved=True)  # type: ignore
+
+    @classmethod
+    def update_tags(cls, internship: "Internship") -> None:
+        """Update tags for an internship, without calling clean() on the model."""
+        tags = get_internship_tags(internship)
+        cls.objects.filter(id=internship.id).update(tags=tags)
 
     def can_be_managed_by(self, user) -> bool:
         """Check if the user can manage this internship."""

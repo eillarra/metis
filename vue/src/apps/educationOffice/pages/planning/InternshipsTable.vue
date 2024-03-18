@@ -72,6 +72,12 @@ const columns = [
     autoWidth: true,
   },
   {
+    name: 'steps',
+    field: 'evaluation_steps',
+    label: t('evaluation', 9),
+    align: 'left',
+  },
+  {
     name: 'disciplines',
     field: 'disciplines',
     label: t('discipline'),
@@ -140,6 +146,7 @@ const rows = computed(() => {
     block_name: obj.Period?.ProgramInternship?.Block?.name || '-',
     period_name: obj.Period?.ProgramInternship ? `P${obj.Period.ProgramInternship.position}` : '-',
     track_name: obj.Track?.name || '-',
+    evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
     disciplines: obj.Discipline ? [obj.Discipline] : [],
     status: statuses[obj.status as keyof typeof statuses] || obj.status,
     start_date: obj.start_date,
@@ -148,4 +155,42 @@ const rows = computed(() => {
     is_approved: obj.is_approved,
   }));
 });
+
+function getEvaluationSteps(internship: Internship) {
+  const evaluationSteps = [];
+
+  for (const tag of internship.tags) {
+    if (tag.startsWith('intermediate.')) {
+      const [number, status] = tag.substring(13).split(':');
+      let color = '';
+
+      if (status === 'approved') {
+        color = 'dark';
+      } else if (status === 'not_approved') {
+        color = 'orange-8';
+      } else if (status === 'pending') {
+        color = 'grey-4';
+      }
+
+      // add the icon and color to the array
+      evaluationSteps.push({
+        number: number,
+        icon: number == '0' ? 'library_add_check' : `filter_${number}`,
+        color: color,
+      });
+    }
+  }
+
+  evaluationSteps.sort((a, b) => {
+    if (a.number === '0') {
+      return 1;
+    }
+    if (b.number === '0') {
+      return -1;
+    }
+    return parseInt(a.number) - parseInt(b.number);
+  });
+
+  return evaluationSteps;
+}
 </script>
