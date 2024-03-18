@@ -88,10 +88,11 @@ class InternshipViewSet(ProjectNestedModelViewSet):
         """Send template email to internship."""
         internship = self.get_object()
         email_code = request.data.get("code", "_____invalid_code_____")
-        email_template = get_template(internship.project.education, email_code)
 
-        if email_template is None:
-            raise ValidationError({"code": "No valid email template code provided."})
+        try:
+            email_template = get_template(internship.project.education, email_code)
+        except ValueError as exc:
+            raise exc
 
         user = internship.place.contacts.filter(is_admin=True)[0].user  # TODO: service should decide
 

@@ -13,7 +13,10 @@ def schedule_invitation_email(contact: "Contact", project: Optional["Project"] =
     :param contact: The contact to send the invitation to.
     :param project: The project to log the invitation for (if any).
     """
-    template = get_template(contact.education, "invitation.contact")
+    try:
+        template = get_template(contact.education, "invitation.contact")
+    except ValueError:
+        return
 
     schedule_template_email(
         template=template,

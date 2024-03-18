@@ -13,7 +13,11 @@ def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
     :param evaluation: The evaluation to notify about.
     """
     education = evaluation.internship.education
-    template = get_template(education, "evaluation.notification")
+
+    try:
+        template = get_template(education, "evaluation.notification")
+    except ValueError:
+        return
 
     schedule_template_email(
         template=template,
