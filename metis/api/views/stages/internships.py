@@ -65,9 +65,10 @@ class InternshipViewSet(ProjectNestedModelViewSet):
 
         # send email to student
         user = internship.student.user
-        email_template = get_template(internship.project.education, "internship.approved")
 
-        if email_template is not None:
+        try:
+            email_template = get_template(internship.project.education, "internship.approved")
+
             schedule_template_email(
                 template=email_template,
                 to=[user.email],
@@ -77,6 +78,8 @@ class InternshipViewSet(ProjectNestedModelViewSet):
                 log_project=internship.project,
                 tags=[f"internship.id:{internship.id}", f"user.id:{user.id}", "type:internship.approved"],
             )
+        except ValueError:
+            pass
 
         return Response(status=status.NO_CONTENT)
 

@@ -38,8 +38,8 @@ class ProjectManager(models.Manager):
 
 
 class Project(FilesMixin, TextEntriesMixin, BaseModel):
-    """
-    A project is a collection of internships for an academic year or other period of time.
+    """A project is a collection of internships for an academic year or other period of time.
+
     Projects are created so that the planner can distribute students to places. It is mainly an administrative tool.
     """
 
@@ -115,6 +115,11 @@ class Project(FilesMixin, TextEntriesMixin, BaseModel):
         required_codes = {text_type["code"] for text_type in self.education.configuration["project_text_types"]}
         return self.texts.filter(code__in=required_codes)
 
+    @property
+    def reply_to(self) -> list[str] | None:
+        """Get reply-to email address."""
+        return [self.education.office_email] if self.education.office_email else None
+
 
 class Period(BaseModel):
     """A first proposal is made based on the ProgramInternships defined at ProgramBlock level."""
@@ -151,8 +156,7 @@ class Period(BaseModel):
         return self.start_date <= timezone.now().date() <= self.end_date
 
     def accepts_cases(self, *, extension_days: int = 4) -> bool:
-        """
-        De casus wordt 'automatisch' gekoppeld aan een stage. De uiterste indiendatum kan per project ingesteld worden
+        """De casus wordt 'automatisch' gekoppeld aan een stage. De uiterste indiendatum kan per project ingesteld worden
         (Dit wordt ingesteld op niveau van het 'Casustype', analoog aan de instellingen van de datums voor beoordeling
         stages), typisch is deze uiterste datum relatief tov einddatum van de stage van de student. (De einddatum van
         de stage van een student valt mogelijks niet samen met een blokgrens.)
@@ -163,7 +167,9 @@ class Period(BaseModel):
         """Get ProjectPlaces for this period.
 
         Args:
+        ----
             ignore_availability: If True, return all ProjectPlaces, even if they have no availability.
+
         """
         if ignore_availability:
             return self.project.project_places

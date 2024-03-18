@@ -5,7 +5,7 @@ from huey import crontab
 from huey.contrib.djhuey import db_periodic_task
 
 from metis.models.stages.internships import Internship
-from metis.services.mailer import get_template, render_context, schedule_email
+from metis.services.mailer import get_template, schedule_template_email
 from metis.utils.dates import remind_deadline
 
 
@@ -18,9 +18,10 @@ def schedule_evaluation_emails() -> None:
     for internship in active_internships:
         education = internship.education
         evaluation_periods: list[tuple[int, datetime, datetime]] = internship.evaluation_periods
-        email_template = get_template(education, "internship.evaluation")
 
-        if email_template is None:
+        try:
+            email_template = get_template(education, "internship.evaluation")
+        except ValueError:
             continue
 
         for intermediate, start_at, end_at in evaluation_periods:
@@ -53,13 +54,10 @@ def schedule_evaluation_emails() -> None:
             if internship.place:
                 tags.append(f"place.id:{internship.place.pk}")
 
-            schedule_email(
-                from_email=f"{education.short_name} UGent <metis@ugent.be>",
+            schedule_template_email(
+                template=email_template,
                 to=[mentor.user.email for mentor in mentors],
-                reply_to=[education.office_email],
-                subject=render_context(email_template.subject, context),
-                text_content=render_context(email_template.body, context),
-                log_template=email_template,
+                context=context,
                 log_project=internship.project,
                 tags=tags,
             )

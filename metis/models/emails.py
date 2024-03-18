@@ -16,7 +16,7 @@ class EmailTemplate(BaseModel):
     Templates can be different by education; if no education is specified, the template is shared by all educations.
     """
 
-    NO_REPLY = "noreply@ugent.be"
+    HELPDESK = "helpdesk.metis@ugent.be"
 
     education = models.ForeignKey(
         "metis.Education", related_name="email_templates", on_delete=models.PROTECT, null=True, blank=True
@@ -50,7 +50,7 @@ class EmailTemplate(BaseModel):
     @property
     def reply_to(self) -> list[str]:
         """Get reply-to email address."""
-        return [self.education.office_email] if self.education and self.education.office_email else [self.NO_REPLY]
+        return [self.education.office_email] if self.education and self.education.office_email else [self.HELPDESK]
 
 
 class EmailLog(models.Model):
@@ -59,7 +59,6 @@ class EmailLog(models.Model):
     project = models.ForeignKey(
         "metis.Project", related_name="email_logs", on_delete=models.SET_NULL, null=True, blank=True
     )
-    template = models.ForeignKey(EmailTemplate, related_name="logs", on_delete=models.SET_NULL, null=True, blank=True)
     from_email = models.CharField(max_length=255)
     to = models.JSONField(default=list)
     bcc = models.JSONField(default=list)

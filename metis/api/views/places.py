@@ -7,7 +7,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 
 from metis.models import Contact, Place, User
-from metis.services.mailer import schedule_invitation_email
+from metis.services.mailer.contacts import schedule_invitation_email
 
 from ..permissions import IsEducationOfficeMember
 from ..serializers import ContactSerializer, PlaceSerializer
@@ -44,7 +44,7 @@ class PlaceViewSet(EducationNestedModelViewSet):
         user = User.create_from_name_emails(name=request.data.get("name"), emails=emails)
         contact = Contact.objects.create(place=self.get_object(), user=user, created_by=self.request.user, **data)
         self.get_object().contacts.add(contact)
-        schedule_invitation_email("contact", contact)
+        schedule_invitation_email(contact)
 
         return Response(ContactSerializer(contact, context={"request": request}).data, status=status.CREATED)
 
@@ -98,5 +98,5 @@ class ContactViewSet(PlaceNestedModelViewSet):
     @action(detail=True, methods=["post"])
     def invite(self, request, *args, **kwargs):
         """Invite contact to place."""
-        schedule_invitation_email("contact", self.get_object())
+        schedule_invitation_email(self.get_object())
         return Response(status=status.NO_CONTENT)

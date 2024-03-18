@@ -48,7 +48,7 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
             raise ValidationError("A signature is required to approve an evaluation.")
 
         if not evaluation.is_approved:
-            from metis.services.mailer import schedule_evaluation_notification
+            from metis.services.mailer.evaluations import schedule_evaluation_notification
 
             cls.objects.filter(id=evaluation.id).update(is_approved=True)  # type: ignore
             schedule_evaluation_notification(evaluation)
