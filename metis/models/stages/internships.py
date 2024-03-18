@@ -2,6 +2,7 @@ import math
 from collections import Counter
 from datetime import date, datetime, time, timedelta
 from hashlib import sha1
+from math import ceil
 from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
@@ -267,7 +268,7 @@ class Internship(RemarksMixin, BaseModel):
     @property
     def duration_weeks(self) -> int:
         """The duration of the internship in weeks."""
-        return (self.end_date - self.start_date).days // 7
+        return ceil((self.end_date - self.start_date).days / 7)
 
     @property
     def education(self) -> "Education":
