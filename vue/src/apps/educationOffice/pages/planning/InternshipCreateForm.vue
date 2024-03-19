@@ -43,7 +43,7 @@
           @click="createInternship"
           color="ugent"
           :label="$t('form.add_to_project')"
-          :disable="!obj.ProjectPlace || !obj.Student || !obj.discipline || !obj.start_date || !obj.end_date"
+          :disable="!obj.Student || !obj.discipline || !obj.start_date || !obj.end_date"
         />
       </div>
     </template>
@@ -125,12 +125,13 @@ function createInternship() {
   api
     .post((project.value as Project).rel_internships, {
       student: obj.value.Student?.id,
-      project_place: obj.value.ProjectPlace?.id,
+      project_place: obj.value.ProjectPlace?.id || null,
       period: obj.value.period,
       track: obj.value.Student?.Track?.id,
       discipline: obj.value.discipline,
       start_date: obj.value.start_date,
       end_date: obj.value.end_date,
+      status: (obj.value.ProjectPlace) ? 'concept' : 'preplanning'
     })
     .then((res) => {
       store.createObj('projectInternship', res.data);
