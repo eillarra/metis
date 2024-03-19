@@ -28,7 +28,7 @@ def schedule_evaluation_emails() -> None:
             if not (start_at <= now <= end_at):
                 continue
 
-            if not remind_deadline(now, end_at, remind_before=[0, 3, 5, 7]):
+            if not remind_deadline(now, end_at, remind_before=[0, 1, 3, 5, 7]):
                 continue
 
             if internship.evaluations.filter(intermediate=intermediate).exists():  # type: ignore
