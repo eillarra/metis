@@ -89,18 +89,22 @@ class InternshipViewSet(ProjectNestedModelViewSet):
         internship = self.get_object()
         email_code = request.data.get("code", "_____invalid_code_____")
 
+        # TODO: move to a service
+
         try:
             email_template = get_template(internship.project.education, email_code)
         except ValueError as exc:
             raise exc
 
-        user = internship.place.contacts.filter(is_admin=True)[0].user  # TODO: service should decide
+        if email_code == "internship.approved":
+            user = internship.student.user
+        else:
+            user = internship.place.contacts.filter(is_admin=True).first().user
 
         schedule_template_email(
             template=email_template,
             to=[user.email],
             context={"internship": internship, "user": user},
-            log_user=user,
             log_project=internship.project,
             tags=[
                 f"internship.id:{internship.id}",

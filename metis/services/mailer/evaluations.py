@@ -15,7 +15,7 @@ def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
     education = evaluation.internship.education
 
     try:
-        template = get_template(education, "evaluation.notification")
+        template = get_template(education, "evaluation.approved")
     except ValueError:
         return
 
@@ -26,7 +26,7 @@ def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
         log_user=evaluation.internship.student.user,
         log_project=evaluation.internship.project,
         tags=[
-            "type:evaluation.notification",
+            "type:evaluation.approved",
             f"internship.id:{evaluation.internship.id}",
             f"place.id:{evaluation.internship.place.id}",
         ],

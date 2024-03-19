@@ -251,7 +251,7 @@ class Internship(RemarksMixin, BaseModel):
             not self.pk
             and self.project.education.configuration
             and self.project.education.configuration["automatic_internship_approval"]
-        ):  # TODO: imporve this taking status into account (preplanning should not be approved)
+        ):
             self.is_approved = self.status != self.PREPLANNING
 
         self.tags = get_internship_tags(self)

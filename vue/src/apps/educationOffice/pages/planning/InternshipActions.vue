@@ -102,6 +102,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
 import { api } from '@/axios';
@@ -119,13 +120,29 @@ const props = defineProps<{
 const { t } = useI18n();
 const store = useStore();
 
+const { education } = storeToRefs(store);
+
 const obj = ref<Internship>(props.internship);
 
 function setStatus(status: string) {
   obj.value.status = status;
+
+  if (
+    status == 'definitive' &&
+    education.value?.configuration?.automatic_internship_approval &&
+    !obj.value.is_approved
+  ) {
+    obj.value.is_approved = true;
+  }
+
   save().then(() => {
-    if (!obj.value.is_approved && status == 'definitive') {
-      sendEmail('internship.approve');
+    if (status == 'definitive') {
+      if (education.value?.configuration?.automatic_internship_approval && obj.value.is_approved) {
+        sendEmail('internship.definitive');
+        sendEmail('internship.approved');
+      } else if (!education.value?.configuration?.automatic_internship_approval && !obj.value.is_approved) {
+        sendEmail('internship.approve');
+      }
     }
   });
 }

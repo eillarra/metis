@@ -131,7 +131,7 @@ function createInternship() {
       discipline: obj.value.discipline,
       start_date: obj.value.start_date,
       end_date: obj.value.end_date,
-      status: (obj.value.ProjectPlace) ? 'concept' : 'preplanning'
+      status: obj.value.ProjectPlace ? 'concept' : 'preplanning',
     })
     .then((res) => {
       store.createObj('projectInternship', res.data);
