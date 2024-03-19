@@ -14,7 +14,7 @@ class EvaluationPermissions(BasePermission):
     """Permissions for evaluations."""
 
     def has_permission(self, request, view):
-        """Checks if the user has permission to access the view."""
+        """Check if the user has permission to access the view."""
         if not bool(request.user and request.user.is_authenticated):
             return False
 
@@ -22,15 +22,17 @@ class EvaluationPermissions(BasePermission):
 
         if request.method in SAFE_METHODS:
             return (
-                internship.place.can_be_managed_by(request.user)
+                (internship.place and internship.place.can_be_managed_by(request.user))
                 or internship.student.user == request.user
                 or internship.mentors.filter(user=request.user).exists()
             )
 
-        return internship.place.user_is_admin(request.user) or internship.mentors.filter(user=request.user).exists()
+        return (internship.place and internship.place.user_is_admin(request.user)) or internship.mentors.filter(
+            user=request.user
+        ).exists()
 
     def has_object_permission(self, request, view, obj):
-        """Checks if the user has permission to manipulate the Evaluation object."""
+        """Check if the user has permission to manipulate the Evaluation object."""
         if request.method in SAFE_METHODS:
             return True
 
