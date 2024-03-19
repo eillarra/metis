@@ -22,11 +22,13 @@ def schedule_evaluation_notification(evaluation: "Evaluation") -> None:
     schedule_template_email(
         template=template,
         to=[evaluation.internship.student.user.email],
+        bcc=[education.office_email] if education.office_email else None,
         context={"education": education, "evaluation": evaluation},
         log_user=evaluation.internship.student.user,
         log_project=evaluation.internship.project,
         tags=[
             "type:evaluation.approved",
+            f"intermediate:{evaluation.intermediate}",
             f"internship.id:{evaluation.internship.id}",
             f"place.id:{evaluation.internship.place.id}",
         ],
