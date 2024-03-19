@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from .base import get_template, schedule_template_email
@@ -5,6 +6,50 @@ from .base import get_template, schedule_template_email
 
 if TYPE_CHECKING:
     from metis.models.stages.evaluations import Evaluation
+    from metis.models.stages.internships import Internship
+
+
+def schedule_evaluation_reminder(internship: "Internship", evaluation_period: tuple[int, datetime, datetime]) -> None:
+    """Schedule an email reminder for an evaluation.
+
+    :param internship: The internship to remind about.
+    :param evaluation_period: The evaluation period to remind about.
+    """
+    education = internship.education
+    mentors = internship.mentors.all()  # type: ignore
+    intermediate, start_at, end_at = evaluation_period
+    place_language = internship.place.default_language if internship.place else "nl"
+
+    try:
+        template = get_template(education, "evaluation.reminder", language=place_language)
+    except ValueError:
+        return
+
+    if not mentors.count():
+        return
+
+    context = {
+        "internship": internship,
+        "evaluation_period": evaluation_period,
+    }
+
+    tags = [
+        "type:evaluation.reminder",
+        f"internship.id:{internship.id}",
+        f"intermediate:{intermediate}",
+    ]
+    tags += [f"user.id:{mentor.user.id}" for mentor in mentors]
+
+    if internship.place:
+        tags.append(f"place.id:{internship.place.pk}")
+
+    schedule_template_email(
+        template=template,
+        to=[mentor.user.email for mentor in mentors],
+        context=context,
+        log_project=internship.project,
+        tags=tags,
+    )
 
 
 def schedule_evaluation_notification(evaluation: "Evaluation") -> None:

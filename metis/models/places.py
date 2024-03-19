@@ -66,7 +66,7 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
 
     def user_is_admin(self, user) -> bool:
         """Check if the user is admin for this place."""
-        return self.contacts.filter(user=user, is_admin=True).exists()
+        return self.admins.filter(user=user).exists()
 
     def can_be_managed_by(self, user) -> bool:
         """Check if the user can manage this place."""
@@ -75,6 +75,11 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
     def get_office_url(self) -> str:
         """Get the URL to the office view of the place."""
         return reverse("place_office", args=[self.pk])
+
+    @property
+    def admins(self) -> models.QuerySet:
+        """The admin contacts for the place."""
+        return self.contacts.filter(is_admin=True)  # type: ignore
 
     @property
     def agreement(self) -> "File":

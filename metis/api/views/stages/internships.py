@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from metis.models import Education, Internship, Mentor, Project, Signature, User
 from metis.services.mailer import get_template, schedule_template_email
+from metis.services.mailer.internships import schedule_internship_approved_email
 
 from ...permissions import IsEducationOfficeMember
 from ...serializers import InternshipSerializer, MentorTinySerializer
@@ -63,23 +64,8 @@ class InternshipViewSet(ProjectNestedModelViewSet):
         signature = Signature.objects.create(content_object=internship, user=request.user, signed_text=signed_text)
         Internship.approve(internship, signature)
 
-        # send email to student
-        user = internship.student.user
-
-        try:
-            email_template = get_template(internship.project.education, "internship.approved")
-
-            schedule_template_email(
-                template=email_template,
-                to=[user.email],
-                bcc=[internship.education.office_email],
-                context={"internship": internship, "user": user},
-                log_user=user,
-                log_project=internship.project,
-                tags=[f"internship.id:{internship.id}", f"user.id:{user.id}", "type:internship.approved"],
-            )
-        except ValueError:
-            pass
+        schedule_internship_approved_email(internship, to="student")
+        # schedule_internship_approved_email(internship, to="place")
 
         return Response(status=status.NO_CONTENT)
 
@@ -92,7 +78,9 @@ class InternshipViewSet(ProjectNestedModelViewSet):
         # TODO: move to a service
 
         try:
-            email_template = get_template(internship.project.education, email_code)
+            email_template = get_template(
+                internship.project.education, email_code, language=internship.place.default_language
+            )
         except ValueError as exc:
             raise exc
 

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional
 from django.conf import settings
 from django.core.mail import send_mail as django_send_mail
 from django.template import Context, Template
+from django.utils import translation
 
 
 if TYPE_CHECKING:
@@ -88,9 +89,10 @@ def schedule_email(
     if log_user and f"user.id:{log_user.pk}" not in tags:
         tags.append(f"user.id:{log_user.pk}")
 
-    unique_to = list(set(to))  # Remove duplicate entries from to list
-    unique_bcc = list(set(bcc or []))  # Remove duplicate entries from bcc list
-    unique_tags = list(set(tags))  # Remove duplicate entries from tags list
+    # Remove duplicate entries
+    unique_to = list(set(to))
+    unique_bcc = list(set(bcc or []))
+    unique_tags = list(set(tags))
 
     EmailLog.objects.create(
         from_email=from_email,
@@ -125,6 +127,9 @@ def schedule_template_email(
     :param tags: The tags to log the email with.
     """
     try:
+        active_language = translation.get_language()
+        translation.activate(template.language)
+
         from_email = (
             f"{log_project.education.short_name} UGent <metis@ugent.be>" if log_project else "UGent <metis@ugent.be>"
         )
@@ -140,6 +145,8 @@ def schedule_template_email(
             log_project=log_project,
             tags=tags,
         )
+
+        translation.activate(active_language)
 
     except Exception as exc:
         send_email_to_admins("Email error", f"Error while sending email: {exc}")
