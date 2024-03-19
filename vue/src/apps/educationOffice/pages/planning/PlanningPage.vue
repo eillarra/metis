@@ -17,10 +17,24 @@
       class="col-6 col-md-2"
     />
     <q-select
+      v-show="statusOptions.length > 1"
+      v-model="selectedStatus"
+      :options="statusOptions"
+      clearable
+      dense
+      rounded
+      outlined
+      :label="$t('field.status')"
+      options-dense
+      emit-value
+      map-options
+      class="col-6 col-md-2"
+      :bg-color="selectedStatus !== null ? 'blue-1' : 'white'"
+    />
+    <q-select
       v-show="disciplineOptions.length > 1"
       v-model="selectedDiscipline"
       :options="disciplineOptions"
-      :disable="!disciplineOptions.length"
       clearable
       dense
       rounded
@@ -32,7 +46,13 @@
       class="col-6 col-md-2"
       :bg-color="selectedDiscipline !== null ? 'blue-1' : 'white'"
     />
-    <track-select as-filter v-model="selectedTrack" :programs="programs" class="col-6 col-md-2" />
+    <track-select
+      as-filter
+      v-show="programs.length > 1"
+      v-model="selectedTrack"
+      :programs="programs"
+      class="col-6 col-md-2"
+    />
     <date-range-filter v-model="selectedDateRange" class="col-6 col-md-2" />
     <q-btn-toggle
       v-show="false"
@@ -60,6 +80,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
 
 import { useStore } from '../../store.js';
 
@@ -71,6 +92,7 @@ import InternshipsTable from './InternshipsTable.vue';
 
 import { iconDownload } from '@/icons';
 
+const { t } = useI18n();
 const { project, programs, internships } = storeToRefs(useStore());
 
 const showTable = ref<boolean>(true);
@@ -78,7 +100,16 @@ const selectedBlock = ref<number | null>(null);
 const selectedDateRange = ref<QuasarDateRange | null>(null);
 const selectedDiscipline = ref<number | null>(null);
 const selectedPeriod = ref<number | null>(null);
+const selectedStatus = ref<string | null>(null);
 const selectedTrack = ref<number | null>(null);
+
+const statusLabels = {
+  preplanning: t('internship_status.preplanning'),
+  concept: t('internship_status.concept'),
+  definitive: t('internship_status.definitive'),
+  cancelled: t('internship_status.cancelled'),
+  unsuccessful: t('internship_status.unsuccessful'),
+};
 
 const projectExcelPath = computed(() => {
   return `/nl/files/p/proj_${project.value?.id}_planning.xlsx`;
@@ -113,11 +144,29 @@ const periodOptions = computed(() => {
   return periods;
 });
 
+const statusOptions = computed<QuasarSelectOption[]>(() => {
+  const ids: Set<string> = new Set();
+  const statuses: string[] = [];
+
+  internships.value.forEach((obj: Internship) => {
+    if (obj.status && !ids.has(obj.status)) {
+      ids.add(obj.status);
+      statuses.push({
+        label: statusLabels[obj.status] || obj.status,
+        value: obj.status,
+      } as QuasarSelectOption);
+    }
+  });
+
+  return statuses;
+});
+
 const filteredInternships = computed<Internship[]>(() => {
   return internships.value
     .filter((obj) => (selectedBlock.value ? obj.Period?.ProgramInternship?.block === selectedBlock.value : true))
     .filter((obj) => (selectedPeriod.value ? obj.period === selectedPeriod.value : true))
     .filter((obj) => (selectedDiscipline.value ? obj.discipline === selectedDiscipline.value : true))
+    .filter((obj) => (selectedStatus.value ? obj.status === selectedStatus.value : true))
     .filter((obj) => (selectedTrack.value ? obj.track === selectedTrack.value : true))
     .filter((obj) => {
       if (!selectedDateRange.value) return true;

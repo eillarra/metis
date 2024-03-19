@@ -5,6 +5,11 @@ interface QuasarAutocompleteOption {
   disable?: boolean;
 }
 
+interface QuasarSelectOption {
+  label: string;
+  value: string;
+}
+
 interface QuasarDateRange {
   from: string;
   to: string;

@@ -121,7 +121,7 @@ const columns = [
   },
 ];
 
-const statuses = {
+const statusLabels = {
   preplanning: t('internship_status.preplanning'),
   concept: t('internship_status.concept'),
   definitive: t('internship_status.definitive'),
@@ -148,7 +148,7 @@ const rows = computed(() => {
     track_name: obj.Track?.name || '-',
     evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
     disciplines: obj.Discipline ? [obj.Discipline] : [],
-    status: statuses[obj.status as keyof typeof statuses] || obj.status,
+    status: statusLabels[obj.status as keyof typeof statuses] || obj.status,
     start_date: obj.start_date,
     end_date: obj.end_date,
     has_mentors: obj.mentors.filter((mentor: Mentor) => mentor.user.last_login).length > 0,
