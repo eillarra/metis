@@ -28,6 +28,16 @@
     line-height: inherit;
   }
 
+  .toastui-editor-contents ul > li::before,
+  .toastui-editor-contents ol > li::before {
+    color: inherit;
+  }
+
+  .toastui-editor-contents ul > li::before {
+    margin-top: 10px;
+    background-color: #222;
+  }
+
   .ProseMirror {
     height: 100%;
   }
