@@ -18,7 +18,7 @@ class CanManageInternshipPlace(IsAuthenticated):
     """Permission class for managing a place."""
 
     def has_object_permission(self, request, view, obj):
-        """Checks if the user has permission to manipulate the Internship object."""
+        """Check if the user has permission to manipulate the Internship object."""
         return obj.place.can_be_managed_by(request.user)
 
 

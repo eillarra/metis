@@ -22,7 +22,8 @@ except ModuleNotFoundError:
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "metis-dev-cache",
     },
 }
 

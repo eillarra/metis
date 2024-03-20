@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -17,14 +18,47 @@ from metis.utils.dates import sum_times
 from ..base import BaseModel
 from ..disciplines import Discipline
 from ..rel.remarks import RemarksMixin
+from .evaluations import EvaluationForm
 
 
 if TYPE_CHECKING:
     from ..educations import Education
     from ..places import Place
     from ..rel.signatures import Signature
-    from .evaluations import EvaluationForm
     from .programs import Program
+
+
+def get_cached_evaluation_form(
+    project_id: int, period_id: int | None = None, discipline_id: int | None = None
+) -> Optional["EvaluationForm"]:
+    """Get the evaluation form for a period and discipline.
+
+    This checks a cache of evaluation forms for the project, period and discipline to reduce database queries.
+    Necessary when requesting long lists of internships with the evaluation periods for the new UI.
+
+    :param project_id: The ID of the project.
+    :param period_id: The ID of the period.
+    :param discipline_id: The ID of the discipline.
+    :return: The evaluation form for the period and discipline.
+    """
+    cache_key = f"evaluation_form_{project_id}_{period_id}_{discipline_id}"
+    evaluation_form = cache.get(cache_key)
+
+    if evaluation_form:
+        return evaluation_form if evaluation_form != "EvaluationForm.NotFound" else None
+
+    qs = EvaluationForm.objects.filter(project_id=project_id)
+
+    if period_id and qs.filter(period_id=period_id).exists():
+        qs = qs.filter(period_id=period_id)
+
+    if discipline_id and qs.filter(discipline_id=discipline_id).exists():
+        qs = qs.filter(discipline_id=discipline_id)
+
+    evaluation_form = qs.first()
+    cache.set(cache_key, evaluation_form or "EvaluationForm.NotFound", 5)
+
+    return evaluation_form
 
 
 def get_evaluation_periods(
@@ -310,18 +344,8 @@ class Internship(RemarksMixin, BaseModel):
 
     @property
     def evaluation_form(self) -> Optional["EvaluationForm"]:
-        """The evaluation form for this internship."""  # noqa: D401
-        qs = self.project.evaluation_forms.all()
-
-        if self.period and qs.filter(period=self.period).exists():
-            qs = self.period.evaluation_forms.filter(period=self.period)
-
-        if self.discipline:
-            form = qs.filter(discipline=self.discipline).first()
-            if form:
-                return form
-
-        return qs.first()
+        """The evaluation form for this internship."""
+        return get_cached_evaluation_form(self.project_id, self.period_id, self.discipline_id)  # type: ignore
 
     @property
     def evaluation_periods(self) -> list[tuple[int, datetime, datetime]]:
