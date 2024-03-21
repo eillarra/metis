@@ -277,9 +277,9 @@ ${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value
     props.internship.Place?.name
   } bevestigt dat student ${props.internship.Student?.User?.name} met studentennummer ${
     props.internship.Student?.number
-  } een score van **"${scoreTexts.value[evaluation.value?.data.global_score] || '-'}"** heeft behaald voor de **${
-    currentPeriod?.name
-  }**.
+  } een score van **"${
+    scoreTexts.value[(evaluation.value?.data.global_score ?? -1) as number] || '-'
+  }"** heeft behaald voor de **${currentPeriod.value?.name}**.
 `;
 
   return text;
@@ -320,8 +320,6 @@ const updateEvaluationData = () => {
 
 function saveEvaluation() {
   sending.value = true;
-
-  console.log(currentPeriod);
 
   const completeData = {
     form: props.internship.EvaluationForm?.id,
