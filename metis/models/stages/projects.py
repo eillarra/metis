@@ -147,7 +147,8 @@ class Period(BaseModel):
 
     @property
     def full_name(self) -> str:
-        return f"{self.program_internship.block} / P{self.name}"
+        """Full name of the period, including block name."""
+        return f"{self.program_internship.block} / {self.name}"
 
     @property
     def is_open(self) -> bool:
@@ -162,18 +163,6 @@ class Period(BaseModel):
         """
         return self.is_open or (self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date())
 
-    def get_project_places(self, *, ignore_availability: bool = False) -> models.QuerySet["ProjectPlace"]:
-        """Get ProjectPlaces for this period.
-
-        Args:
-        ----
-            ignore_availability: If True, return all ProjectPlaces, even if they have no availability.
-
-        """
-        if ignore_availability:
-            return self.project.project_places
-        return self.project.project_places.filter(availability_set__period=self, availability_set__min__gt=0)
-
     @property
     def project_places(self) -> models.QuerySet["ProjectPlace"]:
         """ProjectPlaces that have availability for this period."""
@@ -183,3 +172,13 @@ class Period(BaseModel):
     def students(self, *, active: bool = True) -> models.QuerySet["Student"]:
         """Students that are enrolled in this period's Block."""
         return self.project.students.filter(is_active=active, block=self.program_internship.block)  # type: ignore
+
+    def get_project_places(self, *, ignore_availability: bool = False) -> models.QuerySet["ProjectPlace"]:
+        """Get ProjectPlaces for this period.
+
+        :param ignore_availability: If True, return all ProjectPlaces, even if they have no availability.
+        :return: ProjectPlaces for this period.
+        """
+        if ignore_availability:
+            return self.project.project_places
+        return self.project.project_places.filter(availability_set__period=self, availability_set__min__gt=0)
