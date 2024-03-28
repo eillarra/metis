@@ -28,6 +28,16 @@ const queryColumns = ['student_name', 'student_number', 'place_name'];
 
 const columns = [
   {
+    name: 'remarks',
+    field: 'remarks',
+    required: true,
+    label: null,
+    align: 'left',
+    autoWidth: true,
+    headerClasses: 'sticky-left',
+    classes: 'sticky-left',
+  },
+  {
     name: 'student_name',
     field: 'student_name',
     required: true,
@@ -150,6 +160,7 @@ const rows = computed(() => {
         : !obj.is_approved
         ? 'bg-yellow-1'
         : '',
+    remarks: Number(obj.tag_objects?.['remarks.count']) || 0,
     student_name: (obj.Student?.User as StudentUser)?.name || '-',
     student_number: obj.Student?.number || '-',
     place_name: obj.Place?.name || '-',

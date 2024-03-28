@@ -76,7 +76,7 @@
         filled
         options-dense
         :display-value="$q.lang.table.columns"
-        :options="columns"
+        :options="selectableColumns"
         option-disable="required"
         option-value="name"
         option-label="label"
@@ -153,6 +153,13 @@
           </span>
           <span v-else-if="props.col.name.endsWith('_badge')" class="q-gutter-x-xs">
             <q-badge v-if="props.value" outline :label="props.value" color="dark" />
+          </span>
+          <span v-else-if="props.col.name == 'remarks'">
+            <q-icon
+              :name="props.value > 0 ? iconChat : 'chat_bubble_outline'"
+              :color="props.value > 0 ? 'dark' : 'grey-4'"
+              :size="iconSize"
+            />
           </span>
           <span v-else-if="props.col.name == 'steps'" class="q-gutter-x-xs">
             <q-icon v-for="(step, k) in props.value" :key="k" :name="step.icon" :color="step.color" :size="iconSize" />
@@ -246,6 +253,8 @@ import { Md5 } from 'ts-md5';
 import { notify } from '@/notify';
 import { storage } from '@/storage';
 
+import { iconChat } from '@/icons';
+
 const emit = defineEmits(['update:selected', 'remove:row']);
 
 const router = useRouter();
@@ -313,6 +322,8 @@ const extendedColumns = computed(() => {
 
   return columns;
 });
+
+const selectableColumns = computed(() => props.columns.filter((c) => c.label));
 
 const parentName = getCurrentInstance()?.parent?.type.__name || '';
 const fullPath = `${window.location.href.split('#')[0]}#${route.path}&${parentName}`;

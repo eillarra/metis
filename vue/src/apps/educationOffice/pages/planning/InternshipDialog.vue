@@ -55,7 +55,7 @@
         </q-item>
         <q-item clickable @click="tab = 'remarks'" :active="tab == 'remarks'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="chat_bubble_outline" size="xs"></q-icon>
+            <q-icon :name="hasRemarks ? iconChat : 'chat_bubble_outline'" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('remark', 9) }}</q-item-section>
         </q-item>
@@ -169,6 +169,8 @@ import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
 import InternshipActions from './InternshipActions.vue';
 
+import { iconChat } from '@/icons';
+
 defineEmits(['delete:obj']);
 
 const props = defineProps<{
@@ -189,6 +191,7 @@ const hasStarted = computed<boolean>(() => {
   if (!obj.value.start_date) return false;
   return new Date(obj.value.start_date) <= new Date();
 });
+const hasRemarks = computed<boolean>(() => Number(obj.value.tag_objects?.['remarks.count']) || 0 > 0);
 
 const filteredPeriods = computed(() => {
   if (!project.value) return [];
