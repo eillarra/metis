@@ -39,7 +39,7 @@ def get_cached_evaluation_form(
     :param project_id: The ID of the project.
     :param period_id: The ID of the period.
     :param discipline_id: The ID of the discipline.
-    :return: The evaluation form for the period and discipline.
+    :returns: The evaluation form for the period and discipline.
     """
     cache_key = f"evaluation_form_{project_id}_{period_id}_{discipline_id}"
     evaluation_form = cache.get(cache_key)
@@ -72,7 +72,7 @@ def get_evaluation_periods(
     :param start_date: The start date of the internship.
     :param end_date: The end date of the internship.
     :param intermediates: The number of intermediate evaluations.
-    :return: A list of tuples with the start and end date of the evaluation periods.
+    :returns: A list of tuples with the start and end date of the evaluation periods.
     """
     evaluation_periods = []
 
@@ -104,27 +104,40 @@ def get_evaluation_periods(
     return evaluation_periods
 
 
-def get_internship_tags(obj: "Internship") -> list[str]:
+def get_internship_tags(obj: "Internship", *, type: str = "all") -> list[str]:
     """For an internship, process the tags.
 
     :param obj: An instance of the Internship class.
-    :return: A list of tags.
+    :param type: The type of tags to process. Can be "all", "evaluations" or "hours".
+    :returns: A list of tags.
     """
-    tags = []
-    tags = [tag for tag in obj.tags if not tag.startswith("intermediate.")]
+    tags = obj.tags
 
-    # evaluation tags
-    if obj.pk and obj.evaluation_form:
-        intermediates = obj.evaluation_form.definition["intermediate_evaluations"]
+    # evaluations
+    if type in {"all", "evaluations"} and obj.pk and obj.evaluation_form:
+        tags = [tag for tag in tags if not tag.startswith("intermediate.")]
         evaluations = obj.evaluations.all()
 
-        for i in range(0, intermediates + 1):
+        for i in range(0, obj.evaluation_form.definition["intermediate_evaluations"] + 1):
             if evaluations.filter(intermediate=i, is_approved=True).exists():
                 tags.append(f"intermediate.{i}:approved")
             elif evaluations.filter(intermediate=i, is_approved=False).exists():
                 tags.append(f"intermediate.{i}:not_approved")
             else:
                 tags.append(f"intermediate.{i}:pending")
+
+    # hours
+    if type in {"all", "hours"}:
+        tags = [tag for tag in tags if not tag.startswith("hours.")]
+        hours, minutes = obj.total_hours
+        accepted_hours, accepted_minutes = obj.get_total_hours(approved_only=True)
+        tags.append(f'hours.total:"{hours}:{minutes:02d}"')
+        tags.append(f'hours.approved:"{accepted_hours}:{accepted_minutes:02d}"')
+
+    # remarks
+    if type in {"all", "remarks"}:
+        tags = [tag for tag in tags if not tag.startswith("remarks.")]
+        tags.append(f"remarks.count:{obj.remarks.count()}")
 
     return list(set(tags))
 
@@ -133,7 +146,7 @@ def get_remaining_discipline_constraints(obj: "Internship") -> list[dict]:
     """Calculate the remaining discipline constraints based on the track constraints.
 
     :param obj: An instance of the Internship class.
-    :return: A list of remaining DisciplineConstraint objects.
+    :returns: A list of remaining DisciplineConstraint objects.
     """
     covered_counts = obj.get_counter_for_disciplines()
     remaining_constraints = []
@@ -174,15 +187,9 @@ def validate_discipline_choice(obj: "Internship") -> None:
     for the given internship program, and if it meets the remaining constraints for the student.
     Raises a ValidationError if the chosen discipline is invalid.
 
-    Args:
-        obj (Internship): An instance of the Internship class.
-
-    Raises:
-        ValidationError: If the chosen discipline is not available for the internship program
-            or does not meet the remaining constraints for the student.
-
-    Example:
-        validate_discipline_choice(my_internship)
+    :param obj: An instance of the Internship class.
+    :raises ValidationError: If the chosen discipline is not available for the internship program
+        or does not meet the remaining constraints for the student.
     """
     if obj.discipline not in obj.get_available_disciplines():
         raise ValidationError(
@@ -288,8 +295,6 @@ class Internship(RemarksMixin, BaseModel):
         ):
             self.is_approved = self.status != self.PREPLANNING
 
-        self.tags = get_internship_tags(self)
-
         super().save(*args, **kwargs)
 
     @classmethod
@@ -305,9 +310,9 @@ class Internship(RemarksMixin, BaseModel):
             cls.objects.filter(id=internship.id).update(is_approved=True)  # type: ignore
 
     @classmethod
-    def update_tags(cls, internship: "Internship") -> None:
+    def update_tags(cls, internship: "Internship", *, type: str = "all") -> None:
         """Update tags for an internship, without calling clean() on the model."""
-        tags = get_internship_tags(internship)
+        tags = get_internship_tags(internship, type=type)
         cls.objects.filter(id=internship.id).update(tags=tags)
 
     def can_be_managed_by(self, user) -> bool:
@@ -368,7 +373,7 @@ class Internship(RemarksMixin, BaseModel):
     @property
     def total_hours(self) -> tuple[int, int]:
         """The total amount of (hours, minutes) worked during the internship."""
-        return sum_times([timesheet.duration for timesheet in self.timesheets.all()])
+        return self.get_total_hours()
 
     @property
     def global_score(self) -> dict | None:
@@ -397,7 +402,7 @@ class Internship(RemarksMixin, BaseModel):
     def get_available_disciplines(self) -> models.QuerySet:
         """Return a set of all available disciplines included in the constraints.
 
-        :return: A QuerySet of Discipline objects.
+        :returns: A QuerySet of Discipline objects.
         """
         program_disciplines = self.period.program_internship.get_available_disciplines()
 
@@ -409,7 +414,7 @@ class Internship(RemarksMixin, BaseModel):
     def get_covered_disciplines(self) -> models.QuerySet:
         """If a track exists, it returns a list of disciplines that have already been covered by this student.
 
-        :return: A QuerySet of Discipline objects.
+        :returns: A QuerySet of Discipline objects.
         """
         if self.track is None or self.student is None:
             return Discipline.objects.none()
@@ -425,7 +430,7 @@ class Internship(RemarksMixin, BaseModel):
     def get_counter_for_disciplines(self) -> Counter:
         """Return a dictionary of discipline IDs and their count for this internship.
 
-        :return: A dictionary of disciplines and their count for this internship.
+        :returns: A dictionary of disciplines and their count for this internship.
         """
         if not self.track:
             return Counter()
@@ -437,6 +442,12 @@ class Internship(RemarksMixin, BaseModel):
         return get_evaluation_periods(
             self.start_date, self.end_date, evaluation_form.definition["intermediate_evaluations"]
         )
+
+    def get_total_hours(self, *, approved_only: bool = False) -> tuple[int, int]:
+        """Get the total amount of (hours, minutes) worked during the internship."""
+        if approved_only:
+            return sum_times([timesheet.duration for timesheet in self.timesheets.filter(is_approved=True)])
+        return sum_times([timesheet.duration for timesheet in self.timesheets.all()])
 
     def get_secret_generated_file_url(self, template_code: str) -> str:
         """Get the secret URL for the internship."""

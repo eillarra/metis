@@ -55,7 +55,7 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
 
             cls.objects.filter(id=evaluation.id).update(is_approved=True)  # type: ignore
             schedule_evaluation_notification(evaluation)
-            Internship.update_tags(evaluation.internship)
+            Internship.update_tags(evaluation.internship, type="evaluations")
 
     @property
     def is_final(self) -> bool:
@@ -91,4 +91,4 @@ def update_internship_tags(sender, instance, **kwargs):
     """Update the tags of the associated internship when an evaluation is saved."""
     from metis.models.stages.internships import Internship
 
-    Internship.update_tags(instance.internship)
+    Internship.update_tags(instance.internship, type="evaluations")

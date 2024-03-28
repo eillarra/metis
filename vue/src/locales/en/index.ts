@@ -52,6 +52,7 @@ export default {
   section_score: 'Section score',
   global_score: 'Global score',
   history: 'History',
+  hour: 'Hour | Hours',
   internship: 'Internship | Internships',
   internship_status: {
     preplanning: 'Preplanning',

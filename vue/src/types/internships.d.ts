@@ -20,6 +20,9 @@ interface Internship extends ApiObject {
   tags: string[];
   // -----
   evaluation_periods?: [number, string, string][];
+  tag_objects?: {
+    [tag: string]: string;
+  };
   // -----
   Student?: Student;
   Track?: Track;

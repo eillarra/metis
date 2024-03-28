@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from metis.models.base import BaseModel
 from metis.models.rel.files import FilesMixin
@@ -100,7 +102,10 @@ class Timesheet(SignaturesMixin, BaseModel):
             raise ValidationError("A signature is required to approve a timesheet.")
 
         if not timesheet.is_approved:
+            from metis.models.stages.internships import Internship
+
             cls.objects.filter(id=timesheet.id).update(is_approved=True)  # type: ignore
+            Internship.update_tags(timesheet.internship, type="hours")
 
     @property
     def duration(self) -> time:
@@ -116,3 +121,11 @@ class Timesheet(SignaturesMixin, BaseModel):
         hours, minutes = sum_times([am_diff, pm_diff])
 
         return time(hours, minutes)
+
+
+@receiver(post_save, sender=Timesheet)
+def update_internship_tags(sender, instance, **kwargs):
+    """Update the tags of the associated internship when an evaluation is saved."""
+    from metis.models.stages.internships import Internship
+
+    Internship.update_tags(instance.internship, type="hours")

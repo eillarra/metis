@@ -51,6 +51,7 @@ export default {
   section_score: 'Deelscore',
   global_score: 'Algemene beoordeling',
   history: 'Historiek',
+  hour: 'Uur | Uren',
   internship: 'Stage | Stages',
   internship_status: {
     preplanning: 'Preplanning',

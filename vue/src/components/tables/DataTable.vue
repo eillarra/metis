@@ -160,6 +160,15 @@
           <span v-else-if="props.col.name == 'disciplines'" class="q-gutter-x-xs">
             <q-badge outline v-for="d in props.value" :key="d.code" :label="d.name" color="dark" />
           </span>
+          <span v-else-if="props.col.name.startsWith('check_')" class="q-gutter-x-xs">
+            <span>{{ props.value[0] }}</span>
+            <q-icon
+              :name="props.value[1] == true ? 'check' : 'radio_button_checked'"
+              :color="props.value[1] == true ? 'dark' : 'orange-8'"
+              :size="iconSize"
+              class="q-ml-xs"
+            />
+          </span>
           <div v-else-if="props.col.name.startsWith('progress_')" class="row full-width items-center">
             <div class="col-9 q-pr-xs">
               <q-linear-progress

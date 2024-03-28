@@ -197,6 +197,14 @@ export const useStore = defineStore('educationOffice', () => {
 
     return projectInternships.value.map((obj: Internship) => ({
       ...obj,
+      // -----
+      tag_objects: obj.tags.reduce((dict, tag) => {
+        const parts = tag.split(':');
+        const value = parts.slice(1).join(':');
+        dict[parts[0]] = value.replace(/"/g, '');
+        return dict;
+      }, {} as { [tag: string]: string }),
+      // -----
       Student: studentMap.value.get(obj.student as number) || undefined,
       Track: trackMap.value.get(obj.track as number) || undefined,
       Period: periodMap.value.get(obj.period as number) || undefined,

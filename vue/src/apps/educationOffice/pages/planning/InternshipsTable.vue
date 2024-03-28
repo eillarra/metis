@@ -72,6 +72,16 @@ const columns = [
     autoWidth: true,
   },
   {
+    name: 'check_hours',
+    field: 'check_hours',
+    label: t('hour', 9),
+    align: 'right',
+    autoWidth: true,
+    classes: 'panno-mono-number',
+    sortable: true,
+    sort: (a: [number, boolean], b: [number, boolean]) => a[0] - b[0],
+  },
+  {
     name: 'steps',
     field: 'evaluation_steps',
     label: t('evaluation', 9),
@@ -146,6 +156,10 @@ const rows = computed(() => {
     block_name: obj.Period?.ProgramInternship?.Block?.name || '-',
     period_name: obj.Period?.ProgramInternship ? `P${obj.Period.ProgramInternship.position}` : '-',
     track_name: obj.Track?.name || '-',
+    check_hours: [
+      Number(obj.tag_objects?.['hours.total']?.split(':')[0]) || 0,
+      (obj.tag_objects?.['hours.total'] || '-') == (obj.tag_objects?.['hours.approved'] || '-'),
+    ],
     evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
     disciplines: obj.Discipline ? [obj.Discipline] : [],
     status: statusLabels[obj.status as keyof typeof statuses] || obj.status,
