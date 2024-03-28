@@ -70,7 +70,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const store = useStore();
-const { education } = storeToRefs(store);
+const { education, project } = storeToRefs(store);
 
 const tab = ref<string>('info');
 const obj = ref<Contact>(props.obj);
@@ -107,7 +107,11 @@ function removeContact() {
 }
 
 function inviteContact() {
-  api.post(`${obj.value.self}invite/`).then(() => {
+  const data = {
+    project_id: project.value?.id || null,
+  };
+
+  api.post(`${obj.value.self}invite/`, data).then(() => {
     notify.success(t('form.contact.create.invited'));
   });
 }

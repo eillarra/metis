@@ -184,6 +184,7 @@ function inviteContact() {
       const data = {
         name: formData.value.name,
         emails: [formData.value.email],
+        project_id: project.value?.id || null,
         data: {
           is_mentor: formData.value.is_mentor,
           is_staff: formData.value.is_staff,

@@ -6,7 +6,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 
-from metis.models import Contact, Place, User
+from metis.models import Contact, Place, Project, User
 from metis.services.mailer.contacts import schedule_invitation_email
 
 from ..permissions import IsEducationOfficeMember
@@ -17,6 +17,19 @@ from .educations import EducationNestedModelViewSet
 
 if TYPE_CHECKING:
     from metis.models.educations import Education
+
+
+def schedule_contact_invitation_email(contact: Contact, project_id: int | None) -> None:
+    """Schedule an invitation email for a contact, adding the project info to the email logs (if set)."""
+    project = None
+
+    if project_id:
+        try:
+            project = Project.objects.get(id=project_id, education=contact.place.education)
+        except Project.DoesNotExist:
+            project = None
+
+    schedule_invitation_email(contact, project=project)
 
 
 class PlaceViewSet(EducationNestedModelViewSet):
@@ -44,7 +57,8 @@ class PlaceViewSet(EducationNestedModelViewSet):
         user = User.create_from_name_emails(name=request.data.get("name"), emails=emails)
         contact = Contact.objects.create(place=self.get_object(), user=user, created_by=self.request.user, **data)
         self.get_object().contacts.add(contact)
-        schedule_invitation_email(contact)
+
+        schedule_contact_invitation_email(contact, request.data.get("project_id", None))
 
         return Response(ContactSerializer(contact, context={"request": request}).data, status=status.CREATED)
 
@@ -98,5 +112,5 @@ class ContactViewSet(PlaceNestedModelViewSet):
     @action(detail=True, methods=["post"])
     def invite(self, request, *args, **kwargs):
         """Invite contact to place."""
-        schedule_invitation_email(self.get_object())
+        schedule_contact_invitation_email(self.get_object(), request.data.get("project_id", None))
         return Response(status=status.NO_CONTENT)

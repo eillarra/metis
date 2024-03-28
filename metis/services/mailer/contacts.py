@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from metis.models import Contact, Project
 
 
-def schedule_invitation_email(contact: "Contact", project: Optional["Project"] = None) -> None:
+def schedule_invitation_email(contact: "Contact", *, project: Optional["Project"] = None) -> None:
     """Schedule an invitation email for a contact.
 
     :param contact: The contact to send the invitation to.
