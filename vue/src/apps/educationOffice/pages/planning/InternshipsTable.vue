@@ -154,7 +154,7 @@ const rows = computed(() => {
     student_number: obj.Student?.number || '-',
     place_name: obj.Place?.name || '-',
     block_name: obj.Period?.ProgramInternship?.Block?.name || '-',
-    period_name: obj.Period?.ProgramInternship ? `P${obj.Period.ProgramInternship.position}` : '-',
+    period_name: obj.Period?.name || '-',
     track_name: obj.Track?.name || '-',
     check_hours: [
       Number(obj.tag_objects?.['hours.total']?.split(':')[0]) || 0,
