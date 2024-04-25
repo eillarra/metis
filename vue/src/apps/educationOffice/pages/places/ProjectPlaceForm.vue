@@ -39,6 +39,15 @@
               :place-types="education.place_types"
               :label="$t('place_type')"
             />
+            <q-select
+              v-model="obj.place.default_language"
+              dense
+              :label="$t('language')"
+              :options="languageOptions"
+              options-dense
+              emit-value
+              map-options
+            />
             <q-toggle
               v-model="obj.place.is_flagged"
               :label="$t('form.place.add_flag')"
@@ -165,6 +174,12 @@ const projectName = computed<string>(() => (project.value ? project.value.name :
 const availability = ref<Record<string, { min: number; max: number }>>(
   reformatAvailability(obj.value.availability_set, project.value)
 );
+const languageOptions = computed<QuasarSelectOption[]>(() => {
+  return [
+    { value: 'nl', label: 'Nederlands' },
+    { value: 'en', label: 'English' },
+  ];
+});
 
 const remarkCount = computed<number>(() => {
   if (!props.obj) return 0;

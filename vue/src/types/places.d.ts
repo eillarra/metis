@@ -29,6 +29,7 @@ interface Place extends ApiObject {
   type: number;
   name: string;
   code: string;
+  default_language: 'nl' | 'en';
   addresses: Address[];
   contacts: Contact[];
   phone_numbers: PhoneNumber[];
