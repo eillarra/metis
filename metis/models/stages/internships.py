@@ -1,9 +1,9 @@
 import math
 from collections import Counter
-from datetime import date, datetime, time, timedelta
+from datetime import date, timedelta
 from hashlib import sha1
 from math import ceil
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, NamedTuple, Optional
 from uuid import uuid4
 
 from django.conf import settings
@@ -26,6 +26,19 @@ if TYPE_CHECKING:
     from ..places import Place
     from ..rel.signatures import Signature
     from .programs import Program
+
+
+class EvaluationPeriod(NamedTuple):
+    """A named tuple for an evaluation period."""
+
+    intermediate: int
+    start_date: date
+    end_date: date
+    official_deadline: date
+
+    def is_final(self) -> bool:
+        """Check if the evaluation period is the final one."""
+        return self.intermediate == 0
 
 
 def get_cached_evaluation_form(
@@ -61,13 +74,14 @@ def get_cached_evaluation_form(
     return evaluation_form
 
 
-def get_evaluation_periods(
-    start_date: date, end_date: date, intermediates: int = 0
-) -> list[tuple[int, datetime, datetime]]:
+def get_evaluation_periods(start_date: date, end_date: date, intermediates: int = 0) -> list[EvaluationPeriod]:
     """Get the evaluation periods based on the start and end date of the internship and a number of intermediates.
 
     If there are no intermediates, only a final evaluation is returned.
-    Evaluation periods are calculated as a week, approximately 4 days before and 3 days after the end of the internship.
+    Evaluation periods are calculated as follows:
+    - first evaluation: starts at the start of the internship, ends a day before next one (if exists) starts
+    - intermediate evaluations: start a day after the previous one ends, ends a day before next one starts
+    - final evaluation: starts a day after the last intermediate ends, ends a month after the end of the internship
 
     :param start_date: The start date of the internship.
     :param end_date: The end date of the internship.
@@ -75,31 +89,43 @@ def get_evaluation_periods(
     :returns: A list of tuples with the start and end date of the evaluation periods.
     """
     evaluation_periods = []
+    grace_period = 4
+    final_grace_period = 45
 
+    # for each evaluation, get the start and end date
     if intermediates > 0:
-        duration = (end_date - start_date).days
-        days_before, days_after = 4, 4
-        evaluation_block = duration // (intermediates + 1)
+        evaluation_block = (end_date - start_date).days // (intermediates + 1)
+        evaluation_deadlines = [start_date + timedelta(days=(evaluation_block * i)) for i in range(intermediates + 1)]
+        evaluation_dates = [
+            start_date + timedelta(days=(evaluation_block * i) + grace_period) for i in range(intermediates + 1)
+        ]
 
         for i in range(intermediates):
-            intermediate = start_date + timedelta(days=evaluation_block * (i + 1))
-            start = timezone.make_aware(
-                datetime.combine(intermediate - timedelta(days=days_before), time(6, 0)),
-                timezone.get_current_timezone(),
+            evaluation_periods.append(
+                EvaluationPeriod(
+                    intermediate=i + 1,
+                    start_date=evaluation_dates[i],
+                    end_date=evaluation_dates[i + 1] - timedelta(days=1),
+                    official_deadline=evaluation_deadlines[i + 1],
+                )
             )
-            end = timezone.make_aware(
-                datetime.combine(intermediate + timedelta(days=days_after), time(23, 59)),
-                timezone.get_current_timezone(),
-            )
-            evaluation_periods.append((i + 1, start, end))
 
-    final_start = timezone.make_aware(
-        datetime.combine(end_date - timedelta(days=days_before), time(6, 0)), timezone.get_current_timezone()
+    # add the final evaluation
+    final_start = (
+        evaluation_periods[-1][2] + timedelta(days=1)
+        if intermediates > 0
+        else start_date + timedelta(days=grace_period)
     )
-    final_end = timezone.make_aware(
-        datetime.combine(end_date + timedelta(days=days_after), time(23, 59)), timezone.get_current_timezone()
+    final_end = end_date + timedelta(days=final_grace_period)
+
+    evaluation_periods.append(
+        EvaluationPeriod(
+            intermediate=0,
+            start_date=final_start,
+            end_date=final_end,
+            official_deadline=end_date,
+        )
     )
-    evaluation_periods.append((0, final_start, final_end))
 
     return evaluation_periods
 
@@ -353,7 +379,7 @@ class Internship(RemarksMixin, BaseModel):
         return get_cached_evaluation_form(self.project_id, self.period_id, self.discipline_id)  # type: ignore
 
     @property
-    def evaluation_periods(self) -> list[tuple[int, datetime, datetime]]:
+    def evaluation_periods(self) -> list[EvaluationPeriod]:
         """The evaluation periods for the internship."""
         if not self.evaluation_form:
             return []
@@ -437,7 +463,7 @@ class Internship(RemarksMixin, BaseModel):
 
         return Counter(self.get_covered_disciplines().values_list("id", flat=True))
 
-    def get_evaluation_periods(self, evaluation_form: "EvaluationForm") -> list[tuple[int, datetime, datetime]]:
+    def get_evaluation_periods(self, evaluation_form: "EvaluationForm") -> list[EvaluationPeriod]:
         """Get the evaluation periods for the internship."""
         return get_evaluation_periods(
             self.start_date, self.end_date, evaluation_form.definition["intermediate_evaluations"]

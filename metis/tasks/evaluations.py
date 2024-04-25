@@ -16,18 +16,18 @@ def schedule_evaluation_emails() -> None:
     active_internships = Internship.objects.filter(status=Internship.DEFINITIVE, start_date__lte=now, end_date__gte=now)
 
     for internship in active_internships:
-        evaluation_periods: list[tuple[int, datetime, datetime]] = internship.evaluation_periods
-
-        for evaluation_period in evaluation_periods:
-            intermediate, start_at, end_at = evaluation_period
-
-            if not (start_at <= now <= end_at):
+        for evaluation_period in internship.evaluation_periods:
+            if not (evaluation_period.start_date <= now <= evaluation_period.end_date):
                 continue
 
-            if not remind_deadline(now, end_at, remind_before=[0, 1, 3, 5, 7]):
+            if not remind_deadline(
+                now,
+                datetime.fromisoformat(evaluation_period.official_deadline.isoformat()),
+                remind_before=[0, 1, 3, 5, 7],
+            ):
                 continue
 
-            if internship.evaluations.filter(intermediate=intermediate).exists():  # type: ignore
+            if internship.evaluations.filter(intermediate=evaluation_period.intermediate).exists():  # type: ignore
                 continue
 
             schedule_evaluation_reminder(internship, evaluation_period)
