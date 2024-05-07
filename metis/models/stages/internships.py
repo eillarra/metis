@@ -1,6 +1,6 @@
 import math
 from collections import Counter
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 from hashlib import sha1
 from math import ceil
 from typing import TYPE_CHECKING, NamedTuple, Optional
@@ -32,8 +32,8 @@ class EvaluationPeriod(NamedTuple):
     """A named tuple for an evaluation period."""
 
     intermediate: int
-    start_date: date
-    end_date: date
+    start_at: datetime
+    end_at: datetime
     official_deadline: date
 
     def is_final(self) -> bool:
@@ -101,11 +101,20 @@ def get_evaluation_periods(start_date: date, end_date: date, intermediates: int 
         ]
 
         for i in range(intermediates):
+            start_at = timezone.make_aware(
+                datetime.combine(evaluation_dates[i], time(6, 0)),
+                timezone.get_current_timezone(),
+            )
+            end_at = timezone.make_aware(
+                datetime.combine(evaluation_dates[i + 1] - timedelta(days=1), time(23, 59)),
+                timezone.get_current_timezone(),
+            )
+
             evaluation_periods.append(
                 EvaluationPeriod(
                     intermediate=i + 1,
-                    start_date=evaluation_dates[i],
-                    end_date=evaluation_dates[i + 1] - timedelta(days=1),
+                    start_at=start_at,
+                    end_at=end_at,
                     official_deadline=evaluation_deadlines[i + 1],
                 )
             )
@@ -118,11 +127,20 @@ def get_evaluation_periods(start_date: date, end_date: date, intermediates: int 
     )
     final_end = end_date + timedelta(days=final_grace_period)
 
+    final_at = timezone.make_aware(
+        datetime.combine(final_start, time(6, 0)),
+        timezone.get_current_timezone(),
+    )
+    end_at = timezone.make_aware(
+        datetime.combine(final_end, time(23, 59)),
+        timezone.get_current_timezone(),
+    )
+
     evaluation_periods.append(
         EvaluationPeriod(
             intermediate=0,
-            start_date=final_start,
-            end_date=final_end,
+            start_at=final_at,
+            end_at=end_at,
             official_deadline=end_date,
         )
     )

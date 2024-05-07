@@ -34,6 +34,9 @@ def remind_deadline(moment: datetime, deadline: datetime, remind_before: list[in
     :param remind_before: The number of days before the deadline to remind. Defaults to [0, 3, 7].
     :return: A boolean indicating whether or not the deadline should be reminded.
     """
+    moment = moment.astimezone()
+    deadline = deadline.astimezone()
+
     if moment >= deadline:
         return False
 

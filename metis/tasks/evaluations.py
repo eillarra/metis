@@ -17,7 +17,7 @@ def schedule_evaluation_emails() -> None:
 
     for internship in active_internships:
         for evaluation_period in internship.evaluation_periods:
-            if not (evaluation_period.start_date <= now <= evaluation_period.end_date):
+            if not (evaluation_period.start_at <= now <= evaluation_period.end_at):
                 continue
 
             if not remind_deadline(
