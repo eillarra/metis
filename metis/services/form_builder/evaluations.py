@@ -122,7 +122,7 @@ def validate_evaluation_form_response(form_definition: dict, data: dict) -> dict
         if section.code not in data["sections"] or not isinstance(data["sections"][section.code], dict):
             raise ValueError(f"Missing response for section `{section.code}`")
 
-        if (
+        if section.with_score and (
             "score" not in data["sections"][section.code]
             or data["sections"][section.code]["score"] not in valid_section_scores
         ):

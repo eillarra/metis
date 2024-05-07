@@ -73,7 +73,7 @@
                   />
                 </td>
               </tr>
-              <tr>
+              <tr v-if="section.with_score">
                 <td colspan="2" class="bg-light-blue-1">{{ $t('section_score') }}</td>
                 <td v-for="score in sectionScores" :key="score.value" class="text-center bg-light-blue-1">
                   <q-radio
@@ -264,8 +264,9 @@ const sectionsWithLowScore = computed<number>(() => {
 
   formDefinition.value?.sections.forEach((section) => {
     if (
-      evaluation.value?.data.sections[section.code].score == lowestScore.value?.value ||
-      evaluation.value?.data.sections[section.code].score === undefined
+      section.with_score &&
+      (evaluation.value?.data.sections[section.code].score == lowestScore.value?.value ||
+      evaluation.value?.data.sections[section.code].score === undefined)
     ) {
       count++;
     }

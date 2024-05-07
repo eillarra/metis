@@ -28,6 +28,7 @@ interface EvaluationSection {
   description: Translation | null;
   items: EvaluationItem[];
   cross_items: EvaluationItem[];
+  with_score: boolean;
   with_remarks: boolean;
 }
 
