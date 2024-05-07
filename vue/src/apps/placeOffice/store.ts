@@ -49,6 +49,14 @@ export const useStore = defineStore('placeOffice', () => {
     });
     internships.value = djangoInternships.map((internship) => ({
       ...internship,
+      // -----
+      tag_objects: internship.tags.reduce((dict, tag) => {
+        const parts = tag.split(':');
+        const value = parts.slice(1).join(':');
+        dict[parts[0]] = value.replace(/"/g, '');
+        return dict;
+      }, {} as { [tag: string]: string }),
+      // -----
       Place: djangoPlace,
     }));
     availableProjects.value = djangoProjects.map((project) => ({

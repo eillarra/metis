@@ -13,16 +13,18 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+
+import { getEvaluationSteps } from '@/utils/evaluations';
 
 import DataTable from '@/components/tables/DataTable.vue';
 import InternshipDialog from './InternshipDialog.vue';
 
-const { t } = useI18n();
+import { useStore } from '../../store.js';
 
-const props = defineProps<{
-  internships: Internship[];
-}>();
+const { t } = useI18n();
+const { internships } = storeToRefs(useStore());
 
 const queryColumns = ['student_name', 'place_name'];
 
@@ -65,6 +67,23 @@ const columns = [
     classes: 'sticky-left',
   },
   {
+    name: 'check_hours',
+    field: 'check_hours',
+    label: t('hour', 9),
+    align: 'right',
+    autoWidth: true,
+    classes: 'panno-mono-number',
+    sortable: true,
+    sort: (a: [number, boolean], b: [number, boolean]) => a[0] - b[0],
+  },
+  {
+    name: 'steps',
+    field: 'evaluation_steps',
+    label: t('evaluation', 9),
+    align: 'left',
+    autoWidth: true,
+  },
+  {
     name: 'disciplines',
     field: 'disciplines',
     label: t('discipline'),
@@ -80,7 +99,7 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return props.internships.map((obj: Internship) => ({
+  return internships.value.map((obj: Internship) => ({
     _self: obj,
     _class:
       obj.status === 'cancelled'
@@ -94,6 +113,11 @@ const rows = computed(() => {
     end_date: obj.end_date,
     student_name: (obj.Student?.User as StudentUser)?.name || '-',
     period_name: obj.Period?.full_name || '-',
+    check_hours: [
+      Number(obj.tag_objects?.['hours.total']?.split(':')[0]) || 0,
+      (obj.tag_objects?.['hours.total'] || '-') == (obj.tag_objects?.['hours.approved'] || '-'),
+    ],
+    evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
     disciplines: obj.Discipline ? [obj.Discipline] : [],
     has_mentors: obj.mentors.length > 0,
   }));

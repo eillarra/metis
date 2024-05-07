@@ -11,12 +11,15 @@
   </div>
   <div v-else>
     <div v-if="formDefinition && evaluation && !processing" class="q-pb-xl">
-      <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
-        {{ currentPeriod?.name }}
-        <q-badge v-if="!evaluation.is_approved" color="orange" class="q-ml-sm" style="vertical-align: middle">{{
-          $t('draft')
-        }}</q-badge>
-      </h4>
+      <div v-if="currentPeriod">
+        <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
+          {{ currentPeriod.name }} (rond {{ currentPeriod.deadline }})
+          <q-badge v-if="!evaluation.is_approved" color="orange" class="q-ml-sm" style="vertical-align: middle">{{
+            $t('draft')
+          }}</q-badge>
+        </h4>
+        <!--<small>Evaluatieperiode: {{ currentPeriod.start }} - {{ currentPeriod.end }}</small>-->
+      </div>
       <div v-if="evaluation.is_approved">
         <big-message :text="$t('form.evaluation.approved')" icon="done_outline" />
       </div>
@@ -199,6 +202,7 @@ const evaluationPeriods = ref<EvaluationPeriod[]>(
       end_at: new Date(period[2]),
       start: formatDate(period[1]),
       end: formatDate(period[2]),
+      deadline: formatDate(period[3], 'YYYY-MM-DD'),
     };
   }) || []
 );

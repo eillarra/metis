@@ -19,7 +19,7 @@ interface Internship extends ApiObject {
   updated_by: UserTiny | null;
   tags: string[];
   // -----
-  evaluation_periods?: [number, string, string][];
+  evaluation_periods?: [number, string, string, string][];
   tag_objects?: {
     [tag: string]: string;
   };

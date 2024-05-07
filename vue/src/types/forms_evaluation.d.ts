@@ -6,6 +6,7 @@ interface EvaluationPeriod {
   end_at: Date;
   start: string;
   end: string;
+  deadline: string;
 }
 
 interface EvaluationScore {

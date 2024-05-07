@@ -27,6 +27,13 @@
       </q-btn>
     </div>
   </div>
+  <div class="bg-yellow-1">
+    <ul class="q-py-sm q-mt-xs">
+      <li v-for="period in internship.evaluation_periods" :key="period[0]">
+        <span v-if="period[0] > 0">#{{ period[0] }}</span><span v-else>Einde</span>: <strong>{{ period[3] }}</strong> (invullen tussen {{ formatDate(period[1]) }} en {{ formatDate(period[2]) }})
+      </li>
+    </ul>
+  </div>
   <div v-if="!loading && !evaluations.length">
     <big-message :text="$t('form.evaluation.not_found')" icon="remove_done" />
     <div v-if="showPeriods" class="text-center">
