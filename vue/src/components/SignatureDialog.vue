@@ -18,7 +18,15 @@
             <q-item-section avatar top>
               <q-checkbox v-model="acceptanceChecked" />
             </q-item-section>
-            <q-item-section>
+            <q-item-section v-if="locale == 'en'">
+              <q-item-label>Read and approved</q-item-label>
+              <q-item-label class="text-body2">
+                Signature - by checking 'Read and approved' and clicking the 'sign' button you sign this document and
+                expressly acknowledge that it has the same legal value and is legally binding in the same way as an
+                originally signed version.
+              </q-item-label>
+            </q-item-section>
+            <q-item-section v-else>
               <q-item-label>Gelezen en goedgekeurd</q-item-label>
               <q-item-label class="text-body2">
                 Handtekening - door 'Gelezen en goedgekeurd' aan te vinken en op de knop 'ondertekenen' te klikken
@@ -40,10 +48,13 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import MarkdownToastViewer from '@/components/forms/MarkdownToastViewer.vue';
 
 const emit = defineEmits(['update:modelValue']);
+
+const { locale } = useI18n();
 
 const props = defineProps<{
   modelValue: boolean;

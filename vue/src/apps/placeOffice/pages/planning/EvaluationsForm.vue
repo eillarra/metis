@@ -192,6 +192,7 @@ const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_use
 
 const l = ref<'en' | 'nl'>(locale.value as 'en' | 'nl');
 const signatureVisible = ref(false);
+const evaluations = ref<Evaluation[]>([]);
 const evaluationPeriods = ref<EvaluationPeriod[]>(
   props.internship.evaluation_periods?.map((period) => {
     return {
@@ -207,13 +208,7 @@ const evaluationPeriods = ref<EvaluationPeriod[]>(
   }) || []
 );
 
-const currentPeriod = computed<EvaluationPeriod | null>(
-  () =>
-    evaluationPeriods.value.find((period) => {
-      const now = new Date();
-      return now >= period.start_at && now <= period.end_at;
-    }) || null
-);
+const currentPeriod = ref<EvaluationPeriod | null>();
 
 const processing = ref(true);
 const sending = ref(false);
@@ -266,7 +261,7 @@ const sectionsWithLowScore = computed<number>(() => {
     if (
       section.with_score &&
       (evaluation.value?.data.sections[section.code].score == lowestScore.value?.value ||
-      evaluation.value?.data.sections[section.code].score === undefined)
+        evaluation.value?.data.sections[section.code].score === undefined)
     ) {
       count++;
     }
@@ -287,7 +282,18 @@ ${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value
   }"** heeft behaald voor de **${currentPeriod.value?.name}**.
 `;
 
-  return text;
+  let textEn = `The undersigned,
+
+${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value.email}) employee at ${
+    props.internship.Place?.name
+  } confirms that student ${props.internship.Student?.User?.name} with student number ${
+    props.internship.Student?.number
+  } has achieved a score of **"${
+    scoreTexts.value[(evaluation.value?.data.global_score ?? -1) as number] || '-'
+  }"** for the **${currentPeriod.value?.name}**.
+`;
+
+  return l.value == 'en' ? textEn : text;
 });
 
 const updateEvaluationData = () => {
@@ -378,6 +384,17 @@ function approveEvaluation() {
 
 function loadEvaluations() {
   api.get(`${props.internship.self}evaluations/`).then((res) => {
+    evaluations.value = res.data as Evaluation[];
+
+    /* calculate current period: this is the period that matches dates, OR the first one that is not submitted */
+    currentPeriod.value = evaluationPeriods.value.find(
+      (period) =>
+        !evaluations.value.find(
+          (evaluation) => evaluation.intermediate === period.intermediate && evaluation.is_approved
+        ) || // not submitted and approved
+        (period.start_at <= new Date() && period.end_at >= new Date()) // current period
+    );
+
     evaluation.value = res.data.find((obj: Evaluation) => obj.intermediate === currentPeriod.value?.intermediate);
     updateEvaluationData();
   });
