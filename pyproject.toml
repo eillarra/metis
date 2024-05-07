@@ -9,7 +9,7 @@ license = "MIT"
 python = "~3.11.0"
 django = {extras = ["bcrypt"], version = "~4.2.0"}
 djangorestframework = "*"
-django-allauth = {extras = ["socialaccount"], version = "*"}
+django-allauth = "==0.61.1"
 django-compressor = "*"
 django-cors-headers = "*"
 django-countries = "*"
