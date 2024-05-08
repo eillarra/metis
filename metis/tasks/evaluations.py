@@ -13,9 +13,14 @@ from metis.utils.dates import remind_deadline
 def schedule_evaluation_emails() -> None:
     """Check which evaluations need to happen and schedule the emails to mentors."""
     now = timezone.now()
-    active_internships = Internship.objects.filter(status=Internship.DEFINITIVE, start_date__lte=now, end_date__gte=now)
+    active_internships = Internship.objects.filter(
+        status=Internship.DEFINITIVE, start_date__lte=now, end_date__gte=now
+    ).prefetch_related("project__education")
 
     for internship in active_internships:
+        education = internship.education
+        remind_before = education.configuration["email_remind_before"] if education.configuration else [0, 3, 7]
+
         for evaluation_period in internship.evaluation_periods:
             if not (evaluation_period.start_at <= now <= evaluation_period.end_at):
                 continue
@@ -23,7 +28,7 @@ def schedule_evaluation_emails() -> None:
             if not remind_deadline(
                 now,
                 datetime.fromisoformat(evaluation_period.official_deadline.isoformat()),
-                remind_before=[0, 1, 3, 5, 7],
+                remind_before=remind_before,
             ):
                 continue
 

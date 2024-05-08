@@ -42,6 +42,10 @@ class EducationConfig(BaseModel):
         default=True,
         description="Whether internships are automatically approved when they are created",
     )
+    email_remind_before: list[int] = Field(
+        default=[0, 3, 7],
+        description="The number of days before a deadline to send email reminders",
+    )
     project_text_types: list[ProjectTextEntryType]
     place_text_types: list[PlaceTextEntryType] = []
     place_set_disciplines_per_block: bool = Field(
