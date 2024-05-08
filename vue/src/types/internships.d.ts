@@ -45,6 +45,7 @@ interface Evaluation extends ApiObject {
   form: number;
   data: EvaluationData;
   is_approved: boolean;
+  is_self_evaluation: boolean;
   // -----
   form_definition?: EvaluationFormDefinition;
   Form?: EvaluationForm;

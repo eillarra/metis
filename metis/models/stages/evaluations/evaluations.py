@@ -57,7 +57,11 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
             from metis.services.mailer.evaluations import schedule_evaluation_notification
 
             cls.objects.filter(id=evaluation.id).update(is_approved=True)  # type: ignore
-            schedule_evaluation_notification(evaluation)
+
+            if not evaluation.is_self_evaluation:
+                # TODO: prepare extra notifications for self-evaluations
+                schedule_evaluation_notification(evaluation)
+
             Internship.update_tags(evaluation.internship, type="evaluations")
 
     @property
@@ -68,12 +72,18 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
     @property
     def name(self) -> str:
         """Evaluation name or type."""
-        return (
-            pgettext_lazy("evaluations.Evaluation.name", "Final evaluation")
-            if self.is_final
-            else pgettext_lazy("evaluations.Evaluation.name", "Intermediate evaluation #%(num)d")
-            % {"num": self.intermediate}
+        final_name = (
+            pgettext_lazy("evaluations.Evaluation.name", "Final self-evaluation")
+            if self.is_self_evaluation
+            else pgettext_lazy("evaluations.Evaluation.name", "Final evaluation")
         )
+        intermediate_name = (
+            pgettext_lazy("evaluations.Evaluation.name", "Intermediate self-evaluation #%(num)d")
+            if self.is_self_evaluation
+            else pgettext_lazy("evaluations.Evaluation.name", "Intermediate evaluation #%(num)d")
+        )
+
+        return final_name if self.is_final else intermediate_name % {"num": self.intermediate}
 
     @property
     def evaluation_periods(self) -> list[tuple[int, date, date]]:

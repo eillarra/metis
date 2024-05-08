@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!currentPeriod">
+  <div v-if="!loading && !currentPeriod">
     <big-message :text="$t('form.evaluation.not_available')" icon="event_busy" />
     <div class="text-center">
       Evaluation periods:<br />
@@ -9,11 +9,12 @@
       </span>
     </div>
   </div>
-  <div v-else>
+  <div v-else-if="!loading">
     <div v-if="formDefinition && evaluation && !processing" class="q-pb-xl">
       <div v-if="currentPeriod">
         <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
-          {{ currentPeriod.name }} (rond {{ currentPeriod.deadline }})
+          {{ currentPeriod.name }} (<span v-if="l == 'nl'">rond</span><span v-else>around</span>
+          {{ currentPeriod.deadline }})
           <q-badge v-if="!evaluation.is_approved" color="orange" class="q-ml-sm" style="vertical-align: middle">{{
             $t('draft')
           }}</q-badge>
@@ -126,7 +127,18 @@
             </tr>
           </tbody>
         </q-markup-table>
-        <q-input v-model="evaluation.data.global_remarks" dense filled :label="currentPeriod?.name" type="textarea" />
+        <div v-if="asSelfEvaluation">
+          <h6 class="text-weight-bold">{{ $t('report') }}</h6>
+          <markdown-toast-editor v-model="evaluation.data.global_remarks" />
+        </div>
+        <q-input
+          v-else
+          v-model="evaluation.data.global_remarks"
+          dense
+          filled
+          :label="currentPeriod?.name"
+          type="textarea"
+        />
         <q-page-sticky expand position="bottom" class="bg-white z-top">
           <div class="full-width full-height text-right q-pr-lg q-pb-lg">
             <q-separator class="q-my-lg" />
@@ -178,11 +190,13 @@ import { formatDate } from '@/utils/dates';
 
 import BigMessage from '@/components/BigMessage.vue';
 import SignatureDialog from '@/components/SignatureDialog.vue';
+import MarkdownToastEditor from '@/components/forms/MarkdownToastEditor.vue';
 
 const { t, locale } = useI18n();
 
 const props = defineProps<{
   internship: Internship;
+  asSelfEvaluation?: boolean;
 }>();
 
 // --
@@ -191,13 +205,19 @@ const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_use
 // --
 
 const l = ref<'en' | 'nl'>(locale.value as 'en' | 'nl');
-const signatureVisible = ref(false);
+const loading = ref<boolean>(true);
+const asSelfEvaluation = props.internship.EvaluationForm?.has_self_evaluations && props.asSelfEvaluation;
+const signatureVisible = ref<boolean>(false);
+
 const evaluations = ref<Evaluation[]>([]);
 const evaluationPeriods = ref<EvaluationPeriod[]>(
   props.internship.evaluation_periods?.map((period) => {
+    const intermediateText = props.asSelfEvaluation ? t('self_evaluation_intermediate') : t('evaluation_intermediate');
+    const finalText = props.asSelfEvaluation ? t('self_evaluation_final') : t('evaluation_final');
+
     return {
       intermediate: period[0],
-      name: period[0] > 0 ? t('evaluation_intermediate') + ' #' + period[0] : t('evaluation_final'),
+      name: period[0] > 0 ? intermediateText + ' #' + period[0] : finalText,
       is_final: period[0] == 0,
       start_at: new Date(period[1]),
       end_at: new Date(period[2]),
@@ -293,6 +313,21 @@ ${djangoUser.value.first_name} ${djangoUser.value.last_name} (${djangoUser.value
   }"** for the **${currentPeriod.value?.name}**.
 `;
 
+  let textStudent = `Ondergetekende,
+
+${props.internship.Student?.User?.name} met studentennummer ${props.internship.Student?.number} bevestigt de ingediende evaluatie voor de **${currentPeriod.value?.name}**.
+`;
+
+  let textStudentEn = `The undersigned,
+
+${props.internship.Student?.User?.name} with student number ${props.internship.Student?.number} confirms the submitted evaluation for the **${currentPeriod.value?.name}**.
+`;
+
+  if (asSelfEvaluation) {
+    text = textStudent;
+    textEn = textStudentEn;
+  }
+
   return l.value == 'en' ? textEn : text;
 });
 
@@ -336,6 +371,7 @@ function saveEvaluation() {
     form: props.internship.EvaluationForm?.id,
     data: evaluation.value?.data,
     intermediate: currentPeriod.value?.intermediate || 0,
+    is_self_evaluation: props.asSelfEvaluation || false,
   };
 
   if (evaluation.value?.self) {
@@ -394,6 +430,8 @@ function loadEvaluations() {
         ) || // not submitted and approved
         (period.start_at <= new Date() && period.end_at >= new Date()) // current period
     );
+
+    loading.value = false;
 
     evaluation.value = res.data.find((obj: Evaluation) => obj.intermediate === currentPeriod.value?.intermediate);
     updateEvaluationData();

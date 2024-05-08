@@ -44,6 +44,7 @@ interface EvaluationFormDefinition {
 interface EvaluationForm extends ApiObjectUpdated {
   definition: EvaluationFormDefinition;
   period: number;
+  has_self_evaluations: boolean;
   // -----
   Period?: Period;
 }

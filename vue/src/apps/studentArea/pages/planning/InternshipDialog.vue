@@ -40,6 +40,18 @@
           <q-item-section v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</q-item-section>
           <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
+        <q-item
+          v-if="obj.EvaluationForm?.has_self_evaluations"
+          clickable
+          @click="tab = 'evaluationsForm'"
+          :active="tab == 'evaluationsForm'"
+          active-class="bg-ugent text-white"
+        >
+          <q-item-section avatar>
+            <q-icon name="playlist_add_check" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('self_evaluation') }}</q-item-section>
+        </q-item>
       </q-list>
     </template>
     <template #page>
@@ -114,6 +126,9 @@
         <q-tab-panel name="evaluations">
           <evaluations-view :internship="obj" show-periods />
         </q-tab-panel>
+        <q-tab-panel v-if="obj.EvaluationForm?.has_self_evaluations" name="evaluationsForm">
+          <evaluations-form :internship="obj" as-self-evaluation />
+        </q-tab-panel>
         <q-tab-panel name="timesheets">
           <timesheets-view
             :internship="obj"
@@ -147,6 +162,7 @@ import { useStore } from '../../store.js';
 import FullDialog from '@/components/FullDialog.vue';
 import DateSelect from '@/components/forms/DateSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
+import EvaluationsForm from '@/components/stages/EvaluationsForm.vue';
 import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';

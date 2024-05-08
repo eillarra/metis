@@ -20,36 +20,34 @@ class EvaluationPermissions(BasePermission):
             return False
 
         internship = view.get_internship()
+        user_is_student = internship.student.user == request.user
+        user_is_office = internship.education.can_be_managed_by(request.user)
+        user_is_contact = (
+            internship.place and internship.place.user_is_admin(request.user)
+        ) or internship.mentors.filter(user=request.user).exists()
 
         if request.method in SAFE_METHODS:
-            return (
-                (internship.place and internship.place.can_be_managed_by(request.user))
-                or internship.student.user == request.user
-                or internship.mentors.filter(user=request.user).exists()
-            )
+            return user_is_student or user_is_office or user_is_contact
 
-        if request.method == "POST" and request.data.get("is_self_evaluation"):
-            return internship.student.user == request.user
+        if request.method == "POST" and request.resolver_match.url_name == "project-internship-evaluation-approve":
+            return user_is_student or user_is_contact
 
-        return (internship.place and internship.place.user_is_admin(request.user)) or internship.mentors.filter(
-            user=request.user
-        ).exists()
+        if request.method in ["POST", "PUT"] and request.data.get("is_self_evaluation"):
+            return user_is_student
+
+        return user_is_contact
 
     def has_object_permission(self, request, view, obj):
         """Check if the user has permission to manipulate the Evaluation object."""
         if request.method in SAFE_METHODS:
             return True
 
-        """if request.method == "POST" and request.resolver_match.url_name == "project-internship-evaluation-approve":
-            return obj.internship.place.user_is_admin(request.user)"""
-
         if obj.is_self_evaluation:
             return obj.internship.student.user == request.user
 
         return (
-            obj.internship.place.user_is_admin(request.user)
-            or obj.internship.mentors.filter(user=request.user).exists()
-        )
+            obj.internship.place and obj.internship.place.user_is_admin(request.user)
+        ) or obj.internship.mentors.filter(user=request.user).exists()
 
 
 class EvaluationViewSet(InternshipNestedModelViewSet):

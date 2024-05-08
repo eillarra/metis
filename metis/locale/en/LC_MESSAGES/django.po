@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-24 11:44+0100\n"
+"POT-Creation-Date: 2024-05-08 17:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,12 +48,23 @@ msgctxt "cases.Review.status"
 msgid "Unfinished"
 msgstr ""
 
-#: metis/models/stages/evaluations/evaluations.py:50
+#: metis/models/stages/evaluations/evaluations.py:72
+msgctxt "evaluations.Evaluation.name"
+msgid "Final self-evaluation"
+msgstr ""
+
+#: metis/models/stages/evaluations/evaluations.py:74
 msgctxt "evaluations.Evaluation.name"
 msgid "Final evaluation"
 msgstr ""
 
-#: metis/models/stages/evaluations/evaluations.py:52
+#: metis/models/stages/evaluations/evaluations.py:77
+#, python-format
+msgctxt "evaluations.Evaluation.name"
+msgid "Intermediate self-evaluation #%(num)d"
+msgstr ""
+
+#: metis/models/stages/evaluations/evaluations.py:79
 #, python-format
 msgctxt "evaluations.Evaluation.name"
 msgid "Intermediate evaluation #%(num)d"

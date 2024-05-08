@@ -146,10 +146,10 @@ import { useStore } from '../../store.js';
 import FullDialog from '@/components/FullDialog.vue';
 import SignatureDialog from '@/components/SignatureDialog.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
+import EvaluationsForm from '@/components/stages/EvaluationsForm.vue';
 import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';
-import EvaluationsForm from './EvaluationsForm.vue';
 
 const { t } = useI18n();
 

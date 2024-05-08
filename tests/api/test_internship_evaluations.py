@@ -183,6 +183,24 @@ class TestForMentorOrStudent(TestForAuthenticated):
             "is_self_evaluation": is_self_evaluation,
         }
 
+    def _approve_evaluation(self, api_client, education, internship, is_self_evaluation=False):
+        """Test approving an evaluation for an internship."""
+        self.test_create_evaluation(api_client, education, internship, is_self_evaluation)
+        evaluation = internship.evaluations.first()
+        url = reverse(
+            "v1:project-internship-evaluation-approve", args=[education.id, internship.project_id, internship.id, 1]
+        )
+        response = api_client.post(url, {"signed_text": "signature"})
+
+        assert (
+            response.status_code == self.expected_status_codes["evaluation_approve_self"]
+            if is_self_evaluation
+            else self.expected_status_codes["evaluation_approve"]
+        )
+
+        if response.status_code == status.NO_CONTENT:
+            assert evaluation.signatures.first().signed_text == "signature"
+
 
 class TestForMentor(TestForMentorOrStudent):
     """Tests for internship mentors."""
@@ -205,17 +223,7 @@ class TestForMentor(TestForMentorOrStudent):
 
     def test_approve_evaluation(self, api_client, education, internship):
         """Test approving an evaluation for an internship."""
-        self.test_create_evaluation(api_client, education, internship)
-        evaluation = internship.evaluations.first()
-        url = reverse(
-            "v1:project-internship-evaluation-approve",
-            args=[education.id, internship.project_id, internship.id, 1],
-        )
-        response = api_client.post(url, {"signed_text": "signature"})
-        assert response.status_code == self.expected_status_codes["evaluation_approve"]
-
-        if response.status_code == status.NO_CONTENT:
-            assert evaluation.signatures.first().signed_text == "signature"
+        return super()._approve_evaluation(api_client, education, internship)
 
     def test_update_approved_evaluation(self, api_client, education, internship):
         """Test updating an approved evaluation for an internship."""
@@ -259,6 +267,10 @@ class TestForStudent(TestForMentorOrStudent):
     def setup(self, api_client, internship):
         """Log in as student."""
         api_client.force_authenticate(user=internship.student.user)
+
+    def test_approve_evaluation(self, api_client, education, internship):
+        """Test approving a self evaluation for an internship."""
+        self._approve_evaluation(api_client, education, internship, is_self_evaluation=True)
 
 
 class TestForOtherEducationOfficeMember(TestForAuthenticated):

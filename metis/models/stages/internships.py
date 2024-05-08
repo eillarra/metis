@@ -89,8 +89,7 @@ def get_evaluation_periods(start_date: date, end_date: date, intermediates: int 
     :returns: A list of tuples with the start and end date of the evaluation periods.
     """
     evaluation_periods = []
-    grace_period = 4
-    final_grace_period = 45
+    grace_period = 14
 
     # for each evaluation, get the start and end date
     if intermediates > 0:
@@ -125,7 +124,7 @@ def get_evaluation_periods(start_date: date, end_date: date, intermediates: int 
         if intermediates > 0
         else start_date + timedelta(days=grace_period)
     )
-    final_end = end_date + timedelta(days=final_grace_period)
+    final_end = end_date + timedelta(days=grace_period)
 
     final_at = timezone.make_aware(
         datetime.combine(final_start, time(6, 0)),
@@ -169,6 +168,14 @@ def get_internship_tags(obj: "Internship", *, type: str = "all") -> list[str]:
                 tags.append(f"intermediate.{i}:not_approved")
             else:
                 tags.append(f"intermediate.{i}:pending")
+
+            if obj.evaluation_form.has_self_evaluations:
+                if evaluations.filter(intermediate=i, is_self_evaluation=True, is_approved=True).exists():
+                    tags.append(f"intermediate.{i}.self:approved")
+                elif evaluations.filter(intermediate=i, is_self_evaluation=True, is_approved=False).exists():
+                    tags.append(f"intermediate.{i}.self:not_approved")
+                else:
+                    tags.append(f"intermediate.{i}.self:pending")
 
     # hours
     if type in {"all", "hours"}:

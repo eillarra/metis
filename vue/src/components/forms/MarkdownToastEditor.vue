@@ -67,7 +67,7 @@ import Editor from '@toast-ui/editor';
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps<{
-  modelValue: string;
+  modelValue: string | undefined;
 }>();
 
 const canvas = ref<HTMLElement | null>(null);
