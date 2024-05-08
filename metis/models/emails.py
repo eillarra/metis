@@ -30,7 +30,7 @@ class EmailTemplate(BaseModel):
     class Meta:  # noqa: D106
         db_table = "metis_email_template"
         ordering = ["education", "code"]
-        unique_together = ("education", "code")
+        unique_together = ("education", "code", "language")
 
     def __str__(self) -> str:
         return f"{self.education} - {self.code}"
