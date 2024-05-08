@@ -1,5 +1,6 @@
 from http import HTTPStatus as status
 
+from django.db.models import Q
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework.response import Response
@@ -27,6 +28,9 @@ class EvaluationPermissions(BasePermission):
                 or internship.mentors.filter(user=request.user).exists()
             )
 
+        if request.method == "POST" and request.data.get("is_self_evaluation"):
+            return internship.student.user == request.user
+
         return (internship.place and internship.place.user_is_admin(request.user)) or internship.mentors.filter(
             user=request.user
         ).exists()
@@ -38,6 +42,9 @@ class EvaluationPermissions(BasePermission):
 
         """if request.method == "POST" and request.resolver_match.url_name == "project-internship-evaluation-approve":
             return obj.internship.place.user_is_admin(request.user)"""
+
+        if obj.is_self_evaluation:
+            return obj.internship.student.user == request.user
 
         return (
             obj.internship.place.user_is_admin(request.user)
@@ -54,12 +61,12 @@ class EvaluationViewSet(InternshipNestedModelViewSet):
     serializer_class = EvaluationSerializer
 
     def get_queryset(self):
-        """Get queryset making sure that students can only see approved evaluations."""
+        """Get queryset making sure that students can only see approved evaluations or their own."""
         qs = super().get_queryset()
         internship = self.get_internship()
 
         if self.request.user == internship.student.user and not internship.can_be_managed_by(self.request.user):
-            return qs.filter(is_approved=True)
+            return qs.filter(Q(is_approved=True) | Q(is_self_evaluation=True, updated_by=self.request.user))
 
         return qs
 

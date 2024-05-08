@@ -2,13 +2,14 @@ import factory
 
 
 class EvaluationFormFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = "metis.EvaluationForm"
+    """Factory for EvaluationForm."""
 
-    email_subject = factory.Faker("sentence")
-    email_body = factory.Faker("text")
+    class Meta:  # noqa: D106
+        model = "metis.EvaluationForm"
 
 
 class EvaluationFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Evaluation."""
+
+    class Meta:  # noqa: D106
         model = "metis.Evaluation"

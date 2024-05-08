@@ -32,6 +32,7 @@ def education(db):  # noqa: D103
             PeriodFactory.create(project=project, program_internship=program_internship)
     EvaluationFormFactory.create(
         project=project,
+        has_self_evaluations=True,
         form_definition=get_audio_internship_evaluation_form_klinisch(),
     )
     return program.education
@@ -91,12 +92,15 @@ class TestForAnonymous:
     expected_status_codes: dict[str, status] = {
         "evaluation_list": status.FORBIDDEN,
         "evaluation_create": status.FORBIDDEN,
+        "evaluation_create_self": status.FORBIDDEN,
         "evaluation_update": status.FORBIDDEN,
+        "evaluation_update_self": status.FORBIDDEN,
         "evaluation_delete": status.FORBIDDEN,
         "evaluation_approve": status.FORBIDDEN,
+        "evaluation_approve_self": status.FORBIDDEN,
     }
 
-    def _get_evaluation_create_data(self, internship):
+    def _get_evaluation_create_data(self, internship, is_self_evaluation):
         return {}
 
     def test_list_evaluations(self, api_client, education, internship):
@@ -107,20 +111,29 @@ class TestForAnonymous:
         response = api_client.get(url)
         assert response.status_code == self.expected_status_codes["evaluation_list"]
 
-    def test_create_evaluation(self, api_client, education, internship):
+    def test_create_evaluation(self, api_client, education, internship, is_self_evaluation=False):
         """Test creating an evaluation for an internship."""
         url = reverse(
             "v1:project-internship-evaluation-list", args=[education.id, internship.project_id, internship.id]
         )
-        response = api_client.post(url, self._get_evaluation_create_data(internship))
+        response = api_client.post(url, self._get_evaluation_create_data(internship, is_self_evaluation))
 
         if response.status_code == status.BAD_REQUEST:
             assert response.data is True
 
-        assert response.status_code == self.expected_status_codes["evaluation_create"]
+        assert (
+            response.status_code == self.expected_status_codes["evaluation_create_self"]
+            if is_self_evaluation
+            else self.expected_status_codes["evaluation_create"]
+        )
 
         if response.status_code == status.CREATED:
-            assert response.data["internship"] == internship.id
+            data: dict = response.data
+            assert data["internship"] == internship.id
+
+    def test_create_self_evaluation(self, api_client, education, internship):
+        """Test creating a self evaluation for an internship."""
+        self.test_create_evaluation(api_client, education, internship, is_self_evaluation=True)
 
     def test_approve_evaluation(self, api_client, education, internship):
         """Test approving an evaluation for an internship."""
@@ -141,18 +154,10 @@ class TestForAuthenticated(TestForAnonymous):
         api_client.force_authenticate(user=user)
 
 
-class TestForMentor(TestForAuthenticated):
-    """Tests for internship mentors."""
+class TestForMentorOrStudent(TestForAuthenticated):
+    """Tests for internship mentors or students."""
 
-    expected_status_codes = {
-        "evaluation_list": status.OK,
-        "evaluation_create": status.CREATED,
-        "evaluation_update": status.OK,
-        "evaluation_delete": status.NO_CONTENT,
-        "evaluation_approve": status.NO_CONTENT,
-    }
-
-    def _get_evaluation_create_data(self, internship):
+    def _get_evaluation_create_data(self, internship, is_self_evaluation):
         form = get_audio_internship_evaluation_form_klinisch()
         data = {
             "global_score": "zg",
@@ -175,7 +180,23 @@ class TestForMentor(TestForAuthenticated):
             "form": 1,  # TODO: fix this using form_id?
             "data": data,
             "intermediate": 1,
+            "is_self_evaluation": is_self_evaluation,
         }
+
+
+class TestForMentor(TestForMentorOrStudent):
+    """Tests for internship mentors."""
+
+    expected_status_codes = {
+        "evaluation_list": status.OK,
+        "evaluation_create": status.CREATED,
+        "evaluation_create_self": status.FORBIDDEN,
+        "evaluation_update": status.OK,
+        "evaluation_update_self": status.FORBIDDEN,
+        "evaluation_delete": status.NO_CONTENT,
+        "evaluation_approve": status.NO_CONTENT,
+        "evaluation_approve_self": status.FORBIDDEN,
+    }
 
     @pytest.fixture(autouse=True)
     def setup(self, api_client, internship):
@@ -207,7 +228,7 @@ class TestForMentor(TestForAuthenticated):
             "v1:project-internship-evaluation-detail",
             args=[education.id, internship.project_id, internship.id, evaluation.id],
         )
-        response = api_client.put(url, self._get_evaluation_create_data(internship))
+        response = api_client.put(url, self._get_evaluation_create_data(internship, is_self_evaluation=False))
         assert response.status_code == status.BAD_REQUEST
 
 
@@ -220,15 +241,18 @@ class TestForPlaceAdmin(TestForMentor):
         api_client.force_authenticate(user=place_admin)
 
 
-class TestForStudent(TestForAuthenticated):
+class TestForStudent(TestForMentorOrStudent):
     """Tests for internship students."""
 
     expected_status_codes = {
         "evaluation_list": status.OK,
         "evaluation_create": status.FORBIDDEN,
+        "evaluation_create_self": status.CREATED,
         "evaluation_update": status.FORBIDDEN,
+        "evaluation_update_self": status.OK,
         "evaluation_delete": status.FORBIDDEN,
         "evaluation_approve": status.FORBIDDEN,
+        "evaluation_approve_self": status.NO_CONTENT,
     }
 
     @pytest.fixture(autouse=True)
@@ -252,9 +276,12 @@ class TestForOfficeMember(TestForAuthenticated):
     expected_status_codes = {
         "evaluation_list": status.OK,
         "evaluation_create": status.FORBIDDEN,
+        "evaluation_create_self": status.FORBIDDEN,
         "evaluation_update": status.FORBIDDEN,
+        "evaluation_update_self": status.FORBIDDEN,
         "evaluation_delete": status.FORBIDDEN,
         "evaluation_approve": status.FORBIDDEN,
+        "evaluation_approve_self": status.FORBIDDEN,
     }
 
     @pytest.fixture(autouse=True)

@@ -20,10 +20,8 @@ class EvaluationForm(BaseModel):
     )
 
     form_definition = models.JSONField(default=dict)
-    email_subject = models.CharField(max_length=255)
-    email_body = models.TextField()
-    email_add_office_in_bcc = models.BooleanField(default=False)
     version = models.PositiveSmallIntegerField(default=1)
+    has_self_evaluations = models.BooleanField(default=False)
 
     class Meta:  # noqa: D106
         db_table = "metis_project_evaluation_forms"

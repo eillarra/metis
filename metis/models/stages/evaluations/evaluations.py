@@ -26,18 +26,21 @@ class Evaluation(RemarksMixin, SignaturesMixin, BaseModel):
     form = models.ForeignKey("metis.EvaluationForm", on_delete=models.PROTECT, related_name="evaluations")
     data = models.JSONField(default=dict)
     intermediate = models.PositiveSmallIntegerField(default=0)
+    is_self_evaluation = models.BooleanField(default=False)
     is_approved = models.BooleanField(default=False)
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
 
     class Meta:  # noqa: D106
         db_table = "metis_internship_evaluation"
-        unique_together = ("internship", "intermediate")
+        unique_together = ("internship", "intermediate", "is_self_evaluation")
         ordering = ("created_at",)
 
     def clean(self) -> None:
         """Validate the evaluation data using the form definition."""
         if self.is_approved:
             raise ValidationError("Cannot modify an approved evaluation.")
+        if self.is_self_evaluation and not self.form.has_self_evaluations:
+            raise ValidationError("This form does not support self evaluations.")
         if self.intermediate > self.form.definition["intermediate_evaluations"]:
             raise ValidationError("Intermediate evaluation number is too high.")
         self.data = self.form.clean_response_data(self.data)
