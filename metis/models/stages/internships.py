@@ -88,8 +88,9 @@ def get_evaluation_periods(start_date: date, end_date: date, intermediates: int 
     :param intermediates: The number of intermediate evaluations.
     :returns: A list of tuples with the start and end date of the evaluation periods.
     """
+    full_duration = (end_date - start_date).days
     evaluation_periods = []
-    grace_period = 14
+    grace_period = 14 if full_duration > 60 and intermediates < 2 else 7
 
     # for each evaluation, get the start and end date
     if intermediates > 0:
@@ -101,7 +102,7 @@ def get_evaluation_periods(start_date: date, end_date: date, intermediates: int 
 
         for i in range(intermediates):
             start_at = timezone.make_aware(
-                datetime.combine(evaluation_dates[i], time(6, 0)),
+                datetime.combine(evaluation_deadlines[i], time(6, 0)),
                 timezone.get_current_timezone(),
             )
             end_at = timezone.make_aware(
