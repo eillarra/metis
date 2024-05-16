@@ -48,8 +48,7 @@ def get_period_sheet(period: "Period") -> list["ExcelSheet"]:
         "end_date",
         "place_name",
         "total_hours",
-        "evaluation",
-        "evaluation_points",
+        "final_score",
         "place_admin",
         "admin_email",
         "mentors",
@@ -70,7 +69,6 @@ def get_period_sheet(period: "Period") -> list["ExcelSheet"]:
         mentors = internship.mentors.all()
         total_hours = internship.total_hours
         formatted_hours = f"{total_hours[0]:02d}:{total_hours[1]:02d}"
-        global_score = internship.global_score
 
         internship_data = {
             "student_number": internship.student.number,
@@ -84,8 +82,7 @@ def get_period_sheet(period: "Period") -> list["ExcelSheet"]:
             "end_date": internship.end_date,
             "place_name": internship.place.name if internship.place else "-",
             "total_hours": formatted_hours,
-            "evaluation": global_score["label"]["nl"] if global_score else "-",
-            "evaluation_points": global_score["points"] if global_score else "-",
+            "final_score": internship.final_score or "-",
             "place_admin": admin.user.name if admin else "",
             "admin_email": admin.user.email if admin else "",
             "mentors": ", ".join([mentor.user.name for mentor in mentors]),

@@ -428,19 +428,11 @@ class Internship(RemarksMixin, BaseModel):
         return self.get_total_hours()
 
     @property
-    def global_score(self) -> dict | None:
-        """Global score as defined in the evaluation_form."""
-        try:
-            evaluation = self.evaluations.filter(intermediate=0).first()
-            evaluation_form = self.evaluation_form
+    def final_score(self) -> float | None:
+        """The final score for the internship."""
+        from metis.services.evaluator import get_evaluator
 
-            if not evaluation_form:
-                return None
-
-            scores = {score["value"]: score for score in evaluation_form.definition["scores"]}
-            return scores[evaluation.data["global_score"]]
-        except Exception:
-            return None
+        return get_evaluator(self).evaluate()
 
     @property
     def secret(self) -> str:
