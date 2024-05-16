@@ -201,6 +201,7 @@ export default {
       approved: 'Evaluatie doorgestuurd',
       not_found: 'Geen evaluatie gevonden',
       not_available: 'Geen evaluatie beschikbaar',
+      help_banner: 'Klik op het vraagteken icon voor meer informatie over de criteria.',
     },
     internship: {
       create: {

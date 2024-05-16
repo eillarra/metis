@@ -25,6 +25,9 @@
         <big-message :text="$t('form.evaluation.approved')" icon="done_outline" />
       </div>
       <div v-else>
+        <q-banner dense v-if="hasItemsWithHelpText" class="bg-yellow rounded-borders q-mt-md">{{
+          $t('form.evaluation.help_banner')
+        }}</q-banner>
         <div v-for="section in formDefinition.sections" :key="section.code">
           <h6 v-if="section.title" class="q-mb-none">{{ section.title[l] }}</h6>
           <q-markup-table flat dense class="full-width">
@@ -138,7 +141,7 @@
           filled
           :label="currentPeriod?.name"
           type="textarea"
-          style="margin-bottom: 100px;"
+          style="margin-bottom: 100px"
         />
         <q-page-sticky expand position="bottom" class="bg-white z-top">
           <div class="full-width full-height text-right q-pr-lg q-pb-lg">
@@ -239,6 +242,10 @@ const expandedItem = ref<string | null>(null);
 const formDefinition = computed<EvaluationFormDefinition | undefined>(
   () => props.internship.EvaluationForm?.definition
 );
+
+const hasItemsWithHelpText = computed<boolean>(() => {
+  return formDefinition.value?.sections.some((section) => section.items.some((item) => item.score_help_texts));
+});
 
 const sectionScores = computed<EvaluationScore[]>(() => {
   return formDefinition.value?.scores.filter((score) => !score.only_for_global_score) || [];

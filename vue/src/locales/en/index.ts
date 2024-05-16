@@ -202,6 +202,7 @@ export default {
       approved: 'Evaluation submitted',
       not_found: 'No evaluation found',
       not_available: 'No evaluation available',
+      help_banner: 'Click on question mark icon for more info about criterion.',
     },
     internship: {
       create: {
