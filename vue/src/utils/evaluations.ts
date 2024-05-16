@@ -1,9 +1,10 @@
-const getEvaluationSteps = (internship: Internship) => {
+const getEvaluationSteps = (internship: Internship, isSelf?: boolean) => {
   const evaluationSteps = [];
 
   for (const tag of internship.tags) {
-    if (tag.startsWith('intermediate.')) {
-      const [number, status] = tag.substring(13).split(':');
+    if (tag.startsWith('intermediate.') && tag.includes('.self:') === (isSelf || false)) {
+      const simpleTag = isSelf ? tag.replace('.self:', ':') : tag;
+      const [number, status] = simpleTag.substring(13).split(':');
       let color = '';
 
       if (status === 'approved') {

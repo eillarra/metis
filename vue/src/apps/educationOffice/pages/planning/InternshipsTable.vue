@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { getEvaluationSteps } from '@/utils/evaluations';
@@ -26,9 +26,10 @@ const props = defineProps<{
   internships: Internship[];
 }>();
 
-const queryColumns = ['student_name', 'student_number', 'place_name'];
+const internships = computed(() => props.internships);
 
-const columns = [
+const queryColumns = ['student_name', 'student_number', 'place_name'];
+const allColumns = [
   {
     name: 'remarks',
     field: 'remarks',
@@ -94,9 +95,16 @@ const columns = [
     sort: (a: [number, boolean], b: [number, boolean]) => a[0] - b[0],
   },
   {
-    name: 'steps',
+    name: 'steps_evaluation',
     field: 'evaluation_steps',
     label: t('evaluation', 9),
+    align: 'left',
+    autoWidth: true,
+  },
+  {
+    name: 'steps_self_evaluation',
+    field: 'self_evaluation_steps',
+    label: t('self_evaluation', 9),
     align: 'left',
     autoWidth: true,
   },
@@ -143,6 +151,7 @@ const columns = [
     align: 'center',
   },
 ];
+const columns = ref(allColumns);
 
 const statusLabels = {
   preplanning: t('internship_status.preplanning'),
@@ -175,6 +184,7 @@ const rows = computed(() => {
       (obj.tag_objects?.['hours.total'] || '-') == (obj.tag_objects?.['hours.approved'] || '-'),
     ],
     evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
+    self_evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj, true) : [],
     disciplines: obj.Discipline ? [obj.Discipline] : [],
     status: statusLabels[obj.status as keyof typeof statuses] || obj.status,
     start_date: obj.start_date,
@@ -182,5 +192,27 @@ const rows = computed(() => {
     has_mentors: obj.mentors.filter((mentor: Mentor) => mentor.user.last_login).length > 0,
     is_approved: obj.is_approved,
   }));
+});
+
+watch(internships, (val, oldVal) => {
+  if (val.length !== oldVal.length && val.length > 0) {
+    let finalColumns = [...allColumns];
+
+    if (!val[0].tags.join(',').includes('intermediate.0:')) {
+      finalColumns.splice(
+        finalColumns.findIndex((column) => column.name === 'steps_evaluation'),
+        1
+      );
+    }
+
+    if (!val[0].tags.join(',').includes('intermediate.0.self:')) {
+      finalColumns.splice(
+        finalColumns.findIndex((column) => column.name === 'steps_self_evaluation'),
+        1
+      );
+    }
+
+    columns.value = finalColumns;
+  }
 });
 </script>

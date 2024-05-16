@@ -161,7 +161,7 @@
               :size="iconSize"
             />
           </span>
-          <span v-else-if="props.col.name == 'steps'" class="q-gutter-x-xs">
+          <span v-else-if="props.col.name.startsWith('steps_')" class="q-gutter-x-xs">
             <q-icon v-for="(step, k) in props.value" :key="k" :name="step.icon" :color="step.color" :size="iconSize" />
           </span>
           <span v-else-if="props.col.name == 'disciplines'" class="q-gutter-x-xs">

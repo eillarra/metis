@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
@@ -27,8 +27,7 @@ const { t } = useI18n();
 const { internships } = storeToRefs(useStore());
 
 const queryColumns = ['student_name', 'place_name'];
-
-const columns = [
+const allColumns = [
   {
     name: 'start_date',
     field: 'start_date',
@@ -77,7 +76,7 @@ const columns = [
     sort: (a: [number, boolean], b: [number, boolean]) => a[0] - b[0],
   },
   {
-    name: 'steps',
+    name: 'steps_evaluation',
     field: 'evaluation_steps',
     label: t('evaluation', 9),
     align: 'left',
@@ -97,6 +96,7 @@ const columns = [
     align: 'center',
   },
 ];
+const columns = ref(allColumns);
 
 const rows = computed(() => {
   return internships.value.map((obj: Internship) => ({
@@ -121,5 +121,16 @@ const rows = computed(() => {
     disciplines: obj.Discipline ? [obj.Discipline] : [],
     has_mentors: obj.mentors.length > 0,
   }));
+});
+
+watch(internships, (val, oldVal) => {
+  if (val.length !== oldVal.length && val.length > 0) {
+    if (!val[0].tags.join(',').includes('intermediate.0:')) {
+      columns.value = allColumns.splice(
+        allColumns.findIndex((column) => column.name === 'steps_evaluation'),
+        1
+      );
+    }
+  }
 });
 </script>
