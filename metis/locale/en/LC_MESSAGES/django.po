@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-08 17:36+0200\n"
+"POT-Creation-Date: 2024-05-16 10:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,23 +47,23 @@ msgctxt "cases.Review.status"
 msgid "Unfinished"
 msgstr ""
 
-#: metis/models/stages/evaluations/evaluations.py:72
+#: metis/models/stages/evaluations/evaluations.py:76
 msgctxt "evaluations.Evaluation.name"
 msgid "Final self-evaluation"
 msgstr ""
 
-#: metis/models/stages/evaluations/evaluations.py:74
+#: metis/models/stages/evaluations/evaluations.py:78
 msgctxt "evaluations.Evaluation.name"
 msgid "Final evaluation"
 msgstr ""
 
-#: metis/models/stages/evaluations/evaluations.py:77
+#: metis/models/stages/evaluations/evaluations.py:81
 #, python-format
 msgctxt "evaluations.Evaluation.name"
 msgid "Intermediate self-evaluation #%(num)d"
 msgstr ""
 
-#: metis/models/stages/evaluations/evaluations.py:79
+#: metis/models/stages/evaluations/evaluations.py:83
 #, python-format
 msgctxt "evaluations.Evaluation.name"
 msgid "Intermediate evaluation #%(num)d"
