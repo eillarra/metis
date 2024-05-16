@@ -163,9 +163,9 @@ def get_internship_tags(obj: "Internship", *, type: str = "all") -> list[str]:
         evaluations = obj.evaluations.all()
 
         for i in range(0, obj.evaluation_form.definition["intermediate_evaluations"] + 1):
-            if evaluations.filter(intermediate=i, is_approved=True).exists():
+            if evaluations.filter(intermediate=i, is_self_evaluation=False, is_approved=True).exists():
                 tags.append(f"intermediate.{i}:approved")
-            elif evaluations.filter(intermediate=i, is_approved=False).exists():
+            elif evaluations.filter(intermediate=i, is_self_evaluation=False, is_approved=False).exists():
                 tags.append(f"intermediate.{i}:not_approved")
             else:
                 tags.append(f"intermediate.{i}:pending")
