@@ -433,7 +433,10 @@ function loadEvaluations() {
 
     loading.value = false;
 
-    evaluation.value = res.data.find((obj: Evaluation) => obj.intermediate === currentPeriod.value?.intermediate);
+    evaluation.value = res.data.find(
+      (obj: Evaluation) =>
+        obj.intermediate === currentPeriod.value?.intermediate && obj.is_self_evaluation == asSelfEvaluation
+    );
     updateEvaluationData();
   });
 }
