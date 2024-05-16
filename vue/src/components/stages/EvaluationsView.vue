@@ -187,8 +187,7 @@
                       $t('evaluation_final')
                     }}</q-badge>
                     <q-badge v-else outline color="dark">#{{ evaluation.intermediate }}</q-badge>
-                    <span class="q-ml-sm">{{ evaluation.data.global_remarks || '-' }}</span>
-                    <br />
+                    <marked-div :text="evaluation.data.global_remarks || ''" class="q-mb-md" />
                   </span>
                 </p>
               </td>
@@ -208,6 +207,7 @@ import { api } from '@/axios.ts';
 import { formatDate } from '@/utils/dates';
 
 import BigMessage from '@/components/BigMessage.vue';
+import MarkedDiv from '@/components/MarkedDiv.vue';
 
 const { t, locale } = useI18n();
 

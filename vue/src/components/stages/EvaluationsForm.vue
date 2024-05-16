@@ -138,6 +138,7 @@
           filled
           :label="currentPeriod?.name"
           type="textarea"
+          style="margin-bottom: 100px;"
         />
         <q-page-sticky expand position="bottom" class="bg-white z-top">
           <div class="full-width full-height text-right q-pr-lg q-pb-lg">
