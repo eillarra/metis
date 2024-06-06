@@ -125,6 +125,7 @@ export default {
   form: {
     add: 'Toevoegen',
     approve: 'Goedkeuren',
+    select_all_pending: 'Selecteer alle niet goedgekeurde',
     new: 'Nieuw',
     back: 'Terug',
     continue: 'Verdergaan',
@@ -281,7 +282,9 @@ export default {
     },
     timesheet: {
       title: 'Tijdenlijst bijwerken',
-      comments: 'Opmerkingen / Uitgevoerde taken',
+      comments: 'Opmerkingen',
+      weekly_reflection: 'Wat is goed verlopen deze week? Waar had je het moeilijk mee of wat zijn je groeipunten?',
+      weekly_action_points: 'Welke actiepunten stel je op? Verwijs hierbij eventueel naar je leerdoelen.',
       help: {
         time_total: 'Totaal aantal uren',
         time_pending: 'Aantal uren niet goedgekeurd',
@@ -294,6 +297,7 @@ export default {
         success: 'Stagetijd aangemaakt',
       },
       approve: 'Stagetijd(en) goedkeuren',
+      request_new_approval: 'Nieuwe goedkeuring aanvragen',
       approved: 'Stagetijd(en) goedgekeurd',
       edit: 'Stagetijd bijwerken',
       saved: 'Stagetijd informatie opgeslagen',

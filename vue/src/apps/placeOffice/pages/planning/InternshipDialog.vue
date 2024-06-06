@@ -127,6 +127,7 @@
             :internship="obj"
             :custom-title="education?.configuration?.timesheets_with_comments ? $t('logbook') : undefined"
             approvable
+            :with-comments="education?.configuration?.timesheets_with_comments"
           />
         </q-tab-panel>
       </q-tab-panels>

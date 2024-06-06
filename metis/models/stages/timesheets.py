@@ -24,7 +24,7 @@ class Absence(FilesMixin, RemarksMixin, BaseModel):
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
     is_approved = models.BooleanField(default=None, null=True, blank=True)
-    comments = models.TextField(blank=True, default="")
+    data = models.JSONField(default=dict)
 
     class Meta:  # noqa: D106
         db_table = "metis_internship_absence"
@@ -60,7 +60,7 @@ class Timesheet(SignaturesMixin, BaseModel):
     start_time_pm = models.TimeField(null=True, blank=True)
     end_time_pm = models.TimeField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)
-    comments = models.TextField(blank=True, default="")
+    data = models.JSONField(default=dict)
 
     class Meta:  # noqa: D106
         db_table = "metis_internship_timesheet"

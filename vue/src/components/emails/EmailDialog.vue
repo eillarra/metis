@@ -40,7 +40,6 @@
         <markdown-toast-viewer v-model="dummyBody" :source-text="email.body" class="q-px-md" />
       </div>
     </template>
-    <template #footer> </template>
   </full-dialog>
 </template>
 

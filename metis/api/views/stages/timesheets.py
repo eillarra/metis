@@ -28,10 +28,7 @@ class TimesheetPermissions(BasePermission):
             )
 
         if request.method == "POST" and request.resolver_match.url_name == "project-internship-timesheet-approve":
-            return (
-                internship.place.user_is_admin(request.user)
-                or internship.mentors.filter(user=request.user).exists()
-            )
+            return internship.place.user_is_admin(request.user) or internship.mentors.filter(user=request.user).exists()
 
         return internship.student.user == request.user
 
@@ -61,9 +58,9 @@ class TimesheetViewSet(InternshipNestedModelViewSet):
     serializer_class = TimesheetSerializer
 
     def perform_update(self, serializer) -> None:
-        """Update model instance, performing extra `is_approved` check."""
-        self.validate(serializer, check_is_approved=True)
-        serializer.save(internship=self.get_internship(), updated_by=self.request.user)
+        """Update model instance, reseting the approval status."""
+        self.validate(serializer)
+        serializer.save(internship=self.get_internship(), is_approved=False, updated_by=self.request.user)
 
     @action(detail=False, methods=["post"])
     def approve(self, request, *args, **kwargs):

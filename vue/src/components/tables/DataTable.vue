@@ -19,6 +19,13 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      &.expandable {
+        max-width: none;
+        overflow: visible;
+        white-space: normal;
+        text-overflow: clip;
+      }
     }
 
     th.sticky-left,
@@ -267,8 +274,8 @@ const props = defineProps<{
   rowsPerPage?: number;
   queryColumns?: string[];
   hiddenColumns?: string[];
-  formComponent?: ComponentOptions;
-  createFormComponent?: ComponentOptions;
+  formComponent?: ComponentOptions | undefined;
+  createFormComponent?: ComponentOptions | undefined;
   sortBy?: string;
   loading?: boolean;
   hideToolbar?: boolean;
@@ -404,21 +411,34 @@ if (!props.hideToolbar && storage.get(queryStorageKey)) {
   router.push({ query: { q: storage.get(queryStorageKey) } });
 }
 
-watch(selected, (val) => {
-  if (!val) return;
-  if (val.filter((obj) => obj._hide_selection).length > 0) {
-    selected.value = val.filter((obj) => !obj._hide_selection);
-    return;
-  }
-  emit('update:selected', val);
-});
-
-/// watch if props.selected is emptied
 watch(
   () => props.selected,
   (val) => {
     if (val?.length === 0 && selected.value.length > 0) {
       selected.value = [];
+    } else {
+      selected.value = val.filter((obj) => !obj._hide_selection);
+    }
+  }
+);
+
+watch(selected, (val) => {
+  if (!val) return;
+  if (val.filter((obj) => obj._hide_selection).length > 0) {
+    selected.value = val.filter((obj) => !obj._hide_selection);
+    emit('update:selected', val);
+  }
+});
+
+// watch if props.selected is emptied or filled
+
+watch(
+  () => props.selected,
+  (val) => {
+    if (val?.length === 0 && selected.value.length > 0) {
+      selected.value = [];
+    } else if (selected.value.length == 0) {
+      selected.value = val.filter((obj) => !obj._hide_selection);
     }
   }
 );

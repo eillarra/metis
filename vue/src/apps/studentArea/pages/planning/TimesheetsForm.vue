@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-col-gutter-xl">
+  <div class="row q-col-gutter-lg">
     <div class="col-12 col-md-4">
       <q-date
         v-model="date"
@@ -15,7 +15,7 @@
         bordered
       />
     </div>
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-7">
       <div v-if="!date">
         <h5 class="text-body1 text-strong q-mt-none">{{ $t('form.timesheet.help.choose_date') }}</h5>
         <p>{{ $t('form.timesheet.help.calendar_colors') }}</p>
@@ -32,7 +32,6 @@
           <date-select
             type="time"
             v-model="obj.start_time_am"
-            :readonly="obj.is_approved"
             :label="`${$t('field.start_time')} (am)`"
             clearable
             class="col-12 col-md"
@@ -41,7 +40,6 @@
           <date-select
             type="time"
             v-model="obj.end_time_am"
-            :readonly="obj.is_approved"
             :disable="!obj.is_approved && !obj.start_time_am"
             :label="`${$t('field.end_time')} (am)`"
             clearable
@@ -53,7 +51,6 @@
           <date-select
             type="time"
             v-model="obj.start_time_pm"
-            :readonly="obj.is_approved"
             :label="`${$t('field.start_time')} (pm)`"
             clearable
             class="col-12 col-md"
@@ -62,7 +59,6 @@
           <date-select
             type="time"
             v-model="obj.end_time_pm"
-            :readonly="obj.is_approved"
             :disable="!obj.is_approved && !obj.start_time_pm"
             :label="`${$t('field.end_time')} (pm)`"
             clearable
@@ -70,15 +66,34 @@
             :options="(hr, min) => limitTimeOptions(hr, min, obj.start_time_pm)"
           />
         </div>
-        <q-input
-          v-show="education?.configuration?.timesheets_with_comments"
-          v-model="obj.comments"
-          :label="$t('form.timesheet.comments')"
-          :readonly="obj.is_approved"
-          :disable="obj.is_approved"
-          type="textarea"
-          class="q-mt-md"
-        />
+        <div v-show="education?.configuration?.timesheets_with_comments">
+          <q-input
+            v-model="obj.data.comments"
+            :label="$t('form.timesheet.comments')"
+            :disable="obj.is_approved"
+            type="textarea"
+            class="q-mt-md"
+          />
+          <p class="text-body2 text-weight-bold q-mt-xl">
+            <span>Reflectie over deze week (1 keer in te vullen op einde van de week):</span>
+          </p>
+          <q-input
+            v-model="obj.data.weekly_reflection"
+            :label="$t('form.timesheet.weekly_reflection')"
+            type="textarea"
+            autogrow
+            dense
+            class="q-mt-md"
+          />
+          <q-input
+            v-model="obj.data.weekly_action_points"
+            :label="$t('form.timesheet.weekly_action_points')"
+            type="textarea"
+            autogrow
+            dense
+            class="q-mt-md"
+          />
+        </div>
         <q-btn
           unelevated
           @click="createOrUpdateTimesheet"
@@ -86,7 +101,7 @@
           :label="obj.self ? $t('form.update') : $t('form.create')"
           :disable="
             Boolean(
-              obj.is_approved ||
+              (obj.is_approved && !requestNewApproval) ||
                 !date ||
                 (!obj.start_time_am && !obj.start_time_pm) ||
                 (obj.start_time_am && !obj.end_time_am) ||
@@ -94,6 +109,13 @@
             )
           "
           class="q-mt-lg"
+        />
+        <q-checkbox
+          v-if="obj.is_approved"
+          v-model="requestNewApproval"
+          :label="$t('form.timesheet.request_new_approval')"
+          class="q-mt-md"
+          color="ugent"
         />
       </div>
     </div>
@@ -113,6 +135,7 @@ import { formatDate } from '@/utils/dates';
 
 import DateSelect from '@/components/forms/DateSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
+import { RefSymbol } from '@vue/reactivity';
 
 const props = defineProps<{
   internship: Internship;
@@ -130,8 +153,15 @@ const obj = ref({
   start_time_pm: null as string | null,
   end_time_pm: null as string | null,
   is_approved: false,
-  comments: '',
+  data: (education.value?.configuration?.timesheets_with_comments
+    ? {
+        comments: '',
+        weekly_reflection: '',
+        weekly_action_points: '',
+      }
+    : {}) as TimesheetData,
 });
+const requestNewApproval = ref(false);
 
 const timesheetsByDate = computed<Record<string, Timesheet>>(() => {
   return timesheets.value.reduce((acc, timesheet) => {
@@ -184,7 +214,7 @@ function createTimesheet() {
       end_time_am: obj.value.end_time_am,
       start_time_pm: obj.value.start_time_pm,
       end_time_pm: obj.value.end_time_pm,
-      comments: obj.value.comments,
+      data: obj.value.data,
     })
     .then((response) => {
       timesheets.value.push(response.data);
@@ -201,11 +231,13 @@ function updateTimesheet() {
       end_time_am: obj.value.end_time_am,
       start_time_pm: obj.value.start_time_pm,
       end_time_pm: obj.value.end_time_pm,
-      comments: obj.value.comments,
+      data: obj.value.data,
     })
     .then((response) => {
       const index = timesheets.value.findIndex((timesheet) => timesheet.id == obj.value.id);
       timesheets.value[index] = response.data;
+      obj.value = response.data;
+      requestNewApproval.value = false;
       notify.success(t('form.timesheet.saved'));
     });
 }
@@ -231,6 +263,13 @@ watch(date, () => {
       end_time_am: null,
       start_time_pm: null,
       end_time_pm: null,
+      data: (education.value?.configuration?.timesheets_with_comments
+        ? {
+            comments: '',
+            weekly_reflection: '',
+            weekly_action_points: '',
+          }
+        : {}) as TimesheetData,
     };
   }
 });

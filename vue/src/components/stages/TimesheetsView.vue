@@ -9,7 +9,16 @@
         </q-btn>
       </a>-->
     </h4>
-    <div v-if="approvable" class="col-12 col-md text-right">
+    <div v-if="approvable" class="col-12 col-md text-right q-gutter-sm">
+      <q-btn
+        unelevated
+        color="blue-1"
+        :label="`&nbsp;${$t('form.select_all_pending')}`"
+        icon="check_box"
+        class="text-ugent"
+        :disable="totalPendingApproval == '-'"
+        @click="selectPending"
+      />
       <q-btn
         unelevated
         color="blue-1"
@@ -43,6 +52,8 @@
     hide-toolbar
     in-dialog
     :selection="approvable ? 'multiple' : 'none'"
+    :form-component="withComments ? TimesheetDialog : undefined"
+    open-dialog
     v-model:selected="selected"
   >
   </data-table>
@@ -63,15 +74,15 @@ import { api } from '@/axios.ts';
 import { notify } from '@/notify';
 import { sumHours } from '@/utils/dates';
 
+import TimesheetDialog from './TimesheetDialog.vue';
 import SignatureDialog from '@/components/SignatureDialog.vue';
 import DataTable from '@/components/tables/DataTable.vue';
-
-import { iconDownload } from '@/icons';
 
 const props = defineProps<{
   internship: Internship;
   approvable?: boolean;
   customTitle?: string | undefined;
+  withComments?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -82,7 +93,7 @@ const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_use
 // --
 
 const timesheets = ref<Timesheet[]>([]);
-const selected = ref<Timesheet[]>([]);
+const selected = ref<QuasarTableRow[]>([]);
 const dialogVisible = ref(false);
 const acceptanceChecked = ref(false);
 
@@ -166,9 +177,17 @@ const columns = [
     field: 'is_approved',
     label: t('field.approved'),
     align: 'center',
-    sortable: true,
   },
 ];
+
+if (props.withComments) {
+  columns.push({
+    name: 'has_comments',
+    field: 'has_comments',
+    label: t('form.timesheet.comments'),
+    align: 'center',
+  });
+}
 
 const rows = computed(() => {
   return timesheets.value.map((obj: Timesheet) => ({
@@ -181,8 +200,16 @@ const rows = computed(() => {
     end_time_pm: obj.end_time_pm ? obj.end_time_pm.substring(0, 5) : '-',
     duration: obj.duration.substring(0, 5),
     is_approved: obj.is_approved,
+    has_comments:
+      (obj.data.comments && obj.data.comments !== '') ||
+      (obj.data.weekly_reflection && obj.data.weekly_reflection !== '') ||
+      (obj.data.weekly_action_points && obj.data.weekly_action_points !== ''),
   }));
 });
+
+function selectPending() {
+  selected.value = [...rows.value.filter((obj) => !(obj._self as Timesheet).is_approved)];
+}
 
 function approveTimesheets() {
   if (!selected.value.length) return;

@@ -126,6 +126,7 @@ export default {
   form: {
     add: 'Add',
     approve: 'Approve',
+    select_all_pending: 'Select all pending',
     new: 'New',
     back: 'Back',
     continue: 'Continue',
@@ -282,7 +283,9 @@ export default {
     },
     timesheet: {
       title: 'Update timesheets',
-      comments: 'Comments / Performed tasks',
+      comments: 'Comments',
+      weekly_reflection: 'What went well this week? What did you find difficult or what are your growth points?',
+      weekly_action_points: 'What action points do you set? Refer to your learning objectives if necessary.',
       help: {
         time_total: 'Total time',
         time_pending: 'Time pending approval',
@@ -295,6 +298,7 @@ export default {
         success: 'Timesheet created',
       },
       approve: 'Approve timesheet',
+      request_new_approval: 'Request new approval',
       approved: 'Timesheet approved',
       edit: 'Edit timesheet',
       saved: 'Timesheet information saved',
