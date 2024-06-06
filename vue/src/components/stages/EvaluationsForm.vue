@@ -1,6 +1,20 @@
 <template>
+  <div class="q-gutter-x-md q-mb-lg">
+    <h4 class="col-12 col-md-6 q-mt-none q-mb-md">
+      {{ $t('evaluation', 9) }}
+    </h4>
+    <q-btn
+      v-for="(period, idx) in evaluationPeriods"
+      :key="idx"
+      @click="selectPeriod(period)"
+      :label="period.name"
+      no-caps
+      outline
+      :color="selectedPeriod == period ? 'primary' : 'grey'"
+    />
+  </div>
   <div v-if="!loading && !currentPeriod">
-    <big-message :text="$t('form.evaluation.not_available')" icon="event_busy" />
+    <big-message icon="event" />
     <div class="text-center">
       Evaluation periods:<br />
       <span v-for="period in evaluationPeriods" :key="period.intermediate">
@@ -12,13 +26,13 @@
   <div v-else-if="!loading">
     <div v-if="formDefinition && evaluation && !processing" class="q-pb-xl">
       <div v-if="currentPeriod">
-        <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
+        <h6 class="col-12 col-md-3 q-mt-none q-mb-none">
           {{ currentPeriod.name }} (<span v-if="l == 'nl'">rond</span><span v-else>around</span>
           {{ currentPeriod.deadline }})
           <q-badge v-if="!evaluation.is_approved" color="orange" class="q-ml-sm" style="vertical-align: middle">{{
             $t('draft')
           }}</q-badge>
-        </h4>
+        </h6>
         <!--<small>Evaluatieperiode: {{ currentPeriod.start }} - {{ currentPeriod.end }}</small>-->
       </div>
       <div v-if="evaluation.is_approved">
@@ -225,6 +239,7 @@ const evaluationPeriods = ref<EvaluationPeriod[]>(
       is_final: period[0] == 0,
       start_at: new Date(period[1]),
       end_at: new Date(period[2]),
+      deadline_at: new Date(period[3]),
       start: formatDate(period[1]),
       end: formatDate(period[2]),
       deadline: formatDate(period[3], 'YYYY-MM-DD'),
@@ -238,6 +253,7 @@ const processing = ref(true);
 const sending = ref(false);
 const evaluation = ref<Evaluation>();
 const expandedItem = ref<string | null>(null);
+const selectedPeriod = ref<EvaluationPeriod | null>(null);
 
 const formDefinition = computed<EvaluationFormDefinition | undefined>(
   () => props.internship.EvaluationForm?.definition
@@ -385,8 +401,9 @@ function saveEvaluation() {
   if (evaluation.value?.self) {
     api
       .put(evaluation.value.self, completeData)
-      .then(() => {
+      .then((res) => {
         notify.success(t('form.evaluation.saved'));
+        syncEvaluations(res.data);
       })
       .finally(() => {
         sending.value = false;
@@ -397,6 +414,7 @@ function saveEvaluation() {
       .then((res) => {
         notify.success(t('form.evaluation.create.success'));
         evaluation.value = res.data;
+        syncEvaluations(res.data);
       })
       .finally(() => {
         sending.value = false;
@@ -429,24 +447,22 @@ function approveEvaluation() {
 function loadEvaluations() {
   api.get(`${props.internship.self}evaluations/`).then((res) => {
     evaluations.value = res.data as Evaluation[];
-
-    /* calculate current period: this is the period that matches dates, OR the first one that is not submitted */
-    currentPeriod.value = evaluationPeriods.value.find(
-      (period) =>
-        !evaluations.value.find(
-          (evaluation) => evaluation.intermediate === period.intermediate && evaluation.is_approved
-        ) || // not submitted and approved
-        (period.start_at <= new Date() && period.end_at >= new Date()) // current period
-    );
-
     loading.value = false;
-
-    evaluation.value = res.data.find(
-      (obj: Evaluation) =>
-        obj.intermediate === currentPeriod.value?.intermediate && obj.is_self_evaluation == asSelfEvaluation
-    );
-    updateEvaluationData();
   });
+}
+
+function syncEvaluations(evaluation: Evaluation) {
+  const idx = evaluations.value.findIndex((obj) => obj.intermediate === evaluation.intermediate);
+  evaluations.value[idx] = evaluation;
+}
+
+function selectPeriod(period: EvaluationPeriod) {
+  selectedPeriod.value = period;
+  currentPeriod.value = period;
+  evaluation.value = evaluations.value.find(
+    (obj: Evaluation) => obj.intermediate === period.intermediate && obj.is_self_evaluation == asSelfEvaluation
+  );
+  updateEvaluationData();
 }
 
 loadEvaluations();

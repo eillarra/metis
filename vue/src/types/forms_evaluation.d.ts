@@ -4,6 +4,7 @@ interface EvaluationPeriod {
   is_final: boolean;
   start_at: Date;
   end_at: Date;
+  deadline_at: Date;
   start: string;
   end: string;
   deadline: string;
