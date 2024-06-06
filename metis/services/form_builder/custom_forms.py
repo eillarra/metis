@@ -78,7 +78,13 @@ class GridField(FormField):
 
     type: Literal["option_grid"]
     options: list[FieldOption]
-    columns: list[FieldOption]
+    rows: list[FieldOption]
+    multiple: bool = True
+
+    @property
+    def all_options(self) -> list[str]:
+        """Get all possible options for this grid field for multiple choices."""
+        return [f"{row.value}_{option.value}" for row in self.rows for option in self.options]
 
 
 class Fieldset(BaseModel):
@@ -172,12 +178,25 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
                 if other_code not in data or not isinstance(data[other_code], str):
                     raise ValueError(f"Field `{field.code}__{field.other_option}` should be defined, as a string")
 
-        elif field.type in {"option_grid"} and field.code in data:
-            all_options = set()
-            for option in field.options:
-                for column in field.columns:
-                    all_options.add(f"{option.value}_{column.value}")
-            _validate_options(all_options, data, field.code)
+        elif field.type in {"option_grid"} and field.multiple and field.code in data:
+            _validate_options(set(field.all_options), data, field.code)
+
+        elif field.type in {"option_grid"} and not field.multiple and field.code in data:
+            if field.required and not data[field.code]:
+                raise ValueError(f"Missing value for field `{field.code}`")
+
+            if field.required and data[field.code] and not isinstance(data[field.code], dict):
+                raise ValueError(f"Field `{field.code}` should be a dict")
+
+            if field.required:
+                options = {option.value for option in field.options}
+
+                for row in field.rows:
+                    if not data[field.code][row.value] or data[field.code][row.value] not in options:
+                        raise ValueError(
+                            f"Invalid value `{data[field.code][row.value]}` for field "
+                            f"`{field.code}` > `{row.value}`"
+                        )
 
         elif field.code in data:
             if not isinstance(data[field.code], str):

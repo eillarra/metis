@@ -9,7 +9,7 @@ interface TranslatedFieldOption {
 }
 
 interface FieldOption {
-  value: string | number;
+  value: string | number | null;
   label: Translation;
 }
 
@@ -37,7 +37,7 @@ interface ChoiceField extends FormField {
 interface GridField extends FormField {
   type: 'option_grid';
   options: (FieldOption | TranslatedFieldOption)[];
-  columns: (FieldOption | TranslatedFieldOption)[];
+  rows: (FieldOption | TranslatedFieldOption)[];
 }
 
 interface Fieldset {
@@ -53,7 +53,8 @@ interface CustomFormDefinition {
   fieldsets: Fieldset[];
 }
 
-type CustomFormData = Record<string, string | number | string[] | number[]>;
+type BaseCustomFormData = Record<string, string | number | string[] | number[] | null>;
+type CustomFormData = Record<string, string | number | string[] | number[] | null | BaseCustomFormData>;
 
 interface CustomFormResponse extends ApiObjectUpdated {
   self: ApiEndpoint;

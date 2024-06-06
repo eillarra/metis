@@ -98,17 +98,17 @@ def get_audiology_place_form() -> dict:
                         "code": "uurroster",
                         "label": {"nl": "Uurrooster", "en": "Timetable"},
                         "options": [
+                            {"value": "VM", "label": {"nl": "VM", "en": "AM"}},
+                            {"value": "NM", "label": {"nl": "NM", "en": "PM"}},
+                            {"value": "N8", "label": {"nl": "N8", "en": "N8"}},
+                        ],
+                        "rows": [
                             {"value": "maandag", "label": {"nl": "Maandag", "en": "Monday"}},
                             {"value": "dinsdag", "label": {"nl": "Dinsdag", "en": "Tuesday"}},
                             {"value": "woensdag", "label": {"nl": "Woensdag", "en": "Wednesday"}},
                             {"value": "donderdag", "label": {"nl": "Donderdag", "en": "Thursday"}},
                             {"value": "vrijdag", "label": {"nl": "Vrijdag", "en": "Friday"}},
                             {"value": "zaterdag", "label": {"nl": "Zaterdag", "en": "Saturday"}},
-                        ],
-                        "columns": [
-                            {"value": "VM", "label": {"nl": "VM", "en": "AM"}},
-                            {"value": "NM", "label": {"nl": "NM", "en": "PM"}},
-                            {"value": "N8", "label": {"nl": "N8", "en": "N8"}},
                         ],
                         "required": True,
                     },
@@ -228,17 +228,17 @@ def get_logopedics_place_form() -> dict:
                         "code": "uurroster",
                         "label": {"nl": "Uurrooster", "en": "Timetable"},
                         "options": [
+                            {"value": "VM", "label": {"nl": "VM", "en": "AM"}},
+                            {"value": "NM", "label": {"nl": "NM", "en": "PM"}},
+                            {"value": "N8", "label": {"nl": "N8", "en": "N8"}},
+                        ],
+                        "rows": [
                             {"value": "maandag", "label": {"nl": "Maandag", "en": "Monday"}},
                             {"value": "dinsdag", "label": {"nl": "Dinsdag", "en": "Tuesday"}},
                             {"value": "woensdag", "label": {"nl": "Woensdag", "en": "Wednesday"}},
                             {"value": "donderdag", "label": {"nl": "Donderdag", "en": "Thursday"}},
                             {"value": "vrijdag", "label": {"nl": "Vrijdag", "en": "Friday"}},
                             {"value": "zaterdag", "label": {"nl": "Zaterdag", "en": "Saturday"}},
-                        ],
-                        "columns": [
-                            {"value": "VM", "label": {"nl": "VM", "en": "AM"}},
-                            {"value": "NM", "label": {"nl": "NM", "en": "PM"}},
-                            {"value": "N8", "label": {"nl": "N8", "en": "N8"}},
                         ],
                         "required": True
                     },

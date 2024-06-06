@@ -9,10 +9,7 @@ if TYPE_CHECKING:
 
 
 def custom_form_to_markdown(form_definition: dict, response: dict) -> str:
-    """
-    Given a form definition and some data, create a markdown representation of the data.
-    """
-
+    """Given a form definition and some data, create a markdown representation of the data."""
     form = CustomForm(**form_definition)
     question_n = 0
 
@@ -24,8 +21,10 @@ def custom_form_to_markdown(form_definition: dict, response: dict) -> str:
 
             if field.code in response and response[field.code]:
                 md += f"#### {question_n}. {field.label.nl}\n\n"
+
                 if field.type in {"text", "textarea", "number", "date", "email", "tel", "url"}:
                     md += response[field.code] + "\n"
+
                 elif field.type in {"select", "option_group"}:
                     for option in field.options:
                         responses = response[field.code] if field.multiple else [response[field.code]]
@@ -34,14 +33,25 @@ def custom_form_to_markdown(form_definition: dict, response: dict) -> str:
                             if field.other_option and option.value == field.other_option:
                                 text += f': {response[f"{field.code}__{field.other_option}"]}'
                             md += f"  - {text}\n"
+
                 elif field.type == "option_grid":
-                    for option in field.options:
-                        cols = []
-                        for col in field.columns:
-                            if f"{option.value}_{col.value}" in response[field.code]:
-                                cols.append(col.label.nl)
-                        if cols:
-                            md += f"  - {option.label.nl}: {', '.join(cols)}\n"
+                    for row in field.rows:
+                        choices = []
+
+                        for option in field.options:
+                            if f"{row.value}_{option.value}" in response[field.code]:
+                                choices.append(option.label.nl)
+
+                        if row.value in response[field.code]:
+                            option = next(
+                                (o for o in field.options if o.value == response[field.code][row.value]), None
+                            )
+
+                            if option:
+                                choices.append(option.label.nl)
+
+                        if responses:
+                            md += f"  - {row.label.nl}: {', '.join(choices)}\n"
 
                 md += "\n"
 

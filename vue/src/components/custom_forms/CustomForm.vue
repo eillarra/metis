@@ -1,5 +1,5 @@
 <template>
-  <dialog-form icon="fact_check" :title="formTitle" :subtitle="subtitle">
+  <full-dialog icon="fact_check" :title="formTitle" :subtitle="subtitle" class="small" hide-drawer>
     <template #page>
       <!-- TODO: control this with a new configurable element at form level, we can use it for addresses, files, etc.-->
       <!--<div v-if="addressesApiEndpoint" class="q-px-lg q-mt-md q-mb-xl">
@@ -8,14 +8,14 @@
         </h5>
         <address-cards :api-endpoint="addressesApiEndpoint" />
       </div>-->
-      <div v-for="(fieldset, idx) in visibleFieldsets" :key="idx" class="q-px-lg q-mt-md q-mb-lg">
-        <h5 v-if="fieldset.legend" class="text-h6 text-grey-8 text-weight-regular q-mt-none q-mb-md">
+      <marked-div v-if="formDescription" :text="formDescription" class="q-mb-xl q-px-lg" />
+      <div v-for="(fieldset, idx) in visibleFieldsets" :key="idx" class="q-px-lg q-mb-lg">
+        <h5 v-if="fieldset.legend" class="text-grey-8 text-weight-regular q-mb-lg">
           {{ getTextValue(fieldset.legend) }}
         </h5>
-        <marked-div v-if="formDescription" :text="formDescription" class="q-mb-xl" />
         <div class="q-gutter-y-sm">
           <div v-for="field in fieldset.fields" :key="field.code || field.component" class="q-pb-md">
-            <p class="text-body2">
+            <p class="text-body1">
               <q-badge v-if="field.required" color="orange" class="q-mt-xs q-ml-sm float-right">{{
                 $t('form.required')
               }}</q-badge>
@@ -65,18 +65,27 @@
               />
             </div>
             <div v-else-if="field.type === 'option_grid'">
-              <div v-for="option in field.options" :key="option.value" class="row">
-                <div class="col-12 col-sm-6">{{ option.label }}<q-separator v-show="!$q.screen.lt.sm" /></div>
-                <div v-for="col in field.columns" :key="col.value" class="col-4 col-sm-2 text-right">
+              <div v-for="row in field.rows" :key="row.value" class="row text-body2 items-center">
+                <div class="col-12 col-sm-6">{{ row.label }}</div>
+                <div v-for="col in field.options" :key="col.value" class="col text-right">
                   <q-checkbox
+                    v-if="field.multiple"
                     v-model="mutable[field.code]"
                     :label="col.label"
-                    :val="`${option.value}_${col.value}`"
+                    :val="`${row.value}_${col.value}`"
                     dense
                     class="q-mr-sm"
                   />
-                  <q-separator />
+                  <q-radio
+                    v-else
+                    v-model="mutable[field.code][row.value]"
+                    :label="col.label"
+                    :val="col.value"
+                    dense
+                    class="q-mr-sm"
+                  />
                 </div>
+                <div class="col-12 q-py-xs"><q-separator v-show="!$q.screen.lt.sm" /></div>
               </div>
             </div>
           </div>
@@ -87,7 +96,7 @@
       <q-separator />
       <div class="row q-ma-lg">
         <div class="col-12 col-md text-grey-8 text-caption">
-          <div v-if="pendingFields.length">
+          <div v-if="pendingFields.length && pendingFields.length < 5">
             <span class="bg-yellow-2">{{ $t('form.pending_fields') }}:</span><br />
             <ul>
               <li v-for="field in pendingFields" :key="field" class="ellipsis">{{ field }}</li>
@@ -106,7 +115,7 @@
         </div>
       </div>
     </template>
-  </dialog-form>
+  </full-dialog>
 </template>
 
 <script setup lang="ts">
@@ -118,8 +127,7 @@ import { api } from '@/axios';
 import { notify } from '@/notify';
 
 import MarkedDiv from '../MarkedDiv.vue';
-import DialogForm from '../forms/DialogForm.vue';
-import AddressCards from '../rel/AddressCards.vue';
+import FullDialog from '../FullDialog.vue';
 
 const { t, locale } = useI18n();
 
@@ -137,7 +145,7 @@ const processing = ref(false);
 const responses = ref<CustomFormResponse[]>(props.modelValue);
 const definition = ref<CustomFormDefinition>(props.questioning.form_definition as CustomFormDefinition);
 const mutable = ref<CustomFormData>(
-  props.modelValue.find((response) => response.questioning === props.questioning.id)?.data || {}
+  props.modelValue.find((response) => response.questioning === props.questioning.id)?.data || ({} as CustomFormData)
 );
 
 const formTitle = computed<string>(() => {
@@ -159,7 +167,7 @@ const existingResponse = computed<CustomFormResponse | undefined>(() => {
 });
 
 const pendingFields = computed<string[]>(() => {
-  return props.questioning.form_definition.fieldsets.reduce((acc, fieldset) => {
+  return (props.questioning.form_definition as CustomFormDefinition).fieldsets.reduce((acc, fieldset) => {
     if (!fieldsetIsVisible(fieldset)) {
       return acc.concat([]);
     }
@@ -168,9 +176,14 @@ const pendingFields = computed<string[]>(() => {
       fieldset.fields.reduce((acc, field) => {
         if (field.required) {
           if (
-            (((field.type === 'select' || field.type === 'option_group') && field.multiple) ||
-              field.type === 'option_grid') &&
+            (field.type === 'select' || field.type === 'option_group' || field.type === 'option_grid') &&
+            field.multiple &&
             !(mutable.value[field.code] as []).length
+          ) {
+          } else if (
+            field.type === 'option_grid' &&
+            !field.multiple &&
+            Object.keys(mutable.value[field.code] as BaseCustomFormData).length < field.rows.length
           ) {
             acc.push(getTextValue(field.label));
           } else if (!mutable.value[field.code]) {
@@ -184,7 +197,7 @@ const pendingFields = computed<string[]>(() => {
 });
 
 const formIsValid = computed<boolean>(() => {
-  return props.questioning.form_definition.fieldsets.every((fieldset) => {
+  return (props.questioning.form_definition as CustomFormDefinition).fieldsets.every((fieldset) => {
     if (!fieldsetIsVisible(fieldset)) {
       return true;
     }
@@ -192,10 +205,12 @@ const formIsValid = computed<boolean>(() => {
     return fieldset.fields.every((field) => {
       if (field.required) {
         if (
-          ((field.type === 'select' || field.type === 'option_group') && field.multiple) ||
-          field.type === 'option_grid'
+          (field.type === 'select' || field.type === 'option_group' || field.type === 'option_grid') &&
+          field.multiple
         ) {
           return (mutable.value[field.code] as []).length > 0;
+        } else if (field.type === 'option_grid' && !field.multiple) {
+          return Object.keys(mutable.value[field.code] as BaseCustomFormData).length == field.rows.length;
         } else {
           return mutable.value[field.code] !== '';
         }
@@ -226,8 +241,8 @@ const translatedFormDefinition = computed<CustomFormDefinition>(() => {
           };
         }) as TranslatedFieldOption[];
       }
-      if (field.type === 'option_grid' && field.columns) {
-        field.columns = (field.columns as FieldOption[]).map((column) => {
+      if (field.type === 'option_grid' && field.rows) {
+        field.rows = (field.rows as FieldOption[]).map((column) => {
           return {
             ...column,
             label: locale.value === 'en' ? column.label.en : column.label.nl,
@@ -284,7 +299,7 @@ watch(
 
 const updateResponseObject = () => {
   processing.value = true;
-  props.questioning.form_definition.fieldsets.forEach((fieldset) => {
+  (props.questioning.form_definition as CustomFormDefinition).fieldsets.forEach((fieldset) => {
     if (!fieldsetIsVisible(fieldset)) {
       fieldset.fields.forEach((field) => {
         if (field.code in mutable.value) {
@@ -295,7 +310,11 @@ const updateResponseObject = () => {
       fieldset.fields.forEach((field) => {
         if (!(field.code in mutable.value)) {
           if (field.type === 'option_grid') {
-            mutable.value[field.code] = [];
+            if (field.multiple) {
+              mutable.value[field.code] = [];
+            } else {
+              mutable.value[field.code] = {};
+            }
           } else if ((field.type === 'select' || field.type === 'option_group') && field.multiple) {
             mutable.value[field.code] = [];
             if (field.other_option) {
