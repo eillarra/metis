@@ -25,7 +25,7 @@
         :label="`&nbsp;${$t('form.approve')}`"
         icon="done_outline"
         class="text-ugent"
-        :disable="selectedPendingApproval.length === 0"
+        :disable="selected.length === 0"
         @click="dialogVisible = true"
       />
     </div>

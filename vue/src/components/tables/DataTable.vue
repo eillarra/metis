@@ -19,13 +19,6 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
-      &.expandable {
-        max-width: none;
-        overflow: visible;
-        white-space: normal;
-        text-overflow: clip;
-      }
     }
 
     th.sticky-left,
@@ -270,7 +263,7 @@ const { t } = useI18n();
 
 const props = defineProps<{
   columns: object[];
-  rows: object[];
+  rows: QuasarTableRow[];
   rowsPerPage?: number;
   queryColumns?: string[];
   hiddenColumns?: string[];
@@ -283,13 +276,13 @@ const props = defineProps<{
   hidePagination?: boolean;
   inDialog?: boolean;
   selection?: 'multiple' | 'single' | 'none';
-  selected?: object[];
+  selected?: QuasarTableRow[];
   openDialog?: boolean /* TODO: this can be solved in another way, as it is only for custom open icon */;
   removable?: boolean;
 }>();
 
 const openDialog = ref<boolean>(props.openDialog || false);
-const selected = ref<object[]>(props.selected || []);
+const selected = ref<QuasarTableRow[]>(props.selected || []);
 const selectableAmount = computed<number>(() => props.rows.filter((r) => !r._hide_selection).length);
 
 const initialPagination = {
@@ -411,21 +404,9 @@ if (!props.hideToolbar && storage.get(queryStorageKey)) {
   router.push({ query: { q: storage.get(queryStorageKey) } });
 }
 
-watch(
-  () => props.selected,
-  (val) => {
-    if (val?.length === 0 && selected.value.length > 0) {
-      selected.value = [];
-    } else {
-      selected.value = val.filter((obj) => !obj._hide_selection);
-    }
-  }
-);
-
 watch(selected, (val) => {
   if (!val) return;
-  if (val.filter((obj) => obj._hide_selection).length > 0) {
-    selected.value = val.filter((obj) => !obj._hide_selection);
+  if (val.length !== props.selected?.length) {
     emit('update:selected', val);
   }
 });
@@ -435,9 +416,9 @@ watch(selected, (val) => {
 watch(
   () => props.selected,
   (val) => {
-    if (val?.length === 0 && selected.value.length > 0) {
+    if (!val || (val.length === 0 && selected.value.length > 0)) {
       selected.value = [];
-    } else if (selected.value.length == 0) {
+    } else {
       selected.value = val.filter((obj) => !obj._hide_selection);
     }
   }
