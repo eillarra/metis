@@ -148,12 +148,18 @@ def schedule_student_questioning_email(questioning: Questioning, filtered_ids: l
         if student.form_responses.filter(questioning=questioning).exists():
             continue
 
+        context = {
+            "project": questioning.project,
+            "questioning": questioning,
+            "student": student,
+        }
+
         schedule_email(
             from_email=f"{questioning.project.education.short_name} UGent <metis@ugent.be>",
             to=[student.user.email],
             reply_to=[questioning.project.education.office_email],
-            subject=render_context(questioning.email_subject, {}),
-            text_content=render_context(questioning.email_body, {}),
+            subject=render_context(questioning.email_subject, context),
+            text_content=render_context(questioning.email_body, context),
             log_user=student.user,
             log_project=questioning.project,
             tags=["type:questioning.reminder", f"questioning.id:{questioning.id}", f"user.id:{student.user.id}"],
