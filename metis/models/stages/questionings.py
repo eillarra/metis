@@ -8,6 +8,7 @@ from metis.services.form_builder.tops import validate_tops_form_definition, vali
 
 from ..base import BaseModel
 from ..rel.remarks import RemarksMixin
+from .internships import Internship
 from .project_places import ProjectPlace
 from .students import Student
 
@@ -35,7 +36,16 @@ class Questioning(RemarksMixin, BaseModel):
     )
     TYPES_WITH_FORM = (PROJECT_PLACE_INFORMATION, STUDENT_INFORMATION)
 
+    # TODO: combine type with target_group
+    TARGET_GROUP_CHOICES = (
+        ("project_places", "Project Places"),
+        ("students", "Students"),
+        ("project_places_with_internship", "Project Places with Internship"),
+        ("students_with_internship", "Students with Internship"),
+    )
+
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
+    target_group = models.CharField(max_length=32, choices=TARGET_GROUP_CHOICES, default="project_places")
     project = models.ForeignKey("metis.Project", related_name="questionings", on_delete=models.CASCADE)
     period = models.ForeignKey(
         "metis.Period", related_name="questionings", on_delete=models.CASCADE, null=True, blank=True
@@ -114,25 +124,37 @@ class Questioning(RemarksMixin, BaseModel):
             return 0.0
 
     def get_support_data(self) -> dict:
+        """Return the support data for this questioning."""
         if self.type == self.STUDENT_TOPS:
             return {"project_places": self.project.project_places.select_related("place").all()}
         return {}
 
     def get_target_group(self) -> models.QuerySet["ProjectPlace"] | models.QuerySet["Student"]:
-        """Returns the target group for this questioning."""
-        if self.type in {self.PROJECT_PLACE_AVAILABILITY, self.PROJECT_PLACE_INFORMATION}:
-            return get_project_places_for_questioning(self)
-        if self.type in {self.STUDENT_INFORMATION, self.STUDENT_TOPS}:
-            return get_students_for_questioning(self)
-        raise ValueError(f"Invalid type: {self.type}")
+        """Return the target group for this questioning."""
+        queryset = models.QuerySet()
+
+        if self.target_group in {"project_places", "project_places_with_internship"}:
+            queryset = get_project_places_for_questioning(self).distinct()
+
+        if self.target_group in {"students", "students_with_internship"}:
+            queryset = get_students_for_questioning(self).distinct()
+
+        if self.target_group in {"project_places_with_internship", "students_with_internship"}:
+            return queryset.filter(
+                internships__project=self.project,
+                internships__period=self.period,
+                internships__status=Internship.DEFINITIVE,
+            )
+
+        return queryset
 
     def get_target_group_size(self) -> int:
-        """Returns the size of the target group for this questioning."""
+        """Return the size of the target group for this questioning."""
         return self.get_target_group().count()
 
 
 def get_project_places_for_questioning(questioning: Questioning) -> models.QuerySet["ProjectPlace"]:
-    """Returns the places that should be notified for a given questioning."""
+    """Return the places that should be notified for a given questioning."""
     valid_types = {Questioning.PROJECT_PLACE_AVAILABILITY, Questioning.PROJECT_PLACE_INFORMATION}
 
     if questioning.type not in valid_types:
@@ -145,7 +167,7 @@ def get_project_places_for_questioning(questioning: Questioning) -> models.Query
 
 
 def get_students_for_questioning(questioning: Questioning) -> models.QuerySet["Student"]:
-    """Returns the students that should be notified for a given questioning."""
+    """Return the students that should be notified for a given questioning."""
     valid_types = {Questioning.STUDENT_INFORMATION, Questioning.STUDENT_TOPS}
 
     if questioning.type not in valid_types:

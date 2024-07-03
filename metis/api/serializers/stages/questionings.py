@@ -30,9 +30,11 @@ class QuestioningSerializer(QuestioningTinySerializer):
         exclude = ()
 
     def get_target_object_ids(self, instance) -> list:
+        """Return the target object IDs for this questioning."""
         return instance.get_target_group().values_list("id", flat=True)
 
     def get_stats(self, instance):
+        """Return the stats for this questioning."""
         return {
             "response_rate": round(min(100, instance.response_rate * 100), 1),
         }
