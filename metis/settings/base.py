@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.flatpages",
     "django.contrib.messages",
     "django.contrib.redirects",
     "django.contrib.sessions",
@@ -73,7 +72,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
-    "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
     "inertia.middleware.InertiaMiddleware",
 ]
 

@@ -1,5 +1,4 @@
-from django.contrib.flatpages.views import flatpage
-from django.urls import path, re_path
+from django.urls import path
 
 from metis.site import views
 
@@ -44,10 +43,4 @@ urlpatterns = [
         views.InternshipMediaFileSecretView.as_view(),
         name="internship_media_file_secret",
     ),
-]
-
-# Flatpages “catchall” pattern
-
-urlpatterns += [
-    re_path(r"^(?P<url>.*/)$", flatpage),
 ]
