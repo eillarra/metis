@@ -61,6 +61,7 @@ class ChoiceField(FormField):
     options: list[FieldOption]
     multiple: bool = False
     other_option: str | None = None
+    other_label: Translation | None = None
 
     @field_validator("options")
     def validate_options(cls, v):

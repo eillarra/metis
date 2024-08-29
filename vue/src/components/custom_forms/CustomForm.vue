@@ -57,7 +57,7 @@
               <q-input
                 v-if="field.other_option && (mutable[field.code] as (number | string)[]).includes(field.other_option)"
                 v-model="mutable[`${field.code}__${field.other_option}`]"
-                :label="(field.options.find((option) => option.value === field.other_option)?.label as string)"
+                :label="field.other_label.nl || (field.options.find((option) => option.value === field.other_option)?.label as string)"
                 type="text"
                 filled
                 dense
