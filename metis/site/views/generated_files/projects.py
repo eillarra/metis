@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from metis.models import Project
-from metis.services.file_generator.projects import ProjectContactsExcel, ProjectPlanningExcel
+from metis.services.file_generator.projects import ProjectContactsExcel, ProjectPlanningExcel, ProjectPlacesExcel
 
 
 class ProjectExcelView(View):
@@ -31,5 +31,7 @@ class ProjectExcelView(View):
             return ProjectPlanningExcel(self.get_object()).get_response()
         elif code == "contacts":
             return ProjectContactsExcel(self.get_object()).get_response()
+        elif code == "places":
+            return ProjectPlacesExcel(self.get_object()).get_response()
         else:
             raise NotImplementedError
