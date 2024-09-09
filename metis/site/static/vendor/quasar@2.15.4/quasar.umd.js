@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v2.14.6
+ * Quasar Framework v2.15.4
  * (c) 2015-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -15,8 +15,8 @@
     return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
   };
   var __export = (target2, all) => {
-    for (var name in all)
-      __defProp(target2, name, { get: all[name], enumerable: true });
+    for (var name2 in all)
+      __defProp(target2, name2, { get: all[name2], enumerable: true });
   };
   var __copyProps = (to, from, except, desc) => {
     if (from && typeof from === "object" || typeof from === "function") {
@@ -268,7 +268,7 @@
   // Search for vueNamedImportsCode in /ui/build :vue
   var { h, ref, computed, watch, isRef, toRaw, unref, reactive, shallowReactive, nextTick, onActivated, onDeactivated, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, onBeforeUpdate, onUpdated, inject, provide, getCurrentInstance, markRaw, Transition, TransitionGroup, KeepAlive, Teleport, useSSRContext, withDirectives, vShow, defineComponent, createApp } = window.Vue;
 
-  // src/utils/private/inject-obj-prop.js
+  // src/utils/private.inject-obj-prop/inject-obj-prop.js
   function injectProp(target2, propName, get2, set2) {
     Object.defineProperty(target2, propName, {
       get: get2,
@@ -284,7 +284,7 @@
     return target2;
   }
 
-  // src/plugins/Platform.js
+  // src/plugins/platform/Platform.js
   var isRuntimeSsrPreHydration = false ? { value: true } : ref(
     false
   );
@@ -293,8 +293,7 @@
     const match = /(edg|edge|edga|edgios)\/([\w.]+)/.exec(userAgent2) || /(opr)[\/]([\w.]+)/.exec(userAgent2) || /(vivaldi)[\/]([\w.]+)/.exec(userAgent2) || /(chrome|crios)[\/]([\w.]+)/.exec(userAgent2) || /(version)(applewebkit)[\/]([\w.]+).*(safari)[\/]([\w.]+)/.exec(userAgent2) || /(webkit)[\/]([\w.]+).*(version)[\/]([\w.]+).*(safari)[\/]([\w.]+)/.exec(userAgent2) || /(firefox|fxios)[\/]([\w.]+)/.exec(userAgent2) || /(webkit)[\/]([\w.]+)/.exec(userAgent2) || /(opera)(?:.*version|)[\/]([\w.]+)/.exec(userAgent2) || [];
     return {
       browser: match[5] || match[3] || match[1] || "",
-      version: match[2] || match[4] || "0",
-      versionNumber: match[4] || match[2] || "0",
+      version: match[4] || match[2] || "0",
       platform: platformMatch[0] || ""
     };
   }
@@ -307,7 +306,7 @@
     if (matched.browser) {
       browser[matched.browser] = true;
       browser.version = matched.version;
-      browser.versionNumber = parseInt(matched.versionNumber, 10);
+      browser.versionNumber = parseInt(matched.version, 10);
     }
     if (matched.platform) {
       browser[matched.platform] = true;
@@ -322,7 +321,7 @@
       browser.winphone = true;
       delete browser["windows phone"];
     }
-    if (browser.edga || browser.edgios) {
+    if (browser.edga || browser.edgios || browser.edg) {
       browser.edge = true;
       matched.browser = "edge";
     } else if (browser.crios) {
@@ -331,7 +330,8 @@
     } else if (browser.fxios) {
       browser.firefox = true;
       matched.browser = "firefox";
-    } else if (browser.ipod || browser.ipad || browser.iphone) {
+    }
+    if (browser.ipod || browser.ipad || browser.iphone) {
       browser.ios = true;
     }
     if (browser.vivaldi) {
@@ -344,10 +344,7 @@
     ) {
       browser.webkit = true;
     }
-    if (browser.edg) {
-      matched.browser = "edgechromium";
-      browser.edgeChromium = true;
-    } else if (browser.opr) {
+    if (browser.opr) {
       matched.browser = "opera";
       browser.opera = true;
     }
@@ -475,26 +472,32 @@
   }
   var Platform_default = Platform;
 
-  // src/utils/private/define-reactive-plugin.js
-  var define_reactive_plugin_default = false ? (state, plugin) => {
+  // src/utils/private.create/create.js
+  function createComponent(raw) {
+    return markRaw(defineComponent(raw));
+  }
+  function createDirective(raw) {
+    return markRaw(raw);
+  }
+  var createReactivePlugin = false ? (state, plugin) => {
     Object.assign(plugin, state);
     return plugin;
   } : (state, plugin) => {
     const reactiveState = reactive(state);
-    for (const name in state) {
+    for (const name2 in state) {
       injectProp(
         plugin,
-        name,
-        () => reactiveState[name],
+        name2,
+        () => reactiveState[name2],
         (val) => {
-          reactiveState[name] = val;
+          reactiveState[name2] = val;
         }
       );
     }
     return plugin;
   };
 
-  // src/utils/event.js
+  // src/utils/event/event.js
   var listenOpts = {
     hasPassive: false,
     passiveCapture: true,
@@ -597,19 +600,19 @@
     el.querySelectorAll("a, img").forEach(fn);
   }
   function addEvt(ctx, targetName, events) {
-    const name = `__q_${targetName}_evt`;
-    ctx[name] = ctx[name] !== void 0 ? ctx[name].concat(events) : events;
+    const name2 = `__q_${targetName}_evt`;
+    ctx[name2] = ctx[name2] !== void 0 ? ctx[name2].concat(events) : events;
     events.forEach((evt) => {
       evt[0].addEventListener(evt[1], ctx[evt[2]], listenOpts[evt[3]]);
     });
   }
   function cleanEvt(ctx, targetName) {
-    const name = `__q_${targetName}_evt`;
-    if (ctx[name] !== void 0) {
-      ctx[name].forEach((evt) => {
+    const name2 = `__q_${targetName}_evt`;
+    if (ctx[name2] !== void 0) {
+      ctx[name2].forEach((evt) => {
         evt[0].removeEventListener(evt[1], ctx[evt[2]], listenOpts[evt[3]]);
       });
-      ctx[name] = void 0;
+      ctx[name2] = void 0;
     }
   }
   var event_default = {
@@ -626,7 +629,7 @@
     preventDraggable
   };
 
-  // src/utils/debounce.js
+  // src/utils/debounce/debounce.js
   function debounce_default(fn, wait = 250, immediate) {
     let timer2 = null;
     function debounced() {
@@ -650,10 +653,10 @@
     return debounced;
   }
 
-  // src/plugins/Screen.js
+  // src/plugins/screen/Screen.js
   var SIZE_LIST = ["sm", "md", "lg", "xl"];
   var { passive } = listenOpts;
-  var Screen_default = define_reactive_plugin_default({
+  var Screen_default = createReactivePlugin({
     width: 0,
     height: 0,
     name: "xs",
@@ -743,9 +746,9 @@
       };
       let updateEvt, updateSizes = {}, updateDebounce = 16;
       this.setSizes = (sizes) => {
-        SIZE_LIST.forEach((name) => {
-          if (sizes[name] !== void 0) {
-            updateSizes[name] = sizes[name];
+        SIZE_LIST.forEach((name2) => {
+          if (sizes[name2] !== void 0) {
+            updateSizes[name2] = sizes[name2];
           }
         });
       };
@@ -755,14 +758,14 @@
       const start = () => {
         const style2 = getComputedStyle(document.body);
         if (style2.getPropertyValue("--q-size-sm")) {
-          SIZE_LIST.forEach((name) => {
-            this.sizes[name] = parseInt(style2.getPropertyValue(`--q-size-${name}`), 10);
+          SIZE_LIST.forEach((name2) => {
+            this.sizes[name2] = parseInt(style2.getPropertyValue(`--q-size-${name2}`), 10);
           });
         }
         this.setSizes = (sizes) => {
-          SIZE_LIST.forEach((name) => {
-            if (sizes[name]) {
-              this.sizes[name] = sizes[name];
+          SIZE_LIST.forEach((name2) => {
+            if (sizes[name2]) {
+              this.sizes[name2] = sizes[name2];
             }
           });
           this.__update(true);
@@ -789,8 +792,8 @@
     }
   });
 
-  // src/plugins/Dark.js
-  var Plugin = define_reactive_plugin_default({
+  // src/plugins/dark/Dark.js
+  var Plugin = createReactivePlugin({
     isActive: false,
     mode: false
   }, {
@@ -848,165 +851,7 @@
   });
   var Dark_default = Plugin;
 
-  // src/history.js
-  var getTrue = () => true;
-  function filterInvalidPath(path) {
-    return typeof path === "string" && path !== "" && path !== "/" && path !== "#/";
-  }
-  function normalizeExitPath(path) {
-    path.startsWith("#") === true && (path = path.substring(1));
-    path.startsWith("/") === false && (path = "/" + path);
-    path.endsWith("/") === true && (path = path.substring(0, path.length - 1));
-    return "#" + path;
-  }
-  function getShouldExitFn(cfg) {
-    if (cfg.backButtonExit === false) {
-      return () => false;
-    }
-    if (cfg.backButtonExit === "*") {
-      return getTrue;
-    }
-    const exitPaths = ["#/"];
-    Array.isArray(cfg.backButtonExit) === true && exitPaths.push(
-      ...cfg.backButtonExit.filter(filterInvalidPath).map(normalizeExitPath)
-    );
-    return () => exitPaths.includes(window.location.hash);
-  }
-  var history_default = {
-    __history: [],
-    add: noop,
-    remove: noop,
-    install({ $q }) {
-      if (this.__installed === true)
-        return;
-      const { cordova: cordova2, capacitor } = client.is;
-      if (cordova2 !== true && capacitor !== true) {
-        return;
-      }
-      const qConf = $q.config[cordova2 === true ? "cordova" : "capacitor"];
-      if (qConf !== void 0 && qConf.backButton === false) {
-        return;
-      }
-      if (
-        // if we're on Capacitor mode
-        capacitor === true && (window.Capacitor === void 0 || window.Capacitor.Plugins.App === void 0)
-      ) {
-        return;
-      }
-      this.add = (entry) => {
-        if (entry.condition === void 0) {
-          entry.condition = getTrue;
-        }
-        this.__history.push(entry);
-      };
-      this.remove = (entry) => {
-        const index = this.__history.indexOf(entry);
-        if (index >= 0) {
-          this.__history.splice(index, 1);
-        }
-      };
-      const shouldExit = getShouldExitFn(
-        Object.assign(
-          { backButtonExit: true },
-          qConf
-        )
-      );
-      const backHandler = () => {
-        if (this.__history.length) {
-          const entry = this.__history[this.__history.length - 1];
-          if (entry.condition() === true) {
-            this.__history.pop();
-            entry.handler();
-          }
-        } else if (shouldExit() === true) {
-          navigator.app.exitApp();
-        } else {
-          window.history.back();
-        }
-      };
-      if (cordova2 === true) {
-        document.addEventListener("deviceready", () => {
-          document.addEventListener("backbutton", backHandler, false);
-        });
-      } else {
-        window.Capacitor.Plugins.App.addListener("backButton", backHandler);
-      }
-    }
-  };
-
-  // src/lang.js
-  var import_en_US = __toESM(require_en_US());
-  function getLocale() {
-    if (false)
-      return;
-    const val = Array.isArray(navigator.languages) === true && navigator.languages.length !== 0 ? navigator.languages[0] : navigator.language;
-    if (typeof val === "string") {
-      return val.split(/[-_]/).map((v, i) => i === 0 ? v.toLowerCase() : i > 1 || v.length < 4 ? v.toUpperCase() : v[0].toUpperCase() + v.slice(1).toLowerCase()).join("-");
-    }
-  }
-  var Plugin2 = define_reactive_plugin_default({
-    __langPack: {}
-  }, {
-    getLocale,
-    set(langObject = import_en_US.default, ssrContext) {
-      const lang = {
-        ...langObject,
-        rtl: langObject.rtl === true,
-        getLocale
-      };
-      if (false) {
-        if (ssrContext === void 0) {
-          console.error("SSR ERROR: second param required: Quasar.lang.set(lang, ssrContext)");
-          return;
-        }
-        lang.set = ssrContext.$q.lang.set;
-        if (ssrContext.$q.config.lang === void 0 || ssrContext.$q.config.lang.noHtmlAttrs !== true) {
-          const dir = lang.rtl === true ? "rtl" : "ltr";
-          const attrs = `lang=${lang.isoName} dir=${dir}`;
-          ssrContext._meta.htmlAttrs = ssrContext.__qPrevLang !== void 0 ? ssrContext._meta.htmlAttrs.replace(ssrContext.__qPrevLang, attrs) : attrs;
-          ssrContext.__qPrevLang = attrs;
-        }
-        ssrContext.$q.lang = lang;
-      } else {
-        lang.set = Plugin2.set;
-        if (Plugin2.__langConfig === void 0 || Plugin2.__langConfig.noHtmlAttrs !== true) {
-          const el = document.documentElement;
-          el.setAttribute("dir", lang.rtl === true ? "rtl" : "ltr");
-          el.setAttribute("lang", lang.isoName);
-        }
-        Object.assign(Plugin2.__langPack, lang);
-        Plugin2.props = lang;
-        Plugin2.isoName = lang.isoName;
-        Plugin2.nativeName = lang.nativeName;
-      }
-    },
-    install({ $q, lang, ssrContext }) {
-      if (false) {
-        const initialLang = lang || import_en_US.default;
-        $q.lang = {};
-        $q.lang.set = (langObject) => {
-          this.set(langObject, ssrContext);
-        };
-        $q.lang.set(initialLang);
-        if (this.isoName !== initialLang.isoName) {
-          this.isoName = initialLang.isoName;
-          this.nativeName = initialLang.nativeName;
-          this.props = initialLang;
-        }
-      } else {
-        $q.lang = Plugin2.__langPack;
-        Plugin2.__langConfig = $q.config.lang;
-        if (this.__installed === true) {
-          lang !== void 0 && this.set(lang);
-        } else {
-          this.set(lang || import_en_US.default);
-        }
-      }
-    }
-  });
-  var lang_default = Plugin2;
-
-  // src/utils/set-css-var.js
+  // src/utils/css-var/set-css-var.js
   function setCssVar(propName, value2, element = document.body) {
     if (typeof propName !== "string") {
       throw new TypeError("Expected a string as propName");
@@ -1020,7 +865,7 @@
     element.style.setProperty(`--q-${propName}`, value2);
   }
 
-  // src/utils/private/key-composition.js
+  // src/utils/private.keyboard/key-composition.js
   var lastKeyCompositionStatus = false;
   function onKeyDownComposition(evt) {
     lastKeyCompositionStatus = evt.isComposing === true;
@@ -1032,7 +877,7 @@
     return shouldIgnoreKey(evt) === true ? false : [].concat(keyCodes4).includes(evt.keyCode);
   }
 
-  // src/body.js
+  // src/plugins/private.body/Body.js
   function getMobilePlatform(is) {
     if (is.ios === true)
       return "ios";
@@ -1101,7 +946,7 @@
       setCssVar(color, brand[color]);
     }
   }
-  var body_default = {
+  var Body_default = {
     install(opts) {
       if (false) {
         const { $q, ssrContext } = opts;
@@ -1134,24 +979,188 @@
     }
   };
 
-  // src/icon-set.js
-  var import_material_icons = __toESM(require_material_icons());
-  var Plugin3 = define_reactive_plugin_default({
-    iconMapFn: null,
-    __icons: {}
+  // src/plugins/private.history/History.js
+  var getTrue = () => true;
+  function filterInvalidPath(path) {
+    return typeof path === "string" && path !== "" && path !== "/" && path !== "#/";
+  }
+  function normalizeExitPath(path) {
+    path.startsWith("#") === true && (path = path.substring(1));
+    path.startsWith("/") === false && (path = "/" + path);
+    path.endsWith("/") === true && (path = path.substring(0, path.length - 1));
+    return "#" + path;
+  }
+  function getShouldExitFn(cfg) {
+    if (cfg.backButtonExit === false) {
+      return () => false;
+    }
+    if (cfg.backButtonExit === "*") {
+      return getTrue;
+    }
+    const exitPaths = ["#/"];
+    Array.isArray(cfg.backButtonExit) === true && exitPaths.push(
+      ...cfg.backButtonExit.filter(filterInvalidPath).map(normalizeExitPath)
+    );
+    return () => exitPaths.includes(window.location.hash);
+  }
+  var History_default = {
+    __history: [],
+    add: noop,
+    remove: noop,
+    install({ $q }) {
+      if (this.__installed === true)
+        return;
+      const { cordova: cordova2, capacitor } = client.is;
+      if (cordova2 !== true && capacitor !== true) {
+        return;
+      }
+      const qConf = $q.config[cordova2 === true ? "cordova" : "capacitor"];
+      if (qConf !== void 0 && qConf.backButton === false) {
+        return;
+      }
+      if (
+        // if we're on Capacitor mode
+        capacitor === true && (window.Capacitor === void 0 || window.Capacitor.Plugins.App === void 0)
+      ) {
+        return;
+      }
+      this.add = (entry) => {
+        if (entry.condition === void 0) {
+          entry.condition = getTrue;
+        }
+        this.__history.push(entry);
+      };
+      this.remove = (entry) => {
+        const index = this.__history.indexOf(entry);
+        if (index >= 0) {
+          this.__history.splice(index, 1);
+        }
+      };
+      const shouldExit = getShouldExitFn(
+        Object.assign(
+          { backButtonExit: true },
+          qConf
+        )
+      );
+      const backHandler = () => {
+        if (this.__history.length) {
+          const entry = this.__history[this.__history.length - 1];
+          if (entry.condition() === true) {
+            this.__history.pop();
+            entry.handler();
+          }
+        } else if (shouldExit() === true) {
+          navigator.app.exitApp();
+        } else {
+          window.history.back();
+        }
+      };
+      if (cordova2 === true) {
+        document.addEventListener("deviceready", () => {
+          document.addEventListener("backbutton", backHandler, false);
+        });
+      } else {
+        window.Capacitor.Plugins.App.addListener("backButton", backHandler);
+      }
+    }
+  };
+
+  // src/plugins/lang/Lang.js
+  var import_en_US = __toESM(require_en_US());
+  function getLocale() {
+    if (false)
+      return;
+    const val = Array.isArray(navigator.languages) === true && navigator.languages.length !== 0 ? navigator.languages[0] : navigator.language;
+    if (typeof val === "string") {
+      return val.split(/[-_]/).map((v, i) => i === 0 ? v.toLowerCase() : i > 1 || v.length < 4 ? v.toUpperCase() : v[0].toUpperCase() + v.slice(1).toLowerCase()).join("-");
+    }
+  }
+  var Plugin2 = createReactivePlugin({
+    __qLang: {}
   }, {
-    set(setObject, ssrContext) {
-      const def = { ...setObject, rtl: setObject.rtl === true };
+    // props: object
+    // __langConfig: object
+    getLocale,
+    set(langObject = import_en_US.default, ssrContext) {
+      const lang = {
+        ...langObject,
+        rtl: langObject.rtl === true,
+        getLocale
+      };
       if (false) {
         if (ssrContext === void 0) {
-          console.error("SSR ERROR: second param required: Quasar.iconSet.set(iconSet, ssrContext)");
+          console.error("SSR ERROR: second param required: Lang.set(lang, ssrContext)");
+          return;
+        }
+        lang.set = ssrContext.$q.lang.set;
+        if (ssrContext.$q.config.lang === void 0 || ssrContext.$q.config.lang.noHtmlAttrs !== true) {
+          const dir = lang.rtl === true ? "rtl" : "ltr";
+          const attrs = `lang=${lang.isoName} dir=${dir}`;
+          ssrContext._meta.htmlAttrs = ssrContext.__qPrevLang !== void 0 ? ssrContext._meta.htmlAttrs.replace(ssrContext.__qPrevLang, attrs) : attrs;
+          ssrContext.__qPrevLang = attrs;
+        }
+        ssrContext.$q.lang = lang;
+      } else {
+        lang.set = Plugin2.set;
+        if (Plugin2.__langConfig === void 0 || Plugin2.__langConfig.noHtmlAttrs !== true) {
+          const el = document.documentElement;
+          el.setAttribute("dir", lang.rtl === true ? "rtl" : "ltr");
+          el.setAttribute("lang", lang.isoName);
+        }
+        Object.assign(Plugin2.__qLang, lang);
+      }
+    },
+    install({ $q, lang, ssrContext }) {
+      if (false) {
+        const initialLang = lang || import_en_US.default;
+        $q.lang = {};
+        $q.lang.set = (langObject) => {
+          this.set(langObject, ssrContext);
+        };
+        $q.lang.set(initialLang);
+        if (this.props === void 0 || this.props.isoName !== initialLang.isoName) {
+          this.props = { ...initialLang };
+        }
+      } else {
+        $q.lang = Plugin2.__qLang;
+        Plugin2.__langConfig = $q.config.lang;
+        if (this.__installed === true) {
+          lang !== void 0 && this.set(lang);
+        } else {
+          this.props = new Proxy(this.__qLang, {
+            get() {
+              return Reflect.get(...arguments);
+            },
+            ownKeys(target2) {
+              return Reflect.ownKeys(target2).filter((key) => key !== "set" && key !== "getLocale");
+            }
+          });
+          this.set(lang || import_en_US.default);
+        }
+      }
+    }
+  });
+  var Lang_default = Plugin2;
+
+  // src/plugins/icon-set/IconSet.js
+  var import_material_icons = __toESM(require_material_icons());
+  var Plugin3 = createReactivePlugin({
+    iconMapFn: null,
+    __qIconSet: {}
+  }, {
+    // props: object
+    set(setObject, ssrContext) {
+      const def = { ...setObject };
+      if (false) {
+        if (ssrContext === void 0) {
+          console.error("SSR ERROR: second param required: IconSet.set(iconSet, ssrContext)");
           return;
         }
         def.set = ssrContext.$q.iconSet.set;
         Object.assign(ssrContext.$q.iconSet, def);
       } else {
         def.set = Plugin3.set;
-        Object.assign(Plugin3.__icons, def);
+        Object.assign(Plugin3.__qIconSet, def);
       }
     },
     install({ $q, iconSet, ssrContext }) {
@@ -1163,25 +1172,36 @@
           this.set(setObject, ssrContext);
         };
         $q.iconSet.set(initialSet);
+        if (this.props === void 0 || this.props.name !== initialSet.name) {
+          this.props = { ...initialSet };
+        }
       } else {
         if ($q.config.iconMapFn !== void 0) {
           this.iconMapFn = $q.config.iconMapFn;
         }
-        $q.iconSet = this.__icons;
+        $q.iconSet = this.__qIconSet;
         injectProp($q, "iconMapFn", () => this.iconMapFn, (val) => {
           this.iconMapFn = val;
         });
         if (this.__installed === true) {
           iconSet !== void 0 && this.set(iconSet);
         } else {
+          this.props = new Proxy(this.__qIconSet, {
+            get() {
+              return Reflect.get(...arguments);
+            },
+            ownKeys(target2) {
+              return Reflect.ownKeys(target2).filter((key) => key !== "set");
+            }
+          });
           this.set(iconSet || import_material_icons.default);
         }
       }
     }
   });
-  var icon_set_default = Plugin3;
+  var IconSet_default = Plugin3;
 
-  // src/utils/private/symbols.js
+  // src/utils/private.symbols/symbols.js
   var quasarKey = "_q_";
   var timelineKey = "_q_t_";
   var stepperKey = "_q_s_";
@@ -1191,17 +1211,17 @@
   var formKey = "_q_fo_";
   var tabsKey = "_q_tabs_";
   var uploaderKey = "_q_u_";
-  var emptyRenderFn = () => {
-  };
+  function emptyRenderFn() {
+  }
 
-  // src/utils/private/global-config.js
+  // src/utils/private.global/global-config.js
   var globalConfig = {};
   var globalConfigIsFrozen = false;
   function freezeGlobalConfig() {
     globalConfigIsFrozen = true;
   }
 
-  // src/utils/is.js
+  // src/utils/is/is.js
   function isDeepEqual(a, b) {
     if (a === b) {
       return true;
@@ -1318,12 +1338,12 @@
   // src/install-quasar.js
   var autoInstalledPlugins = [
     Platform_default,
-    body_default,
+    Body_default,
     Dark_default,
     Screen_default,
-    history_default,
-    lang_default,
-    icon_set_default
+    History_default,
+    Lang_default,
+    IconSet_default
   ];
   function createChildApp(appCfg, parentApp) {
     const app2 = createApp(appCfg);
@@ -1370,7 +1390,7 @@
   }
   var install_quasar_default = false ? function(parentApp, opts = {}, ssrContext) {
     const $q = {
-      version: "2.14.6",
+      version: "2.15.4",
       config: opts.config || {}
     };
     Object.assign(ssrContext, {
@@ -1400,7 +1420,7 @@
       ssrContext
     });
   } : function(parentApp, opts = {}) {
-    const $q = { version: "2.14.6" };
+    const $q = { version: "2.15.4" };
     if (globalConfigIsFrozen === false) {
       if (opts.config !== void 0) {
         Object.assign(globalConfig, opts.config);
@@ -1547,19 +1567,15 @@
     QVirtualScroll: () => QVirtualScroll_default
   });
 
-  // src/utils/private/create.js
-  var createComponent = (raw) => markRaw(defineComponent(raw));
-  var createDirective = (raw) => markRaw(raw);
-
-  // src/utils/format.js
+  // src/utils/format/format.js
   var units = ["B", "KB", "MB", "GB", "TB", "PB"];
-  function humanStorageSize(bytes) {
+  function humanStorageSize(bytes, decimals = 1) {
     let u = 0;
     while (parseInt(bytes, 10) >= 1024 && u < units.length - 1) {
       bytes /= 1024;
       ++u;
     }
-    return `${bytes.toFixed(1)}${units[u]}`;
+    return `${bytes.toFixed(decimals)}${units[u]}`;
   }
   function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -1806,7 +1822,7 @@
     }
   });
 
-  // src/composables/private/use-size.js
+  // src/composables/private.use-size/use-size.js
   var useSizeDefaults = {
     xs: 18,
     sm: 24,
@@ -1821,7 +1837,7 @@
     return computed(() => props4.size !== void 0 ? { fontSize: props4.size in sizes ? `${sizes[props4.size]}px` : props4.size } : null);
   }
 
-  // src/utils/private/render.js
+  // src/utils/private.render/render.js
   function hSlot(slot, otherwise) {
     return slot !== void 0 ? slot() || otherwise : otherwise;
   }
@@ -2089,7 +2105,7 @@
     }
   });
 
-  // src/composables/private/use-dark.js
+  // src/composables/private.use-dark/use-dark.js
   var useDarkProps = {
     dark: {
       type: Boolean,
@@ -2159,7 +2175,7 @@
     }
   });
 
-  // src/composables/private/use-align.js
+  // src/composables/private.use-align/use-align.js
   var alignMap = {
     left: "start",
     center: "center",
@@ -2183,7 +2199,7 @@
     });
   }
 
-  // src/utils/private/vm.js
+  // src/utils/private.vm/vm.js
   function getParentProxy(proxy) {
     if (Object(proxy.$parent) === proxy.$parent) {
       return proxy.$parent;
@@ -2250,6 +2266,8 @@
       const sepClass = computed(() => props4.separatorColor ? ` text-${props4.separatorColor}` : "");
       const activeClass = computed(() => ` text-${props4.activeColor}`);
       return () => {
+        if (slots.default === void 0)
+          return;
         const vnodes = getNormalizedVNodes(
           hSlot(slots.default)
         );
@@ -2288,7 +2306,7 @@
     }
   });
 
-  // src/composables/private/use-router-link.js
+  // src/composables/private.use-router-link/use-router-link.js
   function getOriginalPath(record) {
     return record ? record.aliasOf ? record.aliasOf.path : record.path : "";
   }
@@ -2540,7 +2558,7 @@
     }
   });
 
-  // src/utils/dom.js
+  // src/utils/dom/dom.js
   function offset(el) {
     if (el === window) {
       return { top: 0, left: 0 };
@@ -2612,7 +2630,7 @@
     ready
   };
 
-  // src/utils/throttle.js
+  // src/utils/throttle/throttle.js
   function throttle_default(fn, limit = 250) {
     let wait = false, result;
     return function() {
@@ -2627,7 +2645,7 @@
     };
   }
 
-  // src/directives/Ripple.js
+  // src/directives/ripple/Ripple.js
   function showRipple(evt, el, ctx, forceCenter) {
     ctx.modifiers.stop === true && stop(evt);
     const color = ctx.modifiers.color;
@@ -2751,7 +2769,7 @@
   var formTypes = ["button", "submit", "reset"];
   var mediaTypeRE = /[^\s]\/[^\s]/;
   var btnDesignOptions = ["flat", "outline", "push", "unelevated"];
-  var getBtnDesign = (props4, defaultValue) => {
+  function getBtnDesign(props4, defaultValue) {
     if (props4.flat === true)
       return "flat";
     if (props4.outline === true)
@@ -2761,11 +2779,11 @@
     if (props4.unelevated === true)
       return "unelevated";
     return defaultValue;
-  };
-  var getBtnDesignAttr = (props4) => {
+  }
+  function getBtnDesignAttr(props4) {
     const design = getBtnDesign(props4);
     return design !== void 0 ? { [design]: true } : {};
-  };
+  }
   var useBtnProps = {
     ...useSizeProps,
     ...useRouterLinkProps,
@@ -3087,7 +3105,13 @@
       onBeforeUnmount(() => {
         cleanup(true);
       });
-      Object.assign(proxy, { click: onClick });
+      Object.assign(proxy, {
+        click: (e) => {
+          if (isActionable.value === true) {
+            onClick(e);
+          }
+        }
+      });
       return () => {
         let inner = [];
         props4.icon !== void 0 && inner.push(
@@ -3185,7 +3209,7 @@
     }
   });
 
-  // src/utils/private/selection.js
+  // src/utils/private.selection/selection.js
   function clearSelection() {
     if (window.getSelection !== void 0) {
       const selection = window.getSelection();
@@ -3200,7 +3224,7 @@
     }
   }
 
-  // src/composables/private/use-anchor.js
+  // src/composables/private.use-anchor/use-anchor.js
   var useAnchorProps = {
     target: {
       default: true
@@ -3369,7 +3393,7 @@
     };
   }
 
-  // src/composables/private/use-scroll-target.js
+  // src/composables/private.use-scroll-target/use-scroll-target.js
   function use_scroll_target_default(props4, configureScrollTarget) {
     const localScrollTarget = ref(null);
     let scrollFn;
@@ -3402,7 +3426,7 @@
     };
   }
 
-  // src/composables/private/use-model-toggle.js
+  // src/composables/private.use-model-toggle/use-model-toggle.js
   var useModelToggleProps = {
     modelValue: {
       type: Boolean,
@@ -3525,7 +3549,7 @@
     return publicMethods;
   }
 
-  // src/utils/private/focus-manager.js
+  // src/utils/private.focus/focus-manager.js
   var queue = [];
   var waitFlags = [];
   function clearFlag(flag) {
@@ -3553,7 +3577,7 @@
     queue = queue.filter((entry) => entry !== fn);
   }
 
-  // src/utils/private/global-nodes.js
+  // src/utils/private.global/global-nodes.js
   var nodesList = [];
   var portalTypeList = [];
   var portalIndex = 1;
@@ -3600,7 +3624,7 @@
     }
   }
 
-  // src/utils/private/portal.js
+  // src/utils/private.portal/portal.js
   var portalProxyList = [];
   function getPortalProxy(el) {
     return portalProxyList.find(
@@ -3640,7 +3664,13 @@
     }
   }
 
-  // src/composables/private/use-portal.js
+  // src/composables/private.use-portal/use-portal.js
+  var QPortal = createComponent({
+    name: "QPortal",
+    setup(_, { slots }) {
+      return () => slots.default();
+    }
+  });
   function isOnGlobalDialog(vm2) {
     vm2 = vm2.parent;
     while (vm2 !== void 0 && vm2 !== null) {
@@ -3710,11 +3740,11 @@
       hidePortal,
       portalIsActive,
       portalIsAccessible,
-      renderPortal: () => onGlobalDialog === true ? renderPortalContent() : portalIsActive.value === true ? [h(Teleport, { to: portalEl }, renderPortalContent())] : void 0
+      renderPortal: () => onGlobalDialog === true ? renderPortalContent() : portalIsActive.value === true ? [h(Teleport, { to: portalEl }, h(QPortal, renderPortalContent))] : void 0
     };
   }
 
-  // src/composables/private/use-transition.js
+  // src/composables/private.use-transition/use-transition.js
   var useTransitionProps = {
     transitionShow: {
       type: String,
@@ -3750,7 +3780,7 @@
     };
   }
 
-  // src/composables/private/use-tick.js
+  // src/composables/use-tick/use-tick.js
   function use_tick_default() {
     let tickFn;
     const vm2 = getCurrentInstance();
@@ -3773,7 +3803,7 @@
     };
   }
 
-  // src/composables/private/use-timeout.js
+  // src/composables/use-timeout/use-timeout.js
   function use_timeout_default() {
     let timer2 = null;
     const vm2 = getCurrentInstance();
@@ -3790,13 +3820,16 @@
       registerTimeout(fn, delay) {
         removeTimeout(timer2);
         if (vmIsDestroyed(vm2) === false) {
-          timer2 = setTimeout(fn, delay);
+          timer2 = setTimeout(() => {
+            timer2 = null;
+            fn();
+          }, delay);
         }
       }
     };
   }
 
-  // src/utils/scroll.js
+  // src/utils/scroll/scroll.js
   var scrollTargets = false ? [] : [null, document, document.body, document.scrollingElement, document.documentElement];
   function getScrollTarget(el, targetEl) {
     let target2 = getElement(targetEl);
@@ -3935,7 +3968,7 @@
     hasScrollbar
   };
 
-  // src/utils/private/escape-key.js
+  // src/utils/private.keyboard/escape-key.js
   var handlers = [];
   var escDown;
   function onKeydown(evt) {
@@ -3978,7 +4011,7 @@
     }
   }
 
-  // src/utils/private/focusout.js
+  // src/utils/private.focus/focusout.js
   var handlers2 = [];
   function trigger(e) {
     handlers2[handlers2.length - 1](e);
@@ -4001,7 +4034,7 @@
     }
   }
 
-  // src/utils/private/click-outside.js
+  // src/utils/private.click-outside/click-outside.js
   var timer = null;
   var { notPassiveCapture } = listenOpts;
   var registeredList = [];
@@ -4061,7 +4094,7 @@
     }
   }
 
-  // src/utils/private/position-engine.js
+  // src/utils/private.position-engine/position-engine.js
   var vpLeft;
   var vpTop;
   function validatePosition(pos) {
@@ -4561,7 +4594,7 @@
     }
   });
 
-  // src/utils/uid.js
+  // src/utils/uid/uid.js
   var buf;
   var bufIdx = 0;
   var hexBytes = new Array(256);
@@ -4602,37 +4635,42 @@
     return hexBytes[b[0]] + hexBytes[b[1]] + hexBytes[b[2]] + hexBytes[b[3]] + "-" + hexBytes[b[4]] + hexBytes[b[5]] + "-" + hexBytes[b[6]] + hexBytes[b[7]] + "-" + hexBytes[b[8]] + hexBytes[b[9]] + "-" + hexBytes[b[10]] + hexBytes[b[11]] + hexBytes[b[12]] + hexBytes[b[13]] + hexBytes[b[14]] + hexBytes[b[15]];
   }
 
-  // src/composables/private/use-id.js
-  function getId(val, requiredId) {
-    return val === void 0 ? requiredId === true ? `f_${uid_default()}` : void 0 : val;
+  // src/composables/use-id/use-id.js
+  function parseValue(val) {
+    return val === void 0 || val === null ? null : val;
   }
-  function use_id_default(initialId, requiredId = true) {
+  function getId(val, required) {
+    return val === void 0 || val === null ? required === true ? `f_${uid_default()}` : null : val;
+  }
+  function use_id_default({ getValue, required = true } = {}) {
     if (isRuntimeSsrPreHydration.value === true) {
-      const id3 = ref(initialId);
-      if (requiredId === true && initialId === void 0) {
+      const id3 = getValue !== void 0 ? ref(parseValue(getValue())) : ref(null);
+      if (required === true && id3.value === null) {
         onMounted(() => {
           id3.value = `f_${uid_default()}`;
         });
       }
+      if (getValue !== void 0) {
+        watch(getValue, (newId) => {
+          id3.value = getId(newId, required);
+        });
+      }
       return id3;
     }
-    return ref(
-      getId(initialId, requiredId)
-    );
+    return getValue !== void 0 ? computed(() => getId(getValue(), required)) : ref(`f_${uid_default()}`);
   }
 
   // src/components/btn-dropdown/QBtnDropdown.js
   var btnPropsList = Object.keys(useBtnProps);
-  var passBtnProps = (props4) => btnPropsList.reduce(
-    (acc, key) => {
+  function passBtnProps(props4) {
+    return btnPropsList.reduce((acc, key) => {
       const val = props4[key];
       if (val !== void 0) {
         acc[key] = val;
       }
       return acc;
-    },
-    {}
-  );
+    }, {});
+  }
   var QBtnDropdown_default = createComponent({
     name: "QBtnDropdown",
     props: {
@@ -4811,7 +4849,7 @@
     }
   });
 
-  // src/composables/private/use-form.js
+  // src/composables/use-form/private.use-form.js
   var useFormProps = {
     name: String
   };
@@ -5019,7 +5057,7 @@
     }
   });
 
-  // src/utils/private/touch.js
+  // src/utils/private.touch/touch.js
   var modifiersAll = {
     left: true,
     right: true,
@@ -5060,7 +5098,7 @@
     return ctx.event === void 0 && evt.target !== void 0 && evt.target.draggable !== true && typeof ctx.handler === "function" && avoidNodeNamesList.includes(evt.target.nodeName.toUpperCase()) === false && (evt.qClonedBy === void 0 || evt.qClonedBy.indexOf(ctx.uid) === -1);
   }
 
-  // src/directives/TouchSwipe.js
+  // src/directives/touch-swipe/TouchSwipe.js
   function parseArg(arg) {
     const data = [0.06, 6, 50];
     if (typeof arg === "string" && arg.length) {
@@ -5239,24 +5277,28 @@
     }
   );
 
-  // src/composables/private/use-cache.js
-  function use_cache_default() {
-    const cache = /* @__PURE__ */ new Map();
+  // src/composables/use-render-cache/use-render-cache.js
+  function use_render_cache_default() {
+    let cache = /* @__PURE__ */ Object.create(null);
     return {
-      getCache: false ? function(_, obj) {
-        return obj;
-      } : function(key, obj) {
-        return cache[key] === void 0 ? cache[key] = obj : cache[key];
+      getCache: false ? (_, defaultValue) => typeof defaultValue === "function" ? defaultValue() : defaultValue : (key, defaultValue) => cache[key] === void 0 ? cache[key] = typeof defaultValue === "function" ? defaultValue() : defaultValue : cache[key],
+      setCache(key, obj) {
+        cache[key] = obj;
       },
-      getCacheWithFn: false ? function(_, fn) {
-        return fn();
-      } : function(key, fn) {
-        return cache[key] === void 0 ? cache[key] = fn() : cache[key];
+      hasCache(key) {
+        return Object.hasOwnProperty.call(cache, key);
+      },
+      clearCache(key) {
+        if (key !== void 0) {
+          delete cache[key];
+        } else {
+          cache = /* @__PURE__ */ Object.create(null);
+        }
       }
     };
   }
 
-  // src/composables/private/use-panel.js
+  // src/composables/private.use-panel/use-panel.js
   var usePanelChildProps = {
     name: { required: true },
     disable: Boolean
@@ -5291,7 +5333,7 @@
   var usePanelEmits = ["update:modelValue", "beforeTransition", "transition"];
   function use_panel_default() {
     const { props: props4, emit, proxy } = getCurrentInstance();
-    const { getCacheWithFn } = use_cache_default();
+    const { getCache } = use_render_cache_default();
     let panels, forcedPanelTransition;
     const panelIndex = ref(null);
     const panelTransition = ref(null);
@@ -5350,15 +5392,15 @@
     function previousPanel() {
       goToPanelByOffset(-1);
     }
-    function goToPanel(name) {
-      emit("update:modelValue", name);
+    function goToPanel(name2) {
+      emit("update:modelValue", name2);
     }
-    function isValidPanelName(name) {
-      return name !== void 0 && name !== null && name !== "";
+    function isValidPanelName(name2) {
+      return name2 !== void 0 && name2 !== null && name2 !== "";
     }
-    function getPanelIndex(name) {
+    function getPanelIndex(name2) {
       return panels.findIndex((panel) => {
-        return panel.props.name === name && panel.props.disable !== "" && panel.props.disable !== true;
+        return panel.props.name === name2 && panel.props.disable !== "" && panel.props.disable !== true;
       });
     }
     function getEnabledPanels() {
@@ -5403,7 +5445,7 @@
       return props4.keepAlive === true ? [
         h(KeepAlive, keepAliveProps.value, [
           h(
-            needsUniqueKeepAliveWrapper.value === true ? getCacheWithFn(contentKey.value, () => ({ ...PanelWrapper, name: contentKey.value })) : PanelWrapper,
+            needsUniqueKeepAliveWrapper.value === true ? getCache(contentKey.value, () => ({ ...PanelWrapper, name: contentKey.value })) : PanelWrapper,
             { key: contentKey.value, style: transitionStyle.value },
             () => panel
           )
@@ -5457,7 +5499,7 @@
     };
   }
 
-  // src/composables/private/use-fullscreen.js
+  // src/composables/private.use-fullscreen/use-fullscreen.js
   var counter = 0;
   var useFullscreenProps = {
     fullscreen: Boolean,
@@ -5503,14 +5545,14 @@
       historyEntry = {
         handler: exitFullscreen
       };
-      history_default.add(historyEntry);
+      History_default.add(historyEntry);
     }
     function exitFullscreen() {
       if (inFullscreen.value !== true) {
         return;
       }
       if (historyEntry !== void 0) {
-        history_default.remove(historyEntry);
+        History_default.remove(historyEntry);
         historyEntry = void 0;
       }
       container.replaceChild(proxy.$el, fullscreenFillerNode);
@@ -5679,12 +5721,12 @@
           const maxIndex = panelsLen - 1;
           node.push(
             getNavigationContainer("buttons", (panel, index) => {
-              const name = panel.props.name;
+              const name2 = panel.props.name;
               const active = panelIndex.value === index;
               return fn({
                 index,
                 maxIndex,
-                name,
+                name: name2,
                 active,
                 btnProps: {
                   icon: active === true ? navActiveIcon.value : navIcon.value,
@@ -5692,7 +5734,7 @@
                   ...controlProps.value
                 },
                 onClick: () => {
-                  goToPanel(name);
+                  goToPanel(name2);
                 }
               });
             })
@@ -5936,7 +5978,7 @@
     }
   });
 
-  // src/composables/private/use-refocus-target.js
+  // src/composables/private.use-refocus-target/use-refocus-target.js
   function use_refocus_target_default(props4, rootRef) {
     const refocusRef = ref(null);
     const refocusTargetEl = computed(() => {
@@ -5965,7 +6007,7 @@
     };
   }
 
-  // src/utils/private/option-sizes.js
+  // src/utils/private.option-sizes/option-sizes.js
   var option_sizes_default = {
     xs: 30,
     sm: 35,
@@ -6320,7 +6362,7 @@
     }
   });
 
-  // src/components/circular-progress/use-circular-progress.js
+  // src/components/circular-progress/circular-progress.js
   var useCircularCommonProps = {
     ...useSizeProps,
     min: {
@@ -6461,7 +6503,7 @@
     }
   });
 
-  // src/directives/TouchPan.js
+  // src/directives/touch-pan/TouchPan.js
   function getChanges(evt, ctx, isFinal) {
     const pos = position(evt);
     let dir, distX = pos.left - ctx.event.x, distY = pos.top - ctx.event.y, absX = Math.abs(distX), absY = Math.abs(distY);
@@ -6883,12 +6925,12 @@
     const classes = computed(
       () => `q-slider q-slider${axis.value} q-slider--${active.value === true ? "" : "in"}active inline no-wrap ` + (props4.vertical === true ? "row" : "column") + (props4.disable === true ? " disabled" : " q-slider--enabled" + (editable.value === true ? " q-slider--editable" : "")) + (focus.value === "both" ? " q-slider--focus" : "") + (props4.label || props4.labelAlways === true ? " q-slider--label" : "") + (props4.labelAlways === true ? " q-slider--label-always" : "") + (isDark.value === true ? " q-slider--dark" : "") + (props4.dense === true ? " q-slider--dense q-slider--dense" + axis.value : "")
     );
-    function getPositionClass(name) {
-      const cls = "q-slider__" + name;
+    function getPositionClass(name2) {
+      const cls = "q-slider__" + name2;
       return `${cls} ${cls}${axis.value} ${cls}${axis.value}${labelSide.value}`;
     }
-    function getAxisClass(name) {
-      const cls = "q-slider__" + name;
+    function getAxisClass(name2) {
+      const cls = "q-slider__" + name2;
       return `${cls} ${cls}${axis.value}`;
     }
     const selectionBarClass = computed(() => {
@@ -7374,15 +7416,15 @@
     }
   });
 
-  // src/composables/private/use-can-render.js
-  function use_can_render_default() {
-    const canRender = ref(!isRuntimeSsrPreHydration.value);
-    if (canRender.value === false) {
+  // src/composables/use-hydration/use-hydration.js
+  function use_hydration_default() {
+    const isHydrated = ref(!isRuntimeSsrPreHydration.value);
+    if (isHydrated.value === false) {
       onMounted(() => {
-        canRender.value = true;
+        isHydrated.value = true;
       });
     }
-    return canRender;
+    return { isHydrated };
   }
 
   // src/components/resize-observer/QResizeObserver.js
@@ -7475,7 +7517,7 @@
             emitEvent();
           }
         };
-        const canRender = use_can_render_default();
+        const { isHydrated } = use_hydration_default();
         let curDocView;
         onMounted(() => {
           nextTick(() => {
@@ -7485,7 +7527,7 @@
         });
         onBeforeUnmount(cleanup);
         return () => {
-          if (canRender.value === true) {
+          if (isHydrated.value === true) {
             return h("object", {
               class: "q--avoid-card-border",
               style: resizeProps.style,
@@ -7502,7 +7544,7 @@
     }
   });
 
-  // src/utils/private/rtl.js
+  // src/utils/private.rtl/rtl.js
   var rtlHasScrollBug = false;
   if (true) {
     const scroller = document.createElement("div");
@@ -7618,18 +7660,18 @@
       const isRTL = computed(() => props4.vertical !== true && $q.lang.rtl === true);
       const rtlPosCorrection = computed(() => rtlHasScrollBug === false && isRTL.value === true);
       watch(isRTL, updateArrows);
-      watch(() => props4.modelValue, (name) => {
-        updateModel2({ name, setCurrent: true, skipEmit: true });
+      watch(() => props4.modelValue, (name2) => {
+        updateModel2({ name: name2, setCurrent: true, skipEmit: true });
       });
       watch(() => props4.outsideArrows, recalculateScroll);
-      function updateModel2({ name, setCurrent, skipEmit }) {
-        if (currentModel.value !== name) {
+      function updateModel2({ name: name2, setCurrent, skipEmit }) {
+        if (currentModel.value !== name2) {
           if (skipEmit !== true && props4["onUpdate:modelValue"] !== void 0) {
-            emit("update:modelValue", name);
+            emit("update:modelValue", name2);
           }
           if (setCurrent === true || props4["onUpdate:modelValue"] === void 0) {
-            animate(currentModel.value, name);
-            currentModel.value = name;
+            animate(currentModel.value, name2);
+            currentModel.value = name2;
           }
         }
       }
@@ -7792,7 +7834,7 @@
         return true;
       }
       function updateActiveRoute() {
-        let name = null, bestScore = { matchedLen: 0, queryDiff: 9999, hrefLen: 0 };
+        let name2 = null, bestScore = { matchedLen: 0, queryDiff: 9999, hrefLen: 0 };
         const list = tabDataList.filter((tab) => tab.routeData !== void 0 && tab.routeData.hasRouterLink.value === true);
         const { hash: currentHash, query: currentQuery } = proxy.$route;
         const currentQueryLen = Object.keys(currentQuery).length;
@@ -7810,7 +7852,7 @@
             if (queryLen !== currentQueryLen || hasQueryIncluded(currentQuery, query) === false) {
               continue;
             }
-            name = tab.name.value;
+            name2 = tab.name.value;
             break;
           }
           if (hash !== "" && hash !== currentHash) {
@@ -7825,27 +7867,27 @@
             hrefLen: href2.length - hash.length
           };
           if (newScore.matchedLen > bestScore.matchedLen) {
-            name = tab.name.value;
+            name2 = tab.name.value;
             bestScore = newScore;
             continue;
           } else if (newScore.matchedLen !== bestScore.matchedLen) {
             continue;
           }
           if (newScore.queryDiff < bestScore.queryDiff) {
-            name = tab.name.value;
+            name2 = tab.name.value;
             bestScore = newScore;
           } else if (newScore.queryDiff !== bestScore.queryDiff) {
             continue;
           }
           if (newScore.hrefLen > bestScore.hrefLen) {
-            name = tab.name.value;
+            name2 = tab.name.value;
             bestScore = newScore;
           }
         }
-        if (name === null && tabDataList.some((tab) => tab.routeData === void 0 && tab.name.value === currentModel.value) === true) {
+        if (name2 === null && tabDataList.some((tab) => tab.routeData === void 0 && tab.name.value === currentModel.value) === true) {
           return;
         }
-        updateModel2({ name, setCurrent: true });
+        updateModel2({ name: name2, setCurrent: true });
       }
       function onFocusin(e) {
         removeFocusTimeout();
@@ -8179,7 +8221,7 @@
     }
   });
 
-  // src/utils/patterns.js
+  // src/utils/patterns/patterns.js
   var hex = /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/;
   var hexa = /^#[0-9a-fA-F]{4}([0-9a-fA-F]{4})?$/;
   var hexOrHexa = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
@@ -8211,7 +8253,7 @@
     testPattern
   };
 
-  // src/utils/colors.js
+  // src/utils/colors/colors.js
   var reRGBA = /^rgb(a)?\((\d{1,3}),(\d{1,3}),(\d{1,3}),?([01]?\.?\d*?)?\)$/;
   function rgbToHex({ r, g, b, a }) {
     const alpha = a !== void 0;
@@ -8545,7 +8587,7 @@
       const { proxy } = getCurrentInstance();
       const { $q } = proxy;
       const isDark = use_dark_default(props4, $q);
-      const { getCache } = use_cache_default();
+      const { getCache } = use_render_cache_default();
       const spectrumRef = ref(null);
       const errorIconRef = ref(null);
       const forceHex = computed(() => props4.formatModel === "auto" ? null : props4.formatModel.indexOf("hex") !== -1);
@@ -8661,7 +8703,7 @@
         model.value.v = v;
         updateModel2(rgb2, change);
       }
-      function onHueChange(val, change) {
+      function onHue(val, change) {
         const h2 = Math.round(val);
         const rgb2 = hsvToRgb({
           h: h2,
@@ -8671,6 +8713,9 @@
         });
         model.value.h = h2;
         updateModel2(rgb2, change);
+      }
+      function onHueChange(val) {
+        onHue(val, true);
       }
       function onNumericChange(value2, formatModel, max, evt, change) {
         evt !== void 0 && stop(evt);
@@ -8809,6 +8854,9 @@
           errorIconRef.value.$el.style.opacity = val ? 1 : 0;
         }
       }
+      function setTopView(val) {
+        topView.value = val;
+      }
       function getHeader() {
         const child = [];
         props4.noHeaderTabs !== true && child.push(
@@ -8817,11 +8865,7 @@
             modelValue: topView.value,
             dense: true,
             align: "justify",
-            ...getCache("topVTab", {
-              "onUpdate:modelValue": (val) => {
-                topView.value = val;
-              }
-            })
+            "onUpdate:modelValue": setTopView
           }, () => [
             h(QTab_default, {
               label: "HEX" + (hasAlpha.value === true ? "A" : ""),
@@ -8890,6 +8934,9 @@
           }, getPaletteTab)
         ]);
       }
+      function setView(val) {
+        view.value = val;
+      }
       function getFooter() {
         return h("div", {
           class: "q-color-picker__footer relative-position overflow-hidden"
@@ -8899,11 +8946,7 @@
             modelValue: view.value,
             dense: true,
             align: "justify",
-            ...getCache("ftIn", {
-              "onUpdate:modelValue": (val) => {
-                view.value = val;
-              }
-            })
+            "onUpdate:modelValue": setView
           }, () => [
             h(QTab_default, {
               icon: $q.iconSet.colorPicker.spectrum,
@@ -8955,10 +8998,8 @@
             selectionColor: "transparent",
             readonly: editable.value !== true,
             thumbPath,
-            "onUpdate:modelValue": onHueChange,
-            ...getCache("lazyhue", {
-              onChange: (val) => onHueChange(val, true)
-            })
+            "onUpdate:modelValue": onHue,
+            onChange: onHueChange
           })
         ];
         hasAlpha.value === true && sliders.push(
@@ -9123,7 +9164,7 @@
     }
   });
 
-  // src/utils/private/date-persian.js
+  // src/utils/date/private.persian.js
   var breaks = [
     -61,
     9,
@@ -9362,7 +9403,7 @@
     };
   }
 
-  // src/utils/date.js
+  // src/utils/date/date.js
   var MILLISECONDS_IN_DAY = 864e5;
   var MILLISECONDS_IN_HOUR = 36e5;
   var MILLISECONDS_IN_MINUTE = 6e4;
@@ -9618,7 +9659,7 @@
     if (mask === void 0) {
       mask = defaultMask;
     }
-    const langOpts = getDateLocale(dateLocale, lang_default.props), months = langOpts.months, monthsShort = langOpts.monthsShort;
+    const langOpts = getDateLocale(dateLocale, Lang_default.props), months = langOpts.months, monthsShort = langOpts.monthsShort;
     const { regex, map } = getRegexData(mask, langOpts);
     const match = str.match(regex);
     if (match === null) {
@@ -10071,7 +10112,7 @@
     if (mask === void 0) {
       mask = defaultMask;
     }
-    const locale = getDateLocale(dateLocale, lang_default.props);
+    const locale = getDateLocale(dateLocale, Lang_default.props);
     return mask.replace(
       token,
       (match, text) => match in formatter ? formatter[match](date, locale, __forcedYear, __forcedTimezoneOffset) : text === void 0 ? match : text.split("\\]").join("]")
@@ -10165,7 +10206,7 @@
       const { proxy } = getCurrentInstance();
       const { $q } = proxy;
       const isDark = use_dark_default(props4, $q);
-      const { getCache } = use_cache_default();
+      const { getCache } = use_render_cache_default();
       const { tabindex, headerClass, getLocale: getLocale2, getCurrentDate } = use_datetime_default(props4, $q);
       let lastEmitValue;
       const formAttrs = useFormAttrs(props4);
@@ -11221,12 +11262,12 @@
     }
   });
 
-  // src/composables/private/use-history.js
+  // src/composables/private.use-history/use-history.js
   function use_history_default(showing, hide, hideOnRouteChange) {
     let historyEntry;
     function removeFromHistory() {
       if (historyEntry !== void 0) {
-        history_default.remove(historyEntry);
+        History_default.remove(historyEntry);
         historyEntry = void 0;
       }
     }
@@ -11240,12 +11281,12 @@
           condition: () => hideOnRouteChange.value === true,
           handler: hide
         };
-        history_default.add(historyEntry);
+        History_default.add(historyEntry);
       }
     };
   }
 
-  // src/utils/prevent-scroll.js
+  // src/utils/scroll/prevent-scroll.js
   var registered = 0;
   var scrollPositionX;
   var scrollPositionY;
@@ -11382,7 +11423,7 @@
     apply(action);
   }
 
-  // src/composables/private/use-prevent-scroll.js
+  // src/composables/private.use-prevent-scroll/use-prevent-scroll.js
   function use_prevent_scroll_default() {
     let currentState;
     return {
@@ -11435,6 +11476,7 @@
       fullWidth: Boolean,
       fullHeight: Boolean,
       square: Boolean,
+      backdropFilter: String,
       position: {
         type: String,
         default: "standard",
@@ -11464,6 +11506,7 @@
         () => defaultTransitions[props4.position][0],
         () => defaultTransitions[props4.position][1]
       );
+      const backdropStyle = computed(() => transitionStyle.value + (props4.backdropFilter !== void 0 ? `;backdrop-filter:${props4.backdropFilter};-webkit-backdrop-filter:${props4.backdropFilter}` : ""));
       const { showPortal, hidePortal, portalIsAccessible, renderPortal } = use_portal_default(
         vm2,
         innerRef,
@@ -11552,11 +11595,19 @@
       function focus(selector) {
         addFocusFn(() => {
           let node = innerRef.value;
-          if (node === null || node.contains(document.activeElement) === true) {
+          if (node === null)
             return;
+          if (selector !== void 0) {
+            const target2 = node.querySelector(selector);
+            if (target2 !== null) {
+              target2.focus({ preventScroll: true });
+              return;
+            }
           }
-          node = (selector !== "" ? node.querySelector(selector) : null) || node.querySelector("[autofocus][tabindex], [data-autofocus][tabindex]") || node.querySelector("[autofocus] [tabindex], [data-autofocus] [tabindex]") || node.querySelector("[autofocus], [data-autofocus]") || node;
-          node.focus({ preventScroll: true });
+          if (node.contains(document.activeElement) !== true) {
+            node = node.querySelector("[autofocus][tabindex], [data-autofocus][tabindex]") || node.querySelector("[autofocus] [tabindex], [data-autofocus] [tabindex]") || node.querySelector("[autofocus], [data-autofocus]") || node;
+            node.focus({ preventScroll: true });
+          }
         });
       }
       function shake(focusTarget) {
@@ -11662,7 +11713,7 @@
             appear: true
           }, () => useBackdrop.value === true ? h("div", {
             class: "q-dialog__backdrop fixed-full",
-            style: transitionStyle.value,
+            style: backdropStyle.value,
             "aria-hidden": "true",
             tabindex: -1,
             onClick: onBackdropClick
@@ -12311,9 +12362,9 @@
         }
       }
     }
-    hasParent(name, spanLevel) {
+    hasParent(name2, spanLevel) {
       const el = spanLevel ? this.parent : this.blockParent;
-      return el !== null ? el.nodeName.toLowerCase() === name.toLowerCase() : false;
+      return el !== null ? el.nodeName.toLowerCase() === name2.toLowerCase() : false;
     }
     hasParents(list, recursive, el = this.parent) {
       if (el === null) {
@@ -12355,14 +12406,14 @@
       }
       return null;
     }
-    can(name) {
-      if (name === "outdent") {
+    can(name2) {
+      if (name2 === "outdent") {
         return this.hasParents(["blockquote", "li"], true);
       }
-      if (name === "indent") {
+      if (name2 === "indent") {
         return this.hasParents(["li"], true);
       }
-      if (name === "link") {
+      if (name2 === "link") {
         return this.selection !== null || this.is("link");
       }
     }
@@ -12932,13 +12983,13 @@
       }
     };
     aliases.forEach((alias) => {
-      const name = fonts[alias];
+      const name2 = fonts[alias];
       def[alias] = {
         cmd: "fontName",
-        param: name,
+        param: name2,
         icon: defaultFontIcon,
-        tip: name,
-        htmlTip: `<font face="${name}">${name}</font>`
+        tip: name2,
+        htmlTip: `<font face="${name2}">${name2}</font>`
       };
     });
     return def;
@@ -13008,9 +13059,10 @@
     }
   }
 
-  // src/composables/private/use-split-attrs.js
+  // src/composables/use-split-attrs/use-split-attrs.js
   var listenerRE = /^on[A-Z]/;
-  function use_split_attrs_default(attrs, vnode) {
+  function use_split_attrs_default() {
+    const { attrs, vnode } = getCurrentInstance();
     const acc = {
       listeners: ref({}),
       attributes: ref({})
@@ -13036,11 +13088,11 @@
     return acc;
   }
 
-  // src/utils/extend.js
+  // src/utils/extend/extend.js
   var toString = Object.prototype.toString;
   var hasOwn = Object.prototype.hasOwnProperty;
   var notPlainObject = new Set(
-    ["Boolean", "Number", "String", "Function", "Array", "Date", "RegExp"].map((name) => "[object " + name + "]")
+    ["Boolean", "Number", "String", "Function", "Array", "Date", "RegExp"].map((name2) => "[object " + name2 + "]")
   );
   function isPlainObject(obj) {
     if (obj !== Object(obj) || notPlainObject.has(toString.call(obj)) === true) {
@@ -13055,7 +13107,7 @@
     return key === void 0 || hasOwn.call(obj, key);
   }
   function extend() {
-    let options, name, src, copy, copyIsArray, clone2, target2 = arguments[0] || {}, i = 1, deep = false;
+    let options, name2, src, copy, copyIsArray, clone2, target2 = arguments[0] || {}, i = 1, deep = false;
     const length = arguments.length;
     if (typeof target2 === "boolean") {
       deep = target2;
@@ -13071,9 +13123,9 @@
     }
     for (; i < length; i++) {
       if ((options = arguments[i]) !== null) {
-        for (name in options) {
-          src = target2[name];
-          copy = options[name];
+        for (name2 in options) {
+          src = target2[name2];
+          copy = options[name2];
           if (target2 === copy) {
             continue;
           }
@@ -13083,9 +13135,9 @@
             } else {
               clone2 = isPlainObject(src) === true ? src : {};
             }
-            target2[name] = extend(deep, clone2, copy);
+            target2[name2] = extend(deep, clone2, copy);
           } else if (copy !== void 0) {
-            target2[name] = copy;
+            target2[name2] = copy;
           }
         }
       }
@@ -13163,12 +13215,12 @@
       "linkShow",
       "linkHide"
     ],
-    setup(props4, { slots, emit, attrs }) {
-      const { proxy, vnode } = getCurrentInstance();
+    setup(props4, { slots, emit }) {
+      const { proxy } = getCurrentInstance();
       const { $q } = proxy;
       const isDark = use_dark_default(props4, $q);
       const { inFullscreen, toggleFullscreen } = use_fullscreen_default();
-      const splitAttrs = use_split_attrs_default(attrs, vnode);
+      const splitAttrs = use_split_attrs_default();
       const rootRef = ref(null);
       const contentRef = ref(null);
       const editLinkUrl = ref(null);
@@ -13779,7 +13831,7 @@
       );
       const headerSlotScope = computed(() => ({
         expanded: showing.value === true,
-        detailsId: props4.targetUid,
+        detailsId: targetUid.value,
         toggle,
         show,
         hide
@@ -13793,9 +13845,9 @@
           "aria-label": toggleAriaLabel
         };
       });
-      watch(() => props4.group, (name) => {
+      watch(() => props4.group, (name2) => {
         exitGroup !== void 0 && exitGroup();
-        name !== void 0 && enterGroup();
+        name2 !== void 0 && enterGroup();
       });
       function onHeaderClick(e) {
         hasLink.value !== true && toggle(e);
@@ -14224,7 +14276,7 @@
     }
   });
 
-  // src/composables/use-form-child.js
+  // src/composables/use-form/use-form-child.js
   function use_form_child_default({ validate, resetValidation, requiresQForm }) {
     const $form = inject(formKey, false);
     if ($form !== false) {
@@ -14249,7 +14301,7 @@
     }
   }
 
-  // src/composables/private/use-validate.js
+  // src/composables/private.use-validate/use-validate.js
   var lazyRulesValues = [true, false, "ondemand"];
   var useValidateProps = {
     modelValue: {},
@@ -14392,7 +14444,7 @@
     };
   }
 
-  // src/composables/private/use-field.js
+  // src/composables/private.use-field/use-field.js
   function fieldValueIsFilled(val) {
     return val !== void 0 && val !== null && ("" + val).length !== 0;
   }
@@ -14431,9 +14483,12 @@
   };
   var useFieldEmits = ["update:modelValue", "clear", "focus", "blur", "popupShow", "popupHide"];
   function useFieldState({ requiredForAttr = true, tagProp } = {}) {
-    const { props: props4, attrs, proxy, vnode } = getCurrentInstance();
+    const { props: props4, proxy } = getCurrentInstance();
     const isDark = use_dark_default(props4, proxy.$q);
-    const targetUid = use_id_default(props4.for, requiredForAttr);
+    const targetUid = use_id_default({
+      required: requiredForAttr,
+      getValue: () => props4.for
+    });
     return {
       requiredForAttr,
       tag: tagProp === true ? computed(() => props4.tag) : { value: "label" },
@@ -14444,7 +14499,7 @@
       innerLoading: ref(false),
       focused: ref(false),
       hasPopupOpen: false,
-      splitAttrs: use_split_attrs_default(attrs, vnode),
+      splitAttrs: use_split_attrs_default(),
       targetUid,
       rootRef: ref(null),
       targetRef: ref(null),
@@ -14557,9 +14612,6 @@
         acc["aria-disabled"] = "true";
       }
       return acc;
-    });
-    watch(() => props4.for, (val) => {
-      state.targetUid.value = getId(val, state.requiredForAttr);
     });
     function focusHandler() {
       const el = document.activeElement;
@@ -14837,7 +14889,7 @@
     }
   });
 
-  // src/composables/private/use-file.js
+  // src/composables/private.use-file/use-file.js
   function filterFiles(files, rejectedFiles, failedPropValidation, filterFn) {
     const acceptedFiles = [];
     files.forEach((file) => {
@@ -15013,7 +15065,7 @@
     };
   }
 
-  // src/composables/private/use-file-dom-props.js
+  // src/composables/private.use-file/use-file-dom-props.js
   function use_file_dom_props_default(props4, typeGuard) {
     function getFormDomProps() {
       const model = props4.modelValue;
@@ -15691,7 +15743,7 @@
     }
   });
 
-  // src/composables/private/use-ratio.js
+  // src/composables/private.use-ratio/use-ratio.js
   var useRatioProps = {
     ratio: [String, Number]
   };
@@ -15705,7 +15757,7 @@
   }
 
   // src/components/img/QImg.js
-  var defaultRatio = 16 / 9;
+  var defaultRatio = 1.7778;
   var QImg_default = createComponent({
     name: "QImg",
     props: {
@@ -15737,6 +15789,7 @@
         default: defaultRatio
       },
       placeholderSrc: String,
+      errorSrc: String,
       fit: {
         type: String,
         default: "cover"
@@ -15760,9 +15813,11 @@
       const vm2 = getCurrentInstance();
       const { registerTimeout: registerLoadTimeout, removeTimeout: removeLoadTimeout } = use_timeout_default();
       const { registerTimeout: registerLoadShowTimeout, removeTimeout: removeLoadShowTimeout } = use_timeout_default();
+      const placeholderImg = computed(() => props4.placeholderSrc !== void 0 ? { src: props4.placeholderSrc } : null);
+      const errorImg = computed(() => props4.errorSrc !== void 0 ? { src: props4.errorSrc, __qerror: true } : null);
       const images = [
         ref(null),
-        ref(getPlaceholderSrc())
+        ref(placeholderImg.value)
       ];
       const position2 = ref(0);
       const isLoading = ref(false);
@@ -15775,14 +15830,13 @@
         height: props4.height
       }));
       const imgClass = computed(
-        () => `q-img__image ${props4.imgClass !== void 0 ? props4.imgClass + " " : ""}q-img__image--with${props4.noTransition === true ? "out" : ""}-transition`
+        () => `q-img__image ${props4.imgClass !== void 0 ? props4.imgClass + " " : ""}q-img__image--with${props4.noTransition === true ? "out" : ""}-transition q-img__image--`
       );
       const imgStyle = computed(() => ({
         ...props4.imgStyle,
         objectFit: props4.fit,
         objectPosition: props4.position
       }));
-      watch(() => getCurrentSrc(), addImage);
       function setLoading() {
         removeLoadShowTimeout();
         if (props4.loadingShowDelay === 0) {
@@ -15796,27 +15850,6 @@
       function clearLoading() {
         removeLoadShowTimeout();
         isLoading.value = false;
-      }
-      function getCurrentSrc() {
-        return props4.src || props4.srcset || props4.sizes ? {
-          src: props4.src,
-          srcset: props4.srcset,
-          sizes: props4.sizes
-        } : null;
-      }
-      function getPlaceholderSrc() {
-        return props4.placeholderSrc !== void 0 ? { src: props4.placeholderSrc } : null;
-      }
-      function addImage(imgProps) {
-        removeLoadTimeout();
-        hasError.value = false;
-        if (imgProps === null) {
-          clearLoading();
-          images[position2.value ^ 1].value = getPlaceholderSrc();
-        } else {
-          setLoading();
-        }
-        images[position2.value].value = imgProps;
       }
       function onLoad({ target: target2 }) {
         if (vmIsDestroyed(vm2) === false) {
@@ -15836,21 +15869,23 @@
           }, 50);
         }
       }
-      function onReady(img) {
+      function onReady(target2) {
         if (vmIsDestroyed(vm2) === true)
           return;
         position2.value = position2.value ^ 1;
         images[position2.value].value = null;
         clearLoading();
-        hasError.value = false;
-        emit("load", img.currentSrc || img.src);
+        if (target2.getAttribute("__qerror") !== "true") {
+          hasError.value = false;
+        }
+        emit("load", target2.currentSrc || target2.src);
       }
       function onError(err) {
         removeLoadTimeout();
         clearLoading();
         hasError.value = true;
-        images[position2.value].value = null;
-        images[position2.value ^ 1].value = getPlaceholderSrc();
+        images[position2.value].value = errorImg.value;
+        images[position2.value ^ 1].value = placeholderImg.value;
         emit("error", err);
       }
       function getImage(index) {
@@ -15872,10 +15907,13 @@
           ...img
         };
         if (position2.value === index) {
-          data.class += " q-img__image--waiting";
-          Object.assign(data, { onLoad, onError });
+          Object.assign(data, {
+            class: data.class + "current",
+            onLoad,
+            onError
+          });
         } else {
-          data.class += " q-img__image--loaded";
+          data.class += "loaded";
         }
         return h(
           "div",
@@ -15901,12 +15939,31 @@
         ]);
       }
       if (true) {
-        if (false) {
-          onMounted(() => {
-            addImage(getCurrentSrc());
-          });
+        let watchSrc = function() {
+          watch(
+            () => props4.src || props4.srcset || props4.sizes ? {
+              src: props4.src,
+              srcset: props4.srcset,
+              sizes: props4.sizes
+            } : null,
+            (imgProps) => {
+              removeLoadTimeout();
+              hasError.value = false;
+              if (imgProps === null) {
+                clearLoading();
+                images[position2.value ^ 1].value = placeholderImg.value;
+              } else {
+                setLoading();
+              }
+              images[position2.value].value = imgProps;
+            },
+            { immediate: true }
+          );
+        };
+        if (isRuntimeSsrPreHydration.value === true) {
+          onMounted(watchSrc);
         } else {
-          addImage(getCurrentSrc());
+          watchSrc();
         }
       }
       return () => {
@@ -15916,18 +15973,21 @@
             h("div", { key: "filler", style: ratioStyle.value })
           );
         }
-        if (hasError.value !== true) {
-          if (images[0].value !== null) {
-            content.push(getImage(0));
-          }
-          if (images[1].value !== null) {
-            content.push(getImage(1));
-          }
+        if (images[0].value !== null) {
+          content.push(
+            getImage(0)
+          );
+        }
+        if (images[1].value !== null) {
+          content.push(
+            getImage(1)
+          );
         }
         content.push(
           h(Transition, { name: "q-transition--fade" }, getContent)
         );
         return h("div", {
+          key: "main",
           class: classes.value,
           style: style2.value,
           role: "img",
@@ -16550,7 +16610,7 @@
     };
   }
 
-  // src/composables/private/use-key-composition.js
+  // src/composables/private.use-key-composition/use-key-composition.js
   var isJapanese = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
   var isChinese = /[\u4e00-\u9fff\u3400-\u4dbf\u{20000}-\u{2a6df}\u{2a700}-\u{2b73f}\u{2b740}-\u{2b81f}\u{2b820}-\u{2ceaf}\uf900-\ufaff\u3300-\u33ff\ufe30-\ufe4f\uf900-\ufaff\u{2f800}-\u{2fa1f}]/u;
   var isKorean = /[\u3131-\u314e\u314f-\u3163\uac00-\ud7a3]/;
@@ -16888,7 +16948,7 @@
     }
   });
 
-  // src/directives/Intersection.js
+  // src/directives/intersection/Intersection.js
   var defaultCfg = {
     threshold: 0,
     root: null,
@@ -17115,8 +17175,8 @@
       const attrs = computed(() => editable.value === true ? { tabindex: props4.tabindex } : { [`aria-${props4.disable === true ? "disabled" : "readonly"}`]: "true" });
       const circularProps = computed(() => {
         const agg = {};
-        commonPropsName.forEach((name) => {
-          agg[name] = props4[name];
+        commonPropsName.forEach((name2) => {
+          agg[name2] = props4[name2];
         });
         return agg;
       });
@@ -17565,9 +17625,9 @@
       placeholder: String
     },
     setup(props4, { slots }) {
-      const canRender = use_can_render_default();
+      const { isHydrated } = use_hydration_default();
       return () => {
-        if (canRender.value === true) {
+        if (isHydrated.value === true) {
           const node2 = hSlot(slots.default);
           return node2 === void 0 ? node2 : node2.length > 1 ? h(props4.tag, {}, node2) : node2[0];
         }
@@ -18465,7 +18525,7 @@
     }
   });
 
-  // src/utils/frame-debounce.js
+  // src/utils/frame-debounce/frame-debounce.js
   function frame_debounce_default(fn) {
     let wait = false, frame, callArgs;
     function debounced() {
@@ -18473,7 +18533,7 @@
       if (wait === true)
         return;
       wait = true;
-      frame = requestAnimationFrame(() => {
+      frame = window.requestAnimationFrame(() => {
         fn.apply(this, callArgs);
         callArgs = void 0;
         wait = false;
@@ -18616,7 +18676,7 @@
     }
   });
 
-  // src/utils/clone.js
+  // src/utils/clone/clone.js
   function cloneDeep(data, hash = /* @__PURE__ */ new WeakMap()) {
     if (Object(data) !== data)
       return data;
@@ -19488,14 +19548,14 @@
         const acc = [], icons = iconData.value, ceil = Math.ceil(props4.modelValue), tabindex = editable.value === true ? 0 : null;
         const halfIndex = props4.iconHalf === void 0 || ceil === props4.modelValue ? -1 : ceil;
         for (let i = 1; i <= props4.max; i++) {
-          const active = mouseModel.value === 0 && props4.modelValue >= i || mouseModel.value > 0 && mouseModel.value >= i, half = halfIndex === i && mouseModel.value < i, exSelected = mouseModel.value > 0 && (half === true ? ceil : props4.modelValue) >= i && mouseModel.value < i, color = half === true ? i <= icons.halfColorLen ? props4.colorHalf[i - 1] : icons.halfColor : icons.selColor !== void 0 && active === true ? i <= icons.selColorLen ? props4.colorSelected[i - 1] : icons.selColor : i <= icons.colorLen ? props4.color[i - 1] : icons.color, name = (half === true ? i <= icons.halfIconLen ? props4.iconHalf[i - 1] : icons.halfIcon : icons.selIcon !== void 0 && (active === true || exSelected === true) ? i <= icons.selIconLen ? props4.iconSelected[i - 1] : icons.selIcon : i <= icons.iconLen ? props4.icon[i - 1] : icons.icon) || $q.iconSet.rating.icon;
+          const active = mouseModel.value === 0 && props4.modelValue >= i || mouseModel.value > 0 && mouseModel.value >= i, half = halfIndex === i && mouseModel.value < i, exSelected = mouseModel.value > 0 && (half === true ? ceil : props4.modelValue) >= i && mouseModel.value < i, color = half === true ? i <= icons.halfColorLen ? props4.colorHalf[i - 1] : icons.halfColor : icons.selColor !== void 0 && active === true ? i <= icons.selColorLen ? props4.colorSelected[i - 1] : icons.selColor : i <= icons.colorLen ? props4.color[i - 1] : icons.color, name2 = (half === true ? i <= icons.halfIconLen ? props4.iconHalf[i - 1] : icons.halfIcon : icons.selIcon !== void 0 && (active === true || exSelected === true) ? i <= icons.selIconLen ? props4.iconSelected[i - 1] : icons.selIcon : i <= icons.iconLen ? props4.icon[i - 1] : icons.icon) || $q.iconSet.rating.icon;
           acc.push({
             name: (half === true ? i <= icons.halfIconLen ? props4.iconHalf[i - 1] : icons.halfIcon : icons.selIcon !== void 0 && (active === true || exSelected === true) ? i <= icons.selIconLen ? props4.iconSelected[i - 1] : icons.selIcon : i <= icons.iconLen ? props4.icon[i - 1] : icons.icon) || $q.iconSet.rating.icon,
             attrs: {
               tabindex,
               role: "radio",
               "aria-checked": props4.modelValue === i ? "true" : "false",
-              "aria-label": iconLabel.value(i, name)
+              "aria-label": iconLabel.value(i, name2)
             },
             iconClass: "q-rating__icon" + (active === true || half === true ? " q-rating__icon--active" : "") + (exSelected === true ? " q-rating__icon--exselected" : "") + (mouseModel.value === i ? " q-rating__icon--hovered" : "") + (color !== void 0 ? ` text-${color}` : "")
           });
@@ -19552,7 +19612,7 @@
       });
       return () => {
         const child = [];
-        stars.value.forEach(({ iconClass, name, attrs }, index) => {
+        stars.value.forEach(({ iconClass, name: name2, attrs }, index) => {
           const i = index + 1;
           child.push(
             h("div", {
@@ -19578,7 +19638,7 @@
               }
             }, hMergeSlot(
               slots[`tip-${i}`],
-              [h(QIcon_default, { class: iconClass, name })]
+              [h(QIcon_default, { class: iconClass, name: name2 })]
             ))
           );
         });
@@ -20592,6 +20652,7 @@
       menuOffset: Array,
       popupContentClass: String,
       popupContentStyle: [String, Array, Object],
+      popupNoRouteDismiss: Boolean,
       useInput: Boolean,
       useChips: Boolean,
       newValueMode: {
@@ -20631,7 +20692,6 @@
       "add",
       "remove",
       "inputValue",
-      "newValue",
       "keyup",
       "keypress",
       "keydown",
@@ -21349,6 +21409,7 @@
           noParentEvent: true,
           noRefocus: true,
           noFocus: true,
+          noRouteDismiss: props4.popupNoRouteDismiss,
           square: squaredMenu.value,
           transitionShow: props4.transitionShow,
           transitionHide: props4.transitionHide,
@@ -21419,6 +21480,7 @@
           transitionShow: transitionShowComputed,
           transitionHide: props4.transitionHide,
           transitionDuration: props4.transitionDuration,
+          noRouteDismiss: props4.popupNoRouteDismiss,
           onBeforeShow: onControlPopupShow,
           onBeforeHide: onDialogBeforeHide,
           onHide: onDialogHide,
@@ -21766,7 +21828,7 @@
       const { proxy } = getCurrentInstance();
       const { $q } = proxy;
       const isDark = use_dark_default(props4, $q);
-      const { getCacheWithFn } = use_cache_default();
+      const { getCache } = use_render_cache_default();
       const contentRef = ref(null);
       let timer2 = null, pan = {}, dirRefs = {}, dirContentRefs = {};
       const langDir = computed(() => $q.lang.rtl === true ? { left: "right", right: "left" } : { left: "left", right: "right" });
@@ -21887,7 +21949,7 @@
           content.push(node);
         } else {
           content.push(
-            withDirectives(node, getCacheWithFn("dir#" + dirs.join(""), () => {
+            withDirectives(node, getCache("dir#" + dirs.join(""), () => {
               const modifiers = {
                 prevent: true,
                 stop: true,
@@ -24118,7 +24180,7 @@
         console.error("QStep needs to be a child of QStepper");
         return emptyRenderFn;
       }
-      const { getCacheWithFn } = use_cache_default();
+      const { getCache } = use_render_cache_default();
       const rootRef = ref(null);
       const isActive = computed(() => $stepper.value.modelValue === props4.name);
       const scrollEvent = computed(() => $q.platform.is.ios !== true && $q.platform.is.chrome === true || isActive.value !== true || $stepper.value.vertical !== true ? {} : {
@@ -24139,7 +24201,7 @@
             $stepper.value.keepAliveProps.value,
             isActive.value === true ? [
               h(
-                $stepper.value.needsUniqueKeepAliveWrapper.value === true ? getCacheWithFn(contentKey.value, () => ({ ...PanelWrapper2, name: contentKey.value })) : PanelWrapper2,
+                $stepper.value.needsUniqueKeepAliveWrapper.value === true ? getCache(contentKey.value, () => ({ ...PanelWrapper2, name: contentKey.value })) : PanelWrapper2,
                 { key: contentKey.value },
                 slots.default
               )
@@ -24293,9 +24355,9 @@
           }, hSlot(slots.default));
         }
         let col, child;
-        const name = vm2.vnode.key;
-        if (name) {
-          col = props4.props.colsMap[name];
+        const name2 = vm2.vnode.key;
+        if (name2) {
+          col = props4.props.colsMap[name2];
           if (col === void 0)
             return;
         } else {
@@ -24452,7 +24514,7 @@
     }
   });
 
-  // src/utils/private/sort.js
+  // src/utils/private.sort/sort.js
   function sortDate(a, b) {
     return new Date(a) - new Date(b);
   }
@@ -24849,11 +24911,11 @@
         return props4.columns;
       }
       const row = props4.rows[0];
-      return row !== void 0 ? Object.keys(row).map((name) => ({
-        name,
-        label: name.toUpperCase(),
-        field: name,
-        align: isNumber(row[name]) ? "right" : "left",
+      return row !== void 0 ? Object.keys(row).map((name2) => ({
+        name: name2,
+        label: name2.toUpperCase(),
+        field: name2,
+        align: isNumber(row[name2]) ? "right" : "left",
         sortable: true
       })) : [];
     });
@@ -24902,7 +24964,7 @@
     props: {
       rows: {
         type: Array,
-        default: () => []
+        required: true
       },
       rowKey: {
         type: [String, Function],
@@ -25201,19 +25263,19 @@
         if (props4.onRowClick !== void 0) {
           data.class["cursor-pointer"] = true;
           data.onClick = (evt) => {
-            emit("RowClick", evt, row, pageIndex);
+            emit("rowClick", evt, row, pageIndex);
           };
         }
         if (props4.onRowDblclick !== void 0) {
           data.class["cursor-pointer"] = true;
           data.onDblclick = (evt) => {
-            emit("RowDblclick", evt, row, pageIndex);
+            emit("rowDblclick", evt, row, pageIndex);
           };
         }
         if (props4.onRowContextmenu !== void 0) {
           data.class["cursor-pointer"] = true;
           data.onContextmenu = (evt) => {
-            emit("RowContextmenu", evt, row, pageIndex);
+            emit("rowContextmenu", evt, row, pageIndex);
           };
         }
         return h("tr", data, child);
@@ -25708,8 +25770,8 @@
         if (props4.props === void 0) {
           return h("td", { class: classes.value }, hSlot(slots.default));
         }
-        const name = vm2.vnode.key;
-        const col = (props4.props.colsMap !== void 0 ? props4.props.colsMap[name] : null) || props4.props.col;
+        const name2 = vm2.vnode.key;
+        const col = (props4.props.colsMap !== void 0 ? props4.props.colsMap[name2] : null) || props4.props.col;
         if (col === void 0)
           return;
         const { row } = props4.props;
@@ -27421,7 +27483,7 @@
     };
   }
 
-  // src/utils/private/get-emits-object.js
+  // src/utils/private.get-emits-object/get-emits-object.js
   var trueFn = () => true;
   function get_emits_object_default(emitsArray) {
     const emitsObject = {};
@@ -27431,10 +27493,10 @@
     return emitsObject;
   }
 
-  // src/utils/create-uploader-component.js
+  // src/utils/create-uploader-component/create-uploader-component.js
   var coreEmitsObject = get_emits_object_default(coreEmits);
-  var create_uploader_component_default = ({ name, props: props4, emits: emits3, injectPlugin: injectPlugin2 }) => createComponent({
-    name,
+  var create_uploader_component_default = ({ name: name2, props: props4, emits: emits3, injectPlugin: injectPlugin2 }) => createComponent({
+    name: name2,
     props: {
       ...coreProps,
       ...props4
@@ -27449,6 +27511,7 @@
   function getFn(prop) {
     return typeof prop === "function" ? prop : () => prop;
   }
+  var name = "QUploader";
   var props = {
     url: [Function, String],
     method: {
@@ -27549,8 +27612,8 @@
     }
     function performUpload(files, factory) {
       const form = new FormData(), xhr2 = new XMLHttpRequest();
-      const getProp2 = (name, arg) => {
-        return factory[name] !== void 0 ? getFn(factory[name])(arg) : xhrProps.value[name](arg);
+      const getProp2 = (name2, arg) => {
+        return factory[name2] !== void 0 ? getFn(factory[name2])(arg) : xhrProps.value[name2](arg);
       };
       const url = getProp2("url", files);
       if (!url) {
@@ -27644,7 +27707,7 @@
     };
   }
   var xhr_uploader_plugin_default = {
-    name: "QUploader",
+    name,
     props,
     emits,
     injectPlugin
@@ -27726,7 +27789,7 @@
     TouchSwipe: () => TouchSwipe_default
   });
 
-  // src/directives/ClosePopup.js
+  // src/directives/close-popup/ClosePopup.js
   function getDepth(value2) {
     if (value2 === false) {
       return 0;
@@ -27773,7 +27836,7 @@
     }
   );
 
-  // src/utils/morph.js
+  // src/utils/morph/morph.js
   var id2 = 0;
   var offsetBase = void 0;
   function getAbsolutePosition(el, resize) {
@@ -28512,7 +28575,7 @@
     return (abort) => cancel(abort);
   }
 
-  // src/directives/Morph.js
+  // src/directives/morph/Morph.js
   var morphGroups = {};
   var props2 = [
     "duration",
@@ -28583,8 +28646,8 @@
   }
   function updateModifiers2(mod2, ctx) {
     const opts = ctx.opts;
-    mods.forEach((name) => {
-      opts[name] = mod2[name] === true;
+    mods.forEach((name2) => {
+      opts[name2] = mod2[name2] === true;
     });
   }
   function insertArgs(arg, ctx) {
@@ -28604,25 +28667,25 @@
       ctx.name = arg.name;
     }
     const opts = ctx.opts;
-    props2.forEach((name) => {
-      if (arg[name] !== void 0) {
-        opts[name] = arg[name];
+    props2.forEach((name2) => {
+      if (arg[name2] !== void 0) {
+        opts[name2] = arg[name2];
       }
     });
   }
-  function updateModel(name, ctx) {
-    if (ctx.name === name) {
+  function updateModel(name2, ctx) {
+    if (ctx.name === name2) {
       const group = morphGroups[ctx.group];
       if (group === void 0) {
         morphGroups[ctx.group] = {
           name: ctx.group,
-          model: name,
+          model: name2,
           queue: [ctx],
           animating: false
         };
         changeClass(ctx, "remove");
-      } else if (group.model !== name) {
-        group.model = name;
+      } else if (group.model !== name2) {
+        group.model = name2;
         group.queue.push(ctx);
         if (group.animating === false && group.queue.length === 2) {
           trigger2(group);
@@ -28654,9 +28717,9 @@
     false ? {
       name: "morph",
       getSSRProps: (binding) => {
-        const name = binding.arg ? binding.arg.split(":")[0] : false;
+        const name2 = binding.arg ? binding.arg.split(":")[0] : false;
         return {
-          class: name === binding.value ? "" : "q-morph--invisible"
+          class: name2 === binding.value ? "" : "q-morph--invisible"
         };
       }
     } : {
@@ -28696,7 +28759,7 @@
     }
   );
 
-  // src/directives/Mutation.js
+  // src/directives/mutation/Mutation.js
   var defaultCfg2 = {
     childList: true,
     subtree: true,
@@ -28746,7 +28809,7 @@
     }
   );
 
-  // src/directives/ScrollFire.js
+  // src/directives/scroll-fire/ScrollFire.js
   var { passive: passive5 } = listenOpts;
   function update4(ctx, { value: value2, oldValue }) {
     if (typeof value2 !== "function") {
@@ -28797,7 +28860,7 @@
     }
   );
 
-  // src/directives/Scroll.js
+  // src/directives/scroll/Scroll.js
   function update5(ctx, { value: value2, oldValue }) {
     if (typeof value2 !== "function") {
       ctx.scrollTarget.removeEventListener("scroll", ctx.scroll, listenOpts.passive);
@@ -28837,7 +28900,7 @@
     }
   );
 
-  // src/directives/TouchHold.js
+  // src/directives/touch-hold/TouchHold.js
   var TouchHold_default = createDirective(
     false ? { name: "touch-hold", getSSRProps: noop_ssr_directive_transform_default } : {
       name: "touch-hold",
@@ -28961,7 +29024,7 @@
     }
   );
 
-  // src/directives/TouchRepeat.js
+  // src/directives/touch-repeat/TouchRepeat.js
   var keyCodes3 = {
     esc: 27,
     tab: 9,
@@ -29158,10 +29221,12 @@
     AddressbarColor: () => AddressbarColor_default,
     AppFullscreen: () => AppFullscreen_default,
     AppVisibility: () => AppVisibility_default,
-    BottomSheet: () => BottomSheet_default2,
+    BottomSheet: () => BottomSheet_default,
     Cookies: () => Cookies_default,
     Dark: () => Dark_default,
     Dialog: () => Dialog_default,
+    IconSet: () => IconSet_default,
+    Lang: () => Lang_default,
     Loading: () => Loading_default,
     LoadingBar: () => LoadingBar_default,
     LocalStorage: () => LocalStorage_default,
@@ -29172,7 +29237,7 @@
     SessionStorage: () => SessionStorage_default
   });
 
-  // src/utils/get-css-var.js
+  // src/utils/css-var/get-css-var.js
   function getCssVar(propName, element = document.body) {
     if (typeof propName !== "string") {
       throw new TypeError("Expected a string as propName");
@@ -29183,7 +29248,7 @@
     return getComputedStyle(element).getPropertyValue(`--q-${propName}`).trim() || null;
   }
 
-  // src/plugins/AddressbarColor.js
+  // src/plugins/addressbar/AddressbarColor.js
   var metaValue;
   function getProp() {
     return client.is.winphone ? "msapplication-navbutton-color" : client.is.safari ? "apple-mobile-web-app-status-bar-style" : "theme-color";
@@ -29226,7 +29291,7 @@
     }
   };
 
-  // src/plugins/AppFullscreen.js
+  // src/plugins/app-fullscreen/AppFullscreen.js
   var prefixes = {};
   function assignFn(fn) {
     Object.assign(Plugin4, {
@@ -29256,7 +29321,7 @@
       return Promise.reject(err);
     }
   }
-  var Plugin4 = define_reactive_plugin_default({
+  var Plugin4 = createReactivePlugin({
     isActive: false,
     activeEl: null
   }, {
@@ -29314,8 +29379,8 @@
   }
   var AppFullscreen_default = Plugin4;
 
-  // src/plugins/AppVisibility.js
-  var Plugin5 = define_reactive_plugin_default({
+  // src/plugins/app-visibility/AppVisibility.js
+  var Plugin5 = createReactivePlugin({
     appVisible: true
   }, {
     install({ $q }) {
@@ -29347,9 +29412,9 @@
   }
   var AppVisibility_default = Plugin5;
 
-  // src/components/dialog-bottom-sheet/BottomSheet.js
-  var BottomSheet_default = createComponent({
-    name: "BottomSheetPlugin",
+  // src/plugins/bottom-sheet/component/BottomSheetComponent.js
+  var BottomSheetComponent_default = createComponent({
+    name: "BottomSheetComponent",
     props: {
       ...useDarkProps,
       title: String,
@@ -29474,7 +29539,7 @@
     }
   });
 
-  // src/utils/private/global-dialog.js
+  // src/utils/private.global/global-dialog.js
   function merge(target2, source) {
     for (const key in source) {
       if (key !== "spinner" && Object(source[key]) === source[key]) {
@@ -29594,17 +29659,14 @@
     };
   }
 
-  // src/plugins/BottomSheet.js
-  var BottomSheet_default2 = {
+  // src/plugins/bottom-sheet/BottomSheet.js
+  var BottomSheet_default = {
     install({ $q, parentApp }) {
-      $q.bottomSheet = global_dialog_default(BottomSheet_default, false, parentApp);
-      if (this.__installed !== true) {
-        this.create = $q.bottomSheet;
-      }
+      $q.bottomSheet = this.create = global_dialog_default(BottomSheetComponent_default, false, parentApp);
     }
   };
 
-  // src/plugins/Cookies.js
+  // src/plugins/cookies/Cookies.js
   function encode(string) {
     return encodeURIComponent(string);
   }
@@ -29703,14 +29765,14 @@
   }
   function get(key, ssr) {
     const cookieSource = ssr ? ssr.req.headers : document, cookies = cookieSource.cookie ? cookieSource.cookie.split("; ") : [], l = cookies.length;
-    let result = key ? null : {}, i = 0, parts, name, cookie;
+    let result = key ? null : {}, i = 0, parts, name2, cookie;
     for (; i < l; i++) {
       parts = cookies[i].split("=");
-      name = decode(parts.shift());
+      name2 = decode(parts.shift());
       cookie = parts.join("=");
       if (!key) {
-        result[name] = cookie;
-      } else if (key === name) {
+        result[name2] = cookie;
+      } else if (key === name2) {
         result = read(cookie);
         break;
       }
@@ -29754,9 +29816,9 @@
   }
   var Cookies_default = Plugin6;
 
-  // src/components/dialog-plugin/DialogPlugin.js
-  var DialogPlugin_default = createComponent({
-    name: "DialogPlugin",
+  // src/plugins/dialog/component/DialogPluginComponent.js
+  var DialogPluginComponent_default = createComponent({
+    name: "DialogPluginComponent",
     props: {
       ...useDarkProps,
       title: String,
@@ -29971,72 +30033,14 @@
     }
   });
 
-  // src/plugins/Dialog.js
+  // src/plugins/dialog/Dialog.js
   var Dialog_default = {
     install({ $q, parentApp }) {
-      $q.dialog = global_dialog_default(DialogPlugin_default, true, parentApp);
-      if (this.__installed !== true) {
-        this.create = $q.dialog;
-      }
+      $q.dialog = this.create = global_dialog_default(DialogPluginComponent_default, true, parentApp);
     }
   };
 
-  // src/plugins/LoadingBar.js
-  var barRef = ref(null);
-  var Plugin7 = define_reactive_plugin_default({
-    isActive: false
-  }, {
-    start: noop,
-    stop: noop,
-    increment: noop,
-    setDefaults: noop,
-    install({ $q, parentApp }) {
-      $q.loadingBar = this;
-      if (false)
-        return;
-      if (this.__installed === true) {
-        if ($q.config.loadingBar !== void 0) {
-          this.setDefaults($q.config.loadingBar);
-        }
-        return;
-      }
-      const props4 = ref(
-        $q.config.loadingBar !== void 0 ? { ...$q.config.loadingBar } : {}
-      );
-      function onStart() {
-        Plugin7.isActive = true;
-      }
-      function onStop() {
-        Plugin7.isActive = false;
-      }
-      const el = createGlobalNode("q-loading-bar");
-      createChildApp({
-        name: "LoadingBar",
-        // hide App from Vue devtools
-        devtools: { hide: true },
-        setup: () => () => h(QAjaxBar_default, { ...props4.value, onStart, onStop, ref: barRef })
-      }, parentApp).mount(el);
-      Object.assign(this, {
-        start(speed) {
-          barRef.value.start(speed);
-        },
-        stop() {
-          barRef.value.stop();
-        },
-        increment() {
-          barRef.value.increment.apply(null, arguments);
-        },
-        setDefaults(opts) {
-          if (isObject(opts) === true) {
-            Object.assign(props4.value, opts);
-          }
-        }
-      });
-    }
-  });
-  var LoadingBar_default = Plugin7;
-
-  // src/plugins/Loading.js
+  // src/plugins/loading/Loading.js
   var app;
   var vm;
   var uid2 = 0;
@@ -30065,7 +30069,7 @@
     activeGroups[newProps.group] = newProps;
     return newProps;
   }
-  var Plugin8 = define_reactive_plugin_default({
+  var Plugin7 = createReactivePlugin({
     isActive: false
   }, {
     show(opts) {
@@ -30073,7 +30077,7 @@
         return;
       props3 = registerProps(opts);
       const { group } = props3;
-      Plugin8.isActive = true;
+      Plugin7.isActive = true;
       if (app !== void 0) {
         props3.uid = uid2;
         vm.$forceUpdate();
@@ -30090,7 +30094,7 @@
                 prevent_scroll_default(true);
               });
               function onAfterLeave() {
-                if (Plugin8.isActive !== true && app !== void 0) {
+                if (Plugin7.isActive !== true && app !== void 0) {
                   prevent_scroll_default(false);
                   app.unmount(el);
                   removeGlobalNode(el);
@@ -30099,7 +30103,7 @@
                 }
               }
               function getContent() {
-                if (Plugin8.isActive !== true) {
+                if (Plugin7.isActive !== true) {
                   return null;
                 }
                 const content = [
@@ -30133,20 +30137,20 @@
                 onAfterLeave
               }, getContent);
             }
-          }, Plugin8.__parentApp);
+          }, Plugin7.__parentApp);
           vm = app.mount(el);
         }, props3.delay);
       }
       return (paramProps) => {
         if (paramProps === void 0 || Object(paramProps) !== paramProps) {
-          Plugin8.hide(group);
+          Plugin7.hide(group);
           return;
         }
-        Plugin8.show({ ...paramProps, group });
+        Plugin7.show({ ...paramProps, group });
       };
     },
     hide(group) {
-      if (Plugin8.isActive === true) {
+      if (Plugin7.isActive === true) {
         if (group === void 0) {
           activeGroups = {};
         } else if (activeGroups[group] === void 0) {
@@ -30156,7 +30160,7 @@
           const keys = Object.keys(activeGroups);
           if (keys.length !== 0) {
             const lastGroup = keys[keys.length - 1];
-            Plugin8.show({ group: lastGroup });
+            Plugin7.show({ group: lastGroup });
             return;
           }
         }
@@ -30164,7 +30168,7 @@
           clearTimeout(timeout);
           timeout = null;
         }
-        Plugin8.isActive = false;
+        Plugin7.isActive = false;
       }
     },
     setDefaults(opts) {
@@ -30175,16 +30179,71 @@
     install({ $q, parentApp }) {
       $q.loading = this;
       if (true) {
-        Plugin8.__parentApp = parentApp;
+        Plugin7.__parentApp = parentApp;
         if ($q.config.loading !== void 0) {
           this.setDefaults($q.config.loading);
         }
       }
     }
   });
-  var Loading_default = Plugin8;
+  var Loading_default = Plugin7;
 
-  // src/plugins/Meta.js
+  // src/plugins/loading-bar/LoadingBar.js
+  var barRef = ref(null);
+  var Plugin8 = createReactivePlugin({
+    isActive: false
+  }, {
+    start: noop,
+    stop: noop,
+    increment: noop,
+    setDefaults: noop,
+    install({ $q, parentApp }) {
+      $q.loadingBar = this;
+      if (false)
+        return;
+      if (this.__installed === true) {
+        if ($q.config.loadingBar !== void 0) {
+          this.setDefaults($q.config.loadingBar);
+        }
+        return;
+      }
+      const props4 = ref(
+        $q.config.loadingBar !== void 0 ? { ...$q.config.loadingBar } : {}
+      );
+      function onStart() {
+        Plugin8.isActive = true;
+      }
+      function onStop() {
+        Plugin8.isActive = false;
+      }
+      const el = createGlobalNode("q-loading-bar");
+      createChildApp({
+        name: "LoadingBar",
+        // hide App from Vue devtools
+        devtools: { hide: true },
+        setup: () => () => h(QAjaxBar_default, { ...props4.value, onStart, onStop, ref: barRef })
+      }, parentApp).mount(el);
+      Object.assign(this, {
+        start(speed) {
+          barRef.value.start(speed);
+        },
+        stop() {
+          barRef.value.stop();
+        },
+        increment() {
+          barRef.value.increment.apply(null, arguments);
+        },
+        setDefaults(opts) {
+          if (isObject(opts) === true) {
+            Object.assign(props4.value, opts);
+          }
+        }
+      });
+    }
+  });
+  var LoadingBar_default = Plugin8;
+
+  // src/plugins/meta/Meta.js
   var updateId = null;
   var currentClientMeta;
   var clientList = [];
@@ -30196,11 +30255,11 @@
     ;
     [["meta", "content"], ["link", "href"]].forEach((type) => {
       const metaType = meta[type[0]], metaProp = type[1];
-      for (const name in metaType) {
-        const metaLink = metaType[name];
+      for (const name2 in metaType) {
+        const metaLink = metaType[name2];
         if (metaLink.template) {
           if (Object.keys(metaLink).length === 1) {
-            delete metaType[name];
+            delete metaType[name2];
           } else {
             metaLink[metaProp] = metaLink.template(metaLink[metaProp] || "");
             delete metaLink.template;
@@ -30219,11 +30278,11 @@
       }
     }
   }
-  function bodyFilter(name) {
-    return ["class", "style"].includes(name) === false;
+  function bodyFilter(name2) {
+    return ["class", "style"].includes(name2) === false;
   }
-  function htmlFilter(name) {
-    return ["lang", "dir"].includes(name) === false;
+  function htmlFilter(name2) {
+    return ["lang", "dir"].includes(name2) === false;
   }
   function diff(meta, other) {
     const add = {}, remove2 = {};
@@ -30264,39 +30323,39 @@
     }
     if (Object.keys(remove2).length !== 0) {
       ["meta", "link", "script"].forEach((type) => {
-        remove2[type].forEach((name) => {
-          document.head.querySelector(`${type}[data-qmeta="${name}"]`).remove();
+        remove2[type].forEach((name2) => {
+          document.head.querySelector(`${type}[data-qmeta="${name2}"]`).remove();
         });
       });
-      remove2.htmlAttr.filter(htmlFilter).forEach((name) => {
-        document.documentElement.removeAttribute(name);
+      remove2.htmlAttr.filter(htmlFilter).forEach((name2) => {
+        document.documentElement.removeAttribute(name2);
       });
-      remove2.bodyAttr.filter(bodyFilter).forEach((name) => {
-        document.body.removeAttribute(name);
+      remove2.bodyAttr.filter(bodyFilter).forEach((name2) => {
+        document.body.removeAttribute(name2);
       });
     }
     ;
     ["meta", "link", "script"].forEach((type) => {
       const metaType = add[type];
-      for (const name in metaType) {
+      for (const name2 in metaType) {
         const tag = document.createElement(type);
-        for (const att in metaType[name]) {
+        for (const att in metaType[name2]) {
           if (att !== "innerHTML") {
-            tag.setAttribute(att, metaType[name][att]);
+            tag.setAttribute(att, metaType[name2][att]);
           }
         }
-        tag.setAttribute("data-qmeta", name);
+        tag.setAttribute("data-qmeta", name2);
         if (type === "script") {
-          tag.innerHTML = metaType[name].innerHTML || "";
+          tag.innerHTML = metaType[name2].innerHTML || "";
         }
         document.head.appendChild(tag);
       }
     });
-    Object.keys(add.htmlAttr).filter(htmlFilter).forEach((name) => {
-      document.documentElement.setAttribute(name, add.htmlAttr[name] || "");
+    Object.keys(add.htmlAttr).filter(htmlFilter).forEach((name2) => {
+      document.documentElement.setAttribute(name2, add.htmlAttr[name2] || "");
     });
-    Object.keys(add.bodyAttr).filter(bodyFilter).forEach((name) => {
-      document.body.setAttribute(name, add.bodyAttr[name] || "");
+    Object.keys(add.bodyAttr).filter(bodyFilter).forEach((name2) => {
+      document.body.setAttribute(name2, add.bodyAttr[name2] || "");
     });
   }
   function updateClientMeta() {
@@ -30339,7 +30398,7 @@
     }
   };
 
-  // src/plugins/Notify.js
+  // src/plugins/notify/Notify.js
   var uid3 = 0;
   var defaults2 = {};
   var groups = {};
@@ -30740,10 +30799,10 @@
     }
   };
 
-  // src/utils/private/web-storage.js
+  // src/plugins/storage/engine/web-storage.js
   function encode2(value2) {
     if (isDate(value2) === true) {
-      return "__q_date|" + value2.toUTCString();
+      return "__q_date|" + value2.getTime();
     }
     if (isRegexp(value2) === true) {
       return "__q_expr|" + value2.source;
@@ -30774,7 +30833,8 @@
     const source = value2.substring(9);
     switch (type) {
       case "__q_date":
-        return new Date(source);
+        const number = Number(source);
+        return new Date(Number.isNaN(number) === true ? source : number);
       case "__q_expr":
         return new RegExp(source);
       case "__q_numb":
@@ -30793,6 +30853,8 @@
     const getVal2 = () => null;
     return {
       has: () => false,
+      // alias for hasItem; TODO: remove in Qv3
+      hasItem: () => false,
       getLength: () => 0,
       getItem: getVal2,
       getIndex: getVal2,
@@ -30801,7 +30863,11 @@
       },
       getAllKeys: () => [],
       set: noop,
+      // alias for setItem; TODO: remove in Qv3
+      setItem: noop,
       remove: noop,
+      // alias for removeItem; TODO: remove in Qv3
+      removeItem: noop,
       clear: noop,
       isEmpty: () => true
     };
@@ -30811,8 +30877,17 @@
       const item = webStorage.getItem(key);
       return item ? decode2(item) : null;
     };
+    const hasItem = (key) => webStorage.getItem(key) !== null;
+    const setItem = (key, value2) => {
+      webStorage.setItem(key, encode2(value2));
+    };
+    const removeItem = (key) => {
+      webStorage.removeItem(key);
+    };
     return {
-      has: (key) => webStorage.getItem(key) !== null,
+      has: hasItem,
+      // TODO: remove in Qv3
+      hasItem,
       getLength: () => webStorage.length,
       getItem: get2,
       getIndex: (index) => {
@@ -30837,12 +30912,12 @@
         }
         return result;
       },
-      set: (key, value2) => {
-        webStorage.setItem(key, encode2(value2));
-      },
-      remove: (key) => {
-        webStorage.removeItem(key);
-      },
+      set: setItem,
+      // TODO: remove in Qv3
+      setItem,
+      remove: removeItem,
+      // TODO: remove in Qv3
+      removeItem,
       clear: () => {
         webStorage.clear();
       },
@@ -30850,7 +30925,7 @@
     };
   }
 
-  // src/plugins/LocalStorage.js
+  // src/plugins/storage/LocalStorage.js
   var storage = client.has.webStorage === false ? getEmptyStorage() : getStorage("local");
   var Plugin9 = {
     install({ $q }) {
@@ -30860,7 +30935,7 @@
   Object.assign(Plugin9, storage);
   var LocalStorage_default = Plugin9;
 
-  // src/plugins/SessionStorage.js
+  // src/plugins/storage/SessionStorage.js
   var storage2 = client.has.webStorage === false ? getEmptyStorage() : getStorage("session");
   var Plugin10 = {
     install({ $q }) {
@@ -30900,7 +30975,7 @@
     uid: () => uid_default
   });
 
-  // src/utils/copy-to-clipboard.js
+  // src/utils/copy-to-clipboard/copy-to-clipboard.js
   function fallback(text) {
     const area = document.createElement("textarea");
     area.value = text;
@@ -30928,7 +31003,7 @@
     });
   }
 
-  // src/utils/create-meta-mixin.js
+  // src/utils/create-meta-mixin/create-meta-mixin.js
   var create_meta_mixin_default = (metaOptions) => {
     if (false) {
       return {
@@ -30985,28 +31060,28 @@
     return mixin;
   };
 
-  // src/utils/EventBus.js
+  // src/utils/EventBus/EventBus.js
   var EventBus = class {
     constructor() {
       this.__stack = {};
     }
-    on(name, callback, ctx) {
-      (this.__stack[name] || (this.__stack[name] = [])).push({
+    on(name2, callback, ctx) {
+      (this.__stack[name2] || (this.__stack[name2] = [])).push({
         fn: callback,
         ctx
       });
       return this;
     }
-    once(name, callback, ctx) {
+    once(name2, callback, ctx) {
       const listener = (...args) => {
-        this.off(name, listener);
+        this.off(name2, listener);
         callback.apply(ctx, args);
       };
       listener.__callback = callback;
-      return this.on(name, listener, ctx);
+      return this.on(name2, listener, ctx);
     }
-    emit(name) {
-      const list = this.__stack[name];
+    emit(name2) {
+      const list = this.__stack[name2];
       if (list !== void 0) {
         const params = [].slice.call(arguments, 1);
         list.forEach((entry) => {
@@ -31015,28 +31090,28 @@
       }
       return this;
     }
-    off(name, callback) {
-      const list = this.__stack[name];
+    off(name2, callback) {
+      const list = this.__stack[name2];
       if (list === void 0) {
         return this;
       }
       if (callback === void 0) {
-        delete this.__stack[name];
+        delete this.__stack[name2];
         return this;
       }
       const liveEvents = list.filter(
         (entry) => entry.fn !== callback && entry.fn.__callback !== callback
       );
       if (liveEvents.length !== 0) {
-        this.__stack[name] = liveEvents;
+        this.__stack[name2] = liveEvents;
       } else {
-        delete this.__stack[name];
+        delete this.__stack[name2];
       }
       return this;
     }
   };
 
-  // src/utils/export-file.js
+  // src/utils/export-file/export-file.js
   function clean(link) {
     setTimeout(() => {
       window.URL.revokeObjectURL(link.href);
@@ -31067,7 +31142,7 @@
     }
   }
 
-  // src/utils/open-url.js
+  // src/utils/open-url/open-url.js
   function parseFeatures(winFeatures) {
     const cfg = Object.assign({ noopener: true }, winFeatures);
     const feat = [];
@@ -31118,7 +31193,7 @@
     return openWindow(url, reject, windowFeatures);
   };
 
-  // src/utils/run-sequential-promises.js
+  // src/utils/run-sequential-promises/run-sequential-promises.js
   function parsePromises(sequentialPromises) {
     const isList = Array.isArray(sequentialPromises);
     if (isList === true) {
@@ -31183,13 +31258,20 @@
   // src/composables.js
   var composables_exports = {};
   __export(composables_exports, {
-    useDialogPluginComponent: () => use_dialog_plugin_component_default,
+    useDialogPluginComponent: () => useDialogPluginComponent,
     useFormChild: () => use_form_child_default,
+    useHydration: () => use_hydration_default,
+    useId: () => use_id_default,
+    useInterval: () => use_interval_default,
     useMeta: () => use_meta_default,
-    useQuasar: () => useQuasar
+    useQuasar: () => useQuasar,
+    useRenderCache: () => use_render_cache_default,
+    useSplitAttrs: () => use_split_attrs_default,
+    useTick: () => use_tick_default,
+    useTimeout: () => use_timeout_default
   });
 
-  // src/composables/use-dialog-plugin-component.js
+  // src/composables/use-dialog-plugin-component/use-dialog-plugin-component.js
   function useDialogPluginComponent() {
     const { emit, proxy } = getCurrentInstance();
     const dialogRef = ref(null);
@@ -31217,9 +31299,8 @@
   var emits2 = ["ok", "hide"];
   useDialogPluginComponent.emits = emits2;
   useDialogPluginComponent.emitsObject = get_emits_object_default(emits2);
-  var use_dialog_plugin_component_default = useDialogPluginComponent;
 
-  // src/composables/use-meta.js
+  // src/composables/use-meta/use-meta.js
   function use_meta_default(metaOptions) {
     if (false) {
       const ssrContext = useSSRContext();
@@ -31255,9 +31336,32 @@
     }
   }
 
-  // src/composables/use-quasar.js
+  // src/composables/use-quasar/use-quasar.js
   function useQuasar() {
     return inject(quasarKey);
+  }
+
+  // src/composables/use-interval/use-interval.js
+  function use_interval_default() {
+    let timer2 = null;
+    const vm2 = getCurrentInstance();
+    function removeInterval() {
+      if (timer2 !== null) {
+        clearInterval(timer2);
+        timer2 = null;
+      }
+    }
+    onDeactivated(removeInterval);
+    onBeforeUnmount(removeInterval);
+    return {
+      removeInterval,
+      registerInterval(fn, delay) {
+        removeInterval(timer2);
+        if (vmIsDestroyed(vm2) === false) {
+          timer2 = setInterval(fn, delay);
+        }
+      }
+    };
   }
 
   // src/index.umd.js
@@ -31265,7 +31369,7 @@
     console.error("[ Quasar ] Vue is required to run. Please add a script tag for it before loading Quasar.");
   }
   window.Quasar = {
-    version: "2.14.6",
+    version: "2.15.4",
     install(app2, opts) {
       install_quasar_default(app2, {
         components: components_exports,
@@ -31274,8 +31378,12 @@
         ...opts
       });
     },
-    lang: lang_default,
-    iconSet: icon_set_default,
+    // TODO: remove in Qv3 (should only be used through the plugin)
+    // We provide a deprecated fallback here
+    lang: Lang_default,
+    // TODO: remove in Qv3 (should only be used through the plugin)
+    // We provide a deprecated fallback here
+    iconSet: IconSet_default,
     ...components_exports,
     ...directives_exports,
     ...plugins_exports,

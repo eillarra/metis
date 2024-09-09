@@ -1,5 +1,5 @@
-const fs = require('fs');
-const { resolve } = require('path');
+import fs from 'fs';
+import { resolve } from 'path';
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';

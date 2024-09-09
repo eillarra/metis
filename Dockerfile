@@ -1,4 +1,4 @@
-FROM node:20-alpine as develop-stage
+FROM node:22-alpine as develop-stage
 WORKDIR /app
 COPY package*.json ./
 RUN yarn global add vite
