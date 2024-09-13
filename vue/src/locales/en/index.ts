@@ -54,6 +54,7 @@ export default {
   self_evaluation_final: 'Final self-evaluation | Final self-evaluations',
   section_score: 'Section score',
   global_score: 'Global score',
+  file: 'File | Files',
   history: 'History',
   hour: 'Hour | Hours',
   internship: 'Internship | Internships',
@@ -123,6 +124,7 @@ export default {
     duration: 'Duration',
     sent_at: 'Sent at',
     sent_to: 'Sent to',
+    description: 'Description | Descriptions',
   },
   form: {
     add: 'Add',
@@ -184,7 +186,7 @@ export default {
         exists_warning: 'This contact has already an account',
       },
       delete: 'Delete contact',
-      confirm_delete: 'Are you sure you want to delete this contact?',
+      confirm_delete: 'Are you sure you want to delete this contact ({name})?',
       deleted: 'Contact deleted',
       save: 'Save contact',
       saved: 'Contact information saved',
@@ -205,6 +207,15 @@ export default {
       not_found: 'No evaluation found',
       not_available: 'No evaluation available',
       help_banner: 'Click on question mark icon for more info about criterion.',
+    },
+    file: {
+      create: {
+        new: 'Add new file',
+        success: 'File added',
+      },
+      delete: 'Delete file',
+      confirm_delete: 'Are you sure you want to delete this file? You can also create a new version of the file.',
+      deleted: 'File deleted',
     },
     internship: {
       create: {
@@ -255,6 +266,14 @@ export default {
         'Are you sure you want to sent a reminder email? | Are you sure you want to send {count} reminder emails?',
       emails_sent: 'Reminder email sent | Reminder emails sent',
       no_email_template: 'No automatic emails will be sent for this questioning unless you fill in the email template.',
+    },
+    remark: {
+      create: {
+        new: 'Create a new remark',
+        success: 'Remark created',
+      },
+      confirm_delete: 'Are you sure you want to delete this remark?',
+      deleted: 'Remark deleted',
     },
     student: {
       create: {

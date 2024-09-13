@@ -8,6 +8,13 @@ from ..base import BaseModel
 from .snapshots import save_snapshot
 
 
+def append_remarks_tags(obj, *, tags: list[str]) -> list[str]:
+    """For an object, process the tags."""
+    tags = [tag for tag in tags if not tag.startswith("remarks.")]
+    tags.append(f"remarks.count:{obj.remarks.count()}")
+    return tags
+
+
 class Remark(BaseModel):
     """Remarks made by administrators.
 
@@ -41,7 +48,10 @@ class RemarksMixin(models.Model):
 @receiver(post_save, sender=Remark)
 def update_internship_tags(sender, instance, **kwargs):
     """Update the tags of the associated internship when an evaluation is saved."""
-    from metis.models.stages.internships import Internship
+    from metis.models import Internship, Place
 
     if isinstance(instance.content_object, Internship):
         Internship.update_tags(instance.content_object, type="remarks")
+
+    if isinstance(instance.content_object, Place):
+        Place.update_tags(instance.content_object, type="remarks")

@@ -46,6 +46,12 @@
           </q-item-section>
           <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
         </q-item>
+        <q-item clickable @click="tab = 'documents'" :active="tab == 'documents'" active-class="bg-ugent text-white">
+          <q-item-section avatar>
+            <q-icon name="drive_file_move_outline" size="xs"></q-icon>
+          </q-item-section>
+          <q-item-section>{{ $t('document', 9) }}</q-item-section>
+        </q-item>
         <q-item-label header>{{ $t('other') }}</q-item-label>
         <q-item clickable @click="tab = 'actions'" :active="tab == 'actions'" active-class="bg-ugent text-white">
           <q-item-section avatar>
@@ -55,7 +61,7 @@
         </q-item>
         <q-item clickable @click="tab = 'remarks'" :active="tab == 'remarks'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon :name="hasRemarks ? iconChat : 'chat_bubble_outline'" size="xs"></q-icon>
+            <q-icon :name="hasRemarks ? iconChatBadge : iconChat" size="xs" />
           </q-item-section>
           <q-item-section>{{ $t('remark', 9) }}</q-item-section>
         </q-item>
@@ -117,6 +123,9 @@
         <q-tab-panel name="evaluations">
           <evaluations-view :internship="obj" show-points />
         </q-tab-panel>
+        <q-tab-panel name="documents">
+          <files-view :api-endpoint="obj.rel_files" />
+        </q-tab-panel>
         <q-tab-panel name="actions">
           <internship-actions :internship="obj" />
         </q-tab-panel>
@@ -146,7 +155,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
@@ -162,6 +171,7 @@ import DateSelect from '@/components/forms/DateSelect.vue';
 import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
+import FilesView from '@/components/rel/FilesView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
@@ -169,7 +179,7 @@ import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
 import InternshipActions from './InternshipActions.vue';
 
-import { iconChat } from '@/icons';
+import { iconChat, iconChatBadge } from '@/icons';
 
 defineEmits(['delete:obj']);
 
@@ -191,7 +201,14 @@ const hasStarted = computed<boolean>(() => {
   if (!obj.value.start_date) return false;
   return new Date(obj.value.start_date) <= new Date();
 });
-const hasRemarks = computed<boolean>(() => Number(obj.value.tag_objects?.['remarks.count']) || 0 > 0);
+
+const hasRemarks = computed<boolean>(() => (Number(obj.value._tags_dict?.['remarks.count']) || 0) > 0);
+const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
+  if (!props.obj) return null;
+  return {
+    default: props.obj.rel_remarks,
+  };
+});
 
 const filteredPeriods = computed(() => {
   if (!project.value) return [];
@@ -203,13 +220,6 @@ const filteredPeriods = computed(() => {
       obj.value.Student?.Track?.program_internships.includes(period.program_internship)
     );
   });
-});
-
-const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
-  if (!props.obj) return null;
-  return {
-    default: props.obj.rel_remarks,
-  };
 });
 
 function save() {
@@ -230,6 +240,4 @@ function save() {
 function updateObj(obj: Internship) {
   store.updateObj('projectInternship', obj);
 }
-
-onMounted(() => store.fetchEmails());
 </script>

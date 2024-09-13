@@ -93,6 +93,6 @@ watch(
   () => props.modelValue,
   function (obj) {
     selection.value = obj;
-  }
+  },
 );
 </script>

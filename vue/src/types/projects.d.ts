@@ -6,6 +6,7 @@ interface ProjectTiny extends ApiObject {
 interface Project extends ProjectTiny {
   self: ApiEndpoint;
   rel_emails: ApiEndpoint;
+  rel_files: ApiEndpoint;
   rel_internships: ApiEndpoint;
   rel_places: ApiEndpoint;
   rel_questionings: ApiEndpoint;

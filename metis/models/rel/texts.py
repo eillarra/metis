@@ -10,10 +10,7 @@ from .files import FilesMixin
 
 
 class TextEntry(FilesMixin, BaseModel):
-    """
-    Texts (information, notes, etc.).
-    Files can be attached to the text entry.
-    """
+    """Texts (information, notes, etc.)."""
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="contents")
     object_id = models.PositiveIntegerField()
@@ -24,26 +21,27 @@ class TextEntry(FilesMixin, BaseModel):
     title = models.CharField(max_length=160)
     text = models.TextField()
 
-    created_by = models.ForeignKey("metis.User", related_name="contents", on_delete=models.SET_NULL, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_rel_text"
         unique_together = ("content_type", "object_id", "code", "version")
 
 
 class TextEntryTranslationOptions(TranslationOptions):
+    """Translation options for the TextEntry model."""
+
     fields = ("title", "text")
 
 
 class TextEntriesMixin(models.Model):
+    """Mixin for models that can have text entries."""
+
     texts = GenericRelation(TextEntry)
 
-    class Meta:
+    class Meta:  # noqa: D106
         abstract = True
 
     def get_text(self, code: str) -> Optional["TextEntry"]:
+        """Get the text entry with the given code."""
         try:
             return self.texts.filter(code=code).order_by("-version").first()
         except TextEntry.DoesNotExist:

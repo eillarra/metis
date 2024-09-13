@@ -7,7 +7,8 @@ interface Email extends ApiObject {
   bcc: EmailAddress[];
   reply_to: EmailAddress[];
   tags: string[];
-  tag_set?: Set<string>;
+  // -----
+  _tags_dict?: TagsDict;
 }
 
 interface FullEmail extends Email {

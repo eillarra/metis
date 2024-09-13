@@ -58,28 +58,7 @@ body {
   font-size: 20px;
   font-family: 'UGent Panno Medium', 'Arial', sans-serif;
 
-  .q-tab {
-    margin-right: 24px;
-    padding-left: 0;
-    padding-right: 0;
-    color: $ugent-blue;
-    transition: none;
 
-    &.q-tab--active {
-      text-decoration: underline;
-      text-underline-offset: 0.25em;
-    }
-
-    &.q-tab--inactive {
-      opacity: 1;
-    }
-  }
-
-  .q-ripple,
-  .q-focus-helper,
-  .q-tab__indicator {
-    display: none;
-  }
 }
 
 .ugent__submenu {
@@ -108,6 +87,18 @@ body {
     letter-spacing: 0 !important;
   }
 
+  .q-field__native {
+    max-width: 600px;
+    overflow: hidden;
+    white-space: nowrap;
+
+    span.text-underline {
+      line-height: $panno-body-font-size + 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
   .menu-item {
     min-height: 40px;
     display: flex;
@@ -118,6 +109,29 @@ body {
 
   .q-select__dropdown-icon {
     color: $ugent-blue;
+  }
+
+  .q-tab {
+    margin-right: 24px;
+    padding-left: 0;
+    padding-right: 0;
+    color: $ugent-blue;
+    transition: none;
+
+    &.q-tab--active {
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+    }
+
+    &.q-tab--inactive {
+      opacity: 1;
+    }
+  }
+
+  .q-ripple,
+  .q-focus-helper,
+  .q-tab__indicator {
+    display: none;
   }
 }
 
@@ -192,6 +206,17 @@ body {
 
   &.bg-yellow {
     background-color: #fdd200 !important;
+  }
+}
+
+.ugent__create-btn .q-btn {
+  padding: 0 !important;
+  min-height: 40px !important;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #e6f0ff !important;
+    color: white;
   }
 }
 

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from metis.models import Contact, Place, PlaceLocation, PlaceType, User
 
 from .base import BaseModelSerializer, BaseTranslatedModelSerializer, NestedHyperlinkField
-from .rel import AddressesMixin, AddressSerializer, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
+from .rel import AddressesMixin, AddressSerializer, FilesMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
 from .users import UserLastLoginSerializer
 
 
@@ -33,7 +33,9 @@ class ContactSerializer(RemarksMixin, BaseModelSerializer):
         exclude = ("created_at", "created_by")
 
 
-class PlaceSerializer(AddressesMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin, BaseModelSerializer):
+class PlaceSerializer(
+    AddressesMixin, FilesMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin, BaseModelSerializer
+):
     """Place serializer."""
 
     self = NestedHyperlinkField("v1:education-place-detail", nested_lookup=education_lookup_fields)

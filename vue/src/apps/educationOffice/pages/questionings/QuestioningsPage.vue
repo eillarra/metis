@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useStore } from '../../store.js';
@@ -15,7 +15,9 @@ import QuestioningsTable from './QuestioningsTable.vue';
 
 const store = useStore();
 
-const { questionings } = storeToRefs(store);
+const { project, questionings } = storeToRefs(store);
 
 onMounted(() => store.fetchQuestionings());
+
+watch(project, () => store.fetchQuestionings());
 </script>

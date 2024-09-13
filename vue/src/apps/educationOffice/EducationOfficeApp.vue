@@ -81,6 +81,6 @@ watch(
   () => selectedEducationId.value,
   (code) => {
     window.location.href = `../${code}/#${route.path}`;
-  }
+  },
 );
 </script>

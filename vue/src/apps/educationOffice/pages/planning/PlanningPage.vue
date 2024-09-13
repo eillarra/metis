@@ -146,19 +146,19 @@ const periodOptions = computed(() => {
 
 const statusOptions = computed<QuasarSelectOption[]>(() => {
   const ids: Set<string> = new Set();
-  const statuses: string[] = [];
+  const options: QuasarSelectOption[] = [];
 
   internships.value.forEach((obj: Internship) => {
     if (obj.status && !ids.has(obj.status)) {
-      ids.add(obj.status);
-      statuses.push({
-        label: statusLabels[obj.status] || obj.status,
+      options.push({
+        label: statusLabels[obj.status as keyof typeof statusLabels] || obj.status,
         value: obj.status,
       } as QuasarSelectOption);
+      ids.add(obj.status);
     }
   });
 
-  return statuses;
+  return options;
 });
 
 const filteredInternships = computed<Internship[]>(() => {

@@ -3,8 +3,11 @@ from typing import TYPE_CHECKING
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 
+from metis.models.base import TagsMixin
 from metis.services.file_guard import check_file_access
 from metis.services.s3 import delete_s3_object
 
@@ -13,11 +16,19 @@ if TYPE_CHECKING:
     from metis.models.users import User
 
 
-def get_upload_path(instance, filename):
+def append_files_tags(obj, *, tags: list[str]) -> list[str]:
+    """For an object, process the tags."""
+    tags = [tag for tag in tags if not tag.startswith("files.")]
+    tags.append(f"files.count:{obj.files.count()}")
+    return tags
+
+
+def get_upload_path(instance, filename) -> str:
+    """Return the path to upload a file."""
     return f"private/{instance.content_type_id}/{instance.object_id}/{filename}".lower()
 
 
-class File(models.Model):
+class File(TagsMixin, models.Model):
     """A file attached to a model."""
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="files")
@@ -30,7 +41,10 @@ class File(models.Model):
     version = models.PositiveSmallIntegerField(default=1)
     description = models.TextField(default="", blank=True)
 
-    class Meta:
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:  # noqa: D106
         db_table = "metis_rel_file"
         indexes = [models.Index(fields=["file"])]
         ordering = ["content_type", "object_id", "position"]
@@ -40,6 +54,7 @@ class File(models.Model):
         return f"{self.file.name} (v{self.version})"
 
     def delete(self, *args, **kwargs):
+        """Delete the file from S3 before deleting the model."""
         try:
             delete_s3_object(self.s3_object_key)
         except Exception:
@@ -47,16 +62,19 @@ class File(models.Model):
         super().delete(*args, **kwargs)
 
     def is_accessible_by_user(self, user: "User") -> bool:
+        """Check if the file is accessible by the user."""
         if self.file.name.startswith("public/"):
             return True
         return check_file_access(self, user)
 
     @property
     def s3_object_key(self):
+        """The S3 object key."""
         return self.file.name
 
     @property
     def url(self):
+        """The URL to the file."""
         return reverse("media_file", args=[self.file.name])
 
 
@@ -69,7 +87,7 @@ class FilesMixin(models.Model):
         abstract = True
 
     def get_latest_files(self) -> list[File]:
-        """Returns the latest version only of each file.
+        """Return the latest version only of each file.
 
         We are not dealing with a lot of files and DISTINCT ON is not supported by MySQL,
         so this should fine to get the latest version of the files.
@@ -83,7 +101,19 @@ class FilesMixin(models.Model):
         return [file for file in files if file.code and file.version == versions[file.code]]
 
     def get_file(self, code: str, version: int | None = None) -> File:
-        """Returns a file by its code and version."""
+        """Return a file by its code and version."""
         if version is not None:
             return self.files.get(code=code, version=version)
         return self.files.filter(code=code).order_by("-version").first()
+
+
+@receiver(post_save, sender=File)
+def update_internship_tags(sender, instance, **kwargs):
+    """Update the tags of the associated internship when an evaluation is saved."""
+    from metis.models import Internship, Place
+
+    if isinstance(instance.content_object, Internship):
+        Internship.update_tags(instance.content_object, type="files")
+
+    if isinstance(instance.content_object, Place):
+        Place.update_tags(instance.content_object, type="files")

@@ -5,13 +5,42 @@ from django.db import models
 from django.urls import reverse
 from modeltranslation.translator import TranslationOptions
 
-from .base import BaseModel
-from .rel import AddressesMixin, FilesMixin, LinksMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
+from .base import BaseModel, TagsMixin
+from .rel import (
+    AddressesMixin,
+    FilesMixin,
+    LinksMixin,
+    PhoneNumbersMixin,
+    RemarksMixin,
+    TextEntriesMixin,
+    append_files_tags,
+    append_remarks_tags,
+)
 
 
 if TYPE_CHECKING:
     from .educations import Education
     from .rel.files import File
+
+
+def get_place_tags(obj: "Place", *, type: str = "all") -> list[str]:
+    """For an internship, process the tags.
+
+    :param obj: An instance of the Place class.
+    :param type: The type of tags to process.
+    :returns: A list of tags.
+    """
+    tags = obj.tags
+
+    # files
+    if type in {"all", "files"}:
+        tags = append_files_tags(obj, tags=tags)
+
+    # remarks
+    if type in {"all", "remarks"}:
+        tags = append_remarks_tags(obj, tags=tags)
+
+    return list(set(tags))
 
 
 class PlaceLocation(BaseModel):
@@ -53,7 +82,9 @@ class PlaceTypeTranslationOptions(TranslationOptions):
     fields = ("name",)
 
 
-class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, TextEntriesMixin, BaseModel):
+class Place(
+    AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMixin, TagsMixin, TextEntriesMixin, BaseModel
+):
     """Places where internships can be done.
 
     This collection of places is specific to each education, so are the contacts and remarks.
@@ -83,6 +114,12 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
             raise ValidationError("Place location must be in the same education.")
         if self.type and self.type.education != self.education:
             raise ValidationError("Place type must be in the same education.")
+
+    @classmethod
+    def update_tags(cls, place: "Place", *, type: str = "all") -> None:
+        """Update tags for a place, without calling clean() on the model."""
+        tags = get_place_tags(place, type=type)
+        cls.objects.filter(id=place.id).update(tags=tags)
 
     def __str__(self) -> str:
         return self.name

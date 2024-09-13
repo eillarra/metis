@@ -2,14 +2,22 @@ from rest_framework import serializers
 
 from metis.models.rel.files import File
 
+from .base import NestedRelHyperlinkField, RelHyperlinkedField
+
 
 class FileSerializer(serializers.ModelSerializer):
-    url = serializers.URLField()
+    """File serializer."""
 
-    class Meta:
+    self = NestedRelHyperlinkField(view_name="v1:file-detail")
+    url = serializers.URLField(read_only=True)
+
+    class Meta:  # noqa: D106
         model = File
-        exclude = (
-            "content_type",
-            "object_id",
-            "file",
-        )
+        write_only_fields = ["file"]
+        exclude = ["content_type", "object_id"]
+
+
+class FilesMixin(serializers.ModelSerializer):
+    """Addresses mixin."""
+
+    rel_files = RelHyperlinkedField(view_name="v1:file-list")

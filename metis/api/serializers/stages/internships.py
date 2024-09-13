@@ -5,7 +5,7 @@ from metis.models.stages.internships import Internship, Mentor
 from ..base import BaseModelSerializer, NestedHyperlinkField
 from ..disciplines import DisciplineSerializer
 from ..places import PlaceInertiaSerializer
-from ..rel.remarks import RemarksMixin
+from ..rel import FilesMixin, RemarksMixin
 from ..users import UserLastLoginSerializer
 from .evaluations import EvaluationFormSerializer
 from .projects import PeriodSerializer, ProjectSerializer
@@ -33,7 +33,7 @@ class MentorTinySerializer(BaseModelSerializer):
         fields = ("id", "user")
 
 
-class InternshipSerializer(RemarksMixin, BaseModelSerializer):
+class InternshipSerializer(FilesMixin, RemarksMixin, BaseModelSerializer):
     """Internship serializer."""
 
     self = NestedHyperlinkField("v1:project-internship-detail", nested_lookup=project_lookup_fields)

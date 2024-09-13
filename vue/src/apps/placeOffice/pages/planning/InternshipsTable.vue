@@ -99,28 +99,32 @@ const allColumns = [
 const columns = ref(allColumns);
 
 const rows = computed(() => {
-  return internships.value.map((obj: Internship) => ({
-    _self: obj,
-    _class:
-      obj.status === 'cancelled'
-        ? 'bg-red-1'
-        : obj.status === 'unsuccessful'
-        ? 'bg-orange-1'
-        : !obj.is_approved
-        ? 'bg-yellow-1'
-        : '',
-    start_date: obj.start_date,
-    end_date: obj.end_date,
-    student_name: (obj.Student?.User as StudentUser)?.name || '-',
-    period_name: obj.Period?.full_name || '-',
-    check_hours: [
-      Number(obj.tag_objects?.['hours.total']?.split(':')[0]) || 0,
-      (obj.tag_objects?.['hours.total'] || '-') == (obj.tag_objects?.['hours.approved'] || '-'),
-    ],
-    evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
-    disciplines: obj.Discipline ? [obj.Discipline] : [],
-    has_mentors: obj.mentors.length > 0,
-  }));
+  return internships.value.map((obj: Internship) => {
+    const hours = Number((obj._tags_dict?.['hours.total'] || '0:0').split(':')[0]);
+
+    return {
+      _self: obj,
+      _class:
+        obj.status === 'cancelled'
+          ? 'bg-red-1'
+          : obj.status === 'unsuccessful'
+            ? 'bg-orange-1'
+            : !obj.is_approved
+              ? 'bg-yellow-1'
+              : '',
+      start_date: obj.start_date,
+      end_date: obj.end_date,
+      student_name: (obj.Student?.User as StudentUser)?.name || '-',
+      period_name: obj.Period?.full_name || '-',
+      check_hours: [
+        hours,
+        hours && (obj._tags_dict?.['hours.total'] || '-') == (obj._tags_dict?.['hours.approved'] || '-'),
+      ],
+      evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
+      disciplines: obj.Discipline ? [obj.Discipline] : [],
+      has_mentors: obj.mentors.length > 0,
+    };
+  });
 });
 
 watch(internships, (val, oldVal) => {
@@ -128,7 +132,7 @@ watch(internships, (val, oldVal) => {
     if (!val[0].tags.join(',').includes('intermediate.0:')) {
       columns.value = allColumns.splice(
         allColumns.findIndex((column) => column.name === 'steps_evaluation'),
-        1
+        1,
       );
     }
   }

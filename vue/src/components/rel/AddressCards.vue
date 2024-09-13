@@ -74,7 +74,7 @@
                 <q-list class="q-mt-md">
                   <q-item dense v-for="feature in features" :key="feature.id" tag="label" class="q-pl-none q-py-none">
                     <q-item-section side>
-                      <q-radio v-model="selectedFeature" :val="(feature as object)" />
+                      <q-radio v-model="selectedFeature" :val="feature as object" />
                     </q-item-section>
                     <q-item-section>{{ feature.place_name_nl }}</q-item-section>
                   </q-item>

@@ -5,8 +5,8 @@
     :query-columns="queryColumns"
     sort-by="-sent_at"
     :form-component="EmailDialog"
-    :hide-toolbar="rows.length < 20"
     open-dialog
+    :in-dialog="inDialog"
   />
 </template>
 
@@ -24,6 +24,7 @@ const { t } = useI18n();
 const props = defineProps<{
   emails: Email[];
   tags?: string[];
+  inDialog?: boolean;
 }>();
 
 const queryColumns = ['sent_to', 'subject', 'type'];
@@ -64,7 +65,7 @@ const rows = computed(() => {
   return props.emails
     .filter((email: Email) => {
       return (props.tags || []).every((tag: string) => {
-        return email.tag_set?.has(tag);
+        return email.tags?.includes(tag);
       });
     })
     .map((email: Email) => {

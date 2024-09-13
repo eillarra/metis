@@ -31,10 +31,10 @@ class NestedHyperlinkField(serializers.HyperlinkedIdentityField):
     In this case we pass the view name and the kwargs to have an absolute URL calculated.
     """
 
-    def __init__(self, view_name: str, nested_lookup: dict, *args, **kwargs):
+    def __init__(self, view_name: str, nested_lookup: dict, **kwargs):
         self.nested_lookup = nested_lookup
         kwargs["read_only"] = True
-        super().__init__(view_name=view_name, *args, **kwargs)
+        super().__init__(view_name, **kwargs)
 
     def get_url(self, obj, view_name, request, format):
         """Return the URL for the given object."""

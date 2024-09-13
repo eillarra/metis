@@ -162,36 +162,40 @@ const statusLabels = {
 };
 
 const rows = computed(() => {
-  return props.internships.map((obj: Internship) => ({
-    _self: obj,
-    _class:
-      obj.status === 'cancelled'
-        ? 'bg-red-1'
-        : obj.status === 'unsuccessful'
-        ? 'bg-orange-1'
-        : !obj.is_approved
-        ? 'bg-yellow-1'
-        : '',
-    remarks: Number(obj.tag_objects?.['remarks.count']) || 0,
-    student_name: (obj.Student?.User as StudentUser)?.name || '-',
-    student_number: obj.Student?.number || '-',
-    place_name: obj.Place?.name || '-',
-    block_name: obj.Period?.ProgramInternship?.Block?.name || '-',
-    period_name: obj.Period?.name || '-',
-    track_name: obj.Track?.name || '-',
-    check_hours: [
-      Number(obj.tag_objects?.['hours.total']?.split(':')[0]) || 0,
-      (obj.tag_objects?.['hours.total'] || '-') == (obj.tag_objects?.['hours.approved'] || '-'),
-    ],
-    evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
-    self_evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj, true) : [],
-    disciplines: obj.Discipline ? [obj.Discipline] : [],
-    status: statusLabels[obj.status as keyof typeof statuses] || obj.status,
-    start_date: obj.start_date,
-    end_date: obj.end_date,
-    has_mentors: obj.mentors.filter((mentor: Mentor) => mentor.user.last_login).length > 0,
-    is_approved: obj.is_approved,
-  }));
+  return props.internships.map((obj: Internship) => {
+    const hours = Number(String(obj._tags_dict?.['hours.total'] || '0:0').split(':')[0]) || 0;
+
+    return {
+      _self: obj,
+      _class:
+        obj.status === 'cancelled'
+          ? 'bg-red-1'
+          : obj.status === 'unsuccessful'
+            ? 'bg-orange-1'
+            : !obj.is_approved
+              ? 'bg-yellow-1'
+              : '',
+      remarks: Number(obj._tags_dict?.['remarks.count']) || 0,
+      student_name: (obj.Student?.User as StudentUser)?.name || '-',
+      student_number: obj.Student?.number || '-',
+      place_name: obj.Place?.name || '-',
+      block_name: obj.Period?.ProgramInternship?.Block?.name || '-',
+      period_name: obj.Period?.name || '-',
+      track_name: obj.Track?.name || '-',
+      check_hours: [
+        hours,
+        hours && (obj._tags_dict?.['hours.total'] || '-') == (obj._tags_dict?.['hours.approved'] || '-'),
+      ],
+      evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj) : [],
+      self_evaluation_steps: obj.status === 'definitive' && obj.is_approved ? getEvaluationSteps(obj, true) : [],
+      disciplines: obj.Discipline ? [obj.Discipline] : [],
+      status: statusLabels[obj.status as keyof typeof statuses] || obj.status,
+      start_date: obj.start_date,
+      end_date: obj.end_date,
+      has_mentors: obj.mentors.filter((mentor: Mentor) => mentor.user.last_login).length > 0,
+      is_approved: obj.is_approved,
+    };
+  });
 });
 
 watch(internships, (val, oldVal) => {
@@ -201,14 +205,14 @@ watch(internships, (val, oldVal) => {
     if (!val[0].tags.join(',').includes('intermediate.0:')) {
       finalColumns.splice(
         finalColumns.findIndex((column) => column.name === 'steps_evaluation'),
-        1
+        1,
       );
     }
 
     if (!val[0].tags.join(',').includes('intermediate.0.self:')) {
       finalColumns.splice(
         finalColumns.findIndex((column) => column.name === 'steps_self_evaluation'),
-        1
+        1,
       );
     }
 

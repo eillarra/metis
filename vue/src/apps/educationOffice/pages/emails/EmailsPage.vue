@@ -6,7 +6,6 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useStore } from '../../store.js';
@@ -16,6 +15,4 @@ import EmailsView from '@/components/emails/EmailsView.vue';
 const store = useStore();
 
 const { emails } = storeToRefs(store);
-
-onMounted(() => store.fetchEmails());
 </script>

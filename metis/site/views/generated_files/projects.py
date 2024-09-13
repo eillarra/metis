@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from metis.models import Project
-from metis.services.file_generator.projects import ProjectContactsExcel, ProjectPlanningExcel, ProjectPlacesExcel
+from metis.services.file_generator.projects import ProjectContactsExcel, ProjectPlacesExcel, ProjectPlanningExcel
 
 
 class ProjectExcelView(View):

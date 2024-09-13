@@ -53,6 +53,7 @@ export default {
   self_evaluation_final: 'Einde zelfevaluatie | Einde zelfevaluaties',
   section_score: 'Deelscore',
   global_score: 'Algemene beoordeling',
+  file: 'Bestand | Bestanden',
   history: 'Historiek',
   hour: 'Uur | Uren',
   internship: 'Stage | Stages',
@@ -122,6 +123,7 @@ export default {
     duration: 'Duur',
     sent_at: 'Verstuurd op',
     sent_to: 'Verstuurd naar',
+    description: 'Omschrijving | Omschrijvingen',
   },
   form: {
     add: 'Toevoegen',
@@ -183,7 +185,7 @@ export default {
         exists_warning: 'Deze contactpersoon heeft al een account',
       },
       delete: 'Contactpersoon verwijderen',
-      confirm_delete: 'Ben je zeker dat je deze contactpersoon wil verwijderen?',
+      confirm_delete: 'Ben je zeker dat je deze contactpersoon ({name}) wil verwijderen?',
       deleted: 'Contactpersoon verwijderd',
       save: 'Contactpersoon opslaan',
       saved: 'Contactpersoon informatie opgeslagen',
@@ -204,6 +206,16 @@ export default {
       not_found: 'Geen evaluatie gevonden',
       not_available: 'Geen evaluatie beschikbaar',
       help_banner: 'Klik op het vraagteken icon voor meer informatie over de criteria.',
+    },
+    file: {
+      create: {
+        new: 'Nieuw bestand toevoegen',
+        success: 'Bestand toegevoegd',
+      },
+      delete: 'Bestand verwijderen',
+      confirm_delete:
+        'Ben je zeker dat je dit bestand wil verwijderen? Je kan ook een nieuwe versie van het bestand uploaden.',
+      deleted: 'Bestand verwijderd',
     },
     internship: {
       create: {
@@ -254,6 +266,14 @@ export default {
         'Ben je zeker dat je een herinneringsmail wil versturen? | Ben je zeker dat je {count} herinneringsmails wil versturen?',
       emails_sent: 'Herinneringsmail verstuurd | Herinneringsmails verstuurd',
       no_email_template: 'Geen automatische emails zullen verstuurd worden tenzij u een email template invult.',
+    },
+    remark: {
+      create: {
+        new: 'Nieuwe opmerking aanmaken',
+        success: 'Opmerking aangemaakt',
+      },
+      confirm_delete: 'Ben je zeker dat je deze opmerking wil verwijderen?',
+      deleted: 'Opmerking verwijderd',
     },
     student: {
       create: {

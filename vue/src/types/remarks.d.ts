@@ -4,5 +4,7 @@ interface Remark extends ApiObject {
   updated_at: string;
   updated_by: UserTiny;
   type?: string;
+  // -----
   is_mine?: boolean;
+  stamp?: string;
 }

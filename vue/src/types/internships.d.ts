@@ -20,9 +20,6 @@ interface Internship extends ApiObject {
   tags: string[];
   // -----
   evaluation_periods?: [number, string, string, string][];
-  tag_objects?: {
-    [tag: string]: string;
-  };
   // -----
   Student?: Student;
   Track?: Track;
@@ -31,6 +28,8 @@ interface Internship extends ApiObject {
   ProjectPlace?: ProjectPlace;
   Place?: Place;
   EvaluationForm?: EvaluationForm;
+  // -----
+  _tags_dict?: TagsDict;
 }
 
 interface Mentor extends ApiObject {

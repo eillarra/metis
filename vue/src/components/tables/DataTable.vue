@@ -1,22 +1,14 @@
 <style lang="scss">
 $in-table-dense-field-height: 28px;
 
-.ugent__create-btn .q-btn {
-  padding: 0 !important;
-  min-height: 40px !important;
-
-  &:hover {
-    background-color: #e6f0ff !important;
-    color: white;
-  }
-}
-
 .ugent__data-table {
   &.dense {
-    .q-field--dense .q-field__control, .q-field--dense .q-field__marginal {
+    .q-field--dense .q-field__control,
+    .q-field--dense .q-field__marginal {
       height: $in-table-dense-field-height;
     }
-    .q-field--auto-height.q-field--dense .q-field__control, .q-field--auto-height.q-field--dense .q-field__native {
+    .q-field--auto-height.q-field--dense .q-field__control,
+    .q-field--auto-height.q-field--dense .q-field__native {
       min-height: $in-table-dense-field-height;
     }
   }
@@ -78,6 +70,7 @@ $in-table-dense-field-height: 28px;
           <q-icon name="search" />
         </template>
       </q-input>
+      <q-space />
       <q-select
         v-if="!hideColumnSelector"
         v-model="visibleColumns"
@@ -126,6 +119,9 @@ $in-table-dense-field-height: 28px;
       :selection="selection || 'none'"
       v-model:selected="selected"
     >
+      <template #no-data>
+        <no-results v-if="!loading" />
+      </template>
       <template #header-selection="scope">
         <q-checkbox
           v-model="scope.selected"
@@ -167,7 +163,7 @@ $in-table-dense-field-height: 28px;
           </span>
           <span v-else-if="props.col.name == 'remarks'">
             <q-icon
-              :name="props.value > 0 ? iconChat : 'chat_bubble_outline'"
+              :name="props.value > 0 ? iconChatBadge : iconChat"
               :color="props.value > 0 ? 'dark' : 'grey-4'"
               :size="iconSize"
             />
@@ -220,7 +216,13 @@ $in-table-dense-field-height: 28px;
       <template #body-cell-remove="props">
         <!-- Remove icon -->
         <q-td :props="props" auto-width :class="props.row._class || ''">
-          <q-icon @click="removeRow(props.row)" name="backspace" :size="iconSize" color="red" class="cursor-pointer" />
+          <q-icon
+            @click="removeRow(props.row)"
+            :name="iconDelete"
+            :size="iconSize"
+            color="red"
+            class="cursor-pointer"
+          />
         </q-td>
       </template>
       <template #body-cell-edit="props">
@@ -244,11 +246,11 @@ $in-table-dense-field-height: 28px;
         </q-td>
       </template>
     </q-table>
-    <q-dialog v-if="formComponent" v-model="dialogVisible" position="bottom">
+    <q-dialog v-if="formComponent" v-model="dialogVisible" :position="openDialog ? 'bottom' : 'standard'">
       <component :is="formComponent" :obj="selectedObj" @delete:obj="() => (selectedObj = null)" />
     </q-dialog>
     <q-dialog v-if="createFormComponent" v-model="createDialogVisible">
-      <component :is="createFormComponent" @create:obj="() => (createDialogVisible = false)" />
+      <component :is="createFormComponent" @create:obj="() => (createDialogVisible = false)" :parent="createParent" />
     </q-dialog>
   </div>
 </template>
@@ -264,7 +266,9 @@ import { Md5 } from 'ts-md5';
 import { notify } from '@/notify';
 import { storage } from '@/storage';
 
-import { iconChat } from '@/icons';
+import { iconChat, iconChatBadge, iconDelete } from '@/icons';
+
+import NoResults from '@/components/NoResults.vue';
 
 const emit = defineEmits(['update:selected', 'remove:row']);
 
@@ -280,6 +284,7 @@ const props = defineProps<{
   hiddenColumns?: string[];
   formComponent?: ComponentOptions | undefined;
   createFormComponent?: ComponentOptions | undefined;
+  createParent?: object;
   sortBy?: string;
   loading?: boolean;
   hideToolbar?: boolean;
@@ -432,6 +437,6 @@ watch(
     } else {
       selected.value = val.filter((obj) => !obj._hide_selection);
     }
-  }
+  },
 );
 </script>

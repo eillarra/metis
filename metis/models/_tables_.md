@@ -196,7 +196,7 @@ All `*ViewState` tables are ignored in this list (replaced by `django.contrib.au
 - [ ] TrainingDisciplineConsecutive
 - [ ] TrainingDisciplineLinkTrainingDGroup
 - [ ] TrainingDisciplineMutuallyExclude
-- [ ] TrainingDocument: `Internship.files` via `FilesMixin`
+- [x] TrainingDocument: `Internship.files` via `FilesMixin`
 - [ ] TrainingDocumentSigned
 - [ ] TrainingDocumentVersion
 - [x] TrainingEvaluation: `CustomFormResponse`

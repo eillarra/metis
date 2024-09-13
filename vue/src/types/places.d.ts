@@ -26,6 +26,7 @@ interface Place extends ApiObject {
   self: ApiEndpoint;
   rel_addresses: ApiEndpoint;
   rel_contacts: ApiEndpoint;
+  rel_files: ApiEndpoint;
   rel_phone_numbers: ApiEndpoint;
   rel_remarks: ApiEndpoint;
   rel_texts: ApiEndpoint;
@@ -43,9 +44,12 @@ interface Place extends ApiObject {
   updated_by: UserTiny | null;
   remark_count: number;
   is_flagged: boolean;
+  tags: string[];
   // -----
   Location?: PlaceLocation;
   Type?: PlaceType;
+  // -----
+  _tags_dict?: TagsDict;
 }
 
 interface ProjectPlaceTiny extends ApiObject {

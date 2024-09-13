@@ -57,6 +57,6 @@ watch(
   () => props.modelValue,
   (val) => {
     if (val !== mutable.value) mutable.value = val;
-  }
+  },
 );
 </script>

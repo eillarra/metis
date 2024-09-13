@@ -20,7 +20,7 @@
       v-if="education?.place_locations.length"
       as-filter
       :label="$t('place_location')"
-      :place-types="(education?.place_locations as PlaceLocation[])"
+      :place-types="education?.place_locations as PlaceLocation[]"
       v-model="selectedPlaceLocation"
       class="col-6 col-md-2"
     />
@@ -28,7 +28,7 @@
       v-if="education?.place_types.length"
       as-filter
       :label="$t('place_type')"
-      :place-types="(education?.place_types as PlaceType[])"
+      :place-types="education?.place_types as PlaceType[]"
       v-model="selectedPlaceType"
       class="col-6 col-md-2"
     />
@@ -129,7 +129,7 @@ const filteredPlaces = computed<ProjectPlace[]>(() => {
     .filter((obj) =>
       selectedDiscipline.value === 0
         ? !obj.disciplines.length
-        : !selectedDiscipline.value || obj.disciplines.some((id: number) => id === selectedDiscipline.value)
+        : !selectedDiscipline.value || obj.disciplines.some((id: number) => id === selectedDiscipline.value),
     )
     .filter((obj) => !selectedPeriod.value || obj._periods.has(selectedPeriod.value))
     .filter((obj) => !selectedPlaceLocation.value || obj.place.location === selectedPlaceLocation.value)

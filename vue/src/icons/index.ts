@@ -1,5 +1,13 @@
-import { symRoundedChat, symRoundedCloudDownload, symRoundedSmartToy } from '@quasar/extras/material-symbols-rounded';
+import {
+  symSharpBackspace,
+  symSharpChatBubble,
+  symSharpCloudDownload,
+  symSharpMarkChatUnread,
+  symSharpSmartToy,
+} from '@quasar/extras/material-symbols-sharp';
 
-export const iconChat = symRoundedChat;
-export const iconDownload = symRoundedCloudDownload;
-export const iconRobot = symRoundedSmartToy;
+export const iconChat = symSharpChatBubble;
+export const iconChatBadge = symSharpMarkChatUnread;
+export const iconDelete = symSharpBackspace;
+export const iconDownload = symSharpCloudDownload;
+export const iconRobot = symSharpSmartToy;

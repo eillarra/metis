@@ -21,6 +21,7 @@ class Snapshot(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     data = models.JSONField(null=True, editable=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey("metis.User", on_delete=models.SET_NULL, null=True, editable=False)
 

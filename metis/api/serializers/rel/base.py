@@ -5,7 +5,10 @@ from ..base import NestedHyperlinkField
 
 
 class RelHyperlinkedField(serializers.HyperlinkedIdentityField):
+    """Hyperlinked field for related objects."""
+
     def get_url(self, obj, view_name, request, format):
+        """Get URL for related object."""
         ct = ContentType.objects.get_for_model(obj)
         self.view_name = view_name
         return self.reverse(
@@ -17,13 +20,11 @@ class RelHyperlinkedField(serializers.HyperlinkedIdentityField):
 
 
 class NestedRelHyperlinkField(NestedHyperlinkField):
-    """
-    Specific nested field for ContentType objects.
-    """
+    """Specific nested field for ContentType objects."""
 
-    def __init__(self, view_name: str, *args, **kwargs):
+    def __init__(self, view_name: str, **kwargs):
         nested_lookup = {
             "parent_lookup_content_type_id": "content_type_id",
             "parent_lookup_object_id": "object_id",
         }
-        super().__init__(view_name=view_name, nested_lookup=nested_lookup, *args, **kwargs)
+        super().__init__(view_name, nested_lookup, **kwargs)

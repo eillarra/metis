@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { cloneDeep } from 'lodash-es';
 
 import { api } from '@/axios.ts';
+import { tags_to_dict } from '@/utils/tags.ts';
 
 export const useStore = defineStore('educationOffice', () => {
   const education = ref<Education | null>(null);
@@ -10,7 +11,7 @@ export const useStore = defineStore('educationOffice', () => {
   const programs = ref<Program[]>([]);
   const projects = ref<Project[]>([]);
   const projectInternships = ref<Internship[]>([]);
-  const projectPlaces = ref<ProjectPlace[]>([]);
+  const _projectPlaces = ref<ProjectPlace[]>([]);
   const questionings = ref<Questioning[]>([]);
   const students = ref<StudentUser[]>([]);
 
@@ -105,8 +106,39 @@ export const useStore = defineStore('educationOffice', () => {
     return output;
   });
 
+  const placeTypeMap = computed<Map<number, PlaceType>>(() => {
+    return (
+      education.value?.place_types.reduce((map, placeType) => {
+        map.set(placeType.id, placeType);
+        return map;
+      }, new Map()) || new Map()
+    );
+  });
+
   const places = computed<Place[]>(() => {
     return projectPlaces.value.map((obj) => obj.place);
+  });
+
+  const projectPlaces = computed<ProjectPlace[]>(() => {
+    return _projectPlaces.value.map((obj) => ({
+      ...obj,
+      place: {
+        ...obj.place,
+        // -----
+        Type: placeTypeMap.value.get(obj.place.type as number) || undefined,
+        // -----
+        _tags_dict: tags_to_dict(obj.place.tags),
+      },
+      // -----
+      Disciplines: obj.disciplines.map((id: number) => disciplineMap.value.get(id)),
+      // -----
+      _periods: obj.availability_set.reduce((set, availability) => {
+        if (availability.min > 0) {
+          set.add(availability.period);
+        }
+        return set;
+      }, new Set<number>()),
+    }));
   });
 
   const projectPlacesWithInternships = computed<Set<number>>(() => {
@@ -127,7 +159,7 @@ export const useStore = defineStore('educationOffice', () => {
     projectPlaces.value.reduce((map, obj) => {
       map.set(obj.id, obj.place);
       return map;
-    }, new Map())
+    }, new Map()),
   );
 
   const disciplineMap = computed<Map<number, Discipline>>(
@@ -135,7 +167,7 @@ export const useStore = defineStore('educationOffice', () => {
       education.value?.disciplines.reduce((map, discipline) => {
         map.set(discipline.id, discipline);
         return map;
-      }, new Map()) || new Map()
+      }, new Map()) || new Map(),
   );
 
   const blockMap = computed<Map<number, Track>>(() =>
@@ -144,7 +176,7 @@ export const useStore = defineStore('educationOffice', () => {
         map.set(block.id, block);
       });
       return map;
-    }, new Map())
+    }, new Map()),
   );
 
   const trackMap = computed<Map<number, Track>>(() =>
@@ -153,7 +185,7 @@ export const useStore = defineStore('educationOffice', () => {
         map.set(track.id, track);
       });
       return map;
-    }, new Map())
+    }, new Map()),
   );
 
   const periodMap = computed<Map<number, Period>>(() => {
@@ -171,7 +203,7 @@ export const useStore = defineStore('educationOffice', () => {
     projects.value.reduce((map, project) => {
       map.set(project.id, project);
       return map;
-    }, new Map())
+    }, new Map()),
   );
 
   const studentMap = computed<Map<number, Student>>(() =>
@@ -188,7 +220,7 @@ export const useStore = defineStore('educationOffice', () => {
           } as Student);
         });
       return map;
-    }, new Map())
+    }, new Map()),
   );
 
   const internships = computed<Internship[]>(() => {
@@ -199,18 +231,13 @@ export const useStore = defineStore('educationOffice', () => {
     return projectInternships.value.map((obj: Internship) => ({
       ...obj,
       // -----
-      tag_objects: obj.tags.reduce((dict, tag) => {
-        const parts = tag.split(':');
-        const value = parts.slice(1).join(':');
-        dict[parts[0]] = value.replace(/"/g, '');
-        return dict;
-      }, {} as { [tag: string]: string }),
-      // -----
       Student: studentMap.value.get(obj.student as number) || undefined,
       Track: trackMap.value.get(obj.track as number) || undefined,
       Period: periodMap.value.get(obj.period as number) || undefined,
       Discipline: disciplineMap.value.get(obj.discipline as number) || undefined,
       Place: projectPlaceMap.value.get(obj.project_place) || undefined,
+      // -----
+      _tags_dict: tags_to_dict(obj.tags),
     }));
   });
 
@@ -218,6 +245,7 @@ export const useStore = defineStore('educationOffice', () => {
     await fetchStudents();
     await fetchProjectPlaces();
     await fetchInternships();
+    await fetchEmails();
   }
 
   async function fetchEmails() {
@@ -228,10 +256,11 @@ export const useStore = defineStore('educationOffice', () => {
     }
 
     await api.get(project.value.rel_emails).then((res) => {
-      emails.value = res.data.map((obj: Email) => {
-        obj.tag_set = new Set(obj.tags);
-        return obj;
-      });
+      emails.value = res.data.map((obj: Email) => ({
+        ...obj,
+        // -----
+        _tags_dict: tags_to_dict(obj.tags),
+      }));
     });
   }
 
@@ -248,32 +277,14 @@ export const useStore = defineStore('educationOffice', () => {
   }
 
   async function fetchProjectPlaces() {
-    projectPlaces.value = [];
+    _projectPlaces.value = [];
 
     if (!project.value) {
       return;
     }
 
-    const placeTypeMap =
-      education.value?.place_types.reduce((map, placeType) => {
-        map.set(placeType.id, placeType);
-        return map;
-      }, new Map()) || new Map();
-
     await api.get(project.value.rel_places).then((res) => {
-      projectPlaces.value = res.data.map((obj: ProjectPlace) => {
-        obj.place.Type = placeTypeMap.get(obj.place.type as number) || undefined;
-        return {
-          ...obj,
-          Disciplines: obj.disciplines.map((id: number) => disciplineMap.value.get(id)),
-          _periods: obj.availability_set.reduce((set, availability) => {
-            if (availability.min > 0) {
-              set.add(availability.period);
-            }
-            return set;
-          }, new Set<number>()),
-        };
-      });
+      _projectPlaces.value = res.data;
     });
   }
 
@@ -290,7 +301,7 @@ export const useStore = defineStore('educationOffice', () => {
           ({
             ...obj,
             Period: periodMap.value.get(obj.period as number) || undefined,
-          } as Questioning)
+          }) as Questioning,
       );
     });
   }
@@ -321,9 +332,9 @@ export const useStore = defineStore('educationOffice', () => {
                     Project: projectMap.value.get(student.project as number),
                     Track: trackMap.value.get(student.track as number),
                     Block: blockMap.value.get(student.block as number),
-                  } as Student)
+                  }) as Student,
               ),
-          } as StudentUser)
+          }) as StudentUser,
       );
     });
   }
@@ -342,13 +353,14 @@ export const useStore = defineStore('educationOffice', () => {
 
     switch (type) {
       case 'contact':
-        collection = places.value.find((row) => row.id === (obj as Contact).place)?.contacts as Contact[];
+        collection = _projectPlaces.value.find((row) => row.place.id === (obj as Contact).place)?.place
+          .contacts as Contact[];
         break;
       case 'projectInternship':
         collection = projectInternships.value as Internship[];
         break;
       case 'projectPlace':
-        collection = projectPlaces.value as ProjectPlace[];
+        collection = _projectPlaces.value as ProjectPlace[];
         break;
       case 'questioning':
         collection = questionings.value as Questioning[];
@@ -396,7 +408,6 @@ export const useStore = defineStore('educationOffice', () => {
   watch(selectedProjectId, (val, oldVal) => {
     if (val && val !== oldVal) {
       init();
-      fetchEmails();
     }
   });
 

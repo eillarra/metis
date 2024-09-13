@@ -2,6 +2,8 @@ import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { cloneDeep } from 'lodash-es';
 
+import { tags_to_dict } from '@/utils/tags.ts';
+
 interface ProjectOptions {
   value: number;
   label: string;
@@ -24,7 +26,7 @@ export const useStore = defineStore('placeOffice', () => {
     djangoPlace: Place,
     djangoProjectPlaces: ProjectPlaceTiny[],
     djangoInternships: Internship[],
-    djangoUserId: number
+    djangoUserId: number,
   ) {
     djangoProjects.sort((a, b) => {
       return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
@@ -50,14 +52,9 @@ export const useStore = defineStore('placeOffice', () => {
     internships.value = djangoInternships.map((internship) => ({
       ...internship,
       // -----
-      tag_objects: internship.tags.reduce((dict, tag) => {
-        const parts = tag.split(':');
-        const value = parts.slice(1).join(':');
-        dict[parts[0]] = value.replace(/"/g, '');
-        return dict;
-      }, {} as { [tag: string]: string }),
-      // -----
       Place: djangoPlace,
+      // -----
+      _tags_dict: tags_to_dict(internship.tags),
     }));
     availableProjects.value = djangoProjects.map((project) => ({
       value: project.id,
@@ -94,7 +91,7 @@ export const useStore = defineStore('placeOffice', () => {
         (date) =>
           date.is_active &&
           validTypes.includes(date.type) &&
-          (!date.period || projectPlacePeriodIds.value.includes(date.period))
+          (!date.period || projectPlacePeriodIds.value.includes(date.period)),
       ) ?? []
     );
   });

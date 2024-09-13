@@ -97,7 +97,7 @@ function save() {
 }
 
 function removeContact() {
-  confirm(t('form.contact.confirm_delete'), () => {
+  confirm(t('form.contact.confirm_delete', { name: obj.value.user.name }), () => {
     api.delete(obj.value.self).then(() => {
       store.deleteObj('contact', obj.value);
       notify.success(t('form.contact.deleted'));

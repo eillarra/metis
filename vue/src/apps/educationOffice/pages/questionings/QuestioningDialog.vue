@@ -104,9 +104,9 @@
           <planner-view :questioning="obj" :students="targetObjects as Student[]" :project-places="projectPlaces" />
         </q-tab-panel>
         <q-tab-panel name="email">
-          <div class="row q-col-gutter-sm q-mb-sm">
+          <div class="row q-col-gutter-sm">
             <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('email_template') }}</h4>
-            <div class="col-12 col-md text-right q-gutter-sm">
+            <div class="col-12 col-md text-right">
               <q-btn
                 unelevated
                 :color="obj.disable_automatic_emails ? 'red-1' : 'blue-1'"
@@ -131,7 +131,7 @@
               {{ $t('field.email', 9) }}
             </h4>
           </div>
-          <emails-view :emails="emails" :tags="[`questioning.id:${obj.id}`]" />
+          <emails-view :emails="emails" :tags="[`questioning.id:${obj.id}`]" in-dialog />
         </q-tab-panel>
       </q-tab-panels>
     </template>

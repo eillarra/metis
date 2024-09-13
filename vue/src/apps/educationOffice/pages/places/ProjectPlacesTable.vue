@@ -4,9 +4,10 @@
     :rows="rows"
     :query-columns="queryColumns"
     :hidden-columns="hiddenColumns"
-    :form-component="ProjectPlaceForm"
+    :form-component="PlaceDialog"
     :create-form-component="ProjectPlaceCreateForm"
     sort-by="name"
+    open-dialog
   />
 </template>
 
@@ -15,8 +16,8 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import DataTable from '@/components/tables/DataTable.vue';
+import PlaceDialog from './PlaceDialog.vue';
 import ProjectPlaceCreateForm from './ProjectPlaceCreateForm.vue';
-import ProjectPlaceForm from './ProjectPlaceForm.vue';
 
 const { t } = useI18n();
 
@@ -28,6 +29,16 @@ const queryColumns = ['name', 'code'];
 const hiddenColumns = ['code'];
 
 const columns = [
+  {
+    name: 'remarks',
+    field: 'remarks',
+    required: true,
+    label: null,
+    align: 'left',
+    autoWidth: true,
+    headerClasses: 'sticky-left',
+    classes: 'sticky-left',
+  },
   {
     name: 'name',
     field: 'name',
@@ -77,6 +88,7 @@ const rows = computed(() => {
   return props.projectPlaces.map((obj: ProjectPlace) => ({
     _self: obj,
     _class: obj.place.is_flagged ? 'bg-orange-1' : '',
+    remarks: Number(obj.place._tags_dict?.['remarks.count']) || 0,
     name: obj.place.name,
     code: obj.place.code,
     type: obj.place.Type?.name || '-',

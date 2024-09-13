@@ -72,7 +72,7 @@ const filteredContacts = computed<Contact[]>(() => {
       ? (selectedProfile.value == 'staff' && obj.is_staff) ||
         (selectedProfile.value == 'mentor' && obj.is_mentor) ||
         (selectedProfile.value == 'contact_only' && !obj.is_staff && !obj.is_mentor)
-      : true
+      : true,
   );
 });
 </script>

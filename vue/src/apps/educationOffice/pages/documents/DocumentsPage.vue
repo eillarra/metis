@@ -1,6 +1,12 @@
 <template>
+  <files-view v-if="project" :api-endpoint="project.rel_files">
+    <template #title>
+      <h3 class="text-ugent col-12 col-md-3 q-mb-lg">{{ $t('document', 9) }}</h3>
+    </template>
+  </files-view>
+  <q-separator class="q-my-lg" />
   <div class="row q-col-gutter-sm q-mb-lg">
-    <h3 class="text-ugent col-12 col-md-3 q-mb-none">{{ $t('document', 9) }}</h3>
+    <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('document', 9) }} (oud)</h4>
   </div>
   <ul>
     <li v-for="period in filteredPeriods" :key="period.id">
@@ -20,6 +26,8 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useStore } from '../../store.js';
+
+import FilesView from '@/components/rel/FilesView.vue';
 
 const { programs, project } = storeToRefs(useStore());
 

@@ -58,13 +58,13 @@ store.setData(
   page.props.place as Place,
   page.props.project_places as ProjectPlaceTiny[],
   page.props.internships as Internship[],
-  (page.props.django_user as DjangoAuthenticatedUser).id
+  (page.props.django_user as DjangoAuthenticatedUser).id,
 );
 
 watch(
   () => selectedPlaceId.value,
   (id) => {
     window.location.href = `../${id}/#${route.path}`;
-  }
+  },
 );
 </script>

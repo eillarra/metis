@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional
 
 from django.db import models
 
-from .base import BaseModel
+from .base import BaseModel, TagsMixin
 
 
 if TYPE_CHECKING:
@@ -53,7 +53,7 @@ class EmailTemplate(BaseModel):
         return [self.education.office_email] if self.education and self.education.office_email else [self.HELPDESK]
 
 
-class EmailLog(models.Model):
+class EmailLog(TagsMixin, models.Model):
     """Log of sent emails."""
 
     project = models.ForeignKey(
@@ -65,9 +65,9 @@ class EmailLog(models.Model):
     reply_to = models.JSONField(default=list)
     subject = models.CharField(max_length=255)
     body = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
     sent_at = models.DateTimeField(null=True, blank=True)
-    tags = models.JSONField(default=list)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:  # noqa: D106
         db_table = "metis_log_email"

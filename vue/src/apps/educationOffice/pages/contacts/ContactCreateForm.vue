@@ -15,7 +15,9 @@
               />
               <q-checkbox v-model="formData.is_admin" :label="t('admin')" class="col-6 col-md-3" />
             </div>
+            <readonly-field v-if="parent" :label="$t('place')" :value="parent.name" />
             <api-autocomplete
+              v-else
               v-model="formData.place"
               clearable
               :data-source="projectPlaces"
@@ -45,7 +47,7 @@
               @click="addContact"
               color="ugent"
               :label="$t('form.add_to_place')"
-              :disable="!formData.user || !formData.place"
+              :disable="!selectedPlace || !formData.user"
             />
           </q-stepper-navigation>
         </q-step>
@@ -62,7 +64,9 @@
               />
               <q-checkbox v-model="formData.is_admin" :label="t('admin')" class="col-6 col-md-3" />
             </div>
+            <readonly-field v-if="parent" :label="$t('place')" :value="parent.name" />
             <api-autocomplete
+              v-else
               v-model="formData.place"
               clearable
               :data-source="(project as Project).rel_places"
@@ -84,7 +88,7 @@
           @click="inviteContact"
           color="ugent"
           :label="$t('form.invite')"
-          :disable="!formData.place || !formData.name || !formData.email"
+          :disable="!selectedPlace || !formData.name || !formData.email"
         />
       </div>
     </template>
@@ -103,8 +107,13 @@ import { useStore } from '../../store.js';
 
 import ApiAutocomplete from '@/components/forms/ApiAutocomplete.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
+import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 
 const emit = defineEmits(['create:obj']);
+
+const props = defineProps<{
+  parent?: Place;
+}>();
 
 const { t } = useI18n();
 const store = useStore();
@@ -122,6 +131,7 @@ const formData = ref({
 });
 
 const selectedPlace = computed<Place | null>(() => {
+  if (props.parent) return props.parent;
   if (!formData.value.place) return null;
   return places.value.find((obj) => obj.id === formData.value.place?.id) as Place;
 });
@@ -214,7 +224,7 @@ const userIdsUsedByPlaceContacts = computed<Map<number, Set<number>>>(() => {
       obj.contacts.reduce((set, contact) => {
         set.add(contact.user.id);
         return set;
-      }, new Set<number>())
+      }, new Set<number>()),
     );
     return map;
   }, new Map());

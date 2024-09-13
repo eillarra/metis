@@ -15,9 +15,10 @@ from django.utils import timezone
 
 from metis.utils.dates import sum_times
 
-from ..base import BaseModel
+from ..base import BaseModel, TagsMixin
 from ..disciplines import Discipline
-from ..rel.remarks import RemarksMixin
+from ..rel.files import FilesMixin, append_files_tags
+from ..rel.remarks import RemarksMixin, append_remarks_tags
 from .evaluations import EvaluationForm
 
 
@@ -152,7 +153,7 @@ def get_internship_tags(obj: "Internship", *, type: str = "all") -> list[str]:
     """For an internship, process the tags.
 
     :param obj: An instance of the Internship class.
-    :param type: The type of tags to process. Can be "all", "evaluations" or "hours".
+    :param type: The type of tags to process.
     :returns: A list of tags.
     """
     tags = obj.tags
@@ -186,10 +187,13 @@ def get_internship_tags(obj: "Internship", *, type: str = "all") -> list[str]:
         tags.append(f'hours.total:"{hours}:{minutes:02d}"')
         tags.append(f'hours.approved:"{accepted_hours}:{accepted_minutes:02d}"')
 
+    # files
+    if type in {"all", "files"}:
+        tags = append_files_tags(obj, tags=tags)
+
     # remarks
     if type in {"all", "remarks"}:
-        tags = [tag for tag in tags if not tag.startswith("remarks.")]
-        tags.append(f"remarks.count:{obj.remarks.count()}")
+        tags = append_remarks_tags(obj, tags=tags)
 
     return list(set(tags))
 
@@ -261,7 +265,7 @@ def validate_discipline_choice(obj: "Internship") -> None:
             raise ValidationError("Chosen discipline does not meet the remaining constraints for this internship.")
 
 
-class Internship(RemarksMixin, BaseModel):
+class Internship(FilesMixin, RemarksMixin, TagsMixin, BaseModel):
     """An internship for a student."""
 
     PREPLANNING = "preplanning"
@@ -293,7 +297,6 @@ class Internship(RemarksMixin, BaseModel):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=CONCEPT)
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
-    tags = models.JSONField(default=list)
 
     # evaluation_deadline = models.DateField()  # this can be used for cases > reviews
     # reviewers (beoordelaars)

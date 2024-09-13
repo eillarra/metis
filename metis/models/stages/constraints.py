@@ -94,14 +94,11 @@ class DisciplineConstraintsMixin(models.Model):
         if max_count1 < min_count2 or max_count2 < min_count1:
             return False
 
-        if (
+        return (
             constraint1.max_repeat is not None
             and constraint2.max_repeat is not None
             and constraint1.max_repeat != constraint2.max_repeat
-        ):
-            return True
-
-        return False
+        )
 
     def _get_count_bounds(self, constraint: DisciplineConstraint) -> tuple[int, int]:
         min_count = constraint.min_count or 0

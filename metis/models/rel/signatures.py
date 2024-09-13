@@ -17,8 +17,9 @@ class Signature(NonEditableMixin, models.Model):
 
     user = models.ForeignKey("metis.User", related_name="signatures", on_delete=models.PROTECT)
     signed_text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:  # noqa: D106
         db_table = "metis_log_signature"
