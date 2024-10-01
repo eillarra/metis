@@ -1,7 +1,34 @@
+from enum import Enum
+
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 from pydantic.types import conlist
 
 from .custom_forms import Translation
+
+
+class FinalScoreStrategy(str, Enum):
+    """A final score strategy."""
+
+    AVERAGE_ITEMS = "average_items"
+    AVERAGE_SECTIONS_FIRST = "average_sections_first"
+
+
+class EvaluationType(str, Enum):
+    """An evaluation type."""
+
+    SCORE = "score"
+    YES_NO = "yes_no"
+    POINTS = "points"
+
+
+class EvaluationPointsConfig(BaseModel):
+    """Configuration for points evaluation."""
+
+    model_config = ConfigDict(extra="forbid", validate_default=True)
+
+    max: int
+    min: int = 0
+    step: int = 1
 
 
 class EvaluationScore(BaseModel):
@@ -22,7 +49,10 @@ class EvaluationItem(BaseModel):
 
     value: str
     label: Translation
+    description: Translation | None = None
+    score_type: EvaluationType = EvaluationType.SCORE
     score_help_texts: list[tuple[str, Translation]] = []
+    score_config: dict | EvaluationPointsConfig = {}
 
 
 class EvaluationSection(BaseModel):
@@ -35,6 +65,7 @@ class EvaluationSection(BaseModel):
     description: Translation | None = None
     items: conlist(EvaluationItem, min_length=1)  # type: ignore
     cross_items: list[EvaluationItem] = []
+    with_score: bool = True
     with_remarks: bool = False
 
 
@@ -48,7 +79,9 @@ class EvaluationForm(BaseModel):
     intermediate_evaluations: int = 0
     scores: conlist(EvaluationScore, min_length=2)  # type: ignore
     sections: conlist(EvaluationSection, min_length=1)  # type: ignore
+    with_global_score: bool = True
     with_global_remarks: bool = True
+    final_score_strategy: FinalScoreStrategy = FinalScoreStrategy.AVERAGE_ITEMS
 
     @field_validator("scores")
     def validate_scores(cls, v):
@@ -96,7 +129,7 @@ def validate_evaluation_form_response(form_definition: dict, data: dict) -> dict
                 "remarks": str,  # if EvaluationSection.with_remarks is True
                 "score": str,
                 "scores": {
-                    item.value (str): (str, None) or (str, "cross"),  # depending on EvaluationSection.cross_items
+                    item.value (str): (str, None, None) or (str, "cross", "comment"),  # EvaluationSection.cross_items
                 },
             },
         },
