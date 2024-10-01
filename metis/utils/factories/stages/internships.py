@@ -11,7 +11,9 @@ from .students import StudentFactory
 
 
 class InternshipFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Internship model."""
+
+    class Meta:  # noqa: D106
         model = Internship
 
     project = factory.SubFactory(ProjectFactory)
@@ -21,14 +23,11 @@ class InternshipFactory(factory.django.DjangoModelFactory):
     start_date = factory.Faker("date_object")
     end_date = factory.LazyAttribute(lambda o: o.start_date + timedelta(days=20))
 
-    @factory.post_generation
-    def validate_and_save(self, create, extracted, **kwargs):
-        self.clean()
-        self.save()
-
 
 class MentorFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Mentor model."""
+
+    class Meta:  # noqa: D106
         model = "metis.Mentor"
 
     internship = factory.SubFactory(InternshipFactory)

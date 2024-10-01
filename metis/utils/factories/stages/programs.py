@@ -7,7 +7,9 @@ from ..educations import EducationFactory
 
 
 class ProgramFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """ºFactory for Program model."""
+
+    class Meta:  # noqa: D106
         model = Program
 
     education = factory.SubFactory(EducationFactory)
@@ -17,7 +19,9 @@ class ProgramFactory(factory.django.DjangoModelFactory):
 
 
 class ProgramBlockFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for ProgramBlock model."""
+
+    class Meta:  # noqa: D106
         model = ProgramBlock
 
     program = factory.SubFactory(ProgramFactory)
@@ -26,7 +30,9 @@ class ProgramBlockFactory(factory.django.DjangoModelFactory):
 
 
 class ProgramInternshipFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for ProgramInternship model."""
+
+    class Meta:  # noqa: D106
         model = ProgramInternship
 
     block = factory.SubFactory(ProgramBlockFactory)
@@ -37,7 +43,9 @@ class ProgramInternshipFactory(factory.django.DjangoModelFactory):
 
 
 class TrackFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Track model."""
+
+    class Meta:  # noqa: D106
         model = Track
 
     program = factory.SubFactory(ProgramFactory)
@@ -45,7 +53,9 @@ class TrackFactory(factory.django.DjangoModelFactory):
 
 
 class TrackInternshipFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for TrackInternship model."""
+
+    class Meta:  # noqa: D106
         model = TrackInternship
 
     track = factory.SubFactory(TrackFactory)

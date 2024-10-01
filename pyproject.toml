@@ -44,9 +44,9 @@ whitenoise = "*"
 xhtml2pdf = "==0.2.11"
 
 [tool.poetry.group.dev.dependencies]
+arrow = "*"
 django-debug-toolbar = "*"
 factory-boy = "*"
-maya = "*"
 phonenumbers = "*"
 pytest = "*"
 pytest-cov = "*"

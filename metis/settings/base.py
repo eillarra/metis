@@ -218,8 +218,12 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/dev/topics/templates/
 
 INERTIA_LAYOUT = SITE_ROOT / "templates" / "vue" / "inertia.html"
-DJANGO_VITE_ASSETS_PATH = BASE_DIR / "vue" / "dist"
-DJANGO_VITE_STATIC_URL_PREFIX = "vite"
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": False,
+        "static_url_prefix": "vite",
+    },
+}
 
 TEMPLATES = [
     {
@@ -275,7 +279,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = SITE_ROOT / "www" / "static"
 STATICFILES_DIRS = [
     SITE_ROOT / "static",
-    ("vite", DJANGO_VITE_ASSETS_PATH),
+    ("vite", BASE_DIR / "vue" / "dist"),
 ]
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",

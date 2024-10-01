@@ -120,10 +120,11 @@ HUEY = {
 
 # https://github.com/MrBin99/django-vite
 
-DJANGO_VITE_DEV_MODE = False
+DJANGO_VITE["default"]["dev_mode"] = False  # noqa
 
 
 def immutable_file_test(path, url):
+    """Check if the file is immutable."""
     # Vite generates files with 8 hash digits
     # Match filename with 8 or 12 hex digits before the extension
     # e.g. app.db8f2edc0c8a.js

@@ -200,7 +200,7 @@ class TestForStudent(TestForAuthenticated):
                 "is_approved": False,
             },
         )
-        assert response.status_code == status.BAD_REQUEST
+        assert response.status_code == status.FORBIDDEN
 
 
 class TestForOtherEducationOfficeMember(TestForAuthenticated):

@@ -45,4 +45,4 @@ REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = (  # noqa
 
 # https://github.com/MrBin99/django-vite
 
-DJANGO_VITE_DEV_MODE = True
+DJANGO_VITE["default"]["dev_mode"] = True  # noqa

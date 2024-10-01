@@ -89,7 +89,7 @@ def test_available_disciplines(
     )
 
     with pytest.raises(ValidationError):
-        InternshipFactory(
+        internship = InternshipFactory(
             project=project,
             track=Track.objects.get(program=test_program, name=f"Track {track_name}"),
             period=period,
@@ -97,6 +97,8 @@ def test_available_disciplines(
             project_place=project_place,
             discipline=Discipline.objects.get(education=test_program.education, code=discipline_code),
         )
+        internship.clean()
+        internship.save()
 
 
 @pytest.mark.django_db
@@ -125,7 +127,7 @@ def test_previously_covered_disciplines(
     track = Track.objects.get(program=test_program, name=f"Track {track_name}") if track_name else None
     place = test_program.education.places.first()
     project_place = ProjectPlaceFactory(project=project, place=place)
-    today = now.date
+    today = now.date()
 
     for idx, data in enumerate(internships_done):
         program_internship = ProgramInternship.objects.get(block__program=test_program, name=f"Internship {data[0]}")
@@ -183,7 +185,7 @@ def test_validate_discipline_choice(
     Discipline.objects.create(education=track.program.education, code="not_a_discipline", name="None")
     place = test_program.education.places.first()
     project_place = ProjectPlaceFactory(project=project, place=place)
-    today = now.date
+    today = now.date()
 
     for idx, data in enumerate(internships_done):
         program_internship = ProgramInternship.objects.get(block__program=test_program, name=f"Internship {data[0]}")

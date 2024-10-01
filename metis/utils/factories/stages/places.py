@@ -7,7 +7,9 @@ from .projects import ProjectFactory
 
 
 class ProjectPlaceFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for ProjectPlace model."""
+
+    class Meta:  # noqa: D106
         model = ProjectPlace
 
     project = factory.SubFactory(ProjectFactory)

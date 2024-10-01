@@ -86,7 +86,7 @@ def get_evaluation_periods(start_date: date, end_date: date, intermediates: int 
     :param start_date: The start date of the internship.
     :param end_date: The end date of the internship.
     :param intermediates: The number of intermediate evaluations.
-    :returns: A list of tuples with the start and end date of the evaluation periods.
+    :returns: A list of EvaluationPeriod tuples with the start and end date of the evaluation periods.
     """
     full_duration = (end_date - start_date).days
     evaluation_periods = []

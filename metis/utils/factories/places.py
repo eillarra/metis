@@ -5,14 +5,18 @@ from .users import UserFactory
 
 
 class PlaceTypeFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for PlaceType model."""
+
+    class Meta:  # noqa: D106
         model = "metis.PlaceType"
 
     education = factory.SubFactory(EducationFactory)
 
 
 class PlaceFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Place model."""
+
+    class Meta:  # noqa: D106
         model = "metis.Place"
 
     education = factory.SubFactory(EducationFactory)
@@ -22,7 +26,9 @@ class PlaceFactory(factory.django.DjangoModelFactory):
 
 
 class ContactFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Contact model."""
+
+    class Meta:  # noqa: D106
         model = "metis.Contact"
 
     place = factory.SubFactory(PlaceFactory)

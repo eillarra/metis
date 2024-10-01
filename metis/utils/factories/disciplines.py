@@ -4,7 +4,9 @@ from .educations import EducationFactory
 
 
 class DisciplineFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Discipline model."""
+
+    class Meta:  # noqa: D106
         model = "metis.Discipline"
 
     education = factory.SubFactory(EducationFactory)

@@ -1,4 +1,4 @@
-import maya
+import arrow
 import pytest
 
 from metis.utils.dates import is_holiday, is_weekend, remind_deadline
@@ -18,7 +18,7 @@ from metis.utils.dates import is_holiday, is_weekend, remind_deadline
 @pytest.mark.unit
 def test_remind_deadline(moment, deadline, remind_before, expected):
     """Test the remind_deadline function."""
-    moment, deadline = maya.when(moment).datetime(), maya.when(deadline).datetime()
+    moment, deadline = arrow.get(moment).datetime, arrow.get(deadline).datetime
     assert not is_weekend(moment) and not is_holiday(moment)
     assert remind_deadline(moment, deadline, remind_before) is expected
 
@@ -36,7 +36,7 @@ def test_remind_deadline(moment, deadline, remind_before, expected):
 @pytest.mark.unit
 def test_remind_deadline_on_weekend(moment, deadline, remind_before, expected):
     """Test the remind_deadline function on a weekend."""
-    moment, deadline = maya.when(moment).datetime(), maya.when(deadline).datetime()
+    moment, deadline = arrow.get(moment).datetime, arrow.get(deadline).datetime
     assert is_weekend(moment)
     assert remind_deadline(moment, deadline, remind_before) is expected
 
@@ -51,6 +51,6 @@ def test_remind_deadline_on_weekend(moment, deadline, remind_before, expected):
 @pytest.mark.unit
 def test_remind_deadline_on_holiday(moment, deadline, remind_before, expected):
     """Test the remind_deadline function on a holiday."""
-    moment, deadline = maya.when(moment).datetime(), maya.when(deadline).datetime()
+    moment, deadline = arrow.get(moment).datetime, arrow.get(deadline).datetime
     assert is_holiday(moment) and not is_weekend(moment)
     assert remind_deadline(moment, deadline, remind_before) is expected

@@ -14,7 +14,7 @@ class TimesheetPermissions(BasePermission):
     """Permissions for timesheets."""
 
     def has_permission(self, request, view):
-        """Checks if the user has permission to access the view."""
+        """Check if the user has permission to access the view."""
         if not bool(request.user and request.user.is_authenticated):
             return False
 
@@ -33,11 +33,11 @@ class TimesheetPermissions(BasePermission):
         return internship.student.user == request.user
 
     def has_object_permission(self, request, view, obj):
-        """Checks if the user has permission to manipulate the Timesheet object."""
+        """Check if the user has permission to manipulate the Timesheet object."""
         if request.method in SAFE_METHODS:
             return True
 
-        return obj.internship.student.user == request.user
+        return obj.internship.student.user == request.user and not obj.is_approved
 
 
 class AbsenceViewSet(InternshipNestedModelViewSet):

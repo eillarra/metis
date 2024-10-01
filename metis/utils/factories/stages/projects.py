@@ -7,7 +7,9 @@ from .programs import ProgramInternshipFactory
 
 
 class ProjectFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Project model."""
+
+    class Meta:  # noqa: D106
         model = Project
 
     education = factory.SubFactory(EducationFactory)
@@ -15,7 +17,9 @@ class ProjectFactory(factory.django.DjangoModelFactory):
 
 
 class PeriodFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    """Factory for Period model."""
+
+    class Meta:  # noqa: D106
         model = Period
 
     project = factory.SubFactory(ProjectFactory)

@@ -1,4 +1,4 @@
-import maya
+import arrow
 import pytest
 
 from metis.utils.dates import get_minutes_difference, sum_times
@@ -21,8 +21,8 @@ from metis.utils.dates import get_minutes_difference, sum_times
 @pytest.mark.unit
 def test_get_minutes_difference(time1, time2, expected):
     """Test the get_minutes_difference function."""
-    time1 = maya.parse(time1).datetime().time()
-    time2 = maya.parse(time2).datetime().time()
+    time1 = arrow.get(time1, "HH:mm").time()
+    time2 = arrow.get(time2, "HH:mm").time()
     assert get_minutes_difference(time1, time2) == expected
 
 
@@ -40,5 +40,5 @@ def test_get_minutes_difference(time1, time2, expected):
 @pytest.mark.unit
 def test_sum_times(times, expected):
     """Test the sum_times function."""
-    times = [maya.parse(t).datetime().time() for t in times]
+    times = [arrow.get(t, "HH:mm").time() for t in times]
     assert sum_times(times) == expected
