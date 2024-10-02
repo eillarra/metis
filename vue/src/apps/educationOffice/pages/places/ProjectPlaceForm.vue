@@ -33,7 +33,13 @@
               :disciplines="education.disciplines"
               :label="$t('discipline', 9)"
             />
-            <place-type-select
+            <place-option-select
+              v-if="education"
+              v-model="obj.place.location"
+              :place-types="education.place_locations"
+              :label="$t('place_location')"
+            />
+            <place-option-select
               v-if="education"
               v-model="obj.place.type"
               :place-types="education.place_types"
@@ -156,7 +162,7 @@ import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import AddressCards from '@/components/rel/AddressCards.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 import TextsView from '@/components/rel/TextsView.vue';
-import PlaceTypeSelect from '../../components/PlaceTypeSelect.vue';
+import PlaceOptionSelect from '../../components/PlaceOptionSelect.vue';
 
 const { t } = useI18n();
 const emit = defineEmits(['delete:obj']);

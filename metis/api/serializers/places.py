@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from metis.models import Contact, Place, PlaceType, User
+from metis.models import Contact, Place, PlaceLocation, PlaceType, User
 
 from .base import BaseModelSerializer, BaseTranslatedModelSerializer, NestedHyperlinkField
 from .rel import AddressesMixin, AddressSerializer, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
@@ -46,12 +46,25 @@ class PlaceSerializer(AddressesMixin, PhoneNumbersMixin, RemarksMixin, TextEntri
         exclude = ("created_at", "created_by")
 
 
+class PlaceLocationSerializer(BaseTranslatedModelSerializer):
+    """Place location serializer."""
+
+    class Meta:  # noqa: D106
+        model = PlaceLocation
+        fields = ["id", "code", "name"]
+
+
 class PlaceTypeSerializer(BaseTranslatedModelSerializer):
-    class Meta:
+    """Place type serializer."""
+
+    class Meta:  # noqa: D106
         model = PlaceType
-        fields = ("id", "name")
+        fields = ["id", "name"]
 
 
 class PlaceInertiaSerializer(PlaceSerializer):
+    """Place serializer used by Inertia."""
+
+    Location = PlaceLocationSerializer(read_only=True, source="location")
     Type = PlaceTypeSerializer(read_only=True, source="type")
     addresses = AddressSerializer(many=True, read_only=True)

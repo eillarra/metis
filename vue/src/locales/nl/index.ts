@@ -75,6 +75,7 @@ export default {
   program_block: 'Jaar | Jaren',
   program_internship: 'Stage | Stages',
   place: 'Stageplaats | Stageplaatsen',
+  place_location: 'Locatie | Locaties',
   place_type: 'Type stageplaats | Stageplaats types',
   questioning: 'Bevraging | Bevragingen',
   region: "Regio | Regio's",

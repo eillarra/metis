@@ -6,7 +6,7 @@
     :rounded="asFilter"
     :outlined="asFilter"
     :options="periodOptions"
-    :label="label || $t('place_type')"
+    :label="label"
     options-dense
     emit-value
     map-options
@@ -24,9 +24,9 @@ import { computed, ref, watch } from 'vue';
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps<{
-  placeTypes: PlaceType[];
+  placeTypes: PlaceLocation[] | PlaceType[];
+  label: string;
   asFilter?: boolean;
-  label?: string;
 }>();
 
 const model = ref<number | null>(null);

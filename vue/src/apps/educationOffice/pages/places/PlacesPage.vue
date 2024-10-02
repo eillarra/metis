@@ -16,7 +16,16 @@
       v-model="selectedPeriod"
       class="col-6 col-md-2"
     />
-    <place-type-select
+    <place-option-select
+      v-if="education?.place_locations.length"
+      as-filter
+      :label="$t('place_location')"
+      :place-types="(education?.place_locations as PlaceLocation[])"
+      v-model="selectedPlaceLocation"
+      class="col-6 col-md-2"
+    />
+    <place-option-select
+      v-if="education?.place_types.length"
       as-filter
       :label="$t('place_type')"
       :place-types="(education?.place_types as PlaceType[])"
@@ -53,7 +62,7 @@ import { storeToRefs } from 'pinia';
 import { useStore } from '../../store.js';
 
 import PeriodSelect from '../../components/PeriodSelect.vue';
-import PlaceTypeSelect from '../../components/PlaceTypeSelect.vue';
+import PlaceOptionSelect from '../../components/PlaceOptionSelect.vue';
 import ProjectPlacesTable from './ProjectPlacesTable.vue';
 
 import { iconDownload } from '@/icons';
@@ -62,6 +71,7 @@ const { education, project, projectPlaces } = storeToRefs(useStore());
 
 const selectedDiscipline = ref<number | null>(null);
 const selectedPeriod = ref<number | null>(null);
+const selectedPlaceLocation = ref<number | null>(null);
 const selectedPlaceType = ref<number | null>(null);
 
 const disciplineOptions = computed(() => {
@@ -122,6 +132,7 @@ const filteredPlaces = computed<ProjectPlace[]>(() => {
         : !selectedDiscipline.value || obj.disciplines.some((id: number) => id === selectedDiscipline.value)
     )
     .filter((obj) => !selectedPeriod.value || obj._periods.has(selectedPeriod.value))
+    .filter((obj) => !selectedPlaceLocation.value || obj.place.location === selectedPlaceLocation.value)
     .filter((obj) => !selectedPlaceType.value || obj.place.type === selectedPlaceType.value);
 });
 

@@ -76,6 +76,7 @@ export default {
   program_internship: 'Internship | Internships',
   project: 'Project | Projects',
   place: 'Place | Places',
+  place_location: 'Location | Locations',
   place_type: 'Place type | Place types',
   questioning: 'Questioning | Questionings',
   region: 'Region | Regions',

@@ -17,6 +17,11 @@ interface PlaceType extends ApiObject {
   name: string;
 }
 
+interface PlaceLocation extends ApiObject {
+  code: string;
+  name: string;
+}
+
 interface Place extends ApiObject {
   self: ApiEndpoint;
   rel_addresses: ApiEndpoint;
@@ -26,6 +31,7 @@ interface Place extends ApiObject {
   rel_texts: ApiEndpoint;
   parent: null | ApiEndpoint;
   education: number;
+  location: number;
   type: number;
   name: string;
   code: string;
@@ -38,6 +44,7 @@ interface Place extends ApiObject {
   remark_count: number;
   is_flagged: boolean;
   // -----
+  Location?: PlaceLocation;
   Type?: PlaceType;
 }
 

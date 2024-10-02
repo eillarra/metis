@@ -14,6 +14,23 @@ if TYPE_CHECKING:
     from .rel.files import File
 
 
+class PlaceLocation(BaseModel):
+    """Place locations are used to group places for a education."""
+
+    education = models.ForeignKey("metis.Education", related_name="place_locations", on_delete=models.CASCADE)
+    code = models.CharField(max_length=160)
+    name = models.CharField(max_length=160)
+    position = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:  # noqa: D106
+        db_table = "metis_education_place_locations"
+        unique_together = ["education", "code"]
+        ordering = ["education", "position", "name"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class PlaceType(BaseModel):
     """Place types are used to group places for a education."""
 
@@ -23,6 +40,7 @@ class PlaceType(BaseModel):
 
     class Meta:  # noqa: D106
         db_table = "metis_education_place_types"
+        unique_together = ["education", "name"]
         ordering = ["education", "position", "name"]
 
     def __str__(self) -> str:
@@ -42,6 +60,7 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
     """
 
     education = models.ForeignKey("metis.Education", related_name="places", on_delete=models.PROTECT)
+    location = models.ForeignKey(PlaceLocation, related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
     type = models.ForeignKey(PlaceType, related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=160)
     code = models.CharField(max_length=160)
@@ -58,6 +77,8 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
         """Validate that the parent and type are in the same education."""
         if self.parent and self.parent.education != self.education:
             raise ValidationError("Parent place must be in the same education.")
+        if self.location and self.location.education != self.education:
+            raise ValidationError("Place location must be in the same education.")
         if self.type and self.type.education != self.education:
             raise ValidationError("Place type must be in the same education.")
 

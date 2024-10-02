@@ -4,16 +4,16 @@ from metis.models.educations import Education, Faculty
 
 from .base import BaseTranslatedModelSerializer
 from .disciplines import DisciplineSerializer
-from .places import PlaceTypeSerializer
+from .places import PlaceLocationSerializer, PlaceTypeSerializer
 from .users import UserTinySerializer
 
 
 class FacultySerializer(BaseTranslatedModelSerializer):
     """Serializer for the Faculty model."""
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Faculty
-        exclude = ("created_at", "created_by")
+        exclude = ["created_at", "created_by"]
 
 
 class EducationTinySerializer(serializers.ModelSerializer):
@@ -21,9 +21,9 @@ class EducationTinySerializer(serializers.ModelSerializer):
 
     configuration = serializers.JSONField(read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Education
-        fields = ("id", "code", "short_name", "office_email", "configuration")
+        fields = ["id", "code", "short_name", "office_email", "configuration"]
 
 
 class EducationSerializer(BaseTranslatedModelSerializer):
@@ -42,8 +42,9 @@ class EducationSerializer(BaseTranslatedModelSerializer):
     office_members = UserTinySerializer(many=True)
     disciplines = DisciplineSerializer(many=True)
     configuration = serializers.JSONField(read_only=True)
+    place_locations = PlaceLocationSerializer(many=True, read_only=True)
     place_types = PlaceTypeSerializer(many=True, read_only=True)
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Education
-        exclude = ("config", "created_at", "created_by")
+        exclude = ["config", "created_at", "created_by"]
