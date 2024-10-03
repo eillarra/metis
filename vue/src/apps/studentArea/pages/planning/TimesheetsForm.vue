@@ -124,9 +124,11 @@ const { education } = storeToRefs(useStore());
 const { t } = useI18n();
 
 const timesheets = ref<Timesheet[]>([]);
-const date = ref(null);
+const date = ref<string | null>(null);
 const obj = ref({
-  self: null as number | null,
+  id: null as number | null,
+  self: null as ApiEndpoint | null,
+  date: null as string | null,
   start_time_am: null as string | null,
   end_time_am: null as string | null,
   start_time_pm: null as string | null,
@@ -200,15 +202,25 @@ function createTimesheet() {
 }
 
 function updateTimesheet() {
+  if (!obj.value.self) return;
+
+  const updatedData = {
+    date: obj.value.date as string,
+    start_time_am: obj.value.start_time_am as string,
+    end_time_am: obj.value.end_time_am as string,
+    start_time_pm: obj.value.start_time_pm as string,
+    end_time_pm: obj.value.end_time_pm as string,
+    data: obj.value.data,
+    __reapprove: false,
+  }
+
+  // if timesheet was approved a new approval is requested: `__reapprove` flag must be true
+  if (obj.value.is_approved && requestNewApproval.value) {
+    updatedData.__reapprove = true;
+  }
+
   api
-    .put(obj.value.self, {
-      date: obj.value.date,
-      start_time_am: obj.value.start_time_am,
-      end_time_am: obj.value.end_time_am,
-      start_time_pm: obj.value.start_time_pm,
-      end_time_pm: obj.value.end_time_pm,
-      data: obj.value.data,
-    })
+    .put(obj.value.self, updatedData)
     .then((response) => {
       const index = timesheets.value.findIndex((timesheet) => timesheet.id == obj.value.id);
       timesheets.value[index] = response.data;
@@ -228,24 +240,27 @@ onMounted(() => {
 });
 
 watch(date, () => {
-  const formattedDate = formatDate(date.value, 'YYYY/MM/DD');
+  const formattedDate = formatDate(date.value as string, 'YYYY/MM/DD');
 
   if (formattedDate in timesheetsByDate.value) {
     obj.value = timesheetsByDate.value[formattedDate];
   } else {
     obj.value = {
+      id: null,
       self: null,
+      date: null,
       start_time_am: null,
       end_time_am: null,
       start_time_pm: null,
       end_time_pm: null,
+      is_approved: false,
       data: {} as CustomFormData,
     };
   }
 });
 
-function limitTimeOptions(hr: number, min: number, pastTime?: string | null) {
-  if (min % 5 !== 0) return false;
+function limitTimeOptions(hr: number, min: number | null, pastTime?: string | null) {
+  if (min && min % 5 !== 0) return false;
   if (!pastTime) return true;
 
   const splits = pastTime.split(':');

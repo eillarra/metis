@@ -7,4 +7,6 @@ interface Timesheet extends ApiObject {
   duration: string;
   is_approved: boolean;
   data: CustomFormData;
+  // -----
+  __reapprove?: boolean;
 }

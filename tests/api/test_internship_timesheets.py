@@ -170,7 +170,8 @@ class TestForStudent(TestForAuthenticated):
     expected_status_codes = {
         "timesheet_list": status.OK,
         "timesheet_create": status.CREATED,
-        "timesheet_update": status.OK,
+        "timesheet_update": status.FORBIDDEN,
+        "timesheet_update_with_reapproval": status.OK,
         "timesheet_delete": status.NO_CONTENT,
         "timesheet_approve": status.FORBIDDEN,
     }
@@ -180,7 +181,7 @@ class TestForStudent(TestForAuthenticated):
         """Log in as student."""
         api_client.force_authenticate(user=internship.student.user)
 
-    def test_update_approved_timesheet(self, api_client, education, internship):
+    def _update_approved_timesheet(self, api_client, education, internship, data, status_code):
         """Test updating an approved timesheet."""
         self.test_create_timesheet(api_client, education, internship)
         timesheet = internship.timesheets.first()
@@ -193,14 +194,39 @@ class TestForStudent(TestForAuthenticated):
         )
         response = api_client.put(
             url,
+            data,
+        )
+        assert response.status_code == status_code
+
+    def test_update_approved_timesheet(self, api_client, education, internship):
+        """Test updating an approved timesheet."""
+        self._update_approved_timesheet(
+            api_client,
+            education,
+            internship,
             {
                 "date": str(internship.start_date),
                 "start_time_am": "8:00",
                 "end_time_am": "12:00",
                 "is_approved": False,
             },
+            self.expected_status_codes["timesheet_update"],
         )
-        assert response.status_code == status.FORBIDDEN
+
+    def test_update_approved_timesheet_with_reapproval(self, api_client, education, internship):
+        """Test updating an approved timesheet with reapproval."""
+        self._update_approved_timesheet(
+            api_client,
+            education,
+            internship,
+            {
+                "__reapprove": True,
+                "date": str(internship.start_date),
+                "start_time_am": "8:00",
+                "end_time_am": "12:00",
+            },
+            self.expected_status_codes["timesheet_update_with_reapproval"],
+        )
 
 
 class TestForOtherEducationOfficeMember(TestForAuthenticated):

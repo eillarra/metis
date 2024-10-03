@@ -1,6 +1,7 @@
 from http import HTTPStatus as status
 
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework.response import Response
 
@@ -58,7 +59,16 @@ class TimesheetViewSet(InternshipNestedModelViewSet):
     serializer_class = TimesheetSerializer
 
     def perform_update(self, serializer) -> None:
-        """Update model instance, reseting the approval status."""
+        """Update model instance, reseting the approval status.
+
+        Students can only update approved timesheets if they pass the "__reapprove" flag
+        """
+        if serializer.instance.is_approved and not self.request.data.get("__reapprove", False):
+            raise PermissionDenied("Cannot update approved timesheet without reapproval request")
+        else:
+            self.request.data["is_approved"] = False
+            self.request.data.pop("__reapprove", None)
+
         self.validate(serializer)
         serializer.save(internship=self.get_internship(), is_approved=False, updated_by=self.request.user)
 
