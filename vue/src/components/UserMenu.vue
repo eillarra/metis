@@ -6,6 +6,11 @@
         <q-item clickable tag="a" :href="`/${$i18n.locale}/dashboard/`">
           <q-item-section>{{ $t('user_menu.dashboard') }}</q-item-section>
         </q-item>
+        <q-item clickable tag="a" href="https://myaccount.microsoft.com/organizations" target="_blank">
+          <q-item-section>Microsoft account</q-item-section>
+          <q-item-section side><q-icon name="open_in_new" size="xs" /></q-item-section>
+        </q-item>
+        <q-separator class="q-my-sm" />
         <q-item clickable tag="a" href="/u/logout/">
           <q-item-section>{{ $t('user_menu.logout') }}</q-item-section>
           <q-item-section side><q-icon name="logout" size="xs" /></q-item-section>
