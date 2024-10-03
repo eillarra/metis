@@ -1,4 +1,6 @@
 <style lang="scss">
+$in-table-dense-field-height: 28px;
+
 .ugent__create-btn .q-btn {
   padding: 0 !important;
   min-height: 40px !important;
@@ -10,6 +12,15 @@
 }
 
 .ugent__data-table {
+  &.dense {
+    .q-field--dense .q-field__control, .q-field--dense .q-field__marginal {
+      height: $in-table-dense-field-height;
+    }
+    .q-field--auto-height.q-field--dense .q-field__control, .q-field--auto-height.q-field--dense .q-field__native {
+      min-height: $in-table-dense-field-height;
+    }
+  }
+
   .q-table {
     max-width: 100%;
 

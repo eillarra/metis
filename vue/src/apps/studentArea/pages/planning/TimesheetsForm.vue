@@ -15,7 +15,7 @@
         bordered
       />
     </div>
-    <div class="col-12 col-md-7">
+    <div class="col-12 col-md">
       <div v-if="!date">
         <h5 class="text-body1 text-strong q-mt-none">{{ $t('form.timesheet.help.choose_date') }}</h5>
         <p>{{ $t('form.timesheet.help.calendar_colors') }}</p>

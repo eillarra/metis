@@ -86,7 +86,7 @@
               <div class="col-12 q-py-xs"><q-separator v-show="!$q.screen.lt.sm" /></div>
             </div>
           </div>
-          <table v-else-if="field.type === 'composite'">
+          <q-markup-table v-else-if="field.type === 'composite'" flat dense class="ugent__data-table dense">
             <thead class="text-left">
               <tr v-if="(mutable[field.code] || []).length">
                 <th v-for="f in field.fields" :key="f.code">
@@ -100,15 +100,19 @@
                 <td v-for="f in field.fields" :key="f.code">
                   <q-input
                     v-if="isInputField(f)"
+                    borderless
+                    dense
                     v-model="mutable[field.code][idx][f.code]"
                     :type="f.type"
                     :mask="f.mask || undefined"
-                    :dense="f.type != 'textarea'"
                     :disable="props.disable"
                     :step="f.type == 'time' ? 3600 : undefined"
+                    input-class="q-pa-none ellipsis"
                   />
                   <q-select
                     v-else-if="f.type === 'select'"
+                    borderless
+                    dense
                     v-model="mutable[field.code][idx][f.code]"
                     :options="f.options"
                     :id="f.code"
@@ -117,7 +121,6 @@
                     :disable="props.disable"
                     emit-value
                     map-options
-                    dense
                     options-dense
                     class="ellipsis"
                   />
@@ -142,7 +145,7 @@
                 class="q-mt-md"
               ></q-btn>
             </tfoot>
-          </table>
+          </q-markup-table>
         </div>
       </div>
     </div>
