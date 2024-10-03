@@ -13,7 +13,7 @@
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</q-item-section>
+          <q-item-section v-if="education?.configuration?.timesheets_extra_form">{{ $t('logbook') }}</q-item-section>
           <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
         <q-item
@@ -37,7 +37,7 @@
           <q-item-section avatar>
             <q-icon name="more_time" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</q-item-section>
+          <q-item-section v-if="education?.configuration?.timesheets_extra_form">{{ $t('logbook') }}</q-item-section>
           <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
         <q-item
@@ -132,14 +132,13 @@
         <q-tab-panel name="timesheets">
           <timesheets-view
             :internship="obj"
-            :custom-title="education?.configuration?.timesheets_with_comments ? $t('logbook') : undefined"
-            :with-comments="education?.configuration?.timesheets_with_comments"
+            :custom-title="education?.configuration?.timesheets_extra_form ? $t('logbook') : undefined"
           />
         </q-tab-panel>
         <q-tab-panel name="timesheetsForm">
           <div class="row q-col-gutter-sm q-mb-lg">
             <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
-              <span v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</span>
+              <span v-if="education?.configuration?.timesheets_extra_form">{{ $t('logbook') }}</span>
               <span v-else>{{ $t('form.timesheet.title') }}</span>
             </h4>
           </div>
@@ -179,7 +178,7 @@ const { education } = storeToRefs(store);
 const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');
 const internshipName = computed<string>(
-  () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`
+  () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`,
 );
 
 function saveDates() {

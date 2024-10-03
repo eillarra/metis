@@ -37,7 +37,7 @@ class TimesheetPermissions(BasePermission):
         if request.method in SAFE_METHODS:
             return True
 
-        return obj.internship.student.user == request.user and not obj.is_approved
+        return obj.internship.student.user == request.user
 
 
 class AbsenceViewSet(InternshipNestedModelViewSet):

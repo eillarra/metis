@@ -37,7 +37,7 @@
           <q-item-section avatar>
             <q-icon name="schedule" size="xs"></q-icon>
           </q-item-section>
-          <q-item-section v-if="education?.configuration?.timesheets_with_comments">{{ $t('logbook') }}</q-item-section>
+          <q-item-section v-if="education?.configuration?.timesheets_extra_form">{{ $t('logbook') }}</q-item-section>
           <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
         </q-item>
         <q-item
@@ -125,9 +125,8 @@
         <q-tab-panel name="timesheets">
           <timesheets-view
             :internship="obj"
-            :custom-title="education?.configuration?.timesheets_with_comments ? $t('logbook') : undefined"
+            :custom-title="education?.configuration?.timesheets_extra_form ? $t('logbook') : undefined"
             approvable
-            :with-comments="education?.configuration?.timesheets_with_comments"
           />
         </q-tab-panel>
       </q-tab-panels>
@@ -165,7 +164,7 @@ const { education, userIsAdmin } = storeToRefs(store);
 const obj = ref<Internship>(props.obj);
 const tab = ref<string>('info');
 const internshipName = computed<string>(
-  () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`
+  () => `${obj.value.Student?.User?.name} - ${obj.value.Place?.name} (${obj.value.Discipline?.name})`,
 );
 const hasStarted = computed<boolean>(() => {
   if (!obj.value.start_date) return false;

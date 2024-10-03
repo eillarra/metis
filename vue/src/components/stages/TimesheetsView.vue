@@ -82,13 +82,13 @@ const props = defineProps<{
   internship: Internship;
   approvable?: boolean;
   customTitle?: string | undefined;
-  withComments?: boolean;
 }>();
 
 const { t } = useI18n();
 
 // --
 const page = usePage();
+const education = computed<Education>(() => page.props.education as Education);
 const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_user as DjangoAuthenticatedUser);
 // --
 
@@ -96,6 +96,8 @@ const timesheets = ref<Timesheet[]>([]);
 const selected = ref<QuasarTableRow[]>([]);
 const dialogVisible = ref(false);
 const acceptanceChecked = ref(false);
+
+const withComments = computed(() => education.value.configuration?.timesheets_extra_form);
 
 const selectedPendingApproval = computed(() => {
   return selected.value
@@ -180,10 +182,10 @@ const columns = [
   },
 ];
 
-if (props.withComments) {
+if (withComments.value) {
   columns.push({
-    name: 'has_comments',
-    field: 'has_comments',
+    name: 'has_extra_data',
+    field: 'has_extra_data',
     label: t('form.timesheet.comments'),
     align: 'center',
   });
@@ -200,10 +202,7 @@ const rows = computed(() => {
     end_time_pm: obj.end_time_pm ? obj.end_time_pm.substring(0, 5) : '-',
     duration: obj.duration.substring(0, 5),
     is_approved: obj.is_approved,
-    has_comments:
-      (obj.data.comments && obj.data.comments !== '') ||
-      (obj.data.weekly_reflection && obj.data.weekly_reflection !== '') ||
-      (obj.data.weekly_action_points && obj.data.weekly_action_points !== ''),
+    has_extra_data: Object.keys(obj.data).length > 0,
   }));
 });
 

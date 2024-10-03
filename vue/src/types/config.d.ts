@@ -24,5 +24,5 @@ interface EducationConfig {
   place_set_disciplines_per_block: boolean;
   place_contact_is_staff: boolean;
   student_update_dates: boolean;
-  timesheets_with_comments: boolean;
+  timesheets_extra_form: CustomFormDefinition | null;
 }

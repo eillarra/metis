@@ -49,7 +49,7 @@ class FormField(BaseModel):
 class InputField(FormField):
     """An input field in a form."""
 
-    type: Literal["text", "textarea", "number", "date", "email", "tel", "url"]
+    type: Literal["text", "textarea", "number", "date", "time", "email", "tel", "url"]
     mask: str | None = None
     placeholder: Translation | None = None
 
@@ -88,12 +88,19 @@ class GridField(FormField):
         return [f"{row.value}_{option.value}" for row in self.rows for option in self.options]
 
 
+class CompositeField(FormField):
+    """A composite field that contains multiple other fields."""
+
+    type: Literal["composite"]
+    fields: list[InputField | ChoiceField]
+
+
 class Fieldset(BaseModel):
     """A fieldset in a form."""
 
     model_config = ConfigDict(extra="forbid", validate_default=True)
 
-    fields: list[InputField | ChoiceField | GridField]
+    fields: list[InputField | ChoiceField | GridField | CompositeField]
     legend: Translation | None = None
     description: Translation | None = None
     rule: Rule | None = None
@@ -165,49 +172,57 @@ def validate_form_response(form_definition: dict, data: dict) -> dict:
             raise ValueError(f"Unknown field `{field}`")
 
     for field in fields:
-        if field.type in {"select", "option_group"} and field.code in data:
-            options = {option.value for option in field.options}
-
-            if field.multiple:
-                _validate_options(options, data, field.code)
-            else:
-                if data[field.code] and data[field.code] not in options:
-                    raise ValueError(f"Invalid value `{data[field.code]}` for field `{field.code}`")
-
-            if field.other_option and field.other_option in data[field.code]:
-                other_code = f"{field.code}__{field.other_option}"
-                if other_code not in data or not isinstance(data[other_code], str):
-                    raise ValueError(f"Field `{field.code}__{field.other_option}` should be defined, as a string")
-
-        elif field.type in {"option_grid"} and field.multiple and field.code in data:
-            _validate_options(set(field.all_options), data, field.code)
-
-        elif field.type in {"option_grid"} and not field.multiple and field.code in data:
-            if field.required and not data[field.code]:
-                raise ValueError(f"Missing value for field `{field.code}`")
-
-            if field.required and data[field.code] and not isinstance(data[field.code], dict):
-                raise ValueError(f"Field `{field.code}` should be a dict")
-
-            if field.required:
-                options = {option.value for option in field.options}
-
-                for row in field.rows:
-                    if not data[field.code][row.value] or data[field.code][row.value] not in options:
-                        raise ValueError(
-                            f"Invalid value `{data[field.code][row.value]}` for field "
-                            f"`{field.code}` > `{row.value}`"
-                        )
-
-        elif field.code in data:
-            if not isinstance(data[field.code], str):
-                raise ValueError(f"Field `{field.code}` should be a string")
+        if field.type == "composite":
+            for subfield in field.fields:
+                _validate_field(subfield, data)
+        else:
+            _validate_field(field, data)
 
     # clean data for XSS attacks
     # users normally shouldn't be able to enter HTML, but we can't be sure
     # TODO: if we expect HTML, we should create a valid field type for it
 
     return _sanitize_html(data)
+
+
+def _validate_field(field: FormField, data: dict) -> None:
+    """Validate fields checking for duplicate field codes."""
+    if field.type in {"select", "option_group"} and field.code in data:
+        options = {option.value for option in field.options}
+
+        if field.multiple:
+            _validate_options(options, data, field.code)
+        else:
+            if data[field.code] and data[field.code] not in options:
+                raise ValueError(f"Invalid value `{data[field.code]}` for field `{field.code}`")
+
+        if field.other_option and field.other_option in data[field.code]:
+            other_code = f"{field.code}__{field.other_option}"
+            if other_code not in data or not isinstance(data[other_code], str):
+                raise ValueError(f"Field `{field.code}__{field.other_option}` should be defined, as a string")
+
+    elif field.type in {"option_grid"} and field.multiple and field.code in data:
+        _validate_options(set(field.all_options), data, field.code)
+
+    elif field.type in {"option_grid"} and not field.multiple and field.code in data:
+        if field.required and not data[field.code]:
+            raise ValueError(f"Missing value for field `{field.code}`")
+
+        if field.required and data[field.code] and not isinstance(data[field.code], dict):
+            raise ValueError(f"Field `{field.code}` should be a dict")
+
+        if field.required:
+            options = {option.value for option in field.options}
+
+            for row in field.rows:
+                if not data[field.code][row.value] or data[field.code][row.value] not in options:
+                    raise ValueError(
+                        f"Invalid value `{data[field.code][row.value]}` for field " f"`{field.code}` > `{row.value}`"
+                    )
+
+    elif field.code in data:
+        if not isinstance(data[field.code], str):
+            raise ValueError(f"Field `{field.code}` should be a string")
 
 
 def _validate_options(available_options: set[str], data: dict, field_code: str) -> None:

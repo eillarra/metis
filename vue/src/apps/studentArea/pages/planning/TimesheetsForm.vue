@@ -66,31 +66,10 @@
             :options="(hr, min) => limitTimeOptions(hr, min, obj.start_time_pm)"
           />
         </div>
-        <div v-show="education?.configuration?.timesheets_with_comments">
-          <q-input
-            v-model="obj.data.comments"
-            :label="$t('form.timesheet.comments')"
-            :disable="obj.is_approved"
-            type="textarea"
-            class="q-mt-md"
-          />
-          <p class="text-body2 text-weight-bold q-mt-xl">
-            <span>Reflectie over deze week (1 keer in te vullen op einde van de week):</span>
-          </p>
-          <q-input
-            v-model="obj.data.weekly_reflection"
-            :label="$t('form.timesheet.weekly_reflection')"
-            type="textarea"
-            autogrow
-            dense
-            class="q-mt-md"
-          />
-          <q-input
-            v-model="obj.data.weekly_action_points"
-            :label="$t('form.timesheet.weekly_action_points')"
-            type="textarea"
-            autogrow
-            dense
+        <div v-if="education?.configuration?.timesheets_extra_form" class="q-mt-xl">
+          <custom-form-dos
+            v-model="obj.data"
+            :form-definition="education.configuration.timesheets_extra_form"
             class="q-mt-md"
           />
         </div>
@@ -105,7 +84,7 @@
                 !date ||
                 (!obj.start_time_am && !obj.start_time_pm) ||
                 (obj.start_time_am && !obj.end_time_am) ||
-                (obj.start_time_pm && !obj.end_time_pm)
+                (obj.start_time_pm && !obj.end_time_pm),
             )
           "
           class="q-mt-lg"
@@ -133,9 +112,9 @@ import { api } from '@/axios';
 import { notify } from '@/notify';
 import { formatDate } from '@/utils/dates';
 
+import CustomFormDos from '@/components/custom_forms/CustomFormDos.vue';
 import DateSelect from '@/components/forms/DateSelect.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
-import { RefSymbol } from '@vue/reactivity';
 
 const props = defineProps<{
   internship: Internship;
@@ -153,21 +132,18 @@ const obj = ref({
   start_time_pm: null as string | null,
   end_time_pm: null as string | null,
   is_approved: false,
-  data: (education.value?.configuration?.timesheets_with_comments
-    ? {
-        comments: '',
-        weekly_reflection: '',
-        weekly_action_points: '',
-      }
-    : {}) as TimesheetData,
+  data: {} as CustomFormData,
 });
 const requestNewApproval = ref(false);
 
 const timesheetsByDate = computed<Record<string, Timesheet>>(() => {
-  return timesheets.value.reduce((acc, timesheet) => {
-    acc[formatDate(timesheet.date, 'YYYY/MM/DD')] = timesheet;
-    return acc;
-  }, {} as Record<string, Timesheet>);
+  return timesheets.value.reduce(
+    (acc, timesheet) => {
+      acc[formatDate(timesheet.date, 'YYYY/MM/DD')] = timesheet;
+      return acc;
+    },
+    {} as Record<string, Timesheet>,
+  );
 });
 
 const yearMonths = computed<{
@@ -263,13 +239,7 @@ watch(date, () => {
       end_time_am: null,
       start_time_pm: null,
       end_time_pm: null,
-      data: (education.value?.configuration?.timesheets_with_comments
-        ? {
-            comments: '',
-            weekly_reflection: '',
-            weekly_action_points: '',
-          }
-        : {}) as TimesheetData,
+      data: {} as CustomFormData,
     };
   }
 });

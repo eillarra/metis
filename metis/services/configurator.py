@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
+from .form_builder.custom_forms import CustomForm
+
 
 class Translation(BaseModel):
     """A translation for a field label or description."""
@@ -60,9 +62,9 @@ class EducationConfig(BaseModel):
         default=False,
         description="Whether students can update their internship dates",
     )
-    timesheets_with_comments: bool = Field(
-        default=False,
-        description="Whether timesheets should have daily comments",
+    timesheets_extra_form: CustomForm | None = Field(
+        default=None,
+        description="A custom form to add extra fields to timesheets",
     )
 
     @field_validator("project_text_types")
