@@ -111,6 +111,7 @@ def schedule_template_email(
     template: "EmailTemplate",
     to: list[str],
     bcc: list[str] | None = None,
+    reply_to: list[str] | None = None,
     context: dict | None = None,
     log_user: Optional["User"] = None,
     log_project: Optional["Project"] = None,
@@ -121,6 +122,7 @@ def schedule_template_email(
     :param template: The email template to use.
     :param to: The email addresses to send the email to.
     :param bcc: The email addresses to send the email bcc to.
+    :param reply_to: The email addresses to set as reply-to.
     :param context: The context to render the email with.
     :param log_user: The user to log the email for.
     :param log_project: The project to log the email for.
@@ -133,6 +135,7 @@ def schedule_template_email(
         from_email = (
             f"{log_project.education.short_name} UGent <metis@ugent.be>" if log_project else "UGent <metis@ugent.be>"
         )
+        reply_to = reply_to or (log_project.reply_to if log_project and log_project.reply_to else template.reply_to)
 
         schedule_email(
             from_email=from_email,
@@ -140,7 +143,7 @@ def schedule_template_email(
             subject=render_context(template.subject, context or {}),
             text_content=render_context(template.body, context or {}),
             bcc=template.bcc + (bcc or []),
-            reply_to=log_project.reply_to if log_project and log_project.reply_to else template.reply_to,
+            reply_to=reply_to,
             log_user=log_user,
             log_project=log_project,
             tags=tags,

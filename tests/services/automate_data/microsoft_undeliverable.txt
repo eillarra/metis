@@ -1,0 +1,1307 @@
+Delivered-To: eneko.illarramendi@gmail.com
+Received: by 2002:a05:6838:900a:b0:8ae:9aa5:9cb7 with SMTP id w10csp631144nkc;
+        Wed, 2 Oct 2024 01:28:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=5; AJvYcCV3o9ekwvgKpD0tGIqZcbnI4vHMFcZKiTsYxJtYVoPBXSRG1KX1hilfrMUPhJlc+WBV81F9IDbrsZcehF/CBVclMI8=@gmail.com
+X-Google-Smtp-Source: AGHT+IEUcprzRXcXS+k0DzSVGoz8oUNvjAVW25qPiMpPjdR76+1aP3KIBmPhPpy3LOLKBbh9nqVM
+X-Received: by 2002:a05:620a:1911:b0:7a9:bd5b:eb60 with SMTP id af79cd13be357-7ae626d3fc9mr339453285a.35.1727857692330;
+        Wed, 02 Oct 2024 01:28:12 -0700 (PDT)
+ARC-Seal: i=4; a=rsa-sha256; t=1727857692; cv=pass;
+        d=google.com; s=arc-20240605;
+        b=ALJBAr+c6OMy+x+0dX3L6JUCe4Hk4pgOtXILBYbZLlTRoD1Z7qxqmhI74dlLUqmnLD
+         yP8+Zjiqr9OB+zB+EPCPtiaAAKjyERLx1YXK2SzDNDXODz6unx5JJ13lm+6DE3VH3ZqT
+         IEyoJ9T0qPB90YLACpqw+lbBZ8D3iwoCvZdV87cc5qjx0thFuTRE8b62cpOqsNB4bh/F
+         sr/yEUx8JcHxqEiZ0LPYoj3gjIvHgZ8FxzR1SAzAs173+cDkGIiTzKCvqnaSNt/CGSQy
+         bxFo3r4bYZmYXLmGo6RUOD+CyR5ubMZ8ZafbaVlfRSUv1J1KPNs7xhG3HiFTMzYLFPge
+         PKFA==
+ARC-Message-Signature: i=4; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=auto-submitted:subject:references:in-reply-to:message-id
+         :content-language:date:to:from:mime-version:dkim-signature
+         :authentication-results-original:dkim-signature;
+        bh=hIQVwjDTs8595rzq+zEmXd3KY7kf0/2aOKOZbFTDq9E=;
+        fh=lwndCY9tm3hMalki8GAmM9jVN58+R2l47nYk3WawywM=;
+        b=EKsgAMnNTINI71O9WbmayWQdIGqRUT9Oz4d17EPN6mFc0nZ1W5u73fi9cLJXprrXIG
+         fN1L83ylZ3racwuaOqAVBsOGWdC9G6mKK2EXjZTlRFzs2s+Zm1DE2yG6GRSE81IRrmF8
+         rULlU/5KFSqCFk1UpAx0WTmlm7SAKc1K8U/yVSF6Faa4BY/IqvWxSpIk6vU0Onki2HxD
+         DxfqAVZF7Ia1cOHamFtQaLjd+ONMcPJO1kvCQ/yqs1N0dd8QB55T51IapojEoG9xKJdy
+         d/+re9FKJ1mb+EXofxCBd9KquQ3du2NtwzxpK+bAOays2pnm7hrvjtAB2EdxUF6ItrB+
+         43Pw==;
+        dara=google.com
+ARC-Authentication-Results: i=4; mx.google.com;
+       dkim=pass header.i=@ugentbe.onmicrosoft.com header.s=selector2-ugentbe-onmicrosoft-com header.b=nm0IRuR1;
+       dkim=neutral (body hash did not verify) header.i=@ugentbe.onmicrosoft.com header.s=selector2-ugentbe-onmicrosoft-com header.b=NRVuSmKx;
+       arc=pass (i=3 spf=pass spfdomain=eur05-am6-obe.outbound.protection.outlook.com dkim=pass dkdomain=ugentbe.onmicrosoft.com);
+       spf=pass (google.com: domain of postmaster@eur03-vi1-obe.outbound.protection.outlook.com designates 52.100.15.243 as permitted sender) smtp.helo=EUR03-VI1-obe.outbound.protection.outlook.com
+Return-Path: <>
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03hn2243.outbound.protection.outlook.com. [52.100.15.243])
+        by mx.google.com with ESMTPS id af79cd13be357-7ae37855e16si1237255585a.478.2024.10.02.01.28.11
+        for <eneko.illarramendi@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Oct 2024 01:28:12 -0700 (PDT)
+Received-SPF: pass (google.com: domain of postmaster@eur03-vi1-obe.outbound.protection.outlook.com designates 52.100.15.243 as permitted sender) client-ip=52.100.15.243;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ugentbe.onmicrosoft.com header.s=selector2-ugentbe-onmicrosoft-com header.b=nm0IRuR1;
+       dkim=neutral (body hash did not verify) header.i=@ugentbe.onmicrosoft.com header.s=selector2-ugentbe-onmicrosoft-com header.b=NRVuSmKx;
+       arc=pass (i=3 spf=pass spfdomain=eur05-am6-obe.outbound.protection.outlook.com dkim=pass dkdomain=ugentbe.onmicrosoft.com);
+       spf=pass (google.com: domain of postmaster@eur03-vi1-obe.outbound.protection.outlook.com designates 52.100.15.243 as permitted sender) smtp.helo=EUR03-VI1-obe.outbound.protection.outlook.com
+ARC-Seal: i=3; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass; b=hBxbI7D37tcVPJf4/nNrTCCjHWrK9M+p0dP46bENpEBNqUtTZ/+qsJDOKp5N7NBp7QIJhTBz4BIAvt0swBdqzkI7yiucskK45wK5zVBsOlqrKQK7Qih356cFs8SfRa5qu5eRzErJzqJsyK7AuSFKuiK2cV9HGx70/bdYD4M8sGK2WvFjmWoTD2KtSbzsCc4pE4IkG6QZ2+9ZR+6fma+9NVCKKgUE5FCOskqM0SzdKgqzUgvTiq/qFtXEAMHnfH0oDkcdNq9Sy31swhqRJgxaZi+KGIQ1I6AvVBgld/134oyvbPIp01hkH9j0J6zIFsn8RJd22jjysRqzgUlwLi97HA==
+ARC-Message-Signature: i=3; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; s=arcselector10001; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1; bh=hIQVwjDTs8595rzq+zEmXd3KY7kf0/2aOKOZbFTDq9E=; b=ZYJzZVH2NsVdPoUJEujX6MPup3SvmIf7BobjeZ1TzITL7OcxcqJtskkirMLCGOlATYqchz0zsUwJS40k9DtnFItTUSNdRFQGFbHf6r7enCFX1mj5g3lPr9MbRBspN9eSrtvNBgL6+2jfaSp+16d0CKlUXBZrKc1ju4hMVnMKTC8ekPhiTwmkZbcz9TnLBimhmWjxzsgzubBTjpaKD9OQKhFm7s3pQGM9itHm3Wl6DRY8pOF8z1hhLOiU+gk/BnalLk5HTiWNF9Vd5X58gqQ2AgPFxXrGwNbp954hYKoNRMFj3zvZ21MPUvR790ahTpe73/t4tkJOEajYU4KoQ5hQFg==
+ARC-Authentication-Results: i=3; mx.microsoft.com 1; spf=pass (sender ip is 104.47.18.112) smtp.rcpttodomain=ugent.be smtp.helo=eur05-am6-obe.outbound.protection.outlook.com; dmarc=bestguesspass action=none header.from=ugentbe.onmicrosoft.com; dkim=pass (signature was verified) header.d=ugentbe.onmicrosoft.com; arc=pass (0 oda=1 ltdi=1 dkim=[1,1,header.d=ugentbe.onmicrosoft.com] dmarc=[1,1,header.from=ugentbe.onmicrosoft.com])
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ugentbe.onmicrosoft.com; s=selector2-ugentbe-onmicrosoft-com; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck; bh=hIQVwjDTs8595rzq+zEmXd3KY7kf0/2aOKOZbFTDq9E=; b=nm0IRuR1pd61lPrVtWykOWXZ2adir4VMzhW8ckgw7mZVnNNt3NYacyOwRGxT6vYKmmXRS2iy1PHN76hhTzvvkgLE08rgQdkbSR3abrjCI8RJQF8ouMPv5kW+lKR/5/vmKCi6dX39IeenErn5rNpGfJjRM/DLjyyl62Vy/j6v24Q=
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass; b=Vh3/AK02rxa0bNqd+15wnqJ5qhEGcIdvfwLYne+p3AoFHvVg+lTzPVKsCeYFROkpK7ODOPDsr0bJFI0biqL7sVMYRf7WA65QidWeAXd53+q0hPnbM5Tun/4SyNmxo+KwMmsW3hu3fFkI1dXAOOqI1ocCqg4FehDXMkt0uV6MuGjWr9EV9wdVZSTFwdea3TYBFULACdtxou++EnNtr0zmxexlgjDF8mZbfpFV0LySdtk8t19LfnHpnQMYz5WGCK0JM6N/5TZrJM3X/dVoPRiJ8hCWRaWSeyAcV7eLORZMd7lXP+/v2ecvb1OMiOvG8Ds3UwQlcJG75SRomZzJhTmxCw==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; s=arcselector10001; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1; bh=DobQlsimhH+mfHrsFHGyopIIITdcGXl+0XkKxNXQICo=; b=rbGikuoPqTZt35JkwOTV/qjZXe6d3rg/GpBUTIRdUUjrWKURYbP/S5Exf78uBhHKbjuN1PrsvXQX0NBbcJeAnFq441rQj+GJ3Dp/FeMyB/mJuqw9kXNO5OFWmlG0IB3/Vc7DO/q3iUMkcIUE2rIyZI4ZyLL3sZWxkoyNa6fRTJ+s2uRIMUuctNbmQnTvdT/w1nXDPw4qcC9lxXPpo2xNRog97Az/7YGaVOIK62BJSzOwoW/tIoIymt5yO38kJEOnzkjq6bI4FYin/CCh79XmNix1Id2USYegfHKwCJFkVzxo5jhVwukpTwRwwCNowSCtT6YzsQKaCvknrREJ2fJ3/g==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is 104.47.18.112) smtp.rcpttodomain=ugent.be smtp.helo=eur05-am6-obe.outbound.protection.outlook.com; dmarc=bestguesspass action=none header.from=ugentbe.onmicrosoft.com; dkim=pass (signature was verified) header.d=ugentbe.onmicrosoft.com; arc=pass (0 oda=1 ltdi=1 dkim=[1,1,header.d=ugentbe.onmicrosoft.com] dmarc=[1,1,header.from=ugentbe.onmicrosoft.com])
+Received: from AS9PR06CA0589.eurprd06.prod.outlook.com (2603:10a6:20b:486::27) by VI0PR09MB7641.eurprd09.prod.outlook.com (2603:10a6:800:23d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.27; Wed, 2 Oct 2024 08:28:08 +0000
+Received: from AMS0EPF00000192.eurprd05.prod.outlook.com (2603:10a6:20b:486:cafe::92) by AS9PR06CA0589.outlook.office365.com (2603:10a6:20b:486::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16 via Frontend Transport; Wed, 2 Oct 2024 08:28:08 +0000
+Authentication-Results: spf=pass (sender IP is 104.47.18.112) smtp.helo=EUR05-AM6-obe.outbound.protection.outlook.com; dkim=pass (signature was verified) header.d=ugentbe.onmicrosoft.com;dmarc=bestguesspass action=none header.from=ugentbe.onmicrosoft.com;
+Received-SPF: Pass (protection.outlook.com: domain of EUR05-AM6-obe.outbound.protection.outlook.com designates 104.47.18.112 as permitted sender) receiver=protection.outlook.com; client-ip=104.47.18.112; helo=EUR05-AM6-obe.outbound.protection.outlook.com; pr=C
+Received: from smtpout1b.ugent.be (157.193.33.162) by AMS0EPF00000192.mail.protection.outlook.com (10.167.16.218) with Microsoft SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.7918.13 via Frontend Transport; Wed, 2 Oct 2024 08:28:07 +0000
+Authentication-Results-Original: smtpfltrp1.ugent.be;	spf=pass (ugent.be: eur05-am6-obe.outbound.protection.outlook.com designates 104.47.18.112 as permitted sender) smtp.mailfrom=;
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05lp2112.outbound.protection.outlook.com [104.47.18.112]) by smtpfltrp1.ugent.be
+  with ESMTPS id 4928S7h8001188-4928S7hA001188 (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK) for <metis@ugent.be>; Wed, 2 Oct 2024 10:28:07 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none; b=m3k99H9aNurfLC7RnmBCggsoRTqmPQWKZEwIm2vk2cVpNBCyUz/dnrJJLEnfU+DuGSapdYhnCzh8uNHDs7BxJ/FhYUkXPS1eTkfRgqfwXHoWopoEEolI3RBkUUewYqtOSJO1/AB0dr8BoLOGsoQO+mEiAGqnRXkpEzOfWLxy5i6I8x3xrjMt649JDwwhgUUGpekg24n8b0Xq0+rtc3ZiSlucQxuUa6JMD4u6w4/j/Dms1XRjzCraaWEhxmSypf8zV94E0qoTsUROALc0kC+XsT8UdgNx0XFyJB741Q8oQ98ajRwQAAQHE79UvrOXfnjJj+HH1UIUWc+MmzduXvJeuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; s=arcselector10001; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1; bh=DobQlsimhH+mfHrsFHGyopIIITdcGXl+0XkKxNXQICo=; b=LBmcPBloh1XnQox7JijL27RhOPw3LAI5WmGli7Oo3bHgfeOaKldiZm+tTSqrUZOXsV8EMv/7aoHCK1UXrqq+ru1+f56uIzYjoKIBLniX6Q1zTYAZR0Iw5r8vJsQ/IGYR4ItF4bMEFgYgsJt0eb7UIfIdq3eoDKOKfxb009nGTDTVmT2MPwUDRhhCWcU5WHsOlnqyReATQt1/0i9p0DkMQrKbmYQuVIs00qVgjgfrck3UL2FirTOStBT+PVnWhAk2GnSZNGVZQKT0XFAN2EMxFCltMxvktIXP4fJIbaX7HQCVKAT3goDxIJrm/JizUokJIVozej15WBRaQQjdqG63bw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=pass action=none header.from=ugentbe.onmicrosoft.com; dkim=pass header.d=ugentbe.onmicrosoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ugentbe.onmicrosoft.com; s=selector2-ugentbe-onmicrosoft-com; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck; bh=DobQlsimhH+mfHrsFHGyopIIITdcGXl+0XkKxNXQICo=; b=NRVuSmKxZypzfKa9KFxWFHu3TNQiuXeTk+/mlQm4H3660x+/sD7TdnbS4jpdPF8Ma3snl/0CYIEZBtURgKsypRxxHOXNL0MMkUWPZnIkhkymzTHtKSy6yLRn3Q3lCFZSWhmPfhdRbp+Ja5b2kjZu953UtoLnsi+5ADOlIpKQSi0=
+MIME-Version: 1.0
+From: Microsoft Outlook <MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@ugentbe.onmicrosoft.com>
+To: <metis@ugent.be>
+Date: Wed, 2 Oct 2024 08:28:05 +0000
+Content-Type: multipart/report; report-type=delivery-status; boundary="2f138602-9853-4767-a9e3-93dab3dc010d"
+X-MS-Exchange-Message-Is-Ndr:
+Content-Language: en-US
+Message-ID: <d1d97c5b-c95d-40fc-8a36-d0c723201759@AM0PR09MB3922.eurprd09.prod.outlook.com>
+In-Reply-To: <172785768125.6.17096658643040921349@266ac3e28916>
+References: <172785768125.6.17096658643040921349@266ac3e28916>
+Subject: Undeliverable: Oproepvragenlijst van Pilootproject Geïntegreerde Zorg Waasland
+Auto-Submitted: auto-replied
+X-MS-TrafficTypeDiagnostic: AM0PR09MB3922:EE_|AMS0EPF00000192:EE_|VI0PR09MB7641:EE_
+X-MS-Exchange-AtpMessageProperties: SA
+X-Microsoft-Antispam-Untrusted: BCL:0;ARA:13230040|1930700014|366016|69100299015|41050700001;
+X-Microsoft-Antispam-Message-Info-Original: qwWEJ9tYb2vtwX6t6ncoVacmDuJxjFKAZDWQx0NvRFvZsQ7FNyRY7kJW4d4/y7IQ4+AagN9RNLsag195B4hHUXluoIq5vj1im4+vapntK08YQ6iTeAFC8wVdMMB6joT0FCr9Viy3Oj1pnuhEngSPzOcCtiiERfi1vVHEl5EltTdYZsDveWZU5IWLxh3uZTVafKIHK6ch7L9EyODy+h6vb/IlVL0YUQ8Wmj/cKYTh7SaTI9GlRAHxnL4qOaU2gpcSk50769vmyHzIGW3ikYWmfe0ZQizeeACnXEVY1zsXhQH4C1GHgoEDjme7UsStBwAl8Mh7cadu+gtFL4Apl2ADGQXTO5uwblITBB8+QISW5QiDTmhZ49FitMPrQvQB8snK+MLsjLCUsKGmME4W1gCT6jZI702IT0xR43Q+bGJzganoEgJs4jW7HJ2KLf9ouZeTC1PLv7nQVBQYoQ27aSADT2l3MGacKiUuvj0DCIB1+R4Hfjjmf+wb2SaNUxH8rO4sus4fe4aM0FuO5DOOVxY4l7ky0jTo+ndp9QXwzcgiRqp8nEdvjKEEcW249u+wYA0yAAOwHM1l8Xj4Qgh1ixq86RjG9mIt0nVTBseRjW0+G9cShhfI4rCAE4QhyL3gRP6okwKPrR5E04M6RLI0QNWvjLsDgbrEEsErNiQtVmi2+Div8SFh1YqIpgKG1SAuZ99DcKU3jJjLIWNFwLlk5HDh4otsS6b4nq4DwlG1OsYHyjcn8QEXncuPzsifjZ+caRivGBhJJnnUzNbrCscvLQQgR5X0UE/p4WQqLfYQAFJL72GhANdjmZnXQBuL1zJR/CNbQanr6BiGMQNftYKQwQ6d+S+fUlVxH9pAS3KCFPeZ4d33fLwl35DyiUXvxx+WsyG50xJJb1d14WcdqVpl8UEAmWK3peH7fkZnI8Wye2WpvDlaCzq/ew5hMHGLDZqVZwMAMa83XlLSpCBLI0ou0TA6ICMaWtaKBjIUVZk5e7tDi9nEV0r0PRdXZrt0LKSaAVb8
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:9;SRV:;IPV:NLI;SFV:SPM;H:;PTR:;CAT:NONE;SFS:(13230040)(1930700014)(366016)(69100299015)(41050700001);DIR:INT;
+X-MS-Exchange-ATPSafeLinks-Stat: 0
+X-MS-Exchange-ATPSafeLinks-BitVector: 0:0x0|0x0|0x0|0x0|0x0|0x0;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR09MB3922
+X-FEAS-SPF: spf-result=pass, ip=104.47.18.112, helo=eur05-am6-obe.outbound.protection.outlook.com, mailFrom=
+X-FEAS-Client-IP: 104.47.18.112
+X-FE-Last-Public-Client-IP: 104.47.18.112
+X-FE-Envelope-From:
+X-FE-Spam-Sample-Account: spam-sample@ugent.be
+X-FE-Ham-Sample-Account: ham-sample@ugent.be
+X-FE-Policy-ID: 0:4:0:SYSTEM
+Return-Path: <>
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: d7811cde-ecef-496c-8f91-a1786241b99c:0
+X-MS-Exchange-SkipListedInternetSender: ip=[104.47.18.112];domain=EUR05-AM6-obe.outbound.protection.outlook.com
+X-MS-Exchange-ExternalOriginalInternetSender: ip=[104.47.18.112];domain=EUR05-AM6-obe.outbound.protection.outlook.com
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AMS0EPF00000192.eurprd05.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4838a8d1-1aed-4ef5-e64e-08dce2bc24cf
+X-LD-Processed: d7811cde-ecef-496c-8f91-a1786241b99c,ExtAddr,ExtFwd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|50650200027|69100299015|376014|61400799027|9140799003|1930700014|30052699003|82310400026;
+X-Microsoft-Antispam-Message-Info: MDzLGey9RUpy5FVnQGBbxrLfwVnuUTX99QdImRGhZv7BUWUA4t6gW7ms7F1jT4+GG+mQk+VB51/ovV+1L6gHL75iq+iAKs5FiZ7CCsVvBG+gz3siLrag0OvGPlolWB8iAZSDAawS4m+gkDuIDt6KH75BsmDXM8yW5eh6md70VoDe7pVNwyki6otmmqMDAjtEYx08qImBcgCrI+k2eTFypZF40VDnbUZkq+oqLapw0IsZ5bRYIEcQ66fBjv5FawCXjoY4+iBrlQvN2HURHODEI79CnIUBvyafY6bx62eNQ3ekQdL90kJxmLHc7ZIS8V1+7AdnRLRyfHRhe3N43NpUU3Z8QAtC5vApTnF1ML/ICAwkjZjm9AhN04j7JXrUwVLhVvfMOS8Pqg0PHubzcpap5Cmrr7FYxiY4IlkU5BUxMxKMIXWpbfgI8+cgmfkGYcyJE9cKGpfaepsxKk52Rzo309oi03AuErQh1X1h0qLUvOTtBdi4Q5yxX8s6lmejbFKn/uNE3KjhqDZZMh8sAkKlZnXUnWzq6sY5AmVaLZLLOT4DoHIlu4GnabD1Kn1DyB9z8Ac3T+jlT3Qj9trjDPMQdg4/CT1zX68O4WGtXdfTkpV+9iwwHCTwyPZXgQdl6yFZhNPQeco4GiVVFkJPgn+L49KwyciVTQrCjalN2dvf9XcnbFkEKOqSDpGOHMguPSAyStzJsCQqNUAqvld1Qm/zXHbyHUo+FCM5yEwmBA4SADD7X5AiQey8b+UzFDKa4STF77Y5RlqXWwnqs6GxobtA4eRli8f0yLAbjaeOz5PnDAr+MLWNJn5TmifJMLhPyYcTGGdAnmrfHs+OPtdy/TLFWzpEAa7+qKgXdmNf/BYKC1LFF253MG0ZXo3MhX6+GP6m8wNS0LhbU4kL7+lfobjx+xZycM0sicuWm7eYOQH3FSoIIRC92vqES/IFI6oTpZ+pGCrDvaqgfIcHJknTrweDg8HuSkvxeh1/eNL+H8FB+U0PJHhcBqkac4dSQs+L9fvlGn5v6D8WK/0Y150ipHYJNE27X1BZ6XguxGyHSDmzAgshYJdgJqdqNSbNgDFuM5bcakYoGaERXjC3p8A64wmRbrUNB7uaDudpXhdvul4vPZPT3Nb+HsaTOxboI3ge8JVec8gdSMNAGaV/uxKnZtj8ov6yhARuiwB/rHYSy+Bc0aBRtbHFgqIGOSpSgl3UB4o0leK/9h60IR/AdzLnd0n1/Vt2El0BICq5Y6MrYyTjYmFOjuwwxvy/OtFw5Li+px2N9TthSmcEUBPUpfO9VX/2x8ynJf1+PTqHs6WlL2z0Eenz86BoQQpcsSt+3vUQEMd8y8ThOVBaHBz7gyaoYxJwcg==
+X-Forefront-Antispam-Report: CIP:157.193.33.162;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:EUR05-AM6-obe.outbound.protection.outlook.com;PTR:mail-am6eur05lp2112.outbound.protection.outlook.com;CAT:NONE;SFS:(13230040)(50650200027)(69100299015)(376014)(61400799027)(9140799003)(1930700014)(30052699003)(82310400026);DIR:OUT;SFP:1501;
+X-ExternalRecipientOutboundConnectors: d7811cde-ecef-496c-8f91-a1786241b99c
+X-MS-Exchange-ForwardingLoop: eneko.illarramendi@ugent.be;d7811cde-ecef-496c-8f91-a1786241b99c
+X-OriginatorOrg: ugentbe.onmicrosoft.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2024 08:28:07.8476 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4838a8d1-1aed-4ef5-e64e-08dce2bc24cf
+X-MS-Exchange-CrossTenant-Id: d7811cde-ecef-496c-8f91-a1786241b99c
+X-MS-Exchange-CrossTenant-AuthSource: AMS0EPF00000192.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR09MB7641
+
+--2f138602-9853-4767-a9e3-93dab3dc010d
+Content-Type: multipart/alternative; differences=Content-Type; boundary="bba1ac51-19a2-4c36-b0a8-18a7a40ae2d0"
+
+--bba1ac51-19a2-4c36-b0a8-18a7a40ae2d0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+[https://products.office.com/en-us/CMSImages/Office365Logo_Orange.png?versi=
+on=3Db8d100a9-0a8b-8e6a-88e1-ef488fee0470]
+Your message to asterix@comic.com couldn't be delivered.
+eline wasn't found at gzwaasland.be.
+metis   Office 365      eline
+Action Required                 Recipient
+Unknown To address
+
+How to Fix It
+The address might be misspelled or might not exist. Try one or more of the =
+following:
+
+  *   Retype the recipient's address, then resend the message - If you're u=
+sing Outlook, open this non-delivery report message and click Send Again fr=
+om the menu or ribbon. In Outlook on the web, select this message, and then=
+ click the "To send this message again, click here." link located just abov=
+e the message preview window. In the To or Cc line, delete and then retype =
+the entire recipient's address (ignore any address suggestions). After typi=
+ng the complete address, click Send to resend the message. If you're using =
+an email program other than Outlook or Outlook on the web, follow its stand=
+ard way for resending a message. Just be sure to delete and retype the reci=
+pient's entire address before resending it.
+  *   Remove the recipient from the recipient Auto-Complete List, then rese=
+nd the message - If you're using Outlook or Outlook on the web, follow the =
+steps in the "Remove the recipient from the recipient Auto-Complete List" s=
+ection of this article<https://go.microsoft.com/fwlink/?LinkId=3D532972>. T=
+hen resend the message. Be sure to delete and retype the recipient's entire=
+ address before clicking Send.
+  *   Contact the recipient by some other means, (by phone, for example) to=
+ confirm you're using the right address. Ask them if they've set up an emai=
+l forwarding rule that could be forwarding your message to an incorrect add=
+ress.
+
+If the problem continues, ask the recipient to tell their email admin about=
+ the problem, and give them the error (and the name of the server that repo=
+rted it) shown below. It's likely that only the recipient's email admin can=
+ fix this problem.
+
+Was this helpful? Send feedback to Microsoft<https://go.microsoft.com/fwlin=
+k/p/?LinkID=3D717197>.
+________________________________
+
+More Info for Email Admins
+Status code: 550 5.4.1
+
+This error occurred because a message was sent to an email address hosted b=
+y Office 365, but the address doesn't exist in the receiving organization's=
+ Office 365 directory. Directory Based Edge Blocking (DBEB) is enabled for =
+gzwaasland.be, and DBEB rejects messages addressed to recipients who don't =
+exist in the receiving organization's Office 365 directory. This error is r=
+eported by the recipient domain's email server, but most often it can be fi=
+xed by the person who sent the message. If the steps in the How to Fix It s=
+ection above don't fix the problem, and you're the email admin for the reci=
+pient, try one or more of the following:
+
+Check that the email address exists and is correct - Confirm that the recip=
+ient address exists in your Office 365 directory, is correct, and is accept=
+ing messages.
+
+Synchronize your directories - Make sure directory synchronization is worki=
+ng correctly, and that the recipient's email address exists in both Office =
+365 and in your on-premises directory.
+
+Check for errant forwarding rules - Check for forwarding rules for the orig=
+inal recipient that might be trying to forward the message to an invalid ad=
+dress. Forwarding can be set up by an admin via mail flow rules or mailbox =
+forwarding address settings, or by the recipient via the Forwarding or Inbo=
+x Rules features.
+
+Make sure the recipient has a valid license - Make sure the recipient has a=
+n Office 365 license assigned to them. The recipient's email admin can use =
+the Office 365 admin center to assign a license to them (Users > Active Use=
+rs > Select the recipient > Assigned License > Edit).
+
+Make sure that mail flow settings and MX records are correct - Misconfigure=
+d mail flow or MX record settings can cause this error. Check your Office 3=
+65 mail flow settings to make sure your domain and any mail flow connectors=
+ are set up correctly. Also, work with your domain registrar to make sure t=
+he MX records for your domain are set up correctly.
+
+For more information and additional tips to fix this issue, see this articl=
+e<https://go.microsoft.com/fwlink/?LinkId=3D532972>.
+
+Original Message Details
+Created Date:   10/2/2024 8:28:01 AM
+Sender Address: metis@ugent.be
+Recipient Address:      asterix@comic.com
+Subject:        Oproepvragenlijst van Pilootproject Ge=EFntegreerde Zorg Wa=
+asland
+
+Error Details
+Error:  550 5.4.1 Recipient address rejected: Access denied. [AM4PEPF00025F=
+98.EURPRD83.prod.outlook.com 2024-10-02T08:28:05.081Z 08DCDF5FC0C85D34]
+Message rejected by:    AM4PEPF00025F98.mail.protection.outlook.com
+
+Notification Details
+Sent by:        AM0PR09MB3922.eurprd09.prod.outlook.com
+
+Message Hops
+HOP     TIME (UTC)      FROM    TO      WITH    RELAY TIME
+1       10/2/2024
+8:28:01 AM      266ac3e28916    smtpfltrp2.ugent.be     ESMTP   *
+2       10/2/2024
+8:28:01 AM      smtpout2a.ugent.be      AM3PEPF0000A792.mail.protection.out=
+look.com     Microsoft SMTP Server (version=3DTLS1_3, cipher=3DTLS_AES_256_=
+GCM_SHA384)   *
+3       10/2/2024
+8:28:02 AM      AM3PEPF0000A792.eurprd04.prod.outlook.com       AS4P190CA00=
+37.outlook.office365.com     Microsoft SMTP Server (version=3DTLS1_2, ciphe=
+r=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384)    1 sec
+4       10/2/2024
+8:28:02 AM      AS4P190CA0037.EURP190.PROD.OUTLOOK.COM  AM0PR09MB3922.eurpr=
+d09.prod.outlook.com Microsoft SMTP Server (version=3DTLS1_2, cipher=3DTLS_=
+ECDHE_RSA_WITH_AES_256_GCM_SHA384)    *
+
+Original Message Headers
+
+ARC-Seal: i=3D1; a=3Drsa-sha256; s=3Darcselector10001; d=3Dmicrosoft.com; c=
+v=3Dnone;
+ b=3DzQCIGDKs4fWYFzm/robW8KfaAn6tURurhpBKb/6PEgTyVsmX7tQ/KYoDHPMGGN8M4DyOaz=
+l2ZFc32B85kv2xHFOHYdT7ip/dzi/8UqRCbpGa0qhnu/MRw7y37/iAfdzNqNW90rovtls92t9x1=
++BobBT/KPi6GgFvEdWjQoLjjAgHGHIb2XU91yP8kqHEdITU9rllvuw7dILGAYnypZ/4LMuZTarG=
+3mjRLPK6tvrDQjNfO6FWZv+w0phZHoRH4A+8S4xsMv1tP1/vt6frs6s7XMSM/0y72TEYv//OA2G=
+dnYZm1tAk09RouvUdsu8aYSoPv1spTNAiG5wYoMAkSqYgZA=3D=3D
+ARC-Message-Signature: i=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed; d=3Dmicr=
+osoft.com;
+ s=3Darcselector10001;
+ h=3DFrom:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-A=
+ntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Ex=
+change-AntiSpam-MessageData-1;
+ bh=3DtEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=3D;
+ b=3DI/VxSDhdYu0DYLJdtijhyqEnYUg0aAGJut0rzjwS+CqOH1e6l2iW9Py3HzeVOljxV2ViQz=
+QA+0XWgzWvJQKT5c0zOOZwAvDvsh1bEgTjb7dwzAMX613lnHafUw6OmEQnVpt+Wja2z+mAJRiUx=
+XQ6CkqHJ1lPnh0QMen4R7RZwPJObJvKK0ez1B23WoGeCLmUtSxItFv+ehErufbs6YZvXmuH55Wp=
+265EDpKfqAjOpQkq+vFr4/rXaA1eIRdgEIrsmOr6tmGyf2C5f7iU4U3TH1m8mJQfR4KPPxTGoaL=
+lLmpkKAP7L2PTMtYhSh8/hOwPkzILyzSnNv+geT63Yj1Nlw=3D=3D
+ARC-Authentication-Results: i=3D1; mx.microsoft.com 1; spf=3Dpass (sender i=
+p is
+ 157.193.122.161) smtp.rcpttodomain=3Dgzwaasland.be smtp.mailfrom=3Dugent.b=
+e;
+ dmarc=3Dpass (p=3Dquarantine sp=3Dnone pct=3D100) action=3Dnone header.fro=
+m=3Dugent.be;
+ dkim=3Dpass (signature was verified) header.d=3Dugent.be; arc=3Dnone (0)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed; d=3Dugent.be; s=
+=3Dselector1;
+ h=3DFrom:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-S=
+enderADCheck;
+ bh=3DtEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=3D;
+ b=3Dg+Vi5+xEI4pfnkiLubtkdwKrgp1lz9YTweWPoRopm0ti7Af851F7USzy9JhoQXELLfq0TB=
+Hssnaa0olAxBL/3UAsVecNBh4/vSfAMbZOQhweU6c1ROVQzqDMKHDi85Kq0nocV6wQ/bgaWQSoy=
+Vpi6u5mjahUa1dP8PyEIAWxcdM=3D
+Received: from AS4P190CA0037.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:5d1::1=
+8)
+ by AM0PR09MB3922.eurprd09.prod.outlook.com (2603:10a6:208:198::10) with
+ Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16; Wed, 2 O=
+ct
+ 2024 08:28:02 +0000
+Received: from AM3PEPF0000A792.eurprd04.prod.outlook.com
+ (2603:10a6:20b:5d1:cafe::26) by AS4P190CA0037.outlook.office365.com
+ (2603:10a6:20b:5d1::18) with Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16 via Front=
+end
+ Transport; Wed, 2 Oct 2024 08:28:02 +0000
+X-MS-Exchange-Authentication-Results: spf=3Dpass (sender IP is 157.193.122.=
+161)
+ smtp.mailfrom=3Dugent.be; dkim=3Dpass (signature was verified)
+ header.d=3Dugent.be;dmarc=3Dpass action=3Dnone header.from=3Dugent.be;
+Received-SPF: Pass (protection.outlook.com: domain of ugent.be designates
+ 157.193.122.161 as permitted sender) receiver=3Dprotection.outlook.com;
+ client-ip=3D157.193.122.161; helo=3Dsmtpout2a.ugent.be; pr=3DC
+Received: from smtpout2a.ugent.be (157.193.122.161) by
+ AM3PEPF0000A792.mail.protection.outlook.com (10.167.16.121) with Microsoft
+ SMTP Server (version=3DTLS1_3, cipher=3DTLS_AES_256_GCM_SHA384) id 15.20.8=
+026.11
+ via Frontend Transport; Wed, 2 Oct 2024 08:28:01 +0000
+Received: from 266ac3e28916 (tw06v070.ugent.be [157.193.231.233])
+        by smtpfltrp2.ugent.be  with ESMTP id 4928S1Vp015071-4928S1Vq015071
+        for <asterix@comic.com>; Wed, 2 Oct 2024 10:28:01 +0200
+Content-Type: multipart/alternative;
+ boundary=3D"=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D73846525155320298=
+59=3D=3D"
+MIME-Version: 1.0
+Subject: =3D?utf-8?q?Oproepvragenlijst_van_Pilootproject_Ge=3DC3=3DAFntegre=
+erde_Zorg_Waasla?=3D
+ =3D?utf-8?q?nd?=3D
+From: Gezondheidsbevordering UGent <metis@ugent.be>
+To: asterix@comic.com
+Reply-To: stage-healthpromotion@ugent.be
+Date: Wed, 02 Oct 2024 08:28:01 -0000
+Message-ID: <172785768125.6.17096658643040921349@266ac3e28916>
+X-FEAS-Client-IP: 157.193.231.233
+X-FE-Last-Public-Client-IP: 157.193.231.233
+X-FE-Policy-ID: 27:10:2:SYSTEM
+DKIM-Signature: v=3D1; a=3Drsa-sha256; q=3Ddns/txt; d=3Dugent.be; s=3Ds10fm=
+2021; c=3Drelaxed/relaxed;
+ h=3Dcontent-type:mime-version:subject:from:to:reply-to:date:message-id;
+ bh=3DtEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=3D;
+ b=3DeQKS981nKJvrEe8Jf4gJBcKB8blPknXJO8GkDDRoPIC21vks+TJ65+ptPfhSEPrKN3ZurN=
+LbGmp8
+        CthTmZdOEOPNYbe4bCi/GQZa+cVQBOaiiNUlcn8V4EXqSgnxnV0BCLHs8RW6eRi58/Q=
+D4hfXVzAW
+        Fr6xGCfyiiarWkkDfIUPxFDAJJwYYhj/AAv9Kq+/J/+fAX6OLltgCkKEmcBfrTaV5oQ=
+4o14D5fbu
+        998kxRKt6rlD9dVslgfm4oBgqSr6oqaueWVqlGuJKc+Ioe/IBssyFm1M2vYVwGwNu6J=
+JBa1UUhXg
+        rUgB5oR8d0JX6s3B7YJqEuIvamocfvPD8j2PxQ=3D=3D
+Return-Path: metis@ugent.be
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM3PEPF0000A792:EE_|AM0PR09MB3922:EE_
+X-MS-Office365-Filtering-Correlation-Id: cabb0517-4851-4165-ced3-08dce2bc21=
+09
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+        BCL:0;ARA:13230040|82310400026|36860700013|376014|61400799027;
+X-Microsoft-Antispam-Message-Info:
+        =3D?us-ascii?Q?d2TsM8c4NupFg9a3v0Z4LP5eddws7mUJg9NeDIBeBy7ZY04nDUQ4=
+C3q3vaAD?=3D
+ =3D?us-ascii?Q?4ep9k96k4oSwnMgshohNrEtm6sL9uzhonrH8q19CIfwXRmaCaB3BHSSWySe=
+K?=3D
+ =3D?us-ascii?Q?rsJ2HWm87yoSmmENzvsJTT+7fjlOvOEjleDbWby68famr80goVDVTEQxhsA=
+S?=3D
+ =3D?us-ascii?Q?aDsct7HIoDEAQcme4XEdtO2IzChD8siCZKeBCXv+3043eedDDC1Dhl/mkel=
+s?=3D
+ =3D?us-ascii?Q?E4zSK84qkMg+kpq25Sx9QM9v4NVMAjKavdptfgU1CWZUBthX7O1GM5fAoq/=
+x?=3D
+ =3D?us-ascii?Q?9014G7mazVkVklKDtum95zpg9ZeecfDOlCgNcD98MRTUrwi2Lh8L1AuCpI5=
+t?=3D
+ =3D?us-ascii?Q?ROqztTAszpYHJebWOGuUx/Iaoxg/6Bz3mDP9dQ/05G0hTh8tBehd+al47KV=
+S?=3D
+ =3D?us-ascii?Q?C0S03GOKKM9e2ohtQyNnjqHNy/HBzjksRfKsBHxgTvQl9nXB+4ye2uvSDE0=
+l?=3D
+ =3D?us-ascii?Q?ZqaB4HWQpCmmVnPXQfuAvpZdAhzcIWIipM+xgx9oE641jS2Yr0tgnY6p/SD=
++?=3D
+ =3D?us-ascii?Q?ICb2hFbiAVJRbk0r+ZxhFIxykE82RZKP+aoRYsOGZQ+Yxor/2iVzx8KML0p=
+n?=3D
+ =3D?us-ascii?Q?zw2KZ7FgaLk70oHHyMcSrLgLn+C+E3l8j/087kiiV5P0jDuwgm0M31H/T8T=
+o?=3D
+ =3D?us-ascii?Q?Hj3yNbjHHFkKvIbtanrxeBrKcur7cfZB/mbmnV9hs0XhekClQos519WxwU7=
+0?=3D
+ =3D?us-ascii?Q?EvLRDPzwqpUBeznB/sUcZbTSWbxY1a8I8DLyxSER+lnQKgMogNb0OEIoSuj=
+o?=3D
+ =3D?us-ascii?Q?/ok9Iq5RbWnp3CitWPPePlGf2BnfpiYwaCjs0gwNIcUFh7WtGFjL61C23H7=
+e?=3D
+ =3D?us-ascii?Q?rRYU6EcYkCJimW9UL4CHljIUpkOKK6SLif9Pv1zoMw0OFwnKn3KxkaPUgST=
+i?=3D
+ =3D?us-ascii?Q?WBRT0gtogmiQaijXsrjLGumkD0XVYxg2gqAHmWXuAa1UcRibPHRQuU6ClPb=
+p?=3D
+ =3D?us-ascii?Q?tNdeXX0S0U7sC2wQa832pULfY4lIipylHi4ugL8rJakf2TJBB7XpO6oHn+i=
+o?=3D
+ =3D?us-ascii?Q?WDO//3MemHkMXOQKV0Ue9msdz79Z0yIY9vnLGBJ2a+0VijAq3IStXzDgGMx=
+I?=3D
+ =3D?us-ascii?Q?jZ7wZzlAb3b/bZLoTCDSx9eGjEFtzsBmj2qN+IW3RQ61jbhm5UT5WzmppWj=
+Q?=3D
+ =3D?us-ascii?Q?rQ60h2u1FXtKhFdH/fLSjdae/413rYvu7nXwvJX8cVeJUgcaJrG+Fmzszpt=
+6?=3D
+ =3D?us-ascii?Q?5uPapEhvuKcjsdrpUGJg3+diS4si0BlofQWCjUq04+JSvaGlfj27IAf+YDT=
+t?=3D
+ =3D?us-ascii?Q?j6liJS7/vIr9rSX3JCfTnJVaU5QTLBJzvefJYAxMvwVmGCvvQsr4QGBJJRg=
+j?=3D
+ =3D?us-ascii?Q?3sQuNek5vAgjxrd2FnXPhUBrepCwVv5qFkhzJAXhf3ArZA=3D3D=3D3D?=
+=3D
+X-Forefront-Antispam-Report:
+        CIP:157.193.122.161;CTRY:BE;LANG:nl;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:s=
+mtpout2a.ugent.be;PTR:smtpout2a.ugent.be;CAT:NONE;SFS:(13230040)(8231040002=
+6)(36860700013)(376014)(61400799027);DIR:OUT;SFP:1102;
+X-OriginatorOrg: ugent.be
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2024 08:28:01.5164
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cabb0517-4851-4165-ced3-08dce=
+2bc2109
+X-MS-Exchange-CrossTenant-Id: d7811cde-ecef-496c-8f91-a1786241b99c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3D=
+d7811cde-ecef-496c-8f91-a1786241b99c;Ip=3D[157.193.122.161];Helo=3D[smtpout=
+2a.ugent.be]
+X-MS-Exchange-CrossTenant-AuthSource:
+        AM3PEPF0000A792.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR09MB3922
+
+
+--bba1ac51-19a2-4c36-b0a8-18a7a40ae2d0
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+  <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D=
+1" />
+  <head>
+    <title>
+          DSN
+        </title>
+  </head>
+  <body style=3D"        background-color: white;      ">
+    <table style=3D"        background-color: white;         max-width: 548=
+px;         color: black;         border-spacing: 0px 0px;         padding-=
+top: 0px;         padding-bottom: 0px;        border-collapse: collapse;   =
+   " width=3D"548" cellspacing=3D"0" cellpadding=3D"0">
+      <tbody>
+        <tr>
+          <td style=3D"        text-align: left;        padding-bottom: 20p=
+x;      ">
+            <img height=3D"28" width=3D"126" style=3D"        max-width: 10=
+0%;      " src=3D"https://products.office.com/en-us/CMSImages/Office365Logo=
+_Orange.png?version=3Db8d100a9-0a8b-8e6a-88e1-ef488fee0470" />
+          </td>
+        </tr>
+        <tr>
+          <td style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sa=
+ns-serif;        font-size: 16px;         padding-bottom: 10px;         -ms=
+-text-size-adjust: 100%;        text-align: left;      ">Your message to <s=
+pan style=3D"        color: #0072c6;      ">asterix@comic.com</span> coul=
+dn't be delivered.<br /></td>
+        </tr>
+        <tr>
+          <td style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sa=
+ns-serif;         font-size: 24px;         padding-top: 0px;         paddin=
+g-bottom: 20px;         text-align: center;         -ms-text-size-adjust: 1=
+00%;      ">
+            <span style=3D"        color: #0072c6;      ">eline</span> wasn=
+'t found at <span style=3D"        color: #0072c6;      ">gzwaasland.be</sp=
+an>.<br /></td>
+        </tr>
+        <tr>
+          <td style=3D"        padding-bottom: 15px;         padding-left: =
+0px;         padding-right: 0px;         border-spacing: 0px 0px;      ">
+            <table style=3D"        max-width: 548px;         font-weight: =
+600;        border-spacing: 0px 0px;         padding-top: 0px;         padd=
+ing-bottom: 0px;        border-collapse: collapse;      ">
+              <tbody>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        font-size: 15px;        font-weight: 600;        t=
+ext-align: left;        width: 181px;        -ms-text-size-adjust: 100%;   =
+     vertical-align: bottom;      ">
+                    <font color=3D"#ffffff">
+                      <span style=3D"color:#000000">metis</span>
+                    </font>
+                  </td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        font-size: 15px;        font-weight: 600;        t=
+ext-align: center;        width: 186px;        -ms-text-size-adjust: 100%; =
+       vertical-align: bottom;      ">
+                    <font color=3D"#ffffff">
+                      <span style=3D"color:#000000">Office 365</span>
+                    </font>
+                  </td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;         -ms-text-size-adjust: 100%;         font-size: 15=
+px;         font-weight: 600;        text-align: right;         width: 181p=
+x;         vertical-align: bottom;      ">
+                    <font color=3D"#ffffff">
+                      <span style=3D"color:#000000">eline</span>
+                    </font>
+                  </td>
+                </tr>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;        text-align: left;        padding-top: 0px=
+;        padding-bottom: 0px;        vertical-align: middle;        width: =
+181px;      ">
+                    <font color=3D"#ffffff">
+                      <span style=3D"        color: #c00000;      ">
+                        <b>Action Required</b>
+                      </span>
+                    </font>
+                  </td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;        text-align: center;        padding-top: 0=
+px;        padding-bottom: 0px;        vertical-align: middle;        width=
+: 186px;      " />
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;        text-align: right;        padding-top: 0p=
+x;        padding-bottom: 0px;        vertical-align: middle;        width:=
+ 181px;      ">
+                    <font color=3D"#ffffff">
+                      <span style=3D"color:#000000">Recipient</span>
+                    </font>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan=3D"3" style=3D"        padding-top:0;        =
+padding-bottom:0;        padding-left:0;        padding-right:0      ">
+                    <table cellspacing=3D"0" cellpadding=3D"0" style=3D"   =
+     border-spacing: 0px 0px;        padding-top: 0px;        padding-botto=
+m: 0px;        padding-left: 0px;        padding-right: 0px;        border-=
+collapse: collapse;      ">
+                      <tbody>
+                        <tr height=3D"10">
+                          <td width=3D"180" height=3D"10" bgcolor=3D"#c0000=
+0" style=3D"        width: 180px;        line-height: 10px;        height: =
+10px;        font-size: 6px;        padding-top: 0;        padding-bottom: =
+0;        padding-left: 0;        padding-right: 0;      "><!--[if gte mso =
+15]>&nbsp;<![endif]--></td>
+                          <td width=3D"4" height=3D"10" bgcolor=3D"#ffffff"=
+ style=3D"        width: 4px;        line-height: 10px;        height: 10px=
+;        font-size: 6px;        padding-top: 0;        padding-bottom: 0;  =
+      padding-left: 0;        padding-right: 0;      "><!--[if gte mso 15]>=
+&nbsp;<![endif]--></td>
+                          <td width=3D"180" height=3D"10" bgcolor=3D"#ccccc=
+c" style=3D"        width: 180px;        line-height: 10px;        height: =
+10px;        font-size: 6px;        padding-top: 0;        padding-bottom: =
+0;        padding-left: 0;        padding-right: 0;      "><!--[if gte mso =
+15]>&nbsp;<![endif]--></td>
+                          <td width=3D"4" height=3D"10" bgcolor=3D"#ffffff"=
+ style=3D"        width: 4px;        line-height: 10px;        height: 10px=
+;        font-size: 6px;        padding-top: 0;        padding-bottom: 0;  =
+      padding-left: 0;        padding-right: 0;      "><!--[if gte mso 15]>=
+&nbsp;<![endif]--></td>
+                          <td width=3D"180" height=3D"10" bgcolor=3D"#ccccc=
+c" style=3D"        width: 180px;        line-height: 10px;        height: =
+10px;        font-size: 6px;        padding-top: 0;        padding-bottom: =
+0;        padding-left: 0;        padding-right: 0;      "><!--[if gte mso =
+15]>&nbsp;<![endif]--></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        text-align: left;        width: 181px;        line-height: 20px;  =
+      font-weight: 400;        padding-top: 0px;        padding-left: 0px; =
+       padding-right: 0px;        padding-bottom: 0px;      ">
+                    <font color=3D"#ffffff">
+                      <span style=3D"        color: #c00000;      ">Unknown=
+ To address</span>
+                    </font>
+                  </td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        text-align: center;        width: 186px;        line-height: 20px;=
+        font-weight: 400;        padding-top: 0px;        padding-left: 0px=
+;        padding-right: 0px;        padding-bottom: 0px;      " />
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        text-align: right;        width: 181px;        line-height: 20px; =
+       font-weight: 400;        padding-top: 0px;        padding-left: 0px;=
+        padding-right: 0px;        padding-bottom: 0px;      " />
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style=3D"        width: 100%;        padding-top: 0px;       =
+ padding-right: 10px;        padding-left: 10px;      ">
+            <br />
+            <table style=3D"        width: 100%;        padding-right: 0px;=
+        padding-left: 0px;        padding-top: 0px;        padding-bottom: =
+0px;        background-color: #f2f5fa;        margin-left: 0px;      ">
+              <tbody>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 21px=
+;        font-weight: 500;        background-color: #f2f5fa;        padding=
+-top: 0px;        padding-bottom: 0px;        padding-left: 10px;        pa=
+dding-right: 10px;      ">How to Fix It</td>
+                </tr>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 16px=
+;        font-weight: 400;        padding-top: 0px;        padding-bottom: =
+6px;        padding-left: 10px;        padding-right: 10px;        backgrou=
+nd-color: #f2f5fa;      ">The address might be misspelled or might not exis=
+t. Try one or more of the following:</td>
+                </tr>
+                <tr>
+                  <td style=3D"         padding-top: 0px;         padding-b=
+ottom: 0px;         padding-left: 0px;         padding-right: 0px;        b=
+order-spacing: 0px 0px;      ">
+                    <ul style=3D"        font-family: 'Segoe UI', Frutiger,=
+ Arial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 16=
+px;        font-weight: 400;        margin-left: 40px;        margin-bottom=
+: 5px;        background-color: #f2f5fa;        padding-top: 0px;        pa=
+dding-bottom: 0px;        padding-left: 6px;        padding-right: 6px;    =
+  ">
+                      <li>
+                        <b>Retype the recipient's address, then resend the =
+message -</b> If you're using Outlook, open this non-delivery report messag=
+e and click <b>Send Again</b> from the menu or ribbon. In Outlook on the we=
+b, select this message, and then click the "<b>To send this message again, =
+click here.</b>" link located just above the message preview window. In the=
+ To or Cc line, delete and then retype the entire recipient's address (igno=
+re any address suggestions). After typing the complete address, click <b>Se=
+nd</b> to resend the message. If you're using an email program other than O=
+utlook or Outlook on the web, follow its standard way for resending a messa=
+ge. Just be sure to delete and retype the recipient's entire address before=
+ resending it.</li>
+                      <li>
+                        <b>Remove the recipient from the recipient Auto-Com=
+plete List, then resend the message -</b> If you're using Outlook or Outloo=
+k on the web, follow the steps in the "Remove the recipient from the recipi=
+ent Auto-Complete List" section of <a href=3D"https://go.microsoft.com/fwli=
+nk/?LinkId=3D532972" originalSrc=3D"https://go.microsoft.com/fwlink/?LinkId=
+=3D532972" shash=3D"NsweG01w2qhtgehLccJZVn6wf7WlJxi3lQdiVDUiR8n+TLfNfIhhPoe=
+FRnWWldxM4OvpafkBJ53jhi5xcom0sbmlBrmW8NkK5qFYZ2+sH8HQJPllTeI2sJj33mCG6dwaZL=
+tX9CkBQ4B/VuhLZTg3Y7oHZGSsGTslMkJMLRrKzPs=3D">this article</a>. Then resend=
+ the message. Be sure to delete and retype the recipient's entire address b=
+efore clicking <b>Send</b>.</li>
+                      <li>
+                        <b>Contact the recipient by some other means,</b> (=
+by phone, for example) to confirm you're using the right address. Ask them =
+if they've set up an email forwarding rule that could be forwarding your me=
+ssage to an incorrect address.</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 16px=
+;        font-weight: 400;        padding-top: 0px;        padding-bottom: =
+6px;        padding-left: 10px;        padding-right: 10px;        backgrou=
+nd-color: #f2f5fa;      ">If the problem continues, ask the recipient to te=
+ll their email admin about the problem, and give them the error (and the na=
+me of the server that reported it) shown below. It's likely that only the r=
+ecipient's email admin can fix this problem.</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sa=
+ns-serif;        -ms-text-size-adjust: 100%;        font-size: 14px;       =
+ font-weight: 400;        padding-top: 10px;        padding-bottom: 0px;   =
+     padding-bottom: 4px;      ">
+            <br />
+            <em>Was this helpful? <a href=3D"https://go.microsoft.com/fwlin=
+k/p/?LinkID=3D717197" originalSrc=3D"https://go.microsoft.com/fwlink/p/?Lin=
+kID=3D717197" shash=3D"AYeVAq/XvAO/AoQTQ+vAUo2N/XiIzQh3t16yXJZOwhwBa0v8CmD/=
+kjNOmmWIRIELRDUtdkiNNHh5lU5gPLRhw/jgtSBmzlTNPr3NmRMI9+2nK3d38Z58pa8c+SALIGk=
+uhlc5SqJxTDcpGVbEpbv6sReS+5FizeX+9buuEL8gmok=3D">Send feedback to Microsoft=
+</a>.</em>
+          </td>
+        </tr>
+        <tr>
+          <td style=3D"        -ms-text-size-adjust: 100%;        font-size=
+: 0px;        line-height: 0px;        padding-top: 0px;        padding-bot=
+tom: 0px;      ">
+            <hr />
+          </td>
+        </tr>
+        <tr>
+          <td style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sa=
+ns-serif;        -ms-text-size-adjust: 100%;        font-size: 21px;       =
+ font-weight: 500;      ">
+            <br />More Info for Email Admins</td>
+        </tr>
+        <tr>
+          <td style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sa=
+ns-serif;        -ms-text-size-adjust: 100%;        font-size: 14px;      "=
+>
+            <em>Status code: 550 5.4.1</em>
+            <br />
+            <br />This error occurred because a message was sent to an emai=
+l address hosted by Office 365, but the address doesn't exist in the receiv=
+ing organization's Office 365 directory. Directory Based Edge Blocking (DBE=
+B) is enabled for gzwaasland.be, and DBEB rejects messages addressed to rec=
+ipients who don't exist in the receiving organization's Office 365 director=
+y. This error is reported by the recipient domain's email server, but most =
+often it can be fixed by the person who sent the message. If the steps in t=
+he <b>How to Fix It</b> section above don't fix the problem, and you're the=
+ email admin for the recipient, try one or more of the following:<br /><br =
+/><b>Check that the email address exists and is correct - </b>Confirm that =
+the recipient address exists in your Office 365 directory, is correct, and =
+is accepting messages.<br /><br /><b>Synchronize your directories - </b>Mak=
+e sure directory synchronization is working correctly, and that the recipie=
+nt's email address exists in both Office 365 and in your on-premises direct=
+ory.<br /><br /><b>Check for errant forwarding rules - </b>Check for forwar=
+ding rules for the original recipient that might be trying to forward the m=
+essage to an invalid address. Forwarding can be set up by an admin via mail=
+ flow rules or mailbox forwarding address settings, or by the recipient via=
+ the Forwarding or Inbox Rules features.<br /><br /><b>Make sure the recipi=
+ent has a valid license - </b>Make sure the recipient has an Office 365 lic=
+ense assigned to them. The recipient's email admin can use the Office 365 a=
+dmin center to assign a license to them (Users &gt; Active Users &gt; Selec=
+t the recipient &gt; Assigned License &gt; Edit).<br /><br /><b>Make sure t=
+hat mail flow settings and MX records are correct - </b>Misconfigured mail =
+flow or MX record settings can cause this error. Check your Office 365 mail=
+ flow settings to make sure your domain and any mail flow connectors are se=
+t up correctly. Also, work with your domain registrar to make sure the MX r=
+ecords for your domain are set up correctly.<br /><br />For more informatio=
+n and additional tips to fix this issue, see <a href=3D"https://go.microsof=
+t.com/fwlink/?LinkId=3D532972" originalSrc=3D"https://go.microsoft.com/fwli=
+nk/?LinkId=3D532972" shash=3D"NsweG01w2qhtgehLccJZVn6wf7WlJxi3lQdiVDUiR8n+T=
+LfNfIhhPoeFRnWWldxM4OvpafkBJ53jhi5xcom0sbmlBrmW8NkK5qFYZ2+sH8HQJPllTeI2sJj3=
+3mCG6dwaZLtX9CkBQ4B/VuhLZTg3Y7oHZGSsGTslMkJMLRrKzPs=3D">this article</a>.<b=
+r /><br /></td>
+        </tr>
+        <tr>
+          <td style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sa=
+ns-serif;        -ms-text-size-adjust: 100%;        font-size: 17px;       =
+ font-weight: 500;      ">Original Message Details</td>
+        </tr>
+        <tr>
+          <td style=3D"        font-size: 14px;        line-height: 20px;  =
+      font-family: 'Segoe UI', Frutiger, Arial, sans-serif;        -ms-text=
+-size-adjust: 100%;        font-weight: 500;      ">
+            <table style=3D"        width: 100%;        border-collapse: co=
+llapse;        margin-left: 10px;      ">
+              <tbody>
+                <tr>
+                  <td valign=3D"top" style=3D"        font-family: 'Segoe U=
+I', Frutiger, Arial, sans-serif;        font-size: 14px;        -ms-text-si=
+ze-adjust: 100%;        white-space: nowrap;        font-weight: 500;      =
+  width: 140px;      ">Created Date:</td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;      ">10/2/2024 8:28:01 AM</td>
+                </tr>
+                <tr>
+                  <td valign=3D"top" style=3D"        font-family: 'Segoe U=
+I', Frutiger, Arial, sans-serif;        font-size: 14px;        -ms-text-si=
+ze-adjust: 100%;        white-space: nowrap;        font-weight: 500;      =
+  width: 140px;      ">Sender Address:</td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;      ">metis@ugent.be</td>
+                </tr>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        font-size: 14px;        -ms-text-size-adjust: 100%=
+;        white-space: nowrap;        font-weight: 500;        width: 140px;=
+      ">Recipient Address:</td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;      ">asterix@comic.com</td>
+                </tr>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        font-size: 14px;        -ms-text-size-adjust: 100%=
+;        white-space: nowrap;        font-weight: 500;        width: 140px;=
+      ">Subject:</td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;      ">Oproepvragenlijst van Pilootproject Ge=EF=
+ntegreerde Zorg Waasland</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sa=
+ns-serif;        -ms-text-size-adjust: 100%;        font-size: 17px;       =
+ font-weight: 500;      ">
+            <br />Error Details</td>
+        </tr>
+        <tr>
+          <td style=3D"        font-size: 14px;        line-height: 20px;  =
+      font-family: 'Segoe UI', Frutiger, Arial, sans-serif;        -ms-text=
+-size-adjust: 100%;        font-weight: 500;      ">
+            <table style=3D"        width: 100%;        border-collapse: co=
+llapse;        margin-left: 10px;      ">
+              <tbody>
+                <tr>
+                  <td valign=3D"top" style=3D"        font-family: 'Segoe U=
+I', Frutiger, Arial, sans-serif;        font-size: 14px;        -ms-text-si=
+ze-adjust: 100%;        white-space: nowrap;        font-weight: 500;      =
+  width: 140px;      ">Error:</td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;      ">
+                    <em>550 5.4.1 Recipient address rejected: Access denied=
+. [AM4PEPF00025F98.EURPRD83.prod.outlook.com 2024-10-02T08:28:05.081Z 08DCD=
+F5FC0C85D34]</em>
+                  </td>
+                </tr>
+                <tr>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        font-size: 14px;        -ms-text-size-adjust: 100%=
+;        white-space: nowrap;        font-weight: 500;        width: 140px;=
+      ">Message rejected by:</td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;      ">AM4PEPF00025F98.mail.protection.outlook.c=
+om</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sa=
+ns-serif;        -ms-text-size-adjust: 100%;        font-size: 17px;       =
+ font-weight: 500;      ">
+            <br />Notification Details</td>
+        </tr>
+        <tr>
+          <td style=3D"        font-size: 14px;        line-height: 20px;  =
+      font-family: 'Segoe UI', Frutiger, Arial, sans-serif;        -ms-text=
+-size-adjust: 100%;        font-weight: 500;      ">
+            <table style=3D"        width: 100%;        border-collapse: co=
+llapse;        margin-left: 10px;      ">
+              <tbody>
+                <tr>
+                  <td valign=3D"top" style=3D"        font-family: 'Segoe U=
+I', Frutiger, Arial, sans-serif;        font-size: 14px;        -ms-text-si=
+ze-adjust: 100%;        white-space: nowrap;        font-weight: 500;      =
+  width: 140px;      ">Sent by:</td>
+                  <td style=3D"        font-family: 'Segoe UI', Frutiger, A=
+rial, sans-serif;        -ms-text-size-adjust: 100%;        font-size: 14px=
+;        font-weight: 400;      ">
+                    <em>AM0PR09MB3922.eurprd09.prod.outlook.com</em>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <table style=3D"width: 880px;" cellspacing=3D"0">
+      <tr>
+        <td colspan=3D"6" style=3D"        padding-top: 4px;        border-=
+bottom: 1px solid #999999;        padding-bottom: 4px;        line-height: =
+120%;        font-size: 17px;        font-family: 'Segoe UI', Frutiger, Ari=
+al, sans-serif;        -ms-text-size-adjust: 100%;        font-weight: 500;=
+      ">Message Hops</td>
+      </tr>
+      <tr>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        background-color: #f2f5fa;        border-bottom: 1p=
+x solid #999999;        white-space: nowrap;        padding: 8px;      ">HO=
+P</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        background-color: #f2f5fa;        border-bottom: 1p=
+x solid #999999;        white-space: nowrap;        padding: 8px;        wi=
+dth: 80px;      ">TIME (UTC)</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        background-color: #f2f5fa;        border-bottom: 1p=
+x solid #999999;        white-space: nowrap;        padding: 8px;      ">FR=
+OM</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        background-color: #f2f5fa;        border-bottom: 1p=
+x solid #999999;        white-space: nowrap;        padding: 8px;      ">TO=
+</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        background-color: #f2f5fa;        border-bottom: 1p=
+x solid #999999;        white-space: nowrap;        padding: 8px;      ">WI=
+TH</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        background-color: #f2f5fa;        border-bottom: 1p=
+x solid #999999;        white-space: nowrap;        padding: 8px;      ">RE=
+LAY TIME</td>
+      </tr>
+      <tr>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: center;      ">1</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;        width: 80px;      ">10/2/2024<br />8:28=
+:01 AM</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">266ac3e28916</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">smtpfltrp2.ugent.be</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">ESMTP</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">*</td>
+      </tr>
+      <tr>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: center;      ">2</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;        width: 80px;      ">10/2/2024<br />8:28=
+:01 AM</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">smtpout2a.ugent.be</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">AM3PEPF0000A792.mail.protection.outlook=
+.com</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">Microsoft SMTP Server (version=3DTLS1_3=
+, cipher=3DTLS_AES_256_GCM_SHA384)</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">*</td>
+      </tr>
+      <tr>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: center;      ">3</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;        width: 80px;      ">10/2/2024<br />8:28=
+:02 AM</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">AM3PEPF0000A792.eurprd04.prod.outlook.c=
+om</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">AS4P190CA0037.outlook.office365.com</td=
+>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">Microsoft SMTP Server (version=3DTLS1_2=
+, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384)</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">1&nbsp;sec</td>
+      </tr>
+      <tr>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: center;      ">4</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;        width: 80px;      ">10/2/2024<br />8:28=
+:02 AM</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">AS4P190CA0037.EURP190.PROD.OUTLOOK.COM<=
+/td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">AM0PR09MB3922.eurprd09.prod.outlook.com=
+</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">Microsoft SMTP Server (version=3DTLS1_2=
+, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384)</td>
+        <td style=3D"        font-size: 12px;        font-family: 'Segoe UI=
+', Frutiger, Arial, sans-serif;        -ms-text-size-adjust: 100%;        f=
+ont-weight: 500;        border-bottom: 1px solid #999999;        padding: 8=
+px;        text-align: left;      ">*</td>
+      </tr>
+    </table>
+    <p style=3D"        font-family: 'Segoe UI', Frutiger, Arial, sans-seri=
+f;        -ms-text-size-adjust: 100%;        font-size: 17px;        font-w=
+eight: 500;        padding-top: 4px;        padding-bottom: 0;        margi=
+n-top: 19px;        margin-bottom: 5px;      ">Original Message Headers</p>
+    <pre style=3D"        color: gray;        white-space: pre;        padd=
+ing-top: 0;        margin-top: 5px;      ">ARC-Seal: i=3D1; a=3Drsa-sha256;=
+ s=3Darcselector10001; d=3Dmicrosoft.com; cv=3Dnone;
+ b=3DzQCIGDKs4fWYFzm/robW8KfaAn6tURurhpBKb/6PEgTyVsmX7tQ/KYoDHPMGGN8M4DyOaz=
+l2ZFc32B85kv2xHFOHYdT7ip/dzi/8UqRCbpGa0qhnu/MRw7y37/iAfdzNqNW90rovtls92t9x1=
++BobBT/KPi6GgFvEdWjQoLjjAgHGHIb2XU91yP8kqHEdITU9rllvuw7dILGAYnypZ/4LMuZTarG=
+3mjRLPK6tvrDQjNfO6FWZv+w0phZHoRH4A+8S4xsMv1tP1/vt6frs6s7XMSM/0y72TEYv//OA2G=
+dnYZm1tAk09RouvUdsu8aYSoPv1spTNAiG5wYoMAkSqYgZA=3D=3D
+ARC-Message-Signature: i=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed; d=3Dmicr=
+osoft.com;
+ s=3Darcselector10001;
+ h=3DFrom:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-A=
+ntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Ex=
+change-AntiSpam-MessageData-1;
+ bh=3DtEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=3D;
+ b=3DI/VxSDhdYu0DYLJdtijhyqEnYUg0aAGJut0rzjwS+CqOH1e6l2iW9Py3HzeVOljxV2ViQz=
+QA+0XWgzWvJQKT5c0zOOZwAvDvsh1bEgTjb7dwzAMX613lnHafUw6OmEQnVpt+Wja2z+mAJRiUx=
+XQ6CkqHJ1lPnh0QMen4R7RZwPJObJvKK0ez1B23WoGeCLmUtSxItFv+ehErufbs6YZvXmuH55Wp=
+265EDpKfqAjOpQkq+vFr4/rXaA1eIRdgEIrsmOr6tmGyf2C5f7iU4U3TH1m8mJQfR4KPPxTGoaL=
+lLmpkKAP7L2PTMtYhSh8/hOwPkzILyzSnNv+geT63Yj1Nlw=3D=3D
+ARC-Authentication-Results: i=3D1; mx.microsoft.com 1; spf=3Dpass (sender i=
+p is
+ 157.193.122.161) smtp.rcpttodomain=3Dgzwaasland.be smtp.mailfrom=3Dugent.b=
+e;
+ dmarc=3Dpass (p=3Dquarantine sp=3Dnone pct=3D100) action=3Dnone header.fro=
+m=3Dugent.be;
+ dkim=3Dpass (signature was verified) header.d=3Dugent.be; arc=3Dnone (0)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed; d=3Dugent.be; s=
+=3Dselector1;
+ h=3DFrom:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-S=
+enderADCheck;
+ bh=3DtEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=3D;
+ b=3Dg+Vi5+xEI4pfnkiLubtkdwKrgp1lz9YTweWPoRopm0ti7Af851F7USzy9JhoQXELLfq0TB=
+Hssnaa0olAxBL/3UAsVecNBh4/vSfAMbZOQhweU6c1ROVQzqDMKHDi85Kq0nocV6wQ/bgaWQSoy=
+Vpi6u5mjahUa1dP8PyEIAWxcdM=3D
+Received: from AS4P190CA0037.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:5d1::1=
+8)
+ by AM0PR09MB3922.eurprd09.prod.outlook.com (2603:10a6:208:198::10) with
+ Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16; Wed, 2 O=
+ct
+ 2024 08:28:02 +0000
+Received: from AM3PEPF0000A792.eurprd04.prod.outlook.com
+ (2603:10a6:20b:5d1:cafe::26) by AS4P190CA0037.outlook.office365.com
+ (2603:10a6:20b:5d1::18) with Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16 via Front=
+end
+ Transport; Wed, 2 Oct 2024 08:28:02 +0000
+X-MS-Exchange-Authentication-Results: spf=3Dpass (sender IP is 157.193.122.=
+161)
+ smtp.mailfrom=3Dugent.be; dkim=3Dpass (signature was verified)
+ header.d=3Dugent.be;dmarc=3Dpass action=3Dnone header.from=3Dugent.be;
+Received-SPF: Pass (protection.outlook.com: domain of ugent.be designates
+ 157.193.122.161 as permitted sender) receiver=3Dprotection.outlook.com;
+ client-ip=3D157.193.122.161; helo=3Dsmtpout2a.ugent.be; pr=3DC
+Received: from smtpout2a.ugent.be (157.193.122.161) by
+ AM3PEPF0000A792.mail.protection.outlook.com (10.167.16.121) with Microsoft
+ SMTP Server (version=3DTLS1_3, cipher=3DTLS_AES_256_GCM_SHA384) id 15.20.8=
+026.11
+ via Frontend Transport; Wed, 2 Oct 2024 08:28:01 +0000
+Received: from 266ac3e28916 (tw06v070.ugent.be [157.193.231.233])
+=09by smtpfltrp2.ugent.be  with ESMTP id 4928S1Vp015071-4928S1Vq015071
+=09for &lt;asterix@comic.com&gt;; Wed, 2 Oct 2024 10:28:01 +0200
+Content-Type: multipart/alternative;
+ boundary=3D"=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D73846525155320298=
+59=3D=3D"
+MIME-Version: 1.0
+Subject: =3D?utf-8?q?Oproepvragenlijst_van_Pilootproject_Ge=3DC3=3DAFntegre=
+erde_Zorg_Waasla?=3D
+ =3D?utf-8?q?nd?=3D
+From: Gezondheidsbevordering UGent &lt;metis@ugent.be&gt;
+To: asterix@comic.com
+Reply-To: stage-healthpromotion@ugent.be
+Date: Wed, 02 Oct 2024 08:28:01 -0000
+Message-ID: &lt;172785768125.6.17096658643040921349@266ac3e28916&gt;
+X-FEAS-Client-IP: 157.193.231.233
+X-FE-Last-Public-Client-IP: 157.193.231.233
+X-FE-Policy-ID: 27:10:2:SYSTEM
+DKIM-Signature: v=3D1; a=3Drsa-sha256; q=3Ddns/txt; d=3Dugent.be; s=3Ds10fm=
+2021; c=3Drelaxed/relaxed;
+ h=3Dcontent-type:mime-version:subject:from:to:reply-to:date:message-id;
+ bh=3DtEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=3D;
+ b=3DeQKS981nKJvrEe8Jf4gJBcKB8blPknXJO8GkDDRoPIC21vks+TJ65+ptPfhSEPrKN3ZurN=
+LbGmp8
+=09CthTmZdOEOPNYbe4bCi/GQZa+cVQBOaiiNUlcn8V4EXqSgnxnV0BCLHs8RW6eRi58/QD4hfX=
+VzAW
+=09Fr6xGCfyiiarWkkDfIUPxFDAJJwYYhj/AAv9Kq+/J/+fAX6OLltgCkKEmcBfrTaV5oQ4o14D=
+5fbu
+=09998kxRKt6rlD9dVslgfm4oBgqSr6oqaueWVqlGuJKc+Ioe/IBssyFm1M2vYVwGwNu6JJBa1U=
+UhXg
+=09rUgB5oR8d0JX6s3B7YJqEuIvamocfvPD8j2PxQ=3D=3D
+Return-Path: metis@ugent.be
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM3PEPF0000A792:EE_|AM0PR09MB3922:EE_
+X-MS-Office365-Filtering-Correlation-Id: cabb0517-4851-4165-ced3-08dce2bc21=
+09
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+=09BCL:0;ARA:13230040|82310400026|36860700013|376014|61400799027;
+X-Microsoft-Antispam-Message-Info:
+=09=3D?us-ascii?Q?d2TsM8c4NupFg9a3v0Z4LP5eddws7mUJg9NeDIBeBy7ZY04nDUQ4C3q3v=
+aAD?=3D
+ =3D?us-ascii?Q?4ep9k96k4oSwnMgshohNrEtm6sL9uzhonrH8q19CIfwXRmaCaB3BHSSWySe=
+K?=3D
+ =3D?us-ascii?Q?rsJ2HWm87yoSmmENzvsJTT+7fjlOvOEjleDbWby68famr80goVDVTEQxhsA=
+S?=3D
+ =3D?us-ascii?Q?aDsct7HIoDEAQcme4XEdtO2IzChD8siCZKeBCXv+3043eedDDC1Dhl/mkel=
+s?=3D
+ =3D?us-ascii?Q?E4zSK84qkMg+kpq25Sx9QM9v4NVMAjKavdptfgU1CWZUBthX7O1GM5fAoq/=
+x?=3D
+ =3D?us-ascii?Q?9014G7mazVkVklKDtum95zpg9ZeecfDOlCgNcD98MRTUrwi2Lh8L1AuCpI5=
+t?=3D
+ =3D?us-ascii?Q?ROqztTAszpYHJebWOGuUx/Iaoxg/6Bz3mDP9dQ/05G0hTh8tBehd+al47KV=
+S?=3D
+ =3D?us-ascii?Q?C0S03GOKKM9e2ohtQyNnjqHNy/HBzjksRfKsBHxgTvQl9nXB+4ye2uvSDE0=
+l?=3D
+ =3D?us-ascii?Q?ZqaB4HWQpCmmVnPXQfuAvpZdAhzcIWIipM+xgx9oE641jS2Yr0tgnY6p/SD=
++?=3D
+ =3D?us-ascii?Q?ICb2hFbiAVJRbk0r+ZxhFIxykE82RZKP+aoRYsOGZQ+Yxor/2iVzx8KML0p=
+n?=3D
+ =3D?us-ascii?Q?zw2KZ7FgaLk70oHHyMcSrLgLn+C+E3l8j/087kiiV5P0jDuwgm0M31H/T8T=
+o?=3D
+ =3D?us-ascii?Q?Hj3yNbjHHFkKvIbtanrxeBrKcur7cfZB/mbmnV9hs0XhekClQos519WxwU7=
+0?=3D
+ =3D?us-ascii?Q?EvLRDPzwqpUBeznB/sUcZbTSWbxY1a8I8DLyxSER+lnQKgMogNb0OEIoSuj=
+o?=3D
+ =3D?us-ascii?Q?/ok9Iq5RbWnp3CitWPPePlGf2BnfpiYwaCjs0gwNIcUFh7WtGFjL61C23H7=
+e?=3D
+ =3D?us-ascii?Q?rRYU6EcYkCJimW9UL4CHljIUpkOKK6SLif9Pv1zoMw0OFwnKn3KxkaPUgST=
+i?=3D
+ =3D?us-ascii?Q?WBRT0gtogmiQaijXsrjLGumkD0XVYxg2gqAHmWXuAa1UcRibPHRQuU6ClPb=
+p?=3D
+ =3D?us-ascii?Q?tNdeXX0S0U7sC2wQa832pULfY4lIipylHi4ugL8rJakf2TJBB7XpO6oHn+i=
+o?=3D
+ =3D?us-ascii?Q?WDO//3MemHkMXOQKV0Ue9msdz79Z0yIY9vnLGBJ2a+0VijAq3IStXzDgGMx=
+I?=3D
+ =3D?us-ascii?Q?jZ7wZzlAb3b/bZLoTCDSx9eGjEFtzsBmj2qN+IW3RQ61jbhm5UT5WzmppWj=
+Q?=3D
+ =3D?us-ascii?Q?rQ60h2u1FXtKhFdH/fLSjdae/413rYvu7nXwvJX8cVeJUgcaJrG+Fmzszpt=
+6?=3D
+ =3D?us-ascii?Q?5uPapEhvuKcjsdrpUGJg3+diS4si0BlofQWCjUq04+JSvaGlfj27IAf+YDT=
+t?=3D
+ =3D?us-ascii?Q?j6liJS7/vIr9rSX3JCfTnJVaU5QTLBJzvefJYAxMvwVmGCvvQsr4QGBJJRg=
+j?=3D
+ =3D?us-ascii?Q?3sQuNek5vAgjxrd2FnXPhUBrepCwVv5qFkhzJAXhf3ArZA=3D3D=3D3D?=
+=3D
+X-Forefront-Antispam-Report:
+=09CIP:157.193.122.161;CTRY:BE;LANG:nl;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:smtpou=
+t2a.ugent.be;PTR:smtpout2a.ugent.be;CAT:NONE;SFS:(13230040)(82310400026)(36=
+860700013)(376014)(61400799027);DIR:OUT;SFP:1102;
+X-OriginatorOrg: ugent.be
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2024 08:28:01.5164
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cabb0517-4851-4165-ced3-08dce=
+2bc2109
+X-MS-Exchange-CrossTenant-Id: d7811cde-ecef-496c-8f91-a1786241b99c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3D=
+d7811cde-ecef-496c-8f91-a1786241b99c;Ip=3D[157.193.122.161];Helo=3D[smtpout=
+2a.ugent.be]
+X-MS-Exchange-CrossTenant-AuthSource:
+=09AM3PEPF0000A792.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR09MB3922
+</pre>
+  </body>
+</html>
+--bba1ac51-19a2-4c36-b0a8-18a7a40ae2d0--
+--2f138602-9853-4767-a9e3-93dab3dc010d
+Content-Type: message/delivery-status
+
+
+--2f138602-9853-4767-a9e3-93dab3dc010d
+Content-Type: message/rfc822
+
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none; b=zQCIGDKs4fWYFzm/robW8KfaAn6tURurhpBKb/6PEgTyVsmX7tQ/KYoDHPMGGN8M4DyOazl2ZFc32B85kv2xHFOHYdT7ip/dzi/8UqRCbpGa0qhnu/MRw7y37/iAfdzNqNW90rovtls92t9x1+BobBT/KPi6GgFvEdWjQoLjjAgHGHIb2XU91yP8kqHEdITU9rllvuw7dILGAYnypZ/4LMuZTarG3mjRLPK6tvrDQjNfO6FWZv+w0phZHoRH4A+8S4xsMv1tP1/vt6frs6s7XMSM/0y72TEYv//OA2GdnYZm1tAk09RouvUdsu8aYSoPv1spTNAiG5wYoMAkSqYgZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; s=arcselector10001; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1; bh=tEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=; b=I/VxSDhdYu0DYLJdtijhyqEnYUg0aAGJut0rzjwS+CqOH1e6l2iW9Py3HzeVOljxV2ViQzQA+0XWgzWvJQKT5c0zOOZwAvDvsh1bEgTjb7dwzAMX613lnHafUw6OmEQnVpt+Wja2z+mAJRiUxXQ6CkqHJ1lPnh0QMen4R7RZwPJObJvKK0ez1B23WoGeCLmUtSxItFv+ehErufbs6YZvXmuH55Wp265EDpKfqAjOpQkq+vFr4/rXaA1eIRdgEIrsmOr6tmGyf2C5f7iU4U3TH1m8mJQfR4KPPxTGoaLlLmpkKAP7L2PTMtYhSh8/hOwPkzILyzSnNv+geT63Yj1Nlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is 157.193.122.161) smtp.rcpttodomain=gzwaasland.be smtp.mailfrom=ugent.be; dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ugent.be; dkim=pass (signature was verified) header.d=ugent.be; arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ugent.be; s=selector1; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck; bh=tEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=; b=g+Vi5+xEI4pfnkiLubtkdwKrgp1lz9YTweWPoRopm0ti7Af851F7USzy9JhoQXELLfq0TBHssnaa0olAxBL/3UAsVecNBh4/vSfAMbZOQhweU6c1ROVQzqDMKHDi85Kq0nocV6wQ/bgaWQSoyVpi6u5mjahUa1dP8PyEIAWxcdM=
+Received: from AS4P190CA0037.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:5d1::18) by AM0PR09MB3922.eurprd09.prod.outlook.com (2603:10a6:208:198::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16; Wed, 2 Oct 2024 08:28:02 +0000
+Received: from AM3PEPF0000A792.eurprd04.prod.outlook.com (2603:10a6:20b:5d1:cafe::26) by AS4P190CA0037.outlook.office365.com (2603:10a6:20b:5d1::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16 via Frontend Transport; Wed, 2 Oct 2024 08:28:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 157.193.122.161) smtp.mailfrom=ugent.be; dkim=pass (signature was verified) header.d=ugent.be;dmarc=pass action=none header.from=ugent.be;
+Received-SPF: Pass (protection.outlook.com: domain of ugent.be designates 157.193.122.161 as permitted sender) receiver=protection.outlook.com; client-ip=157.193.122.161; helo=smtpout2a.ugent.be; pr=C
+Received: from smtpout2a.ugent.be (157.193.122.161) by AM3PEPF0000A792.mail.protection.outlook.com (10.167.16.121) with Microsoft SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.8026.11 via Frontend Transport; Wed, 2 Oct 2024 08:28:01 +0000
+Received: from 266ac3e28916 (tw06v070.ugent.be [157.193.231.233]) by smtpfltrp2.ugent.be
+  with ESMTP id 4928S1Vp015071-4928S1Vq015071 for <asterix@comic.com>; Wed, 2 Oct 2024 10:28:01 +0200
+Content-Type: multipart/alternative; boundary="===============7384652515532029859=="
+MIME-Version: 1.0
+Subject: Oproepvragenlijst van Pilootproject Geïntegreerde Zorg Waasland
+From: Gezondheidsbevordering UGent <metis@ugent.be>
+To: asterix@comic.com
+Reply-To: stage-healthpromotion@ugent.be
+Date: Wed, 02 Oct 2024 08:28:01 -0000
+Message-ID: <172785768125.6.17096658643040921349@266ac3e28916>
+X-FEAS-Client-IP: 157.193.231.233
+X-FE-Last-Public-Client-IP: 157.193.231.233
+X-FE-Policy-ID: 27:10:2:SYSTEM
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=ugent.be; s=s10fm2021; c=relaxed/relaxed; h=content-type:mime-version:subject:from:to:reply-to:date:message-id; bh=tEjE8LPcd+/CwC3Rqfnl24fYmIIjYkXsaa4uhIW5UhQ=; b=eQKS981nKJvrEe8Jf4gJBcKB8blPknXJO8GkDDRoPIC21vks+TJ65+ptPfhSEPrKN3ZurNLbGmp8 CthTmZdOEOPNYbe4bCi/GQZa+cVQBOaiiNUlcn8V4EXqSgnxnV0BCLHs8RW6eRi58/QD4hfXVzAW Fr6xGCfyiiarWkkDfIUPxFDAJJwYYhj/AAv9Kq+/J/+fAX6OLltgCkKEmcBfrTaV5oQ4o14D5fbu 998kxRKt6rlD9dVslgfm4oBgqSr6oqaueWVqlGuJKc+Ioe/IBssyFm1M2vYVwGwNu6JJBa1UUhXg rUgB5oR8d0JX6s3B7YJqEuIvamocfvPD8j2PxQ==
+Return-Path: metis@ugent.be
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM3PEPF0000A792:EE_|AM0PR09MB3922:EE_
+X-MS-Office365-Filtering-Correlation-Id: cabb0517-4851-4165-ced3-08dce2bc2109
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|82310400026|36860700013|376014|61400799027;
+X-Microsoft-Antispam-Message-Info: d2TsM8c4NupFg9a3v0Z4LP5eddws7mUJg9NeDIBeBy7ZY04nDUQ4C3q3vaAD4ep9k96k4oSwnMgshohNrEtm6sL9uzhonrH8q19CIfwXRmaCaB3BHSSWySeKrsJ2HWm87yoSmmENzvsJTT+7fjlOvOEjleDbWby68famr80goVDVTEQxhsASaDsct7HIoDEAQcme4XEdtO2IzChD8siCZKeBCXv+3043eedDDC1Dhl/mkelsE4zSK84qkMg+kpq25Sx9QM9v4NVMAjKavdptfgU1CWZUBthX7O1GM5fAoq/x9014G7mazVkVklKDtum95zpg9ZeecfDOlCgNcD98MRTUrwi2Lh8L1AuCpI5tROqztTAszpYHJebWOGuUx/Iaoxg/6Bz3mDP9dQ/05G0hTh8tBehd+al47KVSC0S03GOKKM9e2ohtQyNnjqHNy/HBzjksRfKsBHxgTvQl9nXB+4ye2uvSDE0lZqaB4HWQpCmmVnPXQfuAvpZdAhzcIWIipM+xgx9oE641jS2Yr0tgnY6p/SD+ICb2hFbiAVJRbk0r+ZxhFIxykE82RZKP+aoRYsOGZQ+Yxor/2iVzx8KML0pnzw2KZ7FgaLk70oHHyMcSrLgLn+C+E3l8j/087kiiV5P0jDuwgm0M31H/T8ToHj3yNbjHHFkKvIbtanrxeBrKcur7cfZB/mbmnV9hs0XhekClQos519WxwU70EvLRDPzwqpUBeznB/sUcZbTSWbxY1a8I8DLyxSER+lnQKgMogNb0OEIoSujo/ok9Iq5RbWnp3CitWPPePlGf2BnfpiYwaCjs0gwNIcUFh7WtGFjL61C23H7erRYU6EcYkCJimW9UL4CHljIUpkOKK6SLif9Pv1zoMw0OFwnKn3KxkaPUgSTiWBRT0gtogmiQaijXsrjLGumkD0XVYxg2gqAHmWXuAa1UcRibPHRQuU6ClPbptNdeXX0S0U7sC2wQa832pULfY4lIipylHi4ugL8rJakf2TJBB7XpO6oHn+ioWDO//3MemHkMXOQKV0Ue9msdz79Z0yIY9vnLGBJ2a+0VijAq3IStXzDgGMxIjZ7wZzlAb3b/bZLoTCDSx9eGjEFtzsBmj2qN+IW3RQ61jbhm5UT5WzmppWjQrQ60h2u1FXtKhFdH/fLSjdae/413rYvu7nXwvJX8cVeJUgcaJrG+Fmzszpt65uPapEhvuKcjsdrpUGJg3+diS4si0BlofQWCjUq04+JSvaGlfj27IAf+YDTtj6liJS7/vIr9rSX3JCfTnJVaU5QTLBJzvefJYAxMvwVmGCvvQsr4QGBJJRgj3sQuNek5vAgjxrd2FnXPhUBrepCwVv5qFkhzJAXhf3ArZA==
+X-Forefront-Antispam-Report: CIP:157.193.122.161;CTRY:BE;LANG:nl;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:smtpout2a.ugent.be;PTR:smtpout2a.ugent.be;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(376014)(61400799027);DIR:OUT;SFP:1102;
+X-OriginatorOrg: ugent.be
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2024 08:28:01.5164 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cabb0517-4851-4165-ced3-08dce2bc2109
+X-MS-Exchange-CrossTenant-Id: d7811cde-ecef-496c-8f91-a1786241b99c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d7811cde-ecef-496c-8f91-a1786241b99c;Ip=[157.193.122.161];Helo=[smtpout2a.ugent.be]
+X-MS-Exchange-CrossTenant-AuthSource: AM3PEPF0000A792.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR09MB3922
+
+--===============7384652515532029859==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+Geachte heer
+Geachte mevrouw,
+
+Binnen de Master Gezondheidsbevordering UGent krijgen studenten de kans om stage te lopen.
+
+Hiervoor zijn we als stageteam op zoek naar stageplaatsen waar onze studenten praktijkervaring kunnen opdoen **gedurende 30 dagen (31 maart tem 6 juni 2025)**.
+
+Meer informatie over de opleiding kan je vinden via: https://studiekiezer.ugent.be/2024/master-of-science-in-de-gezondheidsbevordering
+
+Onze studenten deden een vooropleiding in o.a. verpleegkunde, vroedkunde, sociaal werk, voedings- en dieetkunde of psychologie. Zij lopen stage binnen de Master Gezondheidsbevordering in hun tweede semester nadat zij alle leerstof reeds hebben gezien. Studenten hebben vaak reeds ervaring met stage, maar beschikken verder ook over de kennis en zelfstandigheid van een masterstudent.
+
+We zijn op zoek naar stageplaatsen die leerkansen kunnen bieden aan onze studenten zoals:
+- Ontwikkelen van een gezondheidsbevorderende actie (rond bv. voeding, beweging of mentaal welzijn) op basis van wetenschappelijke literatuur.
+- Implementeren van een gezondheidsbevorderende actie op basis van wetenschappelijke literatuur.
+- Uitwerken en uitvoeren van een evaluatie van een gezondheidsbevorderende tool/actie op academisch niveau (bv. statistische dataverwerking);
+- Vormingen ontwikkelen en eventueel geven aan de doelgroep over gezondheidsbevorderende thema's;
+- Focusgroepen organiseren in het kader van een community project.
+
+
+Gelieve de vragenlijst tegen uiterlijk 2 oktober 2024 23:59 in te vullen om te laten weten of je al dan niet een student kan ontvangen.
+
+Surf naar https://metis.ugent.be/nl/places/737/ en **log in met je UGent account**.
+
+> Ondervind je hiermee problemen, dan kan u <helpdesk.metis@ugent.be> contacteren.
+
+Als stageplaats dien je een stagebeheerder en stagementor aan te stellen:
+
+- De stagebeheerder is enkel verantwoordelijk voor het invullen van het oproepformulier om je als organisatie kandidaat te stellen voor een stageplaats.
+
+- De stagementor ondersteunt en begeleidt de student persoonlijk tijdens de stage. Hij/zij is het professioneel rolmodel en het eerste aanspreekpunt voor de student. Hij/zij wijst de taken en contactpersonen toe en volgt de student op. Hij/zij is ook het aanspreekpunt binnen de organisatie voor de stage-begeleider. Verder staat de stagementor ook in voor het invullen van de beoordelingsformulieren.
+
+- De stagebeheerder en stagementor kunnen dezelfde persoon zijn
+
+Alvast dank!
+
+Vriendelijke groeten
+Het stageteam Gezondheidsbevordering
+--===============7384652515532029859==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+<p>Geachte heer<br />
+Geachte mevrouw,</p>
+<p>Binnen de Master Gezondheidsbevordering UGent krijgen studenten de kans om stage te lopen.</p>
+<p>Hiervoor zijn we als stageteam op zoek naar stageplaatsen waar onze studenten praktijkervaring kunnen opdoen <strong>gedurende 30 dagen (31 maart tem 6 juni 2025)</strong>. </p>
+<p>Meer informatie over de opleiding kan je vinden via: https://studiekiezer.ugent.be/2024/master-of-science-in-de-gezondheidsbevordering</p>
+<p>Onze studenten deden een vooropleiding in o.a. verpleegkunde, vroedkunde, sociaal werk, voedings- en dieetkunde of psychologie. Zij lopen stage binnen de Master Gezondheidsbevordering in hun tweede semester nadat zij alle leerstof reeds hebben gezien. Studenten hebben vaak reeds ervaring met stage, maar beschikken verder ook over de kennis en zelfstandigheid van een masterstudent. </p>
+<p>We zijn op zoek naar stageplaatsen die leerkansen kunnen bieden aan onze studenten zoals:
+- Ontwikkelen van een gezondheidsbevorderende actie (rond bv. voeding, beweging of mentaal welzijn) op basis van wetenschappelijke literatuur.
+- Implementeren van een gezondheidsbevorderende actie op basis van wetenschappelijke literatuur.
+- Uitwerken en uitvoeren van een evaluatie van een gezondheidsbevorderende tool/actie op academisch niveau (bv. statistische dataverwerking);
+- Vormingen ontwikkelen en eventueel geven aan de doelgroep over gezondheidsbevorderende thema's;
+- Focusgroepen organiseren in het kader van een community project.</p>
+<p>Gelieve de vragenlijst tegen uiterlijk 2 oktober 2024 23:59 in te vullen om te laten weten of je al dan niet een student kan ontvangen.</p>
+<p>Surf naar https://metis.ugent.be/nl/places/737/ en <strong>log in met je UGent account</strong>.</p>
+<blockquote>
+<p>Ondervind je hiermee problemen, dan kan u <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#104;&#101;&#108;&#112;&#100;&#101;&#115;&#107;&#46;&#109;&#101;&#116;&#105;&#115;&#64;&#117;&#103;&#101;&#110;&#116;&#46;&#98;&#101;">&#104;&#101;&#108;&#112;&#100;&#101;&#115;&#107;&#46;&#109;&#101;&#116;&#105;&#115;&#64;&#117;&#103;&#101;&#110;&#116;&#46;&#98;&#101;</a> contacteren.</p>
+</blockquote>
+<p>Als stageplaats dien je een stagebeheerder en stagementor aan te stellen:</p>
+<ul>
+<li>
+<p>De stagebeheerder is enkel verantwoordelijk voor het invullen van het oproepformulier om je als organisatie kandidaat te stellen voor een stageplaats.</p>
+</li>
+<li>
+<p>De stagementor ondersteunt en begeleidt de student persoonlijk tijdens de stage. Hij/zij is het professioneel rolmodel en het eerste aanspreekpunt voor de student. Hij/zij wijst de taken en contactpersonen toe en volgt de student op. Hij/zij is ook het aanspreekpunt binnen de organisatie voor de stage-begeleider. Verder staat de stagementor ook in voor het invullen van de beoordelingsformulieren.  </p>
+</li>
+<li>
+<p>De stagebeheerder en stagementor kunnen dezelfde persoon zijn</p>
+</li>
+</ul>
+<p>Alvast dank!</p>
+<p>Vriendelijke groeten<br />
+Het stageteam Gezondheidsbevordering</p>
+--===============7384652515532029859==--
+
+--2f138602-9853-4767-a9e3-93dab3dc010d--
