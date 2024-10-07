@@ -123,7 +123,7 @@ class Project(FilesMixin, TextEntriesMixin, BaseModel):
 class Period(BaseModel):
     """A first proposal is made based on the ProgramInternships defined at ProgramBlock level."""
 
-    project = models.ForeignKey(Project, related_name="periods", on_delete=models.CASCADE)
+    project = models.ForeignKey("metis.Project", related_name="periods", on_delete=models.CASCADE)
     program_internship = models.ForeignKey("metis.ProgramInternship", related_name="periods", on_delete=models.PROTECT)
     name = models.CharField(max_length=240)
     start_date = models.DateField()

@@ -7,8 +7,7 @@ from .constraints import DisciplineConstraintsMixin
 
 
 class Program(BaseModel):
-    """
-    A generic definition of an internship curriculum.
+    """A generic definition of an internship curriculum.
     Different constraints can be applied to the program.
     Constraints: cannot repeat place
     Choice of disciplines: can be repeated
@@ -37,12 +36,11 @@ class ProgramTranslationOptions(TranslationOptions):
 
 
 class ProgramBlock(BaseModel):
-    """
-    Based on semesters or a natural year, a orientative block is defined.
+    """Based on semesters or a natural year, a orientative block is defined.
     Normally these will be linked to an academic year, and they will be closely related to degrees (Ba3, Ma1, Ma2).
     """
 
-    program = models.ForeignKey(Program, related_name="blocks", on_delete=models.CASCADE)
+    program = models.ForeignKey("metis.Program", related_name="blocks", on_delete=models.CASCADE)
     name = models.CharField(max_length=160)
     position = models.PositiveSmallIntegerField()
 
@@ -56,8 +54,7 @@ class ProgramBlock(BaseModel):
 
 
 class ProgramInternship(DisciplineConstraintsMixin, BaseModel):
-    """
-    An internship inside a ProgramBlock.
+    """An internship inside a ProgramBlock.
     The final Internship or stage will be linked to this model, so we can later check the dependencies
     and make sure the student has covered all the requirements for the Program / Track.
     A ProgramInternship defines some orientative 'dates' that will be used to create the actual
@@ -69,7 +66,7 @@ class ProgramInternship(DisciplineConstraintsMixin, BaseModel):
     - Preferences for disciplines (ordered or unordered)
     """
 
-    block = models.ForeignKey(ProgramBlock, related_name="internships", on_delete=models.CASCADE)
+    block = models.ForeignKey("metis.ProgramBlock", related_name="internships", on_delete=models.CASCADE)
     name = models.CharField(max_length=160)
     position = models.PositiveSmallIntegerField(default=0)
     start_week = models.PositiveSmallIntegerField(default=0, null=True, blank=True)
@@ -84,13 +81,11 @@ class ProgramInternship(DisciplineConstraintsMixin, BaseModel):
 
 
 class Track(DisciplineConstraintsMixin, BaseModel):
-    """
-    A Track is a set of program internships that are related and (can) have some constraints of their own.
-    """
+    """A Track is a set of program internships that are related and (can) have some constraints of their own."""
 
-    program = models.ForeignKey(Program, related_name="tracks", on_delete=models.CASCADE)
+    program = models.ForeignKey("metis.Program", related_name="tracks", on_delete=models.CASCADE)
     name = models.CharField(max_length=160)
-    program_internships = models.ManyToManyField(ProgramInternship, through="metis.TrackInternship")
+    program_internships = models.ManyToManyField("metis.ProgramInternship", through="metis.TrackInternship")
 
     class Meta:
         db_table = "metis_program_tracks"
@@ -104,13 +99,12 @@ class Track(DisciplineConstraintsMixin, BaseModel):
 
 
 class TrackInternship(models.Model):
-    """
-    Related model that defines the order of the internships inside a Track.
+    """Related model that defines the order of the internships inside a Track.
     Special requirements for a Track are also saved here.
     """
 
-    track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    program_internship = models.ForeignKey(ProgramInternship, related_name="tracks", on_delete=models.CASCADE)
+    track = models.ForeignKey("metis.Track", on_delete=models.CASCADE)
+    program_internship = models.ForeignKey("metis.ProgramInternship", related_name="tracks", on_delete=models.CASCADE)
     position = models.PositiveIntegerField()
 
     class Meta:

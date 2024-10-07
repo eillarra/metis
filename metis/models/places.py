@@ -60,8 +60,10 @@ class Place(AddressesMixin, FilesMixin, PhoneNumbersMixin, LinksMixin, RemarksMi
     """
 
     education = models.ForeignKey("metis.Education", related_name="places", on_delete=models.PROTECT)
-    location = models.ForeignKey(PlaceLocation, related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.ForeignKey(PlaceType, related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
+    location = models.ForeignKey(
+        "metis.PlaceLocation", related_name="places", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    type = models.ForeignKey("metis.PlaceType", related_name="places", on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=160)
     code = models.CharField(max_length=160)
     parent = models.ForeignKey("self", related_name="children", on_delete=models.SET_NULL, null=True, blank=True)
@@ -129,7 +131,7 @@ class Contact(PhoneNumbersMixin, RemarksMixin, BaseModel):
     Contacts that are no staff or mentor have limited read-only access to the place information.
     """
 
-    place = models.ForeignKey(Place, related_name="contacts", on_delete=models.CASCADE)
+    place = models.ForeignKey("metis.Place", related_name="contacts", on_delete=models.CASCADE)
     user = models.ForeignKey("metis.User", related_name="contact_set", on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

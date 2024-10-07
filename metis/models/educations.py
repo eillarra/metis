@@ -23,7 +23,7 @@ class FacultyTranslationOptions(TranslationOptions):
 
 
 class Education(BaseModel):
-    faculty = models.ForeignKey(Faculty, related_name="educations", on_delete=models.PROTECT)
+    faculty = models.ForeignKey("metis.Faculty", related_name="educations", on_delete=models.PROTECT)
     code = models.CharField(max_length=16, unique=True)
     name = models.CharField(max_length=160)
     short_name = models.CharField(max_length=80)

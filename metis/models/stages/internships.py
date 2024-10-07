@@ -517,7 +517,7 @@ class Internship(RemarksMixin, BaseModel):
 class Mentor(BaseModel):
     """A Mentor is a User that is linked to an Internship."""
 
-    internship = models.ForeignKey(Internship, related_name="mentors", on_delete=models.CASCADE)
+    internship = models.ForeignKey("metis.Internship", related_name="mentors", on_delete=models.CASCADE)
     user = models.ForeignKey("metis.User", related_name="mentorships", on_delete=models.PROTECT)
     is_primary = models.BooleanField(default=False)
 

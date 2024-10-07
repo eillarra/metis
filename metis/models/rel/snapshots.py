@@ -14,9 +14,7 @@ if TYPE_CHECKING:
 
 
 class Snapshot(models.Model):
-    """
-    A copy of the object is saved here for historical purposes.
-    """
+    """A copy of the object is saved here for historical purposes."""
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="snapshots")
     object_id = models.PositiveIntegerField()
@@ -34,8 +32,7 @@ class Snapshot(models.Model):
 
 
 def save_snapshot(sender: type["BaseModel"], instance: models.Model, *, user: Optional["User"]) -> None:
-    """
-    Save a snapshot of a given Django model instance.
+    """Save a snapshot of a given Django model instance.
 
     This method is intended to be used as a signal handler for the `post_save` signal.
     It serializes the instance, creates a new Snapshot object, and saves the serialized
@@ -44,14 +41,10 @@ def save_snapshot(sender: type["BaseModel"], instance: models.Model, *, user: Op
     Note that the user information has to be added to the original BaseModel instance
     via the Admin `save_model` method or to the serializer `create` method in the API.
 
-    Args:
-        sender (BaseModel): The class of the saved instance.
-        instance (Model): The instance of the saved object.
-
-    Returns:
-        None
+    :param sender: The class of the saved instance.
+    :param instance: The instance of the saved object.
+    :param user: The user who triggered the save action.
     """
-
     if sender == Snapshot:
         return
 
