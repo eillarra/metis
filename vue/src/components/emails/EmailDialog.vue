@@ -2,37 +2,46 @@
   <full-dialog icon="mail_outline" :title="$t('field.email')" class="small" hide-drawer>
     <template #tabs>
       <table class="q-px-md q-py-sm q-mt-sm q-mb-lg bg-grey-2 full-width">
-        <tr>
-          <td class="text-no-wrap q-td q-table--col-auto-width q-pr-md"><strong>{{ $t('field.sent_at') }}:</strong></td>
-          <td colspan="2">{{ formatDate(email.sent_at) }}</td>
-        </tr>
-        <tr>
-          <td class="text-no-wrap q-td q-table--col-auto-width q-pr-md"><strong>{{ $t('field.sent_to') }}:</strong></td>
-          <td>
-            <span>{{ toNameEmails }}</span>
-          </td>
-          <td class="q-td q-table--col-auto-width">
-            <i
-              @click="copyText(toNameEmails)"
-              class="q-icon notranslate material-icons cursor-pointer q-ml-xs"
-              :style="{ 'font-size': '14px' }"
-              aria-hidden="true"
-              role="presentation"
-            >content_copy</i>
-          </td>
-        </tr>
-        <tr>
-          <td><strong>{{ $t('field.subject') }}:</strong></td>
-          <td colspan="2">{{ email.subject }}</td>
-        </tr>
-        <tr>
-          <td><strong>Tags:</strong></td>
-          <td colspan="2">
-            <div class="q-gutter-x-xs">
-              <q-badge v-for="tag in sortedTags" :key="tag" outline color="dark">{{ tag }}</q-badge>
-            </div>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td class="text-no-wrap q-td q-table--col-auto-width q-pr-md">
+              <strong>{{ $t('field.sent_at') }}:</strong>
+            </td>
+            <td colspan="2">{{ formatDate(email.sent_at) }}</td>
+          </tr>
+          <tr>
+            <td class="text-no-wrap q-td q-table--col-auto-width q-pr-md">
+              <strong>{{ $t('field.sent_to') }}:</strong>
+            </td>
+            <td>
+              <span>{{ toNameEmails }}</span>
+            </td>
+            <td class="q-td q-table--col-auto-width">
+              <i
+                @click="copyText(toNameEmails)"
+                class="q-icon notranslate material-icons cursor-pointer q-ml-xs"
+                :style="{ 'font-size': '14px' }"
+                aria-hidden="true"
+                role="presentation"
+                >content_copy</i
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ $t('field.subject') }}:</strong>
+            </td>
+            <td colspan="2">{{ email.subject }}</td>
+          </tr>
+          <tr>
+            <td><strong>Tags:</strong></td>
+            <td colspan="2">
+              <div class="q-gutter-x-xs">
+                <q-badge v-for="tag in sortedTags" :key="tag" outline color="dark">{{ tag }}</q-badge>
+              </div>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </template>
     <template #page>
