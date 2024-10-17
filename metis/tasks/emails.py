@@ -61,15 +61,12 @@ def schedule_active_questioning_emails(*, force_send: bool = False):
 
     This is an automated task that runs every day at 8:00.
 
-    Args:
-    ----
-        force_send: Whether to send the emails even if we are not in the remind window.
-
+    :param force_send: Whether to send the emails even if we are not in the remind window.
     """
     active_questionings = Questioning.objects.filter_active()
 
     for questioning in active_questionings:
-        if not questioning.has_email:
+        if not questioning.has_email or questioning.disable_automatic_emails:
             continue
 
         if not force_send and not remind_deadline(now(), questioning.end_at):
@@ -79,14 +76,18 @@ def schedule_active_questioning_emails(*, force_send: bool = False):
 
 
 def schedule_questioning_email(questioning: Questioning, *, filtered_ids: list | None = None):
-    """Schedule the emails for the given questioning."""
+    """Schedule the emails for the given questioning.
+
+    :param questioning: The questioning for which to schedule the emails.
+    :param filtered_ids: A list of IDs to filter the target group.
+    """
     senders = {
         Questioning.PROJECT_PLACE_INFORMATION: schedule_project_place_information_email,
         Questioning.STUDENT_INFORMATION: schedule_student_questioning_email,
         Questioning.STUDENT_TOPS: schedule_student_questioning_email,
     }
 
-    if not questioning.has_email:
+    if not questioning.has_email or questioning.disable_automatic_emails:
         return
 
     try:

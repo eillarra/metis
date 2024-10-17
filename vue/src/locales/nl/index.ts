@@ -247,6 +247,9 @@ export default {
       add_flag: 'Stageplaats als problematisch markeren',
     },
     questioning: {
+      saved: 'Bevraging informatie opgeslagen',
+      automatic_emails_enabled: 'Automatische emails ingeschakeld',
+      automatic_emails_disabled: 'Automatische emails uitgeschakeld',
       confirm_send_emails:
         'Ben je zeker dat je een herinneringsmail wil versturen? | Ben je zeker dat je {count} herinneringsmails wil versturen?',
       emails_sent: 'Herinneringsmail verstuurd | Herinneringsmails verstuurd',

@@ -248,6 +248,9 @@ export default {
       add_flag: 'Mark place as problematic',
     },
     questioning: {
+      saved: 'Questioning information saved',
+      automatic_emails_enabled: 'Automatic emails enabled',
+      automatic_emails_disabled: 'Automatic emails disabled',
       confirm_send_emails:
         'Are you sure you want to sent a reminder email? | Are you sure you want to send {count} reminder emails?',
       emails_sent: 'Reminder email sent | Reminder emails sent',

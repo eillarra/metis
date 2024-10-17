@@ -10,6 +10,7 @@ interface Questioning extends ApiObject {
   email_subject: string;
   email_body: string;
   email_add_office_in_bcc: boolean;
+  disable_automatic_emails: boolean;
   updated_at: string;
   updated_by: UserTiny;
   target_object_ids?: number[];

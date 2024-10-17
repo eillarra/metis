@@ -78,13 +78,13 @@
           <pending-project-places-table
             v-if="props.obj.type.startsWith('project_place_')"
             :questioning="props.obj"
-            :project-places="(objectsPendingResponse as ProjectPlace[])"
+            :project-places="objectsPendingResponse as ProjectPlace[]"
             :show-actions="hasEmail"
           />
           <pending-students-table
             v-if="props.obj.type.startsWith('student_')"
             :questioning="props.obj"
-            :students="(objectsPendingResponse as Student[])"
+            :students="objectsPendingResponse as Student[]"
             :show-actions="hasEmail"
           />
         </q-tab-panel>
@@ -101,11 +101,25 @@
           <div class="row q-col-gutter-sm q-mb-sm">
             <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('planner') }}</h4>
           </div>
-          <planner-view :questioning="obj" :students="(targetObjects as Student[])" :project-places="projectPlaces" />
+          <planner-view :questioning="obj" :students="targetObjects as Student[]" :project-places="projectPlaces" />
         </q-tab-panel>
         <q-tab-panel name="email">
           <div class="row q-col-gutter-sm q-mb-sm">
             <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('email_template') }}</h4>
+            <div class="col-12 col-md text-right q-gutter-sm">
+              <q-btn
+                unelevated
+                :color="obj.disable_automatic_emails ? 'red-1' : 'blue-1'"
+                :label="
+                  obj.disable_automatic_emails
+                    ? `&nbsp;${$t('form.questioning.automatic_emails_disabled')}`
+                    : `&nbsp;${$t('form.questioning.automatic_emails_enabled')}`
+                "
+                :icon="obj.disable_automatic_emails ? 'check_box_outline_blank' : 'check_box'"
+                :class="obj.disable_automatic_emails ? 'text-red' : 'text-ugent'"
+                @click="toggleAutomaticEmails"
+              />
+            </div>
           </div>
           <q-banner v-if="!hasEmail" class="bg-yellow-2">{{ $t('form.questioning.no_email_template') }}</q-banner>
           <q-input v-model="obj.email_subject" :label="$t('field.subject')" class="q-mb-md" />
@@ -193,6 +207,18 @@ function saveEmail() {
     });
 }
 
+function toggleAutomaticEmails() {
+  obj.value.disable_automatic_emails = !obj.value.disable_automatic_emails;
+  api
+    .patch(obj.value.self, {
+      disable_automatic_emails: obj.value.disable_automatic_emails,
+    })
+    .then(() => {
+      notify.success(t('form.questioning.saved'));
+      store.updateObj('questioning', obj.value);
+    });
+}
+
 async function fetchResponses() {
   const { data } = await api.get<CustomFormResponse[]>(props.obj.rel_responses);
   responses.value = data.map((response) => {
@@ -209,6 +235,6 @@ watch(
   () => props.obj,
   () => {
     tab.value = 'responses';
-  }
+  },
 );
 </script>

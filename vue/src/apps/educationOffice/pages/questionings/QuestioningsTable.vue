@@ -90,7 +90,7 @@ const rows = computed(() => {
       period: obj.Period?.full_name ?? '-',
       title: obj.form_definition.title
         ? obj.form_definition.title[locale.value as 'nl' | 'en']
-        : formTitleByType[obj.type as keyof typeof formTitleByType] ?? obj.type,
+        : (formTitleByType[obj.type as keyof typeof formTitleByType] ?? obj.type),
       start_at: formatDate(obj.start_at),
       end_at: formatDate(obj.end_at),
       is_open: obj.is_active,
