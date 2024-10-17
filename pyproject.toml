@@ -6,7 +6,7 @@ authors = ["Eneko Illarramendi <eneko@illarra.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "~3.11.0"
+python = "~3.12.0"
 django = {extras = ["bcrypt"], version = "*"}
 djangorestframework = "*"
 django-allauth = "==0.61.1"
@@ -41,7 +41,7 @@ sentry-sdk = {extras = ["django"], version = "*"}
 tzdata = "*"
 uritemplate = "*"
 whitenoise = "*"
-xhtml2pdf = "==0.2.11"
+xhtml2pdf = "*"
 
 [tool.poetry.group.dev.dependencies]
 arrow = "*"
@@ -81,7 +81,7 @@ markers = [
 DJANGO_SETTINGS_MODULE = "metis.settings.test"
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 line-length = 120
 
 [tool.ruff.lint]
