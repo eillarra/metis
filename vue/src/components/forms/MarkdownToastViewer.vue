@@ -43,11 +43,12 @@ const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps<{
   modelValue: string;
-  sourceText: string;
+  sourceText?: string;
   data?: Record<string, unknown>;
 }>();
 
-const replacedText = computed(() => {
+const replacedText = computed<string>(() => {
+  if (!props.sourceText) return '';
   return props.data ? replaceHandlebars(props.sourceText, props.data) : props.sourceText;
 });
 
