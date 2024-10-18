@@ -43,7 +43,8 @@ export const useStore = defineStore('educationOffice', () => {
   });
 
   const project = computed<Project | undefined>(() => {
-    const selectedProject = projects.value.find((p: Project) => p.id === selectedProjectId.value);
+    // TODO: check this as it is causing recursive loop. fix it with cloneDeep(obj)) for now
+    const selectedProject = cloneDeep(projects.value.find((p: Project) => p.id === selectedProjectId.value));
 
     if (!selectedProject) {
       return undefined;
@@ -392,8 +393,8 @@ export const useStore = defineStore('educationOffice', () => {
     updateCollection(type, 'remove', obj);
   }
 
-  watch(selectedProjectId, (id) => {
-    if (id) {
+  watch(selectedProjectId, (val, oldVal) => {
+    if (val && val !== oldVal) {
       init();
       fetchEmails();
     }
