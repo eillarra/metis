@@ -1,6 +1,8 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { Notify as QuasarNotify, QNotifyCreateOptions } from 'quasar';
 
+import { iconNotifyError, iconNotifyInfo, iconNotifyOk, iconNotifyWarning } from '@/icons';
+
 type StatusMap = { [key: number]: string };
 
 class Notify {
@@ -61,7 +63,7 @@ class Notify {
       message: msg,
       caption: caption,
       type: type,
-      icon: type == 'negative' ? 'error' : 'warning',
+      icon: type == 'negative' ? iconNotifyError : iconNotifyWarning,
       actions: [
         {
           label: '✕',
@@ -79,7 +81,7 @@ class Notify {
       type: 'negative',
       message: msg,
       timeout: 5000,
-      icon: 'error',
+      icon: iconNotifyError,
     });
   }
 
@@ -87,7 +89,7 @@ class Notify {
     this.create({
       message: msg,
       timeout: 2500,
-      icon: 'info',
+      icon: iconNotifyInfo,
     });
   }
 
@@ -96,7 +98,7 @@ class Notify {
       type: 'positive',
       message: msg,
       timeout: 2500,
-      icon: 'check_circle',
+      icon: iconNotifyOk,
     });
   }
 
@@ -105,7 +107,7 @@ class Notify {
       type: 'warning',
       message: msg,
       timeout: 5000,
-      icon: 'warning',
+      icon: iconNotifyWarning,
     });
   }
 }

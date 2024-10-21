@@ -36,7 +36,7 @@
           ><span v-if="subtitle" class="text-caption q-pl-md">{{ subtitle }}</span>
         </q-toolbar-title>
         <q-space />
-        <q-btn flat round v-close-popup icon="close" />
+        <q-btn flat round v-close-popup :icon="iconClose" />
       </q-toolbar>
       <q-toolbar class="text-dark text-body1 q-px-lg" style="min-height: auto">
         <slot name="tabs"></slot>
@@ -54,6 +54,8 @@
 </template>
 
 <script setup lang="ts">
+import { iconClose } from '@/icons';
+
 defineProps<{
   icon: string;
   title: string | undefined;

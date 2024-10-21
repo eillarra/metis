@@ -1,5 +1,5 @@
 <template>
-  <dialog-form icon="calendar_month" :title="internshipName">
+  <dialog-form :icon="iconCalendar" :title="internshipName">
     <template #page>
       <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
         <q-step :name="1" title="Plaats toevoegen" icon="business" active-icon="edit">
@@ -49,6 +49,8 @@ import { api } from '@/axios.ts';
 import { notify } from '@/notify';
 
 import DialogForm from '@/components/forms/DialogForm.vue';
+
+import { iconCalendar } from '@/icons';
 
 const { t } = useI18n();
 

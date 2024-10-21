@@ -8,6 +8,7 @@ import { Quasar, Dialog, Notify } from 'quasar';
 import * as Sentry from '@sentry/vue';
 
 import langNl from 'quasar/lang/nl';
+import symSharp from 'quasar/icon-set/svg-material-symbols-sharp';
 
 import { axios, api } from './axios';
 import { createI18n, messages } from './i18n';
@@ -48,6 +49,7 @@ const bootApp = (routes: RouteRecordRaw[]) => {
       app.use(Quasar, {
         lang: props.initialPage.props.django_locale === 'nl' ? langNl : undefined,
         plugins: { Dialog, Notify },
+        iconSet: symSharp,
       });
       app.use(Router);
       app.use(Store);

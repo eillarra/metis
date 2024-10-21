@@ -65,9 +65,9 @@
               target="_blank"
               class="text-h5 text-ugent float-right"
             >
-              <q-icon name="download" />
+              <q-icon :name="iconDownload" />
             </a>
-            <q-icon v-else name="draw" class="text-h5 text-orange-8 float-right cursor-help">
+            <q-icon v-else :name="iconDraft" class="text-h5 text-orange-8 float-right cursor-help">
               <q-tooltip :delay="250">{{ $t('draft') }}</q-tooltip>
             </q-icon>
             <small>{{ evaluation.name }}<strong v-if="!evaluation.is_approved"></strong></small>
@@ -208,6 +208,8 @@ import { formatDate } from '@/utils/dates';
 
 import BigMessage from '@/components/BigMessage.vue';
 import MarkedDiv from '@/components/MarkedDiv.vue';
+
+import { iconDownload, iconDraft } from '@/icons';
 
 const { t, locale } = useI18n();
 

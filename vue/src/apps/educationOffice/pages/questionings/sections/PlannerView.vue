@@ -2,7 +2,7 @@
   <div class="row q-col-gutter-xl">
     <div class="col-12 col-md">
       <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
-        <q-step :name="1" title="Zijn er studenten die hun eerste keuze zullen krijgen?" icon="person_add">
+        <q-step :name="1" title="Zijn er studenten die hun eerste keuze zullen krijgen?" :icon="iconStudent">
           <p>Deze studenten worden sowieso toegewezen aan de plaats die ze als eerste keuze hebben gekozen.</p>
           <api-autocomplete
             v-model="formData.students_with_first_choice"
@@ -20,7 +20,7 @@
         <q-step
           :name="2"
           title="Zijn er stageplaatsen die altijd in de planning moeten worden opgenomen?"
-          icon="domain_add"
+          :icon="iconPlace"
         >
           <p>
             De student die deze plaats het hoogst in zijn / haar tops heeft gekozen, wordt aan deze plaats toegewezen. U
@@ -43,7 +43,7 @@
         <q-step
           :name="3"
           title="Zijn er studenten of stageplaatsen dat u wil weglaten uit de planning?"
-          icon="playlist_remove"
+          :icon="iconTableBoolFalse"
         >
           <p>
             Deze studenten en stageplaatsen zullen niet worden opgenomen in de planning. U kunt meerdere studenten en
@@ -71,9 +71,9 @@
     <div class="col-12 col-md-4">
       <q-card flat class="bg-grey-2 q-pa-md text-right q-mt-md">
         <span class="text-h5 text-ugent">
-          <a :href="`/nl/files/q/planning/${questioning.id}.xlsx${queryParamsString}`" target="_blank"
-            ><q-icon name="download"
-          /></a>
+          <a :href="`/nl/files/q/planning/${questioning.id}.xlsx${queryParamsString}`" target="_blank">
+            <q-icon :name="iconDownload" />
+          </a>
         </span>
         <small class="float-left">Planningsvoorstel (Excel)</small>
       </q-card>
@@ -85,6 +85,8 @@
 import { computed, ref } from 'vue';
 
 import ApiAutocomplete from '@/components/forms/ApiAutocomplete.vue';
+
+import { iconDownload, iconPlace, iconStudent, iconTableBoolFalse } from '@/icons';
 
 defineProps<{
   questioning: Questioning;

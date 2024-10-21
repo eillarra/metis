@@ -32,7 +32,7 @@
       </div>
     </div>
     <q-dialog v-if="userIsAdmin" v-model="dialogEmail">
-      <dialog-form icon="mail_outline" :title="$t('form.send_email_to', { email: education?.office_email })">
+      <dialog-form :icon="iconEmail" :title="$t('form.send_email_to', { email: education?.office_email })">
         <template #page>
           <div class="q-pa-lg">
             <q-input v-model="email" filled type="textarea" :disable="emailSent" />
@@ -64,6 +64,8 @@ import { useStore } from '../../store.js';
 
 import ContactsTable from './ContactsTable.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
+
+import { iconEmail } from '@/icons';
 
 const { education, place, admins, userIsAdmin } = storeToRefs(useStore());
 

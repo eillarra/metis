@@ -1,5 +1,5 @@
 <template>
-  <full-dialog icon="schedule" :title="$t('timesheet')" class="small" hide-drawer>
+  <full-dialog :icon="iconTimesheet" :title="$t('timesheet')" class="small" hide-drawer>
     <template #page>
       <div class="row q-px-lg q-mb-lg q-col-gutter-y-sm q-col-gutter-x-lg">
         <readonly-field :label="$t('field.date')" :value="obj.date" class="col-12" />
@@ -43,6 +43,8 @@ import { usePage } from '@inertiajs/vue3';
 import FullDialog from '@/components/FullDialog.vue';
 import CustomFormViewer from '@/components/custom_forms/CustomFormViewer.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
+
+import { iconTimesheet } from '@/icons';
 
 defineProps<{
   obj: Timesheet;

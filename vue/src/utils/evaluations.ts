@@ -1,3 +1,5 @@
+import { iconStep1, iconStep2, iconStep3, iconStep4, iconStep5, iconStepFinal } from '@/icons';
+
 const getEvaluationSteps = (internship: Internship, isSelf?: boolean) => {
   const evaluationSteps = [];
 
@@ -18,7 +20,16 @@ const getEvaluationSteps = (internship: Internship, isSelf?: boolean) => {
       // add the icon and color to the array
       evaluationSteps.push({
         number: number,
-        icon: number == '0' ? 'library_add_check' : `filter_${number}`,
+        icon:
+          number == '0'
+            ? iconStepFinal
+            : {
+                '1': iconStep1,
+                '2': iconStep2,
+                '3': iconStep3,
+                '4': iconStep4,
+                '5': iconStep5,
+              }[number],
         color: color,
       });
     }

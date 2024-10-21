@@ -37,7 +37,7 @@
     <q-list dense>
       <q-item v-for="item in items" :key="item.label" :to="item.to" :href="item.href" :target="item.target">
         <q-item-section avatar>
-          <q-icon color="ugent" name="east" size="14px" />
+          <q-icon color="ugent" :name="iconUgentArrowRight" size="14px" />
         </q-item-section>
         <q-item-section>{{ item.label }}</q-item-section>
       </q-item>
@@ -46,6 +46,8 @@
 </template>
 
 <script setup lang="ts">
+import { iconUgentArrowRight } from '@/icons';
+
 defineProps<{
   items: {
     label: string;

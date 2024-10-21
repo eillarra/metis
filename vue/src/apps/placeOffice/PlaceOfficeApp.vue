@@ -17,7 +17,7 @@
         emit-value
         map-options
         hide-bottom-space
-        dropdown-icon="expand_more"
+        :dropdown-icon="$q.iconSet.expansionItem.icon"
         popup-content-class="q-menu__square"
       >
         <template #selected-item>

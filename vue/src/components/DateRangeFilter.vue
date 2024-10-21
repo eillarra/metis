@@ -14,7 +14,7 @@
       <span>{{ datesText }}</span>
     </template>
     <template #append>
-      <q-icon ref="calendarBtn" name="event" size="xs" class="q-mx-xs" />
+      <q-icon ref="calendarBtn" :name="iconCalendarRange" size="xs" class="q-mx-xs" />
     </template>
     <template #default>
       <q-menu anchor="top end" self="bottom right">
@@ -28,6 +28,8 @@
 import { computed, ref, watch } from 'vue';
 
 import { formatDate } from '@/utils/dates';
+
+import { iconCalendarRange } from '@/icons';
 
 const emit = defineEmits(['update:modelValue']);
 

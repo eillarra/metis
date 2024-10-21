@@ -1,19 +1,25 @@
 <template>
   <div v-if="visibilityTags.length" class="q-gutter-xs">
-    <q-chip
+    <q-badge
       v-for="tag in visibilityTags"
-      color="grey-2"
+      outline
       :key="tag"
-      :label="tag"
-      icon="visibility"
+      :icon="iconEye"
+      :ripple="false"
+      dense
+      color="grey-8"
       class="text-caption"
-    />
+    >
+      <q-icon :name="iconEye" class="q-mr-xs" />{{ tag }}
+    </q-badge>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import { iconEye } from '@/icons';
 
 const props = defineProps<{
   tags: Tags;

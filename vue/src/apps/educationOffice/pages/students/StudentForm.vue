@@ -2,10 +2,10 @@
   <dialog-form icon="person" :title="studentUser.name">
     <template #tabs>
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
-        <q-tab name="info" label="Info" icon="info_outline" />
+        <q-tab name="info" label="Info" :icon="iconInfo" />
         <q-tab name="internships" :label="$t('internship', 9)" />
-        <q-tab name="addresses" :label="$t('address', 9)" icon="map" />
-        <q-tab name="remarks" :label="remarkCount" icon="chat_bubble_outline" />
+        <q-tab name="addresses" :label="$t('address', 9)" :icon="iconMap" />
+        <q-tab name="remarks" :label="remarkCount" :icon="iconChat" />
       </q-tabs>
     </template>
     <template #page>
@@ -73,6 +73,8 @@ import DialogForm from '@/components/forms/DialogForm.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import AddressCards from '@/components/rel/AddressCards.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
+
+import { iconChat, iconInfo, iconMap } from '@/icons';
 
 const { t } = useI18n();
 const emit = defineEmits(['delete:obj']);

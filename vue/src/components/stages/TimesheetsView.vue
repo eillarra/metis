@@ -9,12 +9,12 @@
         </q-btn>
       </a>-->
     </h4>
-    <div v-if="approvable" class="col-12 col-md text-right q-gutter-sm">
+    <div v-if="approvable" class="col-12 col-md text-right q-gutter-sm ugent__create-btn">
       <q-btn
         unelevated
         color="blue-1"
         :label="`&nbsp;${$t('form.select_all_pending')}`"
-        icon="check_box"
+        :icon="iconCheckbox"
         class="text-ugent"
         :disable="totalPendingApproval == '-'"
         @click="selectPending"
@@ -23,7 +23,7 @@
         unelevated
         color="blue-1"
         :label="`&nbsp;${$t('form.approve')}`"
-        icon="done_outline"
+        :icon="iconCheckDouble"
         class="text-ugent"
         :disable="selected.length === 0"
         @click="dialogVisible = true"
@@ -77,6 +77,8 @@ import { sumHours } from '@/utils/dates';
 import TimesheetDialog from './TimesheetDialog.vue';
 import SignatureDialog from '@/components/SignatureDialog.vue';
 import DataTable from '@/components/tables/DataTable.vue';
+
+import { iconCheckDouble, iconCheckbox } from '@/icons';
 
 const props = defineProps<{
   internship: Internship;

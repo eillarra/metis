@@ -1,23 +1,23 @@
 <template>
-  <full-dialog icon="task_alt" :title="$t('questioning')">
+  <full-dialog :icon="iconQuestioning" :title="$t('questioning')">
     <template #menu>
       <q-list :dense="$q.screen.gt.sm" class="q-mt-xs">
         <q-item-label header>{{ $t('progress') }}</q-item-label>
         <q-item clickable @click="tab = 'responses'" :active="tab == 'responses'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="list_alt" size="xs"></q-icon>
+            <q-icon :name="iconResponses" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('response', 9) }}</q-item-section>
         </q-item>
         <q-item clickable @click="tab = 'pending'" :active="tab == 'pending'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="error_outline" size="xs"></q-icon>
+            <q-icon :name="iconResponsesPending" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('pending') }}</q-item-section>
         </q-item>
         <q-item clickable @click="tab = 'documents'" :active="tab == 'documents'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="drive_file_move_outline" size="xs"></q-icon>
+            <q-icon :name="iconFiles" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('document', 9) }}</q-item-section>
         </q-item>
@@ -36,11 +36,11 @@
         <q-item-label header>{{ $t('configuration') }}</q-item-label>
         <q-item clickable @click="tab = 'email'" :active="tab == 'email'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="forward_to_inbox" size="xs"></q-icon>
+            <q-icon :name="iconEmailSettings" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('email_template') }}</q-item-section>
           <q-item-section v-if="!hasEmail" side style="padding-left: 0">
-            <q-icon name="radio_button_checked" color="orange" size="12px" />
+            <q-icon :name="iconTableCheckPending" color="orange" size="12px" />
           </q-item-section>
         </q-item>
         <!--<q-item clickable @click="tab = 'form'" :active="tab == 'form'"  active-class="bg-ugent text-white">
@@ -52,7 +52,7 @@
         <q-item-label header>Logs</q-item-label>
         <q-item clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="mail_outline" size="xs"></q-icon>
+            <q-icon :name="iconEmails" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('field.email', 9) }}</q-item-section>
         </q-item>
@@ -106,22 +106,26 @@
         <q-tab-panel name="email">
           <div class="row q-col-gutter-sm">
             <h4 class="col-12 col-md-3 q-mt-none q-mb-none">{{ $t('email_template') }}</h4>
-            <div class="col-12 col-md text-right">
+            <div class="col-12 col-md text-right ugent__create-btn">
               <q-btn
                 unelevated
                 :color="obj.disable_automatic_emails ? 'red-1' : 'blue-1'"
-                :label="
-                  obj.disable_automatic_emails
-                    ? `&nbsp;${$t('form.questioning.automatic_emails_disabled')}`
-                    : `&nbsp;${$t('form.questioning.automatic_emails_enabled')}`
-                "
-                :icon="obj.disable_automatic_emails ? 'check_box_outline_blank' : 'check_box'"
                 :class="obj.disable_automatic_emails ? 'text-red' : 'text-ugent'"
-                @click="toggleAutomaticEmails"
-              />
+              >
+                <q-toggle
+                  v-model="obj.disable_automatic_emails"
+                  :label="
+                    obj.disable_automatic_emails
+                      ? `&nbsp;${$t('form.questioning.automatic_emails_disabled')}`
+                      : `&nbsp;${$t('form.questioning.automatic_emails_enabled')}`
+                  "
+                  :true-value="false"
+                  :false-value="true"
+                  class="q-pr-md"
+                />
+              </q-btn>
             </div>
           </div>
-          <q-banner v-if="!hasEmail" class="bg-yellow-2">{{ $t('form.questioning.no_email_template') }}</q-banner>
           <q-input v-model="obj.email_subject" :label="$t('field.subject')" class="q-mb-md" />
           <markdown-toast-editor v-model="obj.email_body" />
         </q-tab-panel>
@@ -163,7 +167,16 @@ import PlannerView from './sections/PlannerView.vue';
 import RespondedProjectPlacesTable from './sections/RespondedProjectPlacesTable.vue';
 import RespondedStudentsTable from './sections/RespondedStudentsTable.vue';
 
-import { iconRobot } from '@/icons';
+import {
+  iconEmails,
+  iconEmailSettings,
+  iconFiles,
+  iconResponsesPending,
+  iconQuestioning,
+  iconResponses,
+  iconRobot,
+  iconTableCheckPending,
+} from '@/icons';
 
 const props = defineProps<{
   obj: Questioning;
@@ -200,18 +213,6 @@ function saveEmail() {
     .patch(obj.value.self, {
       email_subject: obj.value.email_subject,
       email_body: obj.value.email_body,
-    })
-    .then(() => {
-      notify.success(t('form.questioning.saved'));
-      store.updateObj('questioning', obj.value);
-    });
-}
-
-function toggleAutomaticEmails() {
-  obj.value.disable_automatic_emails = !obj.value.disable_automatic_emails;
-  api
-    .patch(obj.value.self, {
-      disable_automatic_emails: obj.value.disable_automatic_emails,
     })
     .then(() => {
       notify.success(t('form.questioning.saved'));

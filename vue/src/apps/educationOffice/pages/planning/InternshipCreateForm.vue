@@ -1,8 +1,8 @@
 <template>
-  <dialog-form icon="add" :title="$t('internship')">
+  <dialog-form :icon="iconAdd" :title="$t('internship')">
     <template #page>
       <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
-        <q-step :name="1" :title="$t('form.internship.create.new')" icon="edit">
+        <q-step :name="1" :title="$t('form.internship.create.new')">
           <div class="q-gutter-sm">
             <q-input v-model="projectName" dense :label="$t('project')" readonly />
             <api-autocomplete
@@ -65,6 +65,8 @@ import DateSelect from '@/components/forms/DateSelect.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
+
+import { iconAdd } from '@/icons';
 
 const emit = defineEmits(['create:obj']);
 

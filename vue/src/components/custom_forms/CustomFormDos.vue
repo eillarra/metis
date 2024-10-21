@@ -128,7 +128,7 @@
                 <td v-if="!props.disable">
                   <q-icon
                     @click="mutable[field.code].splice(idx, 1)"
-                    name="backspace"
+                    :name="iconDelete"
                     :size="iconSize"
                     color="red"
                     class="cursor-pointer"
@@ -158,6 +158,8 @@ import { useI18n } from 'vue-i18n';
 import { cloneDeep } from 'lodash-es';
 
 import MarkedDiv from '../MarkedDiv.vue';
+
+import { iconDelete } from '@/icons';
 
 const { locale } = useI18n();
 

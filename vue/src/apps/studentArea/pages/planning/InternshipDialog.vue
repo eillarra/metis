@@ -1,17 +1,17 @@
 <template>
-  <full-dialog icon="calendar_month" :title="internshipName">
+  <full-dialog :icon="iconInternship" :title="internshipName">
     <template #menu>
       <q-list :dense="$q.screen.gt.sm" class="q-mt-xs">
         <q-item-label header>{{ $t('internship') }}</q-item-label>
         <q-item clickable @click="tab = 'info'" :active="tab == 'info'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="info_outline" size="xs"></q-icon>
+            <q-icon :name="iconInfo" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>Info</q-item-section>
         </q-item>
         <q-item clickable @click="tab = 'timesheets'" :active="tab == 'timesheets'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="schedule" size="xs"></q-icon>
+            <q-icon :name="iconTimesheet" size="xs"></q-icon>
           </q-item-section>
           <q-item-section v-if="education?.configuration?.timesheets_extra_form">{{ $t('logbook') }}</q-item-section>
           <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
@@ -23,7 +23,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="checklist" size="xs"></q-icon>
+            <q-icon :name="iconEvaluations" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
         </q-item>
@@ -35,7 +35,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="more_time" size="xs"></q-icon>
+            <q-icon :name="iconTimesheetAdd" size="xs"></q-icon>
           </q-item-section>
           <q-item-section v-if="education?.configuration?.timesheets_extra_form">{{ $t('logbook') }}</q-item-section>
           <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
@@ -48,7 +48,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="playlist_add_check" size="xs"></q-icon>
+            <q-icon :name="iconEvaluationAdd" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('self_evaluation') }}</q-item-section>
         </q-item>
@@ -166,6 +166,8 @@ import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import TimesheetsForm from './TimesheetsForm.vue';
+
+import { iconInfo, iconEvaluationAdd, iconEvaluations, iconInternship, iconTimesheet, iconTimesheetAdd } from '@/icons';
 
 const props = defineProps<{
   obj: Internship;

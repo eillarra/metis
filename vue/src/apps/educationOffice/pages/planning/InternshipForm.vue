@@ -1,5 +1,5 @@
 <template>
-  <dialog-form icon="calendar_month" :title="obj.Track?.name">
+  <dialog-form :icon="iconCalendar" :title="obj.Track?.name">
     <template #tabs>
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
         <q-tab name="info" label="Info" icon="info_outline" />
@@ -67,6 +67,8 @@ import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
+
+import { iconCalendar } from '@/icons';
 
 const emit = defineEmits(['delete:obj']);
 

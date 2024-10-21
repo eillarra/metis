@@ -21,9 +21,9 @@
           <q-item-label>{{ address.postcode }} {{ address.city }}</q-item-label>
         </q-card-section>
         <q-card-actions class="use-default-q-btn q-pa-md">
-          <q-btn outline square @click="deleteAddress(address)" color="red" icon="delete_outline" size="sm" />
+          <q-btn outline square @click="deleteAddress(address)" color="red" :icon="iconDelete" size="sm" />
           <q-space />
-          <q-btn unelevated square @click="obj = address" color="ugent" icon="edit" size="sm" />
+          <q-btn unelevated square @click="obj = address" color="ugent" :icon="iconEdit" size="sm" />
         </q-card-actions>
       </q-card>
     </div>
@@ -34,7 +34,7 @@
             unelevated
             color="blue-1"
             :label="$t('form.new')"
-            icon="add"
+            :icon="iconAdd"
             class="text-ugent full-width"
             @click="
               obj = {
@@ -48,10 +48,10 @@
       </div>
     </div>
     <q-dialog v-model="dialogVisible">
-      <dialog-form :icon="obj.self ? 'map' : 'add'" :title="$t('address')" class="metis__dialog-geocode">
+      <dialog-form :icon="obj.self ? iconMap : iconAdd" :title="$t('address')" class="metis__dialog-geocode">
         <template #page>
-          <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
-            <q-step :name="1" :title="$t('form.address.create.find')" icon="search" active-icon="search">
+          <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive>
+            <q-step :name="1" :title="$t('form.address.create.find')" :icon="iconSearch" :active-icon="iconSearch">
               <div class="q-gutter-sm q-mt-sm">
                 <q-input dense type="text" v-model="obj.address" :label="$t('form.address.fields.address')" />
                 <q-input dense type="text" v-model="obj.postcode" :label="$t('form.address.fields.postcode')" />
@@ -68,7 +68,7 @@
                 />
               </q-stepper-navigation>
             </q-step>
-            <q-step :name="2" :title="$t('form.address.create.new')" icon="fmd_good" active-icon="fmd_good">
+            <q-step :name="2" :title="$t('form.address.create.new')" :icon="iconLocation" :active-icon="iconLocation">
               <div v-if="features.length">
                 {{ $t('form.address.create.choose_feature') }}
                 <q-list class="q-mt-md">
@@ -114,6 +114,8 @@ import { confirm } from '@/dialog';
 import { notify } from '@/notify';
 
 import DialogForm from '@/components/forms/DialogForm.vue';
+
+import { iconAdd, iconDelete, iconEdit, iconLocation, iconMap, iconSearch } from '@/icons';
 
 const { t } = useI18n();
 const page = usePage();

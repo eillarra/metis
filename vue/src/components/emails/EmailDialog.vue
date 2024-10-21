@@ -1,5 +1,5 @@
 <template>
-  <full-dialog icon="mail_outline" :title="$t('field.email')" class="small" hide-drawer>
+  <full-dialog :icon="iconEmail" :title="$t('field.email')" class="small" hide-drawer>
     <template #tabs>
       <table class="q-px-md q-py-sm q-mt-sm q-mb-lg bg-grey-2 full-width">
         <tbody>
@@ -17,14 +17,7 @@
               <span>{{ toNameEmails }}</span>
             </td>
             <td class="q-td q-table--col-auto-width">
-              <i
-                @click="copyText(toNameEmails)"
-                class="q-icon notranslate material-icons cursor-pointer q-ml-xs"
-                :style="{ 'font-size': '14px' }"
-                aria-hidden="true"
-                role="presentation"
-                >content_copy</i
-              >
+              <q-icon @click="copyText(toNameEmails)" :name="iconCopy" size="14px" class="cursor-pointer q-ml-xs" />
             </td>
           </tr>
           <tr>
@@ -36,8 +29,8 @@
           <tr>
             <td><strong>Tags:</strong></td>
             <td colspan="2">
-              <div class="q-gutter-x-xs">
-                <q-badge v-for="tag in sortedTags" :key="tag" outline color="dark">{{ tag }}</q-badge>
+              <div class="q-gutter-xs">
+                <q-badge v-for="tag in sortedTags" :key="tag" :label="tag" outline dense color="dark" />
               </div>
             </td>
           </tr>
@@ -63,6 +56,8 @@ import { formatDate } from '@/utils/dates';
 
 import FullDialog from '@/components/FullDialog.vue';
 import MarkdownToastViewer from '@/components/forms/MarkdownToastViewer.vue';
+
+import { iconCopy, iconEmail } from '@/icons';
 
 const { t } = useI18n();
 

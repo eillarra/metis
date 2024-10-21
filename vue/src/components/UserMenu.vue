@@ -1,6 +1,6 @@
 <template>
   <a class="cursor-pointer">
-    <span v-show="$q.screen.gt.xs">{{ displayName }} &nbsp;</span><q-icon name="account_circle" size="xxs" />
+    <span v-show="$q.screen.gt.xs">{{ displayName }} &nbsp;</span><q-icon :name="iconAccount" size="xxs" />
     <q-menu anchor="top end" self="bottom right" :offset="[0, 8]" style="min-width: 140px">
       <q-list dense class="text-body2 q-py-sm">
         <q-item clickable tag="a" :href="`/${$i18n.locale}/dashboard/`">
@@ -8,12 +8,12 @@
         </q-item>
         <q-item clickable tag="a" href="https://myaccount.microsoft.com/organizations" target="_blank">
           <q-item-section>Microsoft account</q-item-section>
-          <q-item-section side><q-icon name="open_in_new" size="xs" /></q-item-section>
+          <q-item-section side><q-icon :name="iconMicrosoft" size="xs" /></q-item-section>
         </q-item>
         <q-separator class="q-my-sm" />
         <q-item clickable tag="a" href="/u/logout/">
           <q-item-section>{{ $t('user_menu.logout') }}</q-item-section>
-          <q-item-section side><q-icon name="logout" size="xs" /></q-item-section>
+          <q-item-section side><q-icon :name="iconLogout" size="xs" /></q-item-section>
         </q-item>
       </q-list>
     </q-menu>
@@ -22,6 +22,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+
+import { iconAccount, iconLogout, iconMicrosoft } from '@/icons';
 
 const props = defineProps<{
   user: DjangoAuthenticatedUser;

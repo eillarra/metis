@@ -16,7 +16,8 @@ $in-table-dense-field-height: 28px;
   .q-table {
     max-width: 100%;
 
-    th, td {
+    th,
+    td {
       background-color: white;
       max-width: 300px;
       overflow: hidden;
@@ -38,11 +39,6 @@ $in-table-dense-field-height: 28px;
       position: sticky;
       right: 0;
       z-index: 2;
-    }
-
-    .q-badge {
-      vertical-align: text-bottom;
-      padding: 2px 4px 1px;
     }
   }
 
@@ -67,7 +63,7 @@ $in-table-dense-field-height: 28px;
     <div v-if="!hideToolbar" class="row q-col-gutter-sm q-mb-lg">
       <q-input v-if="queryColumns" v-model="query" clearable dense square filled type="text" class="col-12 col-md">
         <template #prepend>
-          <q-icon name="search" />
+          <q-icon :name="iconSearch" />
         </template>
       </q-input>
       <q-space />
@@ -89,7 +85,7 @@ $in-table-dense-field-height: 28px;
         map-options
       >
         <template #prepend>
-          <q-icon name="view_column" />
+          <q-icon :name="iconColumns" :size="iconSizeToolbar" />
         </template>
       </q-select>
       <div v-if="createFormComponent" class="col-6 col-md-1 ugent__create-btn">
@@ -97,7 +93,7 @@ $in-table-dense-field-height: 28px;
           unelevated
           color="blue-1"
           :label="$t('form.new')"
-          icon="add"
+          :icon="iconAdd"
           class="text-ugent full-width"
           @click="createDialogVisible = true"
         />
@@ -155,8 +151,8 @@ $in-table-dense-field-height: 28px;
           :class="props.row._class || ''"
         >
           <span v-if="props.col.name.startsWith('is_') || props.col.name.startsWith('has_')">
-            <q-icon v-if="props.value" name="check_circle" color="green" :size="iconSize" />
-            <q-icon v-else name="block" color="grey" :size="iconSize" />
+            <q-icon v-if="props.value" :name="iconTableBoolTrue" color="green" :size="iconSize" />
+            <q-icon v-else :name="iconTableBoolFalse" color="grey" :size="iconSize" />
           </span>
           <span v-else-if="props.col.name.endsWith('_badge')" class="q-gutter-x-xs">
             <q-badge v-if="props.value" outline :label="props.value" color="dark" />
@@ -177,7 +173,7 @@ $in-table-dense-field-height: 28px;
           <span v-else-if="props.col.name.startsWith('check_')" class="q-gutter-x-xs">
             <span>{{ props.value[0] }}</span>
             <q-icon
-              :name="props.value[1] == true ? 'check' : 'radio_button_checked'"
+              :name="props.value[1] == true ? iconTableCheck : iconTableCheckPending"
               :color="props.value[1] == true ? 'dark' : 'orange-8'"
               :size="iconSize"
               class="q-ml-xs"
@@ -203,14 +199,7 @@ $in-table-dense-field-height: 28px;
           <a :href="`mailto:${props.row.email}`" target="_blank" rel="noopener" class="inherit">{{
             props.row.email
           }}</a>
-          <i
-            @click="copyText(props.row.email)"
-            class="q-icon notranslate material-icons cursor-pointer q-ml-xs"
-            :style="{ 'font-size': iconSize }"
-            aria-hidden="true"
-            role="presentation"
-            >content_copy</i
-          >
+          <q-icon @click="copyText(props.row.email)" :name="iconCopy" :size="iconSize" class="cursor-pointer q-ml-xs" />
         </q-td>
       </template>
       <template #body-cell-remove="props">
@@ -230,7 +219,7 @@ $in-table-dense-field-height: 28px;
         <q-td :props="props" auto-width :class="props.row._class || ''">
           <q-icon
             @click="selectObj(props.row)"
-            :name="openDialog ? 'open_in_browser' : 'edit'"
+            :name="openDialog ? iconOpenDialog : iconEdit"
             :size="iconSize"
             color="ugent"
             class="cursor-pointer"
@@ -241,7 +230,7 @@ $in-table-dense-field-height: 28px;
         <!-- Download icon -->
         <q-td :props="props" auto-width :class="props.row._class || ''">
           <a :href="props.row.download" target="_blank" rel="noopener" class="inherit">
-            <q-icon name="download" :size="iconSize" color="ugent" class="cursor-pointer" />
+            <q-icon :name="iconDownload" :size="iconSize" color="ugent" class="cursor-pointer" />
           </a>
         </q-td>
       </template>
@@ -266,9 +255,24 @@ import { Md5 } from 'ts-md5';
 import { notify } from '@/notify';
 import { storage } from '@/storage';
 
-import { iconChat, iconChatBadge, iconDelete } from '@/icons';
-
 import NoResults from '@/components/NoResults.vue';
+
+import {
+  iconAdd,
+  iconChat,
+  iconChatBadge,
+  iconColumns,
+  iconCopy,
+  iconDelete,
+  iconDownload,
+  iconEdit,
+  iconOpenDialog,
+  iconSearch,
+  iconTableBoolTrue,
+  iconTableBoolFalse,
+  iconTableCheck,
+  iconTableCheckPending,
+} from '@/icons';
 
 const emit = defineEmits(['update:selected', 'remove:row']);
 
@@ -307,6 +311,7 @@ const initialPagination = {
   descending: props.sortBy?.startsWith('-') || false,
 };
 
+const iconSizeToolbar = '18px';
 const iconSize = '16px';
 
 const extendedColumns = computed(() => {

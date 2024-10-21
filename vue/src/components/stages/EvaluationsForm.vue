@@ -14,7 +14,6 @@
     />
   </div>
   <div v-if="!loading && !currentPeriod">
-    <big-message icon="event" />
     <div class="text-center">
       Evaluation periods:<br />
       <span v-for="period in evaluationPeriods" :key="period.intermediate">
@@ -58,7 +57,7 @@
                   <q-icon
                     v-show="item.score_help_texts"
                     @click="expandedItem = expandedItem == item.value ? null : item.value"
-                    :name="expandedItem == item.value ? 'expand_less' : 'help_outline'"
+                    :name="expandedItem == item.value ? iconExpandLess : iconHelp"
                     size="13px"
                     class="q-mb-xs cursor-pointer"
                   ></q-icon
@@ -206,9 +205,10 @@ import { api } from '@/axios.ts';
 import { notify } from '@/notify';
 import { formatDate } from '@/utils/dates';
 
-import BigMessage from '@/components/BigMessage.vue';
 import SignatureDialog from '@/components/SignatureDialog.vue';
 import MarkdownToastEditor from '@/components/forms/MarkdownToastEditor.vue';
+
+import { iconExpandLess, iconHelp } from '@/icons';
 
 const { t, locale } = useI18n();
 

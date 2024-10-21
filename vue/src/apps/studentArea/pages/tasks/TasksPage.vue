@@ -45,7 +45,7 @@
           <q-icon name="notes" />
           <q-toolbar-title>{{ selectedText.title }}</q-toolbar-title>
           <q-space />
-          <q-btn flat dense v-close-popup icon="close" style="padding: 8px" />
+          <q-btn flat dense v-close-popup :icon="iconClose" style="padding: 8px" />
         </q-toolbar>
       </q-header>
       <q-page-container>
@@ -95,6 +95,8 @@ import { useStore } from '../../store.js';
 
 import StudentTaskBox from '@/components/tasks/StudentTaskBox.vue';
 import MarkdownToastViewer from '@/components/forms/MarkdownToastViewer.vue';
+
+import { iconClose } from '@/icons';
 
 const { t, locale } = useI18n();
 const page = usePage();

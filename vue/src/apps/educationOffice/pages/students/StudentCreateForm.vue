@@ -1,8 +1,8 @@
 <template>
-  <dialog-form icon="add" :title="$t('student')">
+  <dialog-form :icon="iconAdd" :title="$t('student')">
     <template #page>
       <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
-        <q-step :name="1" :title="$t('form.student.create.add_existing')" icon="search" active-icon="search">
+        <q-step :name="1" :title="$t('form.student.create.add_existing')" :icon="iconSearch" :active-icon="iconSearch">
           {{ $t('form.student.create.search') }}
           <div class="q-gutter-sm q-mt-sm">
             <readonly-field v-if="project" :label="$t('project')" :value="project.name" class="col-12 col-md" />
@@ -38,7 +38,7 @@
             />
           </q-stepper-navigation>
         </q-step>
-        <q-step :name="2" :title="$t('form.student.create.new')" icon="mail_outline" active-icon="mail_outline">
+        <q-step :name="2" :title="$t('form.student.create.new')" :icon="iconEmail" :active-icon="iconEmail">
           {{ $t('form.student.create.invite') }}
           <div class="q-gutter-sm q-mt-sm">
             <readonly-field v-if="project" :label="$t('project')" :value="project.name" class="col-12 col-md" />
@@ -84,6 +84,8 @@ import DialogForm from '@/components/forms/DialogForm.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import ProgramBlockSelect from '../../components/ProgramBlockSelect.vue';
 import TrackSelect from '../../components/TrackSelect.vue';
+
+import { iconAdd, iconEmail, iconSearch } from '@/icons';
 
 const emit = defineEmits(['create:obj']);
 

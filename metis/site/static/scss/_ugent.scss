@@ -210,13 +210,24 @@ body {
 }
 
 .ugent__create-btn .q-btn {
-  padding: 0 !important;
+  padding: 0 12px !important;
   min-height: 40px !important;
   white-space: nowrap;
+
+  .q-btn__content {
+    flex-wrap: nowrap !important;
+  }
 
   &:hover {
     background-color: #e6f0ff !important;
     color: white;
+  }
+
+  &:not(.q-btn--round) .q-icon {
+    font-size: 1.5em;
+    margin-right: 0.1em;
+    width: 0.7em;
+    margin-bottom: 1px;
   }
 }
 
@@ -289,4 +300,9 @@ input, textarea,
   width: $panno-body-font-size;
   height: $panno-body-font-size;
   font-size: $panno-body-font-size;
+}
+
+.q-badge {
+  vertical-align: text-bottom;
+  padding: 2px 4px 1px;
 }

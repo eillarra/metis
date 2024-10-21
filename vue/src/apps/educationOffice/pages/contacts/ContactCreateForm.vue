@@ -1,8 +1,8 @@
 <template>
-  <dialog-form icon="add" :title="$t('contact')">
+  <dialog-form :icon="iconAdd" :title="$t('contact')">
     <template #page>
       <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
-        <q-step :name="1" :title="$t('form.contact.create.add_existing')" icon="search" active-icon="search">
+        <q-step :name="1" :title="$t('form.contact.create.add_existing')" :icon="iconSearch" :active-icon="iconSearch">
           {{ $t('form.contact.create.search') }}
           <div class="q-gutter-sm q-mt-sm">
             <div class="row q-col-gutter-lg q-pt-sm">
@@ -51,7 +51,7 @@
             />
           </q-stepper-navigation>
         </q-step>
-        <q-step :name="2" :title="$t('form.contact.create.new')" icon="mail_outline" active-icon="mail_outline">
+        <q-step :name="2" :title="$t('form.contact.create.new')" :icon="iconEmail" :active-icon="iconEmail">
           {{ $t('form.contact.create.invite') }}
           <div class="q-gutter-sm q-mt-sm">
             <div class="row q-col-gutter-lg q-pt-sm">
@@ -108,6 +108,8 @@ import { useStore } from '../../store.js';
 import ApiAutocomplete from '@/components/forms/ApiAutocomplete.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
+
+import { iconAdd, iconEmail, iconSearch } from '@/icons';
 
 const emit = defineEmits(['create:obj']);
 

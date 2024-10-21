@@ -10,7 +10,7 @@
           unelevated
           color="blue-1"
           :label="$t('form.new')"
-          icon="add"
+          :icon="iconAdd"
           class="text-ugent full-width"
           @click="dialogVisible = true"
         />
@@ -27,7 +27,7 @@
             <visibility-badges :tags="file.tags" />
           </template>
           <template #actions>
-            <q-btn flat round icon="visibility" :size="btnSize" @click="openRelatedFile(file)" />
+            <q-btn flat round :icon="iconDownload" :size="btnSize" @click="openRelatedFile(file)" />
             <q-space />
             <q-btn
               v-if="!readOnly"
@@ -43,7 +43,7 @@
       </div>
     </div>
     <q-dialog v-model="dialogVisible">
-      <dialog-form small icon="add" :title="$t('file')">
+      <dialog-form small :icon="iconAdd" :title="$t('file')">
         <template #page>
           <div class="q-pa-lg">
             {{ customCreateDescription }}
@@ -57,7 +57,7 @@
                 class="col-12"
               >
                 <template v-slot:prepend>
-                  <q-icon name="attachment" />
+                  <q-icon :name="iconAttachment" />
                 </template>
               </q-file>
               <q-input v-model="formData.description" :label="$t('field.description')" dense class="col-12" />
@@ -95,13 +95,13 @@ import { api } from '@/axios';
 import { confirm } from '@/dialog';
 import { notify } from '@/notify';
 
-import { iconDelete } from '@/icons';
-
 import FileCard from '@/components/FileCard.vue';
 import NoResults from '@/components/NoResults.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 import VisibilityBadges from '@/components/forms/VisibilityBadges.vue';
 import VisibilityOptions from '@/components/forms/VisibilityOptions.vue';
+
+import { iconAdd, iconAttachment, iconDelete, iconDownload } from '@/icons';
 
 const { t } = useI18n();
 

@@ -12,7 +12,12 @@
       <span>{{ text }}</span>
     </template>
     <template #append v-if="!readonly">
-      <q-icon ref="calendarBtn" :name="calendarType == 'time' ? 'schedule' : 'event'" size="xs" class="q-mx-xs" />
+      <q-icon
+        ref="calendarBtn"
+        :name="calendarType == 'time' ? iconTime : iconCalendarRange"
+        size="xs"
+        class="q-mx-xs"
+      />
     </template>
     <template #default v-if="!readonly">
       <q-menu anchor="top end" self="bottom right">
@@ -25,6 +30,8 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+
+import { iconCalendarRange, iconTime } from '@/icons';
 
 const emit = defineEmits(['update:modelValue']);
 

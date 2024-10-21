@@ -75,7 +75,7 @@
             locale === 'en' ? selectedTextType.title.en : selectedTextType.title.nl
           }}</q-toolbar-title>
           <q-space />
-          <q-btn flat dense v-close-popup icon="close" style="padding: 8px" />
+          <q-btn flat dense v-close-popup :icon="iconClose" style="padding: 8px" />
         </q-toolbar>
         <q-toolbar class="text-dark text-body1 q-px-lg" style="min-height: auto">
           <q-tabs v-model="tab" dense shrink inline-label no-caps>
@@ -148,6 +148,8 @@ import { notify } from '@/notify';
 
 import MarkdownToastEditor from '@/components/forms/MarkdownToastEditor.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
+
+import { iconClose } from '@/icons';
 
 const { t, locale } = useI18n();
 

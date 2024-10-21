@@ -1,11 +1,11 @@
 <template>
-  <full-dialog icon="calendar_month" :title="internshipName">
+  <full-dialog :icon="iconInternship" :title="internshipName">
     <template #menu>
       <q-list :dense="$q.screen.gt.sm" class="q-mt-xs">
         <q-item-label header>{{ $t('internship') }}</q-item-label>
         <q-item clickable @click="tab = 'info'" :active="tab == 'info'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="info_outline" size="xs"></q-icon>
+            <q-icon :name="iconInfo" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>Info</q-item-section>
         </q-item>
@@ -17,7 +17,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="people_outline" size="xs"></q-icon>
+            <q-icon :name="iconMentors" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('mentor', 9) }}</q-item-section>
         </q-item>
@@ -29,7 +29,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="schedule" size="xs"></q-icon>
+            <q-icon :name="iconTimesheet" size="xs"></q-icon>
           </q-item-section>
           <q-item-section v-if="education?.configuration?.timesheets_extra_form">{{ $t('logbook') }}</q-item-section>
           <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
@@ -42,20 +42,20 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="checklist" size="xs"></q-icon>
+            <q-icon :name="iconEvaluations" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
         </q-item>
         <q-item clickable @click="tab = 'documents'" :active="tab == 'documents'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="drive_file_move_outline" size="xs"></q-icon>
+            <q-icon :name="iconFiles" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('document', 9) }}</q-item-section>
         </q-item>
         <q-item-label header>{{ $t('other') }}</q-item-label>
         <q-item clickable @click="tab = 'actions'" :active="tab == 'actions'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="ads_click" size="xs"></q-icon>
+            <q-icon :name="iconActions" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('action', 9) }}</q-item-section>
         </q-item>
@@ -67,14 +67,14 @@
         </q-item>
         <q-item :disabled="true" :active="tab == 'program'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="commit" size="xs"></q-icon>
+            <q-icon :name="iconProgram" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('program') }}</q-item-section>
         </q-item>
         <q-item-label header>Logs</q-item-label>
         <q-item clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="mail_outline" size="xs"></q-icon>
+            <q-icon :name="iconEmails" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('field.email', 9) }}</q-item-section>
         </q-item>
@@ -179,7 +179,19 @@ import TimesheetsView from '@/components/stages/TimesheetsView.vue';
 import PeriodSelect from '../../components/PeriodSelect.vue';
 import InternshipActions from './InternshipActions.vue';
 
-import { iconChat, iconChatBadge } from '@/icons';
+import {
+  iconActions,
+  iconChat,
+  iconChatBadge,
+  iconEmails,
+  iconEvaluations,
+  iconFiles,
+  iconInfo,
+  iconInternship,
+  iconMentors,
+  iconProgram,
+  iconTimesheet,
+} from '@/icons';
 
 defineEmits(['delete:obj']);
 

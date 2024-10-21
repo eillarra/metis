@@ -5,19 +5,19 @@
         <q-item-label header>{{ $t('internship', 9) }}</q-item-label>
         <q-item clickable :to="{ name: 'tasks' }" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="done_all" size="xs"></q-icon>
+            <q-icon :name="iconTasks" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('my_tasks') }}</q-item-section>
         </q-item>
         <q-item clickable :to="{ name: 'planning' }" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="calendar_month" size="xs"></q-icon>
+            <q-icon :name="iconCalendar" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('planning') }}</q-item-section>
         </q-item>
         <q-item clickable :to="{ name: 'documents' }" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="drive_file_move_outline" size="xs"></q-icon>
+            <q-icon :name="iconFiles" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('document', 9) }}</q-item-section>
         </q-item>
@@ -25,7 +25,7 @@
         <!--<q-item clickable :to="{ name: 'contact_details' }" active-class="bg-ugent text-white">-->
         <q-item disabled>
           <q-item-section avatar>
-            <q-icon name="import_contacts" size="xs"></q-icon>
+            <q-icon :name="iconAccount" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('user_menu.contact_details') }}</q-item-section>
         </q-item>
@@ -35,9 +35,5 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-
-import { useStore } from './store';
-
-const { signatures } = storeToRefs(useStore());
+import { iconAccount, iconCalendar, iconFiles, iconTasks } from '@/icons';
 </script>

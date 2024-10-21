@@ -1,13 +1,13 @@
 <template>
-  <dialog-form icon="portrait" :title="obj.user.name">
+  <dialog-form :icon="iconContact" :title="obj.user.name">
     <template #tabs>
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
-        <q-tab name="info" label="Info" icon="info_outline" />
-        <q-tab name="remarks" :label="$t('remark', 9)" icon="chat_bubble_outline" />
+        <q-tab name="info" label="Info" :icon="iconInfo" />
+        <q-tab name="remarks" :label="$t('remark', 9)" :icon="iconChat" />
       </q-tabs>
       <q-space />
       <q-tabs v-model="tab" dense shrink inline-label no-caps>
-        <q-tab name="updated_by" icon="history_toggle_off" class="q-px-none" />
+        <q-tab name="updated_by" :icon="iconTimeDashed" class="q-px-none" />
       </q-tabs>
     </template>
     <template #page>
@@ -61,6 +61,8 @@ import DialogForm from '@/components/forms/DialogForm.vue';
 import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
+
+import { iconChat, iconContact, iconInfo, iconTimeDashed } from '@/icons';
 
 const emit = defineEmits(['delete:obj']);
 

@@ -1,5 +1,5 @@
 <template>
-  <full-dialog icon="calendar_month" :title="internshipName">
+  <full-dialog :icon="iconInternship" :title="internshipName">
     <template #menu>
       <q-list :dense="$q.screen.gt.sm" class="q-mt-xs">
         <q-item-label header>{{ $t('internship') }}</q-item-label>
@@ -11,7 +11,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="info_outline" size="xs"></q-icon>
+            <q-icon :name="iconInfo" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>Info</q-item-section>
         </q-item>
@@ -23,7 +23,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="people_outline" size="xs"></q-icon>
+            <q-icon :name="iconMentors" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('mentor', 9) }}</q-item-section>
         </q-item>
@@ -35,7 +35,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="schedule" size="xs"></q-icon>
+            <q-icon :name="iconTimesheet" size="xs"></q-icon>
           </q-item-section>
           <q-item-section v-if="education?.configuration?.timesheets_extra_form">{{ $t('logbook') }}</q-item-section>
           <q-item-section v-else>{{ $t('timesheet', 9) }}</q-item-section>
@@ -48,7 +48,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="checklist" size="xs"></q-icon>
+            <q-icon :name="iconEvaluations" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('evaluation', 9) }}</q-item-section>
         </q-item>
@@ -60,7 +60,7 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="playlist_add_check" size="xs"></q-icon>
+            <q-icon :name="iconEvaluationAdd" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('evaluation') }}</q-item-section>
         </q-item>
@@ -150,6 +150,8 @@ import EvaluationsForm from '@/components/stages/EvaluationsForm.vue';
 import EvaluationsView from '@/components/stages/EvaluationsView.vue';
 import MentorsView from '@/components/stages/MentorsView.vue';
 import TimesheetsView from '@/components/stages/TimesheetsView.vue';
+
+import { iconEvaluationAdd, iconEvaluations, iconInfo, iconInternship, iconMentors, iconTimesheet } from '@/icons';
 
 const { t } = useI18n();
 

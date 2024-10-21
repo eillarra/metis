@@ -1,8 +1,8 @@
 <template>
-  <dialog-form icon="add" :title="$t('place')">
+  <dialog-form :icon="iconAdd" :title="$t('place')">
     <template #page>
       <q-stepper v-model="step" vertical flat color="ugent" animated keep-alive header-nav>
-        <q-step :name="1" :title="$t('form.place.create.add_existing')" icon="search" active-icon="search">
+        <q-step :name="1" :title="$t('form.place.create.add_existing')" :icon="iconSearch" :active-icon="iconSearch">
           {{ $t('form.place.create.search') }}
           <div class="q-gutter-sm q-mt-sm">
             <api-autocomplete
@@ -39,7 +39,7 @@
             />
           </q-stepper-navigation>
         </q-step>
-        <q-step :name="2" :title="$t('form.place.create.new')" icon="add">
+        <q-step :name="2" :title="$t('form.place.create.new')" :icon="iconAdd">
           <div class="q-gutter-sm q-mt-sm">
             <q-input v-model="obj.name" dense :label="$t('field.name')" />
             <q-input v-model="obj.code" dense :label="$t('field.code')" />
@@ -83,6 +83,8 @@ import { useStore } from '../../store.js';
 import ApiAutocomplete from '@/components/forms/ApiAutocomplete.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
 import DisciplineSelect from '@/components/forms/DisciplineSelect.vue';
+
+import { iconAdd, iconSearch } from '@/icons';
 
 const emit = defineEmits(['create:obj']);
 

@@ -2,11 +2,11 @@
   <q-dialog v-model="dialogVisible" @hide="emit('update:modelValue', dialogVisible)">
     <q-layout view="hHh lpR fFf" container class="bg-white metis__dialog-editor" style="height: 600px">
       <q-header class="bg-white q-pt-sm">
-        <q-toolbar class="text-primary q-pl-lg q-pr-sm">
-          <q-icon name="notes" />
+        <q-toolbar class="text-primary q-pl-lg q-pr-sm use-default-q-btn">
+          <q-icon :name="iconSignature" />
           <q-toolbar-title>{{ title }}</q-toolbar-title>
           <q-space />
-          <q-btn flat dense v-close-popup icon="close" style="padding: 8px" />
+          <q-btn flat round v-close-popup :icon="iconClose" />
         </q-toolbar>
       </q-header>
       <q-page-container>
@@ -51,6 +51,8 @@ import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import MarkdownToastViewer from '@/components/forms/MarkdownToastViewer.vue';
+
+import { iconClose, iconSignature } from '@/icons';
 
 const emit = defineEmits(['update:modelValue']);
 

@@ -6,7 +6,7 @@
       <q-input v-model="obj.updated_by.email" dense :label="$t('field.email')" readonly>
         <template #append>
           <a @click.stop :href="`mailto:${obj.updated_by.email}`" target="_blank" class="inherit">
-            <q-icon name="email" size="xs" />
+            <q-icon :name="iconEmail" size="xs" />
           </a>
           <a
             v-if="obj.updated_by.email.includes('@ugent.be')"
@@ -29,6 +29,8 @@ import { computed, ref } from 'vue';
 import { biMicrosoftTeams } from '@quasar/extras/bootstrap-icons';
 
 import { formatDate } from '@/utils/dates';
+
+import { iconEmail } from '@/icons';
 
 const props = defineProps<{
   obj: object;

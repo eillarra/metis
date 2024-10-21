@@ -1,17 +1,17 @@
 <template>
-  <full-dialog icon="task_alt" :title="obj.place.name">
+  <full-dialog :icon="iconPlace" :title="obj.place.name">
     <template #menu>
       <q-list :dense="$q.screen.gt.sm" class="q-mt-xs">
         <q-item-label header>{{ $t('place') }}</q-item-label>
         <q-item clickable @click="tab = 'info'" :active="tab == 'info'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="info_outline" size="xs"></q-icon>
+            <q-icon :name="iconInfo" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>Info</q-item-section>
         </q-item>
         <q-item clickable @click="tab = 'contacts'" :active="tab == 'contacts'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="portrait" size="xs"></q-icon>
+            <q-icon :name="iconContacts" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('contact', 9) }}</q-item-section>
         </q-item>
@@ -22,19 +22,19 @@
           active-class="bg-ugent text-white"
         >
           <q-item-section avatar>
-            <q-icon name="tag" size="xs"></q-icon>
+            <q-icon :name="iconNumbers" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('availability') }}</q-item-section>
         </q-item>
         <q-item clickable @click="tab = 'addresses'" :active="tab == 'addresses'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="map" size="xs"></q-icon>
+            <q-icon :name="iconMap" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('address', 9) }}</q-item-section>
         </q-item>
         <q-item clickable @click="tab = 'documents'" :active="tab == 'documents'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="drive_file_move_outline" size="xs"></q-icon>
+            <q-icon :name="iconFiles" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('document', 9) }}</q-item-section>
         </q-item>
@@ -48,7 +48,7 @@
         <q-item-label header>Logs</q-item-label>
         <q-item clickable @click="tab = 'emails'" :active="tab == 'emails'" active-class="bg-ugent text-white">
           <q-item-section avatar>
-            <q-icon name="mail_outline" size="xs"></q-icon>
+            <q-icon :name="iconEmails" size="xs"></q-icon>
           </q-item-section>
           <q-item-section>{{ $t('field.email', 9) }}</q-item-section>
         </q-item>
@@ -194,7 +194,17 @@ import RemarksView from '@/components/rel/RemarksView.vue';
 import PlaceContacts from './PlaceContacts.vue';
 import PlaceOptionSelect from '../../components/PlaceOptionSelect.vue';
 
-import { iconChat, iconChatBadge } from '@/icons';
+import {
+  iconChat,
+  iconChatBadge,
+  iconContacts,
+  iconEmails,
+  iconFiles,
+  iconInfo,
+  iconMap,
+  iconNumbers,
+  iconPlace,
+} from '@/icons';
 
 const emit = defineEmits(['delete:obj']);
 
