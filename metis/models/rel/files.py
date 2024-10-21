@@ -67,6 +67,10 @@ class File(TagsMixin, models.Model):
             return True
         return check_file_access(self, user)
 
+    def is_visible_for_target_group(self, target_group: str) -> bool:
+        """Check if the file is visible for the target group."""
+        return any(tag.startswith(f"_visible:{target_group}") for tag in self.tags)
+
     @property
     def s3_object_key(self):
         """The S3 object key."""
@@ -86,19 +90,32 @@ class FilesMixin(models.Model):
     class Meta:  # noqa: D106
         abstract = True
 
-    def get_latest_files(self) -> list[File]:
+    def get_latest_files(self, target_group: str | None = None) -> list[File]:
         """Return the latest version only of each file.
 
         We are not dealing with a lot of files and DISTINCT ON is not supported by MySQL,
         so this should fine to get the latest version of the files.
         """
+        valid_target_groups = {"place", "student", "mentor"}
         files = self.files.all()
+
+        if target_group:
+            if target_group not in valid_target_groups:
+                raise ValueError(f"Invalid target group: {target_group}")
+
+            files = files.filter(tags__contains=[f"_visible:{target_group}"])
+
+        """
+        TODO: remove code that deals with codes and versions, as we will simply use tags.
         versions = {}
 
         for file in files:
             versions[file.code] = max(versions.get(file.code, 0), file.version)
 
         return [file for file in files if file.code and file.version == versions[file.code]]
+        """
+
+        return files
 
     def get_file(self, code: str, version: int | None = None) -> File:
         """Return a file by its code and version."""

@@ -62,7 +62,9 @@ class StudentAreaView(StudentAreaFirewallMixin, InertiaView):
 
         base = {
             "education": EducationTinySerializer(self.get_education()).data,
-            "files": FileSerializer(last_project.get_latest_files(), many=True, context={"request": request}).data,
+            "files": FileSerializer(
+                last_project.get_latest_files("student"), many=True, context={"request": request}
+            ).data,
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
             "student_set": AuthStudentSerializer(
                 self.get_student_set(request.user), many=True, context={"request": request}

@@ -56,7 +56,9 @@ class PlaceOfficeView(InertiaView):
 
         return {
             "education": EducationTinySerializer(place.education).data,
-            "files": FileSerializer(last_project.get_latest_files(), many=True, context={"request": request}).data,
+            "files": FileSerializer(
+                last_project.get_latest_files("place"), many=True, context={"request": request}
+            ).data,
             "place": PlaceSerializer(place, context={"request": request}).data,
             "projects": ProjectSerializer(projects, many=True, context={"request": request}).data,
             "project_places": ProjectPlaceTinySerializer(

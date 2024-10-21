@@ -47,7 +47,7 @@
   <q-tab-panels v-model="tab" animated>
     <q-tab-panel v-for="etype in evaluationTypes" :key="etype" :name="`tab_${etype}`" class="q-pa-none">
       <div v-if="!loading && (groupedEvaluations[etype] || []).length == 0">
-        <big-message :text="$t('form.evaluation.not_found')" icon="remove_done" />
+        <big-message :text="$t('form.evaluation.not_found')" />
         <div v-if="showPeriods" class="text-center">
           {{ $t('evaluation_period', 9) }}:<br />
           <span v-for="period in evaluationPeriods" :key="period.intermediate">

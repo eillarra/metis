@@ -127,9 +127,9 @@ export default {
     description: 'Description | Descriptions',
     visibility: 'Visibility',
     visibility_options: {
-      mentor: 'Visible to mentors',
-      place: 'Visible to places',
-      student: 'Visible to students',
+      mentor: 'Visible to mentor',
+      place: 'Visible to place',
+      student: 'Visible to student',
     },
   },
   form: {

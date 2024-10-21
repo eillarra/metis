@@ -126,9 +126,9 @@ export default {
     description: 'Omschrijving | Omschrijvingen',
     visibility: 'Zichtbaarheid',
     visibility_options: {
-      mentor: 'Zichtbaar voor mentoren',
-      place: 'Zichtbaar voor stageplaatsen',
-      student: 'Zichtbaar voor studenten',
+      mentor: 'Zichtbaar voor mentor',
+      place: 'Zichtbaar voor stageplaats',
+      student: 'Zichtbaar voor student',
     },
   },
   form: {

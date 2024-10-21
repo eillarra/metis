@@ -132,7 +132,7 @@
           <remarks-view :api-endpoints="remarkEndpoints" :visibility-options="['student']"/>
         </q-tab-panel>
         <q-tab-panel name="documents">
-          <files-view :api-endpoint="obj.place.rel_files">
+          <files-view :api-endpoint="obj.place.rel_files" :visibility-options="['place', 'student']">
             <template #custom-fields="scope">
               {{ scope.formData }}
             </template>

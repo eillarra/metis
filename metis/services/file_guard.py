@@ -23,24 +23,34 @@ def check_file_access(file: "models.File", user: "models.User") -> bool:
     except AttributeError:
         pass
 
+    visible: list[bool] = []
+
     if isinstance(file.content_object, models.Project):
         project: models.Project = file.content_object
 
-        if file.code and file.code.startswith("place:"):
-            return models.Contact.objects.filter(place__in=project.places.all(), user=user).exists()
+        if project.can_be_managed_by(user):
+            return True
 
-        if file.code and file.code.startswith("student:"):
-            return models.Student.objects.filter(project=project, user=user).exists()
+        if file.is_visible_for_target_group("place"):
+            visible.append(models.Contact.objects.filter(place__in=project.places.all(), user=user).exists())
 
-        return project.can_be_managed_by(user)
+        if file.is_visible_for_target_group("student"):
+            visible.append(models.Student.objects.filter(project=project, user=user).exists())
+
+        return any(visible)
 
     if isinstance(file.content_object, models.Internship):
         internship: models.Internship = file.content_object
 
-        return (
-            internship.student.user == user
-            or internship.can_be_managed_by(user)
-            or models.Contact.objects.filter(place=internship.project_place.place, user=user).exists()
-        )
+        if internship.can_be_managed_by(user):
+            return True
+
+        if file.is_visible_for_target_group("place"):
+            visible.append(models.Contact.objects.filter(place=internship.place, user=user).exists())
+
+        if file.is_visible_for_target_group("student"):
+            visible.append(internship.student.user == user)  # type: ignore
+
+        return any(visible)
 
     raise NotImplementedError("No access control implemented yet for this object type.")

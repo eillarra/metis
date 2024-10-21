@@ -124,7 +124,7 @@
           <evaluations-view :internship="obj" show-points />
         </q-tab-panel>
         <q-tab-panel name="documents">
-          <files-view :api-endpoint="obj.rel_files" />
+          <files-view :api-endpoint="obj.rel_files" :visibility-options="['place', 'student']" />
         </q-tab-panel>
         <q-tab-panel name="actions">
           <internship-actions :internship="obj" />

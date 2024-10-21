@@ -30,7 +30,7 @@ const { t } = useI18n();
 const visibilityTags = computed(() => {
   return props.tags
     .filter((tag: string) => tag.startsWith('_visible:'))
-    .map((tag: string) => t(tag.replace('_visible:', ''), 9).toLowerCase())
+    .map((tag: string) => t(tag.replace('_visible:', '')).toLowerCase())
     .sort((a: string, b: string) => a.localeCompare(b));
 });
 </script>
