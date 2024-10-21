@@ -2,10 +2,11 @@ from rest_framework import serializers
 
 from metis.models.rel.files import File
 
+from ..base import TagsMixin
 from .base import NestedRelHyperlinkField, RelHyperlinkedField
 
 
-class FileSerializer(serializers.ModelSerializer):
+class FileSerializer(TagsMixin, serializers.ModelSerializer):
     """File serializer."""
 
     self = NestedRelHyperlinkField(view_name="v1:file-detail")

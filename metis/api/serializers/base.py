@@ -4,6 +4,12 @@ from rest_framework import serializers
 from .users import UserTinySerializer
 
 
+class TagsMixin:
+    """Tags mixin."""
+
+    tags = serializers.JSONField()
+
+
 class BaseTranslatedModelSerializer(serializers.ModelSerializer):
     """Base model serializer for all translated model serializers."""
 

@@ -1,5 +1,5 @@
 <template>
-  <files-view v-if="project" :api-endpoint="project.rel_files">
+  <files-view v-if="project" :api-endpoint="project.rel_files" :visibility-options="['place', 'student']">
     <template #title>
       <h3 class="text-ugent col-12 col-md-3 q-mb-lg">{{ $t('document', 9) }}</h3>
     </template>

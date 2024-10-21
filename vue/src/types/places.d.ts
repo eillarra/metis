@@ -44,7 +44,7 @@ interface Place extends ApiObject {
   updated_by: UserTiny | null;
   remark_count: number;
   is_flagged: boolean;
-  tags: string[];
+  tags: Tags;
   // -----
   Location?: PlaceLocation;
   Type?: PlaceType;

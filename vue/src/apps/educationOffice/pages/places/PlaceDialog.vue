@@ -129,7 +129,7 @@
           <address-cards :api-endpoint="obj.place.rel_addresses" in-dialog />
         </q-tab-panel>
         <q-tab-panel name="remarks">
-          <remarks-view :api-endpoints="remarkEndpoints" />
+          <remarks-view :api-endpoints="remarkEndpoints" :visibility-options="['student']"/>
         </q-tab-panel>
         <q-tab-panel name="documents">
           <files-view :api-endpoint="obj.place.rel_files">

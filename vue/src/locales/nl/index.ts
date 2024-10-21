@@ -124,6 +124,12 @@ export default {
     sent_at: 'Verstuurd op',
     sent_to: 'Verstuurd naar',
     description: 'Omschrijving | Omschrijvingen',
+    visibility: 'Zichtbaarheid',
+    visibility_options: {
+      mentor: 'Zichtbaar voor mentoren',
+      place: 'Zichtbaar voor stageplaatsen',
+      student: 'Zichtbaar voor studenten',
+    },
   },
   form: {
     add: 'Toevoegen',

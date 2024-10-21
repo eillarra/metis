@@ -4,11 +4,12 @@ from rest_framework import serializers
 
 from metis.models.rel.remarks import Remark
 
+from ..base import TagsMixin
 from ..users import UserTinySerializer
 from .base import NestedRelHyperlinkField, RelHyperlinkedField
 
 
-class RemarkSerializer(serializers.ModelSerializer):
+class RemarkSerializer(TagsMixin, serializers.ModelSerializer):
     """Remark serializer."""
 
     self = NestedRelHyperlinkField(view_name="v1:remark-detail")
@@ -16,7 +17,7 @@ class RemarkSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D106
         model = Remark
-        fields = ("id", "self", "text", "updated_at", "updated_by")
+        fields = ("id", "self", "text", "tags", "updated_at", "updated_by")
 
 
 class RemarksMixin(serializers.ModelSerializer):

@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from ..base import BaseModel
+from ..base import BaseModel, TagsMixin
 from .snapshots import save_snapshot
 
 
@@ -15,7 +15,7 @@ def append_remarks_tags(obj, *, tags: list[str]) -> list[str]:
     return tags
 
 
-class Remark(BaseModel):
+class Remark(TagsMixin, BaseModel):
     """Remarks made by administrators.
 
     Every time a remark is made, a copy of the object is saved for historical purposes.

@@ -23,6 +23,9 @@
     <div v-else class="row q-col-gutter-sm">
       <div v-for="file in files" :key="file.id" class="col-12 col-sm-4 col-md-2">
         <file-card :title="file.description" class="column full-height">
+          <template #badges>
+            <visibility-badges :tags="file.tags" />
+          </template>
           <template #actions>
             <q-btn flat round icon="visibility" :size="btnSize" @click="openRelatedFile(file)" />
             <q-space />
@@ -58,7 +61,12 @@
                 </template>
               </q-file>
               <q-input v-model="formData.description" :label="$t('field.description')" dense class="col-12" />
-              <slot name="custom-fields" />
+              <visibility-options
+                v-if="visibilityOptions"
+                v-model="formData.tags"
+                :options="visibilityOptions"
+                class="col-12"
+              />
             </div>
           </div>
         </template>
@@ -92,6 +100,8 @@ import { iconDelete } from '@/icons';
 import FileCard from '@/components/FileCard.vue';
 import NoResults from '@/components/NoResults.vue';
 import DialogForm from '@/components/forms/DialogForm.vue';
+import VisibilityBadges from '@/components/forms/VisibilityBadges.vue';
+import VisibilityOptions from '@/components/forms/VisibilityOptions.vue';
 
 const { t } = useI18n();
 
@@ -99,7 +109,7 @@ const props = defineProps<{
   apiEndpoint: ApiEndpoint;
   accept?: string;
   customCreateDescription?: string;
-  customFieldsProcessor?: (formData: Record<string, any>) => Record<string, any>;
+  visibilityOptions?: string[];
   readOnly?: boolean;
 }>();
 
@@ -111,9 +121,8 @@ const files = ref<RelatedFile[]>([]);
 const file = ref<File | null>(null);
 const formData = ref({
   description: null as string | null,
+  tags: [] as Tags,
 });
-
-const customFieldsProcessor = props.customFieldsProcessor || ((formData: Record<string, any>) => formData);
 
 async function fetchRelatedFiles() {
   if (!props.apiEndpoint) return;
@@ -127,8 +136,8 @@ async function addRelatedFile() {
   if (!props.apiEndpoint || !formData.value.description || !file.value) return;
 
   const multipartFormData = new FormData();
-  multipartFormData.append('description', formData.value.description);
   multipartFormData.append('file', file.value);
+  multipartFormData.append('json', JSON.stringify(formData.value));
 
   api
     .post<RelatedFile>(props.apiEndpoint, multipartFormData, {
@@ -164,6 +173,7 @@ watch(() => props.apiEndpoint, fetchRelatedFiles);
 function reset() {
   file.value = null;
   formData.value.description = null;
+  formData.value.tags = [];
   dialogVisible.value = false;
 }
 </script>

@@ -125,6 +125,12 @@ export default {
     sent_at: 'Sent at',
     sent_to: 'Sent to',
     description: 'Description | Descriptions',
+    visibility: 'Visibility',
+    visibility_options: {
+      mentor: 'Visible to mentors',
+      place: 'Visible to places',
+      student: 'Visible to students',
+    },
   },
   form: {
     add: 'Add',

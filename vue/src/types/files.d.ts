@@ -5,7 +5,7 @@ interface RelatedFile extends ApiObject {
   description: string;
   created_at: string;
   updated_at: string;
-  tags: string[];
+  tags: Tags;
   // -----
   _tags_dict?: TagsDict;
 }

@@ -5,6 +5,7 @@
     </q-card-section>
     <q-space />
     <q-card-section class="q-pt-none">
+      <slot name="badges" />
       <q-skeleton type="text" animation="none" />
       <q-skeleton type="text" animation="none" width="60%" />
     </q-card-section>

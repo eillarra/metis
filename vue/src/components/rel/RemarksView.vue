@@ -26,6 +26,7 @@
               size="20px"
               class="float-right cursor-pointer q-ml-md"
             />
+            <visibility-badges :tags="remark.tags" class="float-right q-ml-md" />
             {{ remark.text }}
           </div>
         </q-chat-message>
@@ -54,6 +55,7 @@
       <q-page-sticky expand position="bottom" class="bg-white z-top">
         <div class="full-width full-height text-right q-px-lg q-pb-lg">
           <q-input v-model="remarkText" :label="$t('form.remark.create.new')" autogrow clearable class="q-mb-md" />
+          <visibility-options v-if="visibilityOptions" v-model="remarkTags" :options="visibilityOptions" hide-label />
           <q-btn @click="addRemark" unelevated color="ugent" :label="$t('form.save')" :disable="remarkText == ''" />
         </div>
       </q-page-sticky>
@@ -71,6 +73,9 @@ import { confirm } from '@/dialog';
 import { notify } from '@/notify';
 import { formatDate } from '@/utils/dates';
 
+import VisibilityBadges from '@/components/forms/VisibilityBadges.vue';
+import VisibilityOptions from '@/components/forms/VisibilityOptions.vue';
+
 import { iconDelete } from '@/icons';
 
 const { t } = useI18n();
@@ -81,11 +86,13 @@ const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_use
 const props = defineProps<{
   apiEndpoints: Record<string, ApiEndpoint> | null;
   remarkTypes?: Record<string, string>;
+  visibilityOptions?: string[];
 }>();
 
 const loading = ref<boolean>(true);
 const remarks = ref<Remark[]>([]);
 const remarkText = ref<string>('');
+const remarkTags = ref<Tags>([]);
 const selectedRemarkType = ref<string | null>(null);
 
 const skipTypes = computed(() => {
@@ -105,7 +112,7 @@ const remarkTypeOptions = computed(() => {
 const selectedRemarkEndpoint = computed(() => {
   if (skipTypes.value) return props.apiEndpoints?.default;
   if (!props.apiEndpoints) return null;
-  return props.apiEndpoints[selectedRemarkType.value];
+  return props.apiEndpoints[selectedRemarkType.value ?? 'default'];
 });
 
 const sortedRemarks = computed<Remark[]>(() => {
@@ -134,10 +141,12 @@ async function addRemark() {
   api
     .post<Remark>(selectedRemarkEndpoint.value, {
       text: remarkText.value,
+      tags: remarkTags.value,
     })
     .then(({ data }) => {
-      remarks.value.push({ ...data, type: skipTypes.value ? 'default' : selectedRemarkType.value });
+      remarks.value.push({ ...data });
       remarkText.value = '';
+      remarkTags.value = [];
       notify.success(t('form.remark.create.success'));
     });
 }

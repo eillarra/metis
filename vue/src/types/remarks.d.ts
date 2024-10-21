@@ -3,8 +3,10 @@ interface Remark extends ApiObject {
   text: string;
   updated_at: string;
   updated_by: UserTiny;
-  type?: string;
+  tags: Tags;
   // -----
+  _tags_dict?: TagsDict;
+  type?: string;
   is_mine?: boolean;
   stamp?: string;
 }
