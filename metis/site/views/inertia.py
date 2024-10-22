@@ -12,11 +12,10 @@ def render_inertia(request, vue_entry_point: str, *, props: dict | None = None, 
 
     It adds some basic props that can be helpful in the frontend.
 
-    Args:
-        request: The Django request object.
-        vue_entry_point: The name of the Vue component to render.
-        props: Additional props to pass to the Vue component.
-        page_title: The title of the page to render.
+    :param request: The Django request object.
+    :param vue_entry_point: The name of the Vue component to render.
+    :param props: Additional props to pass to the Vue component.
+    :param page_title: The title of the page to render.
     """
     return render(
         request,

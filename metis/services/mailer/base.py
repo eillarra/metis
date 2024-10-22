@@ -15,7 +15,7 @@ def render_context(body: str, context: dict) -> str:
 
     :param body: The body to render.
     :param context: The context to render the body with.
-    :return: The rendered body.
+    :returns: The rendered body.
     """
     templ = Template(body)
     return templ.render(Context(context))
@@ -27,7 +27,7 @@ def get_template(education: "Education", code: str, language: str = "nl") -> "Em
     :param education: The education to get the email template for.
     :param code: The code of the email template to get.
     :param language: The language of the email template to get.
-    :return: The email template for the education, code and language.
+    :returns: The email template for the education, code and language.
     :raises ValueError: If the email template is not found.
     """
     from metis.models import EmailTemplate

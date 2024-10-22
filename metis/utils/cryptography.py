@@ -4,27 +4,21 @@ from django.db.models import TextField
 
 
 def encrypt(text: str) -> str:
-    """Encrypts a text.
+    """Encrypt a text.
 
-    Args:
-        text: The text to encrypt.
-
-    Returns:
-        The encrypted token.
+    :param text: The text to encrypt.
+    :returns: The encrypted token.
     """
     fernet = Fernet(settings.ENCRYPTION_KEY)
     return fernet.encrypt(text.encode()).decode()
 
 
 def decrypt(token: bytes | str, ttl: int | None = None) -> str:
-    """Decrypts a token.
+    """Decrypt a token.
 
-    Args:
-        token: The token to decrypt.
-        ttl: The time-to-live of the token.
-
-    Returns:
-        The decrypted text.
+    :param token: The token to decrypt.
+    :param ttl: The time-to-live of the token.
+    :returns: The decrypted text.
     """
     fernet = Fernet(settings.ENCRYPTION_KEY)
     return fernet.decrypt(token, ttl).decode()
@@ -33,10 +27,10 @@ def decrypt(token: bytes | str, ttl: int | None = None) -> str:
 class EncryptedTextField(TextField):
     """A Django text field that is encrypted when saved to the database."""
 
-    def from_db_value(self, value: str, expression, connection):
+    def from_db_value(self, value: str, expression, connection) -> str:
         """Decrypts the value when retrieved from the database."""
         return decrypt(value)
 
-    def to_python(self, value: str):
+    def to_python(self, value: str) -> str:
         """Encrypts the value when saved to the database."""
         return encrypt(value)

@@ -48,4 +48,4 @@ class ProjectAdmin(BaseModelAdmin):
         if obj.internships__count == 0:
             return "-"
         url = reverse("admin:metis_internship_changelist")
-        return format_html(f'<a href="{url}?project__id__exact={obj.id}">{obj.internships__count}</a>')
+        return format_html('<a href="{}?project__id__exact={}">{}</a>', url, obj.id, obj.internships__count)

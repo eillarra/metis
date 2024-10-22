@@ -9,10 +9,9 @@ from allauth.socialaccount.models import SocialApp
 class GraphToken(NamedTuple):
     """Represents an access token for the Microsoft Graph API.
 
-    Attributes:
-        token_type: The type of the access token.
-        access_token: The access token string.
-        expires_at: The datetime at which the token expires.
+    :param token_type: The type of the token.
+    :param access_token: The access token.
+    :param expires_at: The datetime at which the token expires.
     """
 
     token_type: str
@@ -20,10 +19,9 @@ class GraphToken(NamedTuple):
     expires_at: datetime.datetime
 
     def has_expired(self) -> bool:
-        """Checks if the token has expired.
+        """Check if the token has expired.
 
-        Returns:
-            A boolean indicating whether the token has expired.
+        :returns: A boolean indicating whether the token has expired.
         """
         return self.expires_at < datetime.datetime.now()
 
@@ -31,15 +29,18 @@ class GraphToken(NamedTuple):
 class GraphAPI:
     """A class for interacting with the Microsoft Graph API."""
 
-    def __init__(self) -> None:
-        try:
-            app = SocialApp.objects.get(provider="ugent")
-        except SocialApp.DoesNotExist as exc:
-            raise RuntimeError("UGent Azure app not configured") from exc
+    def __init__(self, *, client_id: str | None = None, secret: str | None = None) -> None:
+        if not client_id or not secret:  # useful for testing
+            try:
+                app = SocialApp.objects.get(provider="ugent")
+                client_id = app.client_id
+                secret = app.secret
+            except SocialApp.DoesNotExist as exc:
+                raise RuntimeError("UGent Azure app not configured") from exc
 
         self.tenant_id: str = os.environ["UGENT_TENANT_ID"]
-        self.client_id: str = app.client_id
-        self.client_secret: str = app.secret
+        self.client_id: str = client_id
+        self.client_secret: str = secret
         self._token: GraphToken | None = None
 
     def __enter__(self):
@@ -50,10 +51,10 @@ class GraphAPI:
         self.session.close()
 
     def _get_token(self) -> GraphToken:
-        """Gets an access token for the Microsoft Graph API.
+        """Get an access token for the Microsoft Graph API.
 
-        Returns:
-            A GraphToken object containing the access token and token type.
+        :returns: A GraphToken object containing the access token and token type.
+        :raises requests.HTTPError: If the request to the Graph API fails.
         """
         if self._token and not self._token.has_expired():
             return self._token
@@ -82,13 +83,11 @@ class GraphAPI:
         raise NotImplementedError
 
     def find_user_by_email(self, email: str) -> tuple[str | None, bool]:
-        """Finds a user in Azure AD by their email address.
+        """Find a user in Azure AD by their email address.
 
-        Args:
-            email: The email address of the user to find.
-
-        Returns:
-            A tuple containing the user's id and status (enabled), or (None, False) if the user was not found.
+        :param email: The email address of the user to find.
+        :returns: A tuple containing the user's id and status (enabled), or (None, False) if the user was not found.
+        :raises requests.HTTPError: If the request to the Graph API fails.
         """
         token = self._get_token()
         response = self.session.get(
@@ -106,14 +105,12 @@ class GraphAPI:
         )
 
     def register_email(self, email: str, *, send_invitation: bool = False) -> tuple[bool, str, bool]:
-        """Registers a new email address and (optionally) sends an invitation to join the Metis platform.
+        """Register a new email address and (optionally) sends an invitation to join the Metis platform.
 
-        Args:
-            email: The email address to register.
-            send_invitation: Whether or not to send an invitation email. Defaults to False.
-
-        Returns:
-            A tuple containing a bool indicating success or failure, a user id, and account enabled status.
+        :param email: The email address to register.
+        :param send_invitation: Whether or not to send an invitation email. Defaults to False.
+        :returns: A tuple containing a boolean indicating success or failure, a user id, and account enabled status.
+        :raises requests.HTTPError: If the request to the Graph API fails.
         """
         existing_user_id, enabled = self.find_user_by_email(email)
         if existing_user_id:

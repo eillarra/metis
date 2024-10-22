@@ -93,7 +93,7 @@ class Mapbox:
 
         :param address: The address to geocode.
         :param country_code: The country code.
-        :return: The geocoded feature or None.
+        :returns: The geocoded feature or None.
         :raises Exception: If the API request fails.
         """
         try:

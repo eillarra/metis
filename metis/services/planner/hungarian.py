@@ -12,15 +12,12 @@ def hungarian_optimizer(
 ) -> list[tuple[int, int, int, bool]]:
     """Hungarian algorithm for optimizing the matching of students and project places.
 
-    Args:
-        student_tops: A list of tuples (student_id, top_choices) where top_choices is a list of project_place_ids
-        project_place_availability: A dictionary of project_place_id: availability pairs, where availability is the
-            max number of students that can be matched to the project place.
-        preassigned_pairs: A list of tuples (student_id, project_place_id) that must be included in the result.
-        seed: A seed for the randomizer.
-
-    Returns:
-        An optimized list of tuples (student_id, project_place_id, rank, preassigned) where rank is the rank
+    :param student_tops: A list of tuples (student_id, top_choices) where top_choices is a list of project_place_ids
+    :param project_place_availability: A dictionary of project_place_id: availability pairs, where availability is the
+        max number of students that can be matched to the project place.
+    :param preassigned_pairs: A list of tuples (student_id, project_place_id) that must be included in the result.
+    :param seed: A seed for the randomizer.
+    :returns: An optimized list of tuples (student_id, project_place_id, rank, preassigned) where rank is the rank
         of the project place (top) in the student's top choices, or -1 if the student was preassigned
         to the project place.
     """

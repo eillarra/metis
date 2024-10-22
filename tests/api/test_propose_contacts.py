@@ -4,38 +4,16 @@ import pytest
 from django.urls import reverse
 
 from metis.models import Internship
-from metis.utils.factories import (
-    InternshipFactory,
-    PeriodFactory,
-    ProjectFactory,
-    StudentFactory,
-    UserFactory,
-)
-from metis.utils.fixtures.programs import create_audiology_program
+from metis.utils.factories import InternshipFactory, StudentFactory
 
 
 @pytest.fixture
-def education(db):  # noqa: D103
-    program = create_audiology_program()
-    project = ProjectFactory.create(education=program.education)
-    for block in program.blocks.all():
-        for program_internship in block.internships.all():
-            PeriodFactory.create(project=project, program_internship=program_internship)
-    return program.education
-
-
-@pytest.fixture
-def project(db, education):  # noqa: D103
-    return education.projects.first()
-
-
-@pytest.fixture
-def internship(db, project):  # noqa: D103
-    student = StudentFactory.create(project=project)
-    period = project.periods.first()
+def internship(db, t_project):  # noqa: D103
+    student = StudentFactory.create(project=t_project)
+    period = t_project.periods.first()
     available_disciplines = period.program_internship.get_available_disciplines()
     internship = InternshipFactory.create(
-        project=project,
+        project=t_project,
         period=period,
         project_place=None,
         status=Internship.PREPLANNING,
@@ -46,12 +24,12 @@ def internship(db, project):  # noqa: D103
 
 
 @pytest.fixture
-def internship2(db, project):  # noqa: D103
-    student = StudentFactory.create(project=project)
-    period = project.periods.first()
+def internship2(db, t_project):  # noqa: D103
+    student = StudentFactory.create(project=t_project)
+    period = t_project.periods.first()
     available_disciplines = period.program_internship.get_available_disciplines()
     internship = InternshipFactory.create(
-        project=project,
+        project=t_project,
         period=period,
         project_place=None,
         status=Internship.PREPLANNING,
@@ -62,14 +40,9 @@ def internship2(db, project):  # noqa: D103
 
 
 @pytest.fixture
-def other_student(db, project):  # noqa: D103
-    student = StudentFactory.create(project=project)
+def other_student(db, t_project):  # noqa: D103
+    student = StudentFactory.create(project=t_project)
     return student.user
-
-
-@pytest.fixture
-def user(db):  # noqa: D103
-    return UserFactory.create()
 
 
 @pytest.mark.api
@@ -134,9 +107,9 @@ class TestForAuthenticated(TestForAnonymous):
     }
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, user):
+    def setup(self, api_client, t_random_user):
         """Log in as user."""
-        api_client.force_authenticate(user=user)
+        api_client.force_authenticate(user=t_random_user)
 
 
 class TestForStudent(TestForAuthenticated):

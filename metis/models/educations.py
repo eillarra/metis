@@ -37,7 +37,7 @@ class Education(BaseModel):
             try:
                 validate_education_configuration(self.config)
             except ValueError as exc:
-                raise ValidationError({"config": str(exc)}) from exc
+                raise ValidationError({"config": [str(exc)]}) from exc
         return super().clean()
 
     def __str__(self) -> str:

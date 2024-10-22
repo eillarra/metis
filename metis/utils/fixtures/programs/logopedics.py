@@ -11,11 +11,13 @@ from metis.models import (
     TrackInternship,
 )
 
+from .config import get_basic_education_config
+
 
 def create_logopedics_program() -> Program:
-    """
-    Create a Logopedics program with the following structure:
+    """Create a Logopedics program.
 
+    Structure:
     - Program has internships: 1A, 2A, 3A
     - Internships are distributed across 3 blocks: Ba3, Ma1, Ma2
     - There is one track: A (1A, 2A, 3A)
@@ -23,10 +25,8 @@ def create_logopedics_program() -> Program:
     Track discipline constraints:
     - Track A: 3 times logopedics
 
-    Returns:
-        Program: An instance of program with the specified structure
+    :returns: An instance of program with the specified structure.
     """
-
     # Create Education
     faculty, _ = Faculty.objects.get_or_create(
         name_nl="Faculteit Geneeskunde en Gezondheidswetenschappen",
@@ -39,6 +39,7 @@ def create_logopedics_program() -> Program:
         name_en="Logopedics",
         short_name_nl="Logopedie",
         short_name_en="Logopedics",
+        config=get_basic_education_config(),
     )
 
     # Create Program
@@ -63,6 +64,7 @@ def create_logopedics_program() -> Program:
 
     # Create Disciplines
     logopedics, _ = Discipline.objects.get_or_create(
+        id=20001,
         education=education,
         code="logopedie",
         name_nl="Logopedie",

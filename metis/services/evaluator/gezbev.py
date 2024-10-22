@@ -15,7 +15,7 @@ class GezbevEvaluator(Evaluator):
     def evaluate(self) -> float | None:
         """Evaluate the model on the given data.
 
-        :return: A float representing the final score or None if it could not be calculated.
+        :returns: A float representing the final score or None if it could not be calculated.
         """
         if not self.evaluation_form or not self.evaluation:
             return None

@@ -5,7 +5,7 @@ def parse_bouncing_email(body: str) -> str | None:
     """Parse the email address from a postmaster bouncing email body.
 
     :param body: The body of the email.
-    :return: The email address that is bouncing.
+    :returns: The email address that is bouncing.
     """
     original_message_headers = False
     email = None

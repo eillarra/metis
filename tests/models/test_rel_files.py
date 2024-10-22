@@ -34,10 +34,3 @@ def test_duplicated_code(uz):
     with pytest.raises(IntegrityError):
         File.objects.create(content_object=uz, code="agreement", description="agreement1")
         File.objects.create(content_object=uz, code="agreement", description="agreement2")
-
-
-@pytest.mark.django_db
-def test_education_place_agreement(uz):
-    """An education place has a shortcut to its agreement."""
-    File.objects.create(content_object=uz, code="agreement", description="agreement1")
-    assert uz.agreement.id == uz.get_file("agreement").id

@@ -4,12 +4,9 @@ def find_students_for_places(
 ) -> dict[int, list[int]]:
     """Given some student tops, return, per project_place_id, a list of students ordered by rank (or empty list).
 
-    Args:
-        student_tops: A list of tuples (student_id, top_choices) where top_choices is a list of project_place_ids
-        project_places: A list of project_place_ids
-
-    Returns:
-        A dictionary of project_place_id: list(student_id)
+    :param student_tops: A list of tuples (student_id, top_choices) where top_choices is a list of project_place_ids.
+    :param project_places: A list of project_place_ids.
+    :returns: A dictionary of project_place_id: list(student_id).
     """
     choices = {}
 

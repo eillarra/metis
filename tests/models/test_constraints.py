@@ -1,46 +1,41 @@
-from datetime import date
-
 import pytest
 from django.db.models import QuerySet
 
-from metis.models.disciplines import Discipline
-from metis.models.educations import Education, Faculty
 from metis.models.stages.constraints import (
     DisciplineConstraint,
     get_disciplines_from_constraints,
     validate_discipline_constraints,
 )
-from metis.models.stages.programs import Program, Track
+from metis.utils.factories import DisciplineFactory, ProgramFactory, TrackFactory
 
 
 @pytest.fixture
 def program():
-    faculty = Faculty.objects.create(name="Faculty 1")
-    education = Education.objects.create(faculty=faculty, name="Education 1")
-    program = Program.objects.create(
-        id=1, education=education, name="Program 1", valid_from=date(2020, 1, 1), valid_until=date(2030, 12, 31)
-    )
-
-    return program
+    """Return a program."""
+    return ProgramFactory()
 
 
 @pytest.fixture
 def disciplines(program):
-    return [
-        Discipline.objects.create(education=program.education, code=f"dis{i}", name=f"Discipline {i}")
+    """Return a list of disciplines."""
+    disciplines = [
+        DisciplineFactory(id=i, education=program.education, code=f"dis{i}", name=f"Discipline {i}")
         for i in range(1, 7)
     ]
+    print(disciplines)
+    return disciplines
 
 
 @pytest.fixture
-def track(disciplines, program):
-    track = Track.objects.create(program=program, name="Test Track")
-    return track
+def track(program):
+    """Return a track."""
+    return TrackFactory(program=program)
 
 
 @pytest.fixture
 def track_with_constraints(disciplines, program):
-    track = Track.objects.create(program=program, name="Test Track")
+    """Return a track with constraints."""
+    track = TrackFactory(program=program, name="Test Track")
 
     constraint1 = DisciplineConstraint.objects.create(
         content_object=track,
@@ -62,12 +57,13 @@ def track_with_constraints(disciplines, program):
 
 
 @pytest.fixture
-def create_constraint(request, track):
+def create_constraint(request, track, disciplines):
+    """Return a discipline constraint."""
     min_count, max_count, max_repeat = request.param
     constraint = DisciplineConstraint.objects.create(
         content_object=track, min_count=min_count, max_count=max_count, max_repeat=max_repeat
     )
-    constraint.disciplines.set([1, 2, 3])
+    constraint.disciplines.set(disciplines[:3])  # 1, 2, 3
 
     return constraint
 
@@ -109,11 +105,7 @@ def create_constraint(request, track):
     ],
     indirect=["create_constraint"],
 )
-def test_validate_discipline_constraints(
-    create_constraint,
-    discipline_ids: list[int],
-    expected_result: bool,
-):
+def test_validate_discipline_constraints(create_constraint, discipline_ids: list[int], expected_result: bool):  # noqa: D103
     constraint = create_constraint
     assert validate_discipline_constraints(discipline_ids, [constraint]) is expected_result
 
@@ -129,12 +121,12 @@ def test_validate_discipline_constraints(
         ([1, 1, 2, 3, 4, 5, 7], False),  # Discipline 7 not allowed
     ],
 )
-def test_track_with_multiple_constraints(track_with_constraints, discipline_ids, expected_result):
+def test_track_with_multiple_constraints(track_with_constraints, discipline_ids, expected_result):  # noqa: D103
     assert track_with_constraints.validate_discipline_constraints(discipline_ids) == expected_result
 
 
 @pytest.mark.django_db
-def test_get_disciplines_from_constraints_no_constraints():
+def test_get_disciplines_from_constraints_no_constraints():  # noqa: D103
     constraints = DisciplineConstraint.objects.none()
     disciplines = get_disciplines_from_constraints(constraints)
 

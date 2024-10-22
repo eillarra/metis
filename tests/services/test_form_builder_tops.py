@@ -8,8 +8,8 @@ from metis.utils.factories import ProjectFactory, ProjectPlaceFactory
 def project(db):
     """Return a project."""
     project = ProjectFactory()
-    for _ in range(5):
-        ProjectPlaceFactory(project=project)
+    for num in range(5):
+        ProjectPlaceFactory(id=num + 101, project=project)
     return project
 
 
@@ -70,14 +70,26 @@ def test_definition_valid(definition):
         ({"unknown_key": "unknown_value"}, False),
         ({"tops": None}, False),
         ({"tops": []}, False),
-        ({"tops": [1, 2, 3, 4]}, False),
-        ({"tops": [1, 2, 3, 4, 5, 6]}, False),
-        ({"tops": [1, 2, 3, 4, 4]}, False),
-        ({"tops": [1, 2, 3, 4, 999]}, False),
-        ({"tops": [1, 2, 3, 4, 5], "motivation": "motivation"}, True),
-        ({"tops": [1, 2, 3, 4, 5], "motivation": {"1": "M1"}}, True),
-        ({"tops": [1, 2, 3, 4, 5], "motivation": {"1": "M1", "2": "M2", "3": "M3", "4": "M4", "5": None}}, True),
-        ({"tops": [1, 2, 3, 4, 5], "motivation": {"1": "M1", "2": "M2", "3": "M3", "4": "M4", "5": ["invalid"]}}, True),
+        ({"tops": [101, 102, 103, 104]}, False),
+        ({"tops": [101, 102, 103, 104, 105, 106]}, False),
+        ({"tops": [101, 102, 103, 104, 104]}, False),
+        ({"tops": [101, 102, 103, 104, 999]}, False),
+        ({"tops": [101, 102, 103, 104, 105], "motivation": "motivation"}, True),
+        ({"tops": [101, 102, 103, 104, 105], "motivation": {"101": "M1"}}, True),
+        (
+            {
+                "tops": [101, 102, 103, 104, 105],
+                "motivation": {"101": "M1", "102": "M2", "103": "M3", "104": "M4", "105": None},
+            },
+            True,
+        ),
+        (
+            {
+                "tops": [101, 102, 103, 104, 105],
+                "motivation": {"101": "M1", "102": "M2", "103": "M3", "104": "M4", "105": ["invalid"]},
+            },
+            True,
+        ),
     ],
 )
 @pytest.mark.unit
@@ -90,8 +102,14 @@ def test_response_is_invalid(project, form_definition, data, require_motivation)
 @pytest.mark.parametrize(
     "data, require_motivation",
     [
-        ({"tops": [1, 2, 3, 4, 5]}, False),
-        ({"tops": [1, 2, 3, 4, 5], "motivation": {"1": "M1", "2": "M2", "3": "M3", "4": "M4", "5": "M5"}}, True),
+        ({"tops": [101, 102, 103, 104, 105]}, False),
+        (
+            {
+                "tops": [101, 102, 103, 104, 105],
+                "motivation": {"101": "M1", "102": "M2", "103": "M3", "104": "M4", "105": "M5"},
+            },
+            True,
+        ),
     ],
 )
 @pytest.mark.unit

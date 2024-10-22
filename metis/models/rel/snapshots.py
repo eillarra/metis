@@ -25,7 +25,7 @@ class Snapshot(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey("metis.User", on_delete=models.SET_NULL, null=True, editable=False)
 
-    class Meta:
+    class Meta:  # noqa: D106
         db_table = "metis_rel_snapshot"
 
     def __str__(self) -> str:

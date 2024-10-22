@@ -5,7 +5,7 @@ import factory
 from metis.models.stages.internships import Internship
 
 from ..users import UserFactory
-from .places import ProjectPlaceFactory
+from .project_places import ProjectPlaceFactory
 from .projects import PeriodFactory, ProjectFactory
 from .students import StudentFactory
 

@@ -13,8 +13,8 @@ from metis.models import Discipline
 
 
 class DisciplineConstraint(models.Model):
-    """
-    A disciplines constraint for a program, track, or internship.
+    """A disciplines constraint for a program, track, or internship.
+
     This model can be used to define constraints like:
 
     1. Choose 3 out of 5 disciplines:
@@ -38,6 +38,7 @@ class DisciplineConstraint(models.Model):
         min_count (PositiveIntegerField): Minimum number of disciplines required (inclusive).
         max_count (PositiveIntegerField): Maximum number of disciplines allowed (inclusive), or None if no limit.
         max_repeat (PositiveIntegerField): Maximum number of times a discipline can be repeated, or None if no limit.
+
     """
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="rules")
@@ -131,10 +132,7 @@ class DisciplineConstraintsMixin(models.Model):
 
 
 def get_disciplines_from_constraints(constraints: models.QuerySet) -> "QuerySet[Discipline]":
-    """
-    Returns a set of all disciplines included in the given constraints.
-    """
-
+    """Returns a set of all disciplines included in the given constraints."""
     disciplines = Discipline.objects.none()
 
     for constraint in constraints:
@@ -146,23 +144,17 @@ def get_disciplines_from_constraints(constraints: models.QuerySet) -> "QuerySet[
 def validate_discipline_constraints(
     discipline_ids: list[int], remaining_constraints: list[DisciplineConstraint]
 ) -> bool:
-    """
-    Validate a list of discipline_ids against the remaining constraints.
-
-    Args:
-        discipline_ids (List[int]): A list of discipline IDs to be validated.
-        remaining_constraints (List[DisciplineConstraint]): A list of remaining DisciplineConstraint objects
-        that define the constraints.
-
-    Returns:
-        bool: True if the list of discipline_ids satisfies the remaining constraints, False otherwise.
+    """Validate a list of discipline_ids against the remaining constraints.
 
     Checks:
         1. The total number of disciplines is within the remaining min_count and max_count constraints.
         2. Each discipline is within the remaining max_repeat constraint.
         3. The selected disciplines are within the allowed set of disciplines defined by the remaining constraints.
-    """
 
+    :param discipline_ids: A list of discipline IDs to be validated.
+    :param remaining_constraints: A list of remaining DisciplineConstraint objects that define the constraints.
+    :returns: True if the list of discipline_ids satisfies the remaining constraints, False otherwise.
+    """
     for constraint in remaining_constraints:
         # Count the occurrences of each discipline
         discipline_counts = Counter(discipline_ids)

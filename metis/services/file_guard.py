@@ -6,15 +6,10 @@ def check_file_access(file: "models.File", user: "models.User") -> bool:
 
     This is done in one place to have a better overview of the access control for private files.
 
-    Args:
-        file: The File to check access for.
-        user: The User to check access for.
-
-    Returns:
-        A bool indicating whether or not the user has access to the file.
-
-    Raises:
-        NotImplementedError: No access control is implemented for the file's content object.
+    :param file: The File to check access for.
+    :param user: The User to check access for.
+    :returns: A bool indicating whether or not the user has access to the file.
+    :raises NotImplementedError: No access control is implemented for the file's content object.
     """
     try:
         education = file.content_object.education  # type: ignore

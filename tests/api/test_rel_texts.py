@@ -5,63 +5,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
 from metis.models.rel import TextEntry
-from metis.utils.factories import (
-    EducationFactory,
-    PlaceFactory,
-    ProjectFactory,
-    ProjectPlaceFactory,
-    UserFactory,
-)
-
-
-@pytest.fixture(autouse=True)
-def education(db):
-    education = EducationFactory()
-    place = PlaceFactory(education=education)
-    project = ProjectFactory(education=education)
-    ProjectPlaceFactory(place=place, project=project)
-    return education
-
-
-@pytest.fixture
-def project(db, education):
-    return education.projects.first()
-
-
-@pytest.fixture
-def place(db, education):
-    return education.places.first()
-
-
-@pytest.fixture
-def office_member(db, education):
-    user = UserFactory()
-    education.office_members.add(user)
-    return user
-
-
-@pytest.fixture
-def office_member_of_other_education(db):
-    user = UserFactory()
-    education2 = EducationFactory()
-    education2.office_members.add(user)  # type: ignore
-    return user
-
-
-@pytest.fixture
-def office_member2(db, education):
-    user = UserFactory()
-    education.office_members.add(user)
-    return user
-
-
-@pytest.fixture
-def user(db):
-    return UserFactory()
 
 
 @pytest.mark.api
 class TestForAnonymous:
+    """Tests for anonymous users."""
+
     expected_status_codes: dict[str, status] = {
         "text_list": status.FORBIDDEN,
         "text_detail": status.FORBIDDEN,
@@ -76,51 +25,53 @@ class TestForAnonymous:
     def _get_text_update_data(self):
         return {}
 
-    def test_list_texts(self, api_client, place):
-        ct = ContentType.objects.get_for_model(place)
-        url = reverse("v1:text-list", args=[ct.id, place.id])
+    def test_list_texts(self, api_client, t_place):  # noqa: D102
+        ct = ContentType.objects.get_for_model(t_place)
+        url = reverse("v1:text-list", args=[ct.id, t_place.id])
         response = api_client.get(url)
         assert response.status_code == self.expected_status_codes["text_list"]
 
-    def test_create_text_place(self, api_client, place):
-        ct = ContentType.objects.get_for_model(place)
-        url = reverse("v1:text-list", args=[ct.id, place.id])
+    def test_create_text_place(self, api_client, t_place):  # noqa: D102
+        ct = ContentType.objects.get_for_model(t_place)
+        url = reverse("v1:text-list", args=[ct.id, t_place.id])
         data = self._get_text_create_data()
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["text_create"]
 
         if response.status_code == status.CREATED:
             assert response.data["text_nl"] == data["text_nl"]
-            assert place.texts.count() == 1
+            assert t_place.texts.count() == 1
 
-    def test_create_text_project(self, api_client, project):
-        ct = ContentType.objects.get_for_model(project)
-        url = reverse("v1:text-list", args=[ct.id, project.id])
+    def test_create_text_project(self, api_client, t_project):  # noqa: D102
+        ct = ContentType.objects.get_for_model(t_project)
+        url = reverse("v1:text-list", args=[ct.id, t_project.id])
         data = self._get_text_create_data()
         response = api_client.post(url, data)
         assert response.status_code == self.expected_status_codes["text_create"]
 
         if response.status_code == status.CREATED:
             assert response.data["text_nl"] == data["text_nl"]
-            assert project.texts.count() == 1
+            assert t_project.texts.count() == 1
 
 
 class TestForAuthenticated(TestForAnonymous):
+    """Tests for authenticated users."""
+
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, user):
-        api_client.force_authenticate(user=user)
+    def setup(self, api_client, t_random_user):  # noqa: D102
+        api_client.force_authenticate(user=t_random_user)
 
 
 class TestForOtherEducationOfficeMember(TestForAuthenticated):
+    """Tests for an office member in another education."""
+
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, office_member_of_other_education):
-        api_client.force_authenticate(user=office_member_of_other_education)
+    def setup(self, api_client, t_random_office_member):  # noqa: D102
+        api_client.force_authenticate(user=t_random_office_member)
 
 
 class TestForOfficeMember(TestForAuthenticated):
-    """
-    Office members can add texts to places, places, project_places, students, contacts...
-    """
+    """Office members can add texts to places, places, project_places, students, contacts..."""
 
     created_by = None
     expected_status_codes = {
@@ -132,9 +83,9 @@ class TestForOfficeMember(TestForAuthenticated):
     }
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, office_member):
-        self.created_by = office_member
-        api_client.force_authenticate(user=office_member)
+    def setup(self, api_client, t_office_member):  # noqa: D102
+        self.created_by = t_office_member
+        api_client.force_authenticate(user=t_office_member)
 
     def _create_text(self, project):
         return TextEntry.objects.create(
@@ -159,29 +110,27 @@ class TestForOfficeMember(TestForAuthenticated):
             "text_en": "EN updated",
         }
 
-    def test_update_text(self, api_client, project):
-        ct = ContentType.objects.get_for_model(project)
-        text = self._create_text(project)
-        url = reverse("v1:text-detail", args=[ct.id, project.id, text.pk])
+    def test_update_text(self, api_client, t_project):  # noqa: D102
+        ct = ContentType.objects.get_for_model(t_project)
+        text = self._create_text(t_project)
+        url = reverse("v1:text-detail", args=[ct.id, t_project.id, text.pk])
         data = self._get_text_update_data()
         response = api_client.patch(url, data)
         assert response.status_code == self.expected_status_codes["text_update"]
 
-    def test_delete_text(self, api_client, project):
-        ct = ContentType.objects.get_for_model(project)
-        text = self._create_text(project)
-        url = reverse("v1:text-detail", args=[ct.id, project.id, text.pk])
+    def test_delete_text(self, api_client, t_project):  # noqa: D102
+        ct = ContentType.objects.get_for_model(t_project)
+        text = self._create_text(t_project)
+        url = reverse("v1:text-detail", args=[ct.id, t_project.id, text.pk])
         data = self._get_text_update_data()
         response = api_client.delete(url, data)
         assert response.status_code == self.expected_status_codes["text_delete"]
 
 
 class TestForOfficeMemberTwo(TestForOfficeMember):
-    """
-    Second office member can also update and delete texts, even if they are not the creator.
-    """
+    """Tests for a second office member in t_education."""
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, office_member, office_member2):
-        self.created_by = office_member
-        api_client.force_authenticate(user=office_member2)
+    def setup(self, api_client, t_office_member, t_second_office_member):  # noqa: D102
+        self.created_by = t_office_member
+        api_client.force_authenticate(user=t_second_office_member)

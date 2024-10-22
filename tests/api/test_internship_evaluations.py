@@ -3,53 +3,18 @@ from http import HTTPStatus as status
 import pytest
 from django.urls import reverse
 
-from metis.utils.factories import (
-    ContactFactory,
-    EducationFactory,
-    EvaluationFormFactory,
-    InternshipFactory,
-    MentorFactory,
-    PeriodFactory,
-    PlaceFactory,
-    ProjectFactory,
-    ProjectPlaceFactory,
-    StudentFactory,
-    UserFactory,
-)
+from metis.utils.factories import ContactFactory, InternshipFactory, MentorFactory, StudentFactory
 from metis.utils.fixtures.forms.evaluations import get_audio_internship_evaluation_form_klinisch
-from metis.utils.fixtures.programs import create_audiology_program
 
 
 @pytest.fixture
-def education(db):  # noqa: D103
-    program = create_audiology_program()
-    place = PlaceFactory.create(education=program.education)
-    ContactFactory.create(place=place, is_mentor=True)
-    project = ProjectFactory.create(education=program.education)
-    ProjectPlaceFactory.create(place=place, project=project)
-    for block in program.blocks.all():
-        for program_internship in block.internships.all():
-            PeriodFactory.create(project=project, program_internship=program_internship)
-    EvaluationFormFactory.create(
-        project=project,
-        has_self_evaluations=True,
-        form_definition=get_audio_internship_evaluation_form_klinisch(),
-    )
-    return program.education
-
-
-@pytest.fixture
-def project_place(db, education):  # noqa: D103
-    return education.projects.first().place_set.first()
-
-
-@pytest.fixture
-def internship(db, project_place):  # noqa: D103
-    student = StudentFactory.create(project=project_place.project)
-    period = project_place.project.periods.first()
+def internship(db, t_project):  # noqa: D103
+    student = StudentFactory.create(project=t_project)
+    period = t_project.periods.first()
+    project_place = t_project.place_set.first()
     available_disciplines = period.program_internship.get_available_disciplines()
     internship = InternshipFactory.create(
-        project=project_place.project,
+        project=t_project,
         period=period,
         project_place=project_place,
         student=student,
@@ -60,29 +25,9 @@ def internship(db, project_place):  # noqa: D103
 
 
 @pytest.fixture
-def office_member(db, education):  # noqa: D103
-    user = UserFactory.create()
-    education.office_members.add(user)
-    return user
-
-
-@pytest.fixture
-def office_member_of_other_education(db):  # noqa: D103
-    user = UserFactory.create()
-    education2 = EducationFactory.create()
-    education2.office_members.add(user)  # type: ignore
-    return user
-
-
-@pytest.fixture
 def place_admin(db, internship):  # noqa: D103
     admin = ContactFactory.create(place=internship.place, is_admin=True)
     return admin.user
-
-
-@pytest.fixture
-def user(db):  # noqa: D103
-    return UserFactory.create()
 
 
 @pytest.mark.api
@@ -103,18 +48,16 @@ class TestForAnonymous:
     def _get_evaluation_create_data(self, internship, is_self_evaluation):
         return {}
 
-    def test_list_evaluations(self, api_client, education, internship):
-        """Test listing evaluations for an internship."""
+    def test_list_evaluations(self, api_client, t_education, internship):  # noqa: D102
         url = reverse(
-            "v1:project-internship-evaluation-list", args=[education.id, internship.project_id, internship.id]
+            "v1:project-internship-evaluation-list", args=[t_education.id, internship.project_id, internship.id]
         )
         response = api_client.get(url)
         assert response.status_code == self.expected_status_codes["evaluation_list"]
 
-    def test_create_evaluation(self, api_client, education, internship, is_self_evaluation=False):
-        """Test creating an evaluation for an internship."""
+    def test_create_evaluation(self, api_client, t_education, internship, is_self_evaluation=False):  # noqa: D102
         url = reverse(
-            "v1:project-internship-evaluation-list", args=[education.id, internship.project_id, internship.id]
+            "v1:project-internship-evaluation-list", args=[t_education.id, internship.project_id, internship.id]
         )
         response = api_client.post(url, self._get_evaluation_create_data(internship, is_self_evaluation))
 
@@ -128,18 +71,15 @@ class TestForAnonymous:
         )
 
         if response.status_code == status.CREATED:
-            data: dict = response.data
-            assert data["internship"] == internship.id
+            assert response.data["internship"] == internship.id  # type: ignore
 
-    def test_create_self_evaluation(self, api_client, education, internship):
-        """Test creating a self evaluation for an internship."""
-        self.test_create_evaluation(api_client, education, internship, is_self_evaluation=True)
+    def test_create_self_evaluation(self, api_client, t_education, internship):  # noqa: D102
+        self.test_create_evaluation(api_client, t_education, internship, is_self_evaluation=True)
 
-    def test_approve_evaluation(self, api_client, education, internship):
-        """Test approving an evaluation for an internship."""
+    def test_approve_evaluation(self, api_client, t_education, internship):  # noqa: D102
         url = reverse(
             "v1:project-internship-evaluation-approve",
-            args=[education.id, internship.project_id, internship.id, 1],
+            args=[t_education.id, internship.project_id, internship.id, 1],
         )
         response = api_client.post(url, {"signed_text": "signature"})
         assert response.status_code == self.expected_status_codes["evaluation_approve"]
@@ -149,9 +89,8 @@ class TestForAuthenticated(TestForAnonymous):
     """Tests for authenticated users."""
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, user):
-        """Log in as user."""
-        api_client.force_authenticate(user=user)
+    def setup(self, api_client, t_random_user):  # noqa: D102
+        api_client.force_authenticate(user=t_random_user)
 
 
 class TestForMentorOrStudent(TestForAuthenticated):
@@ -183,12 +122,11 @@ class TestForMentorOrStudent(TestForAuthenticated):
             "is_self_evaluation": is_self_evaluation,
         }
 
-    def _approve_evaluation(self, api_client, education, internship, is_self_evaluation=False):
-        """Test approving an evaluation for an internship."""
-        self.test_create_evaluation(api_client, education, internship, is_self_evaluation)
+    def _approve_evaluation(self, api_client, t_education, internship, is_self_evaluation=False):  # noqa: D102
+        self.test_create_evaluation(api_client, t_education, internship, is_self_evaluation)
         evaluation = internship.evaluations.first()
         url = reverse(
-            "v1:project-internship-evaluation-approve", args=[education.id, internship.project_id, internship.id, 1]
+            "v1:project-internship-evaluation-approve", args=[t_education.id, internship.project_id, internship.id, 1]
         )
         response = api_client.post(url, {"signed_text": "signature"})
 
@@ -217,24 +155,21 @@ class TestForMentor(TestForMentorOrStudent):
     }
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, internship):
-        """Log in as mentor."""
+    def setup(self, api_client, internship):  # noqa: D102
         api_client.force_authenticate(user=internship.mentors.first().user)
 
-    def test_approve_evaluation(self, api_client, education, internship):
-        """Test approving an evaluation for an internship."""
-        return super()._approve_evaluation(api_client, education, internship)
+    def test_approve_evaluation(self, api_client, t_education, internship):  # noqa: D102
+        return super()._approve_evaluation(api_client, t_education, internship)
 
-    def test_update_approved_evaluation(self, api_client, education, internship):
-        """Test updating an approved evaluation for an internship."""
-        self.test_create_evaluation(api_client, education, internship)
+    def test_update_approved_evaluation(self, api_client, t_education, internship):  # noqa: D102
+        self.test_create_evaluation(api_client, t_education, internship)
         evaluation = internship.evaluations.first()
         evaluation.is_approved = True
         evaluation.save()
 
         url = reverse(
             "v1:project-internship-evaluation-detail",
-            args=[education.id, internship.project_id, internship.id, evaluation.id],
+            args=[t_education.id, internship.project_id, internship.id, evaluation.id],
         )
         response = api_client.put(url, self._get_evaluation_create_data(internship, is_self_evaluation=False))
         assert response.status_code == status.BAD_REQUEST
@@ -244,8 +179,7 @@ class TestForPlaceAdmin(TestForMentor):
     """Tests for internship place admins."""
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, place_admin):
-        """Log in as place admin."""
+    def setup(self, api_client, place_admin):  # noqa: D102
         api_client.force_authenticate(user=place_admin)
 
 
@@ -264,22 +198,19 @@ class TestForStudent(TestForMentorOrStudent):
     }
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, internship):
-        """Log in as student."""
+    def setup(self, api_client, internship):  # noqa: D102
         api_client.force_authenticate(user=internship.student.user)
 
-    def test_approve_evaluation(self, api_client, education, internship):
-        """Test approving a self evaluation for an internship."""
-        self._approve_evaluation(api_client, education, internship, is_self_evaluation=True)
+    def test_approve_evaluation(self, api_client, t_education, internship):  # noqa: D102
+        self._approve_evaluation(api_client, t_education, internship, is_self_evaluation=True)
 
 
 class TestForOtherEducationOfficeMember(TestForAuthenticated):
     """Tests for office members of other educations."""
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, office_member_of_other_education):
-        """Log in as office member of other education."""
-        api_client.force_authenticate(user=office_member_of_other_education)
+    def setup(self, api_client, t_random_office_member):  # noqa: D102
+        api_client.force_authenticate(user=t_random_office_member)
 
 
 class TestForOfficeMember(TestForAuthenticated):
@@ -297,6 +228,5 @@ class TestForOfficeMember(TestForAuthenticated):
     }
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_client, office_member):
-        """Log in as office member."""
-        api_client.force_authenticate(user=office_member)
+    def setup(self, api_client, t_office_member):  # noqa: D102
+        api_client.force_authenticate(user=t_office_member)

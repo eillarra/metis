@@ -20,7 +20,6 @@ from .rel import (
 
 if TYPE_CHECKING:
     from .educations import Education
-    from .rel.files import File
 
 
 def get_place_tags(obj: "Place", *, type: str = "all") -> list[str]:
@@ -140,16 +139,6 @@ class Place(
     def admins(self) -> models.QuerySet:
         """The admin contacts for the place."""
         return self.contacts.filter(is_admin=True)  # type: ignore
-
-    @property
-    def agreement(self) -> "File":
-        """The agreement file for the place."""
-        return self.get_file("agreement")
-
-    @property
-    def risk_analysis(self) -> "File":
-        """The risk analysis file for the place."""
-        return self.get_file("risk_analysis")
 
 
 def find_place_by_name(name: str, education: "Education") -> Place | None:

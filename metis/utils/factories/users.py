@@ -13,7 +13,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.Faker("email")
     last_login = factory.LazyFunction(timezone.now)
 
-    username = factory.LazyAttribute(lambda self: self.email.split("@")[0])
+    username = factory.Sequence(lambda n: f"usename{n}")
     password = factory.django.Password("metis")
 
 

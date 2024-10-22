@@ -25,7 +25,7 @@ class Evaluator:
 
         By default the result of the global score of the final evaluation will be returned.
 
-        :return: A float representing the final score or None if it could not be calculated.
+        :returns: A float representing the final score or None if it could not be calculated.
         """
         if not self.evaluation_form or not self.evaluation:
             return None

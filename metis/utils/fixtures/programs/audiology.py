@@ -11,11 +11,13 @@ from metis.models import (
     TrackInternship,
 )
 
+from .config import get_basic_education_config
+
 
 def create_audiology_program() -> Program:
-    """
-    Create an Audiology program with the following structure:
+    """Create an Audiology program.
 
+    Structure:
     - Program has internships: 1A, 1B, 2A, 2B, 3A, 3B, 4A
     - Internships are distributed across 3 blocks: Ba3, Ma1, Ma2
     - There are 2 tracks: A (1A, 2A, 3A, 4A) and B (1B, 2B, 3B)
@@ -28,10 +30,8 @@ def create_audiology_program() -> Program:
     - Track A internships have no extra constraints: choose between clinical and prosthetic disciplines
     - Track B internships have limited discipline choice: 1B - prosthetic, 2B - clinical, 3B - prosthetic
 
-    Returns:
-        Program: An instance of Program with the specified structure
+    :returns: An instance of program with the specified structure.
     """
-
     # Create Education
     faculty, _ = Faculty.objects.get_or_create(
         name_nl="Faculteit Geneeskunde en Gezondheidswetenschappen",
@@ -44,6 +44,7 @@ def create_audiology_program() -> Program:
         name_en="Hearing Sciences",
         short_name_nl="Audiologie",
         short_name_en="Audiology",
+        config=get_basic_education_config(),
     )
 
     # Create Program
@@ -68,12 +69,14 @@ def create_audiology_program() -> Program:
 
     # Create Disciplines
     clinical, _ = Discipline.objects.get_or_create(
+        id=10001,
         education=education,
         code="klinisch",
         name_nl="Klinisch",
         name_en="Clinical",
     )
     prosthetic, _ = Discipline.objects.get_or_create(
+        id=10002,
         education=education,
         code="prothetisch",
         name_nl="Prothetisch",

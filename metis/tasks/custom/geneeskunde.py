@@ -21,7 +21,7 @@ def sync_students(
     :param education_code: The education code of the students to sync.
     :param year: The year of the students to sync.
     :param qs_filters: Filters to apply to the students queryset.
-    :return: A dictionary mapping the SPARTA student IDs to the Metis student IDs.
+    :returns: A dictionary mapping the SPARTA student IDs to the Metis student IDs.
     """
     student_map = {}
     metis_bot = User.objects.get(username="metis")

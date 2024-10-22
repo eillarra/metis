@@ -156,10 +156,10 @@ class Period(BaseModel):
         return self.start_date <= timezone.now().date() <= self.end_date
 
     def accepts_cases(self, *, extension_days: int = 4) -> bool:
-        """De casus wordt 'automatisch' gekoppeld aan een stage. De uiterste indiendatum kan per project ingesteld worden
-        (Dit wordt ingesteld op niveau van het 'Casustype', analoog aan de instellingen van de datums voor beoordeling
-        stages), typisch is deze uiterste datum relatief tov einddatum van de stage van de student. (De einddatum van
-        de stage van een student valt mogelijks niet samen met een blokgrens.)
+        """De casus wordt 'automatisch' gekoppeld aan een stage. De uiterste indiendatum kan per project ingesteld
+        worden (Dit wordt ingesteld op niveau van het 'Casustype', analoog aan de instellingen van de datums voor
+        beoordeling stages), typisch is deze uiterste datum relatief tov einddatum van de stage van de student.
+        (De einddatum van de stage van een student valt mogelijks niet samen met een blokgrens.)
         """
         return self.is_open or (self.end_date + timezone.timedelta(days=extension_days) < timezone.now().date())
 
@@ -177,7 +177,7 @@ class Period(BaseModel):
         """Get ProjectPlaces for this period.
 
         :param ignore_availability: If True, return all ProjectPlaces, even if they have no availability.
-        :return: ProjectPlaces for this period.
+        :returns: ProjectPlaces for this period.
         """
         if ignore_availability:
             return self.project.project_places

@@ -4,6 +4,17 @@ from .educations import EducationFactory
 from .users import UserFactory
 
 
+class PlaceLocationFactory(factory.django.DjangoModelFactory):
+    """Factory for PlaceLocation model."""
+
+    class Meta:  # noqa: D106
+        model = "metis.PlaceLocation"
+
+    education = factory.SubFactory(EducationFactory)
+    code = factory.Sequence(lambda n: f"placelocationcode{n}")
+    name = factory.Sequence(lambda n: f"Place Location {n}")
+
+
 class PlaceTypeFactory(factory.django.DjangoModelFactory):
     """Factory for PlaceType model."""
 
@@ -22,6 +33,7 @@ class PlaceFactory(factory.django.DjangoModelFactory):
     education = factory.SubFactory(EducationFactory)
     name = factory.Sequence(lambda n: f"Place {n}")
     code = factory.Sequence(lambda n: f"placecode{n}")
+    location = factory.SubFactory(PlaceLocationFactory)
     type = factory.SubFactory(PlaceTypeFactory)
 
 
