@@ -2,11 +2,19 @@
   <div class="row q-col-gutter-sm q-mb-lg">
     <h3 class="text-ugent col-12 col-md-3 q-mb-none use-default-q-btn">
       {{ $t('contact', 9) }}
-      <a v-show="contacts.length" :href="contactsExcelPath" target="_blank">
-        <q-btn round outline :icon="iconDownload" size="sm" color="primary" class="q-ml-md q-pa-xs">
-          <q-tooltip :delay="250">{{ $t('download.excel') }}</q-tooltip>
-        </q-btn>
-      </a>
+      <q-btn
+        v-if="contacts.length"
+        round
+        outline
+        :href="contactsExcelPath"
+        target="_blank"
+        :icon="iconDownload"
+        size="sm"
+        color="primary"
+        class="q-ml-md q-pa-xs"
+      >
+        <q-tooltip :delay="250">{{ $t('download.excel') }}</q-tooltip>
+      </q-btn>
     </h3>
     <div class="col"></div>
     <q-select

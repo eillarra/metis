@@ -38,12 +38,14 @@ import {
   symSharpMail,
   symSharpMap,
   symSharpMarkChatUnread,
+  symSharpMarkEmailRead,
   symSharpMoreTime,
   symSharpNumbers,
   symSharpOpenInBrowser,
   symSharpPendingActions,
   symSharpPlaylistAddCheck,
   symSharpRadioButtonChecked,
+  symSharpRadioButtonUnchecked,
   symSharpSchedule,
   symSharpSearch,
   symSharpSelectCheckBox,
@@ -51,7 +53,6 @@ import {
   symSharpSettingsAccountBox,
   symSharpSignature,
   symSharpSmartToy,
-  symSharpStar,
   symSharpSplitscreenLeft,
   symSharpStackedEmail,
   symSharpStylusNote,
@@ -84,6 +85,7 @@ export const iconDownload = symSharpDownload;
 export const iconDraft = symSharpStylusNote;
 export const iconEdit = symSharpEdit;
 export const iconEmail = symSharpMail;
+export const iconEmailPrimary = symSharpMarkEmailRead;
 export const iconEmails = symSharpStackedEmail;
 export const iconEmailSettings =
   'm720-440-12.031 60c-8 3.333-15.5 6.802-22.5 10.469-7 3.666-14.151 8.182-21.485 13.515l-57.968-17.968-40 67.968 45.937 40c-1.333 8-1.953 16.683-1.953 26.016 0 9.333.62 18.016 1.953 26.016l-45.937 40 40 67.968 57.968-17.968c7.334 5.333 14.485 9.849 21.485 13.515 7 3.667 14.5 7.136 22.5 10.469L720-40h80l11.953-60c8-3.333 15.5-6.802 22.5-10.469 7-3.666 14.23-8.182 21.563-13.515l57.968 17.968 40-67.968-46.015-40c1.333-8 2.031-16.683 2.031-26.016 0-9.333-.698-18.016-2.031-26.016l46.015-40-40-67.968-57.968 17.968c-7.334-5.333-14.563-9.849-21.563-13.515-7-3.667-14.5-7.136-22.5-10.469L800-440Zm40 120c22 0 40.818 7.849 56.484 23.516C832.151-280.818 840-262 840-240s-7.849 40.818-23.516 56.484C800.818-167.849 782-160 760-160s-40.818-7.849-56.484-23.516C687.849-199.182 680-218 680-240s7.849-40.818 23.516-56.484C719.182-312.151 738-320 760-320ZM80-800v640h412.031c-4-13.333-7.062-26.531-9.062-39.531-2-13-2.969-26.469-2.969-40.469H160v-400l320 200 320-200v123.984c14 2 27.818 4.985 41.484 8.985 13.667 4 26.516 9 38.516 15V-800Zm80 80h640L480-520z|0 -960 960 960';
@@ -98,13 +100,12 @@ export const iconMicrosoft = symSharpSettingsAccountBox;
 export const iconMentors = symSharpContacts;
 export const iconNumbers = symSharpNumbers;
 export const iconOpenDialog = symSharpOpenInBrowser;
+export const iconRadioChecked = symSharpRadioButtonChecked;
+export const iconRadioUnchecked = symSharpRadioButtonUnchecked;
 export const iconRobot = symSharpSmartToy;
 export const iconSearch = symSharpSearch;
 export const iconSettings = symSharpSettings;
 export const iconSignature = symSharpSignature;
-export const iconStar =
-  'm233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z|0 -960 960 960';
-export const iconStarEmpty = symSharpStar;
 export const iconTime = symSharpSchedule;
 export const iconTimeDashed = symSharpHistoryToggleOff;
 

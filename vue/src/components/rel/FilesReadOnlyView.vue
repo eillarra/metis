@@ -10,7 +10,7 @@
       <div v-for="file in files" :key="file.id" class="col-12 col-sm-4 col-md-2">
         <file-card :title="file.description" class="column full-height">
           <template #actions>
-            <q-btn flat round :icon="iconDownload" :size="btnSize" @click="openRelatedFile(file)" />
+            <q-btn flat round :href="file.url" target="_blank" :icon="iconDownload" :size="btnSize" />
           </template>
         </file-card>
       </div>
@@ -29,8 +29,4 @@ defineProps<{
 }>();
 
 const btnSize = '13px';
-
-async function openRelatedFile(file: RelatedFile) {
-  window.open(file.url, '_blank');
-}
 </script>

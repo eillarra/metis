@@ -200,6 +200,7 @@ export default {
       save: 'Contactpersoon opslaan',
       saved: 'Contactpersoon informatie opgeslagen',
       email: {
+        add: 'Nieuwe email toevoegen',
         added: 'Email toegevoegd aan contactpersoon',
         confirm_delete: 'Ben je zeker dat je deze email ({email}) wil verwijderen?',
         deleted: 'Email verwijderd',

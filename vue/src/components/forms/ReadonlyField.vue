@@ -1,5 +1,5 @@
 <template>
-  <q-field :label="label" readonly dense stack-label class="col">
+  <q-field :label="label" readonly dense stack-label :class="{ 'force-align': !label }">
     <template #control>
       <div class="self-center full-width no-outline" tabindex="0">{{ value }}</div>
     </template>

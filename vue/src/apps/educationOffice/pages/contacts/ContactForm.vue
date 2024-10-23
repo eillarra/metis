@@ -29,12 +29,12 @@
               <span class="text-body2">{{ $t('field.email_address', 9) }}</span>
               <readonly-field v-for="eaddress in sortedEmailAddresses" :key="eaddress.email" :value="eaddress.email">
                 <template #prepend>
-                  <q-icon v-if="eaddress.primary" :name="iconStar" color="dark" size="xs" />
+                  <q-icon v-if="eaddress.primary" :name="iconEmailPrimary" color="dark" size="xs" />
                   <q-icon
                     v-else
                     @click="changeContactPrimaryEmail(eaddress.email)"
-                    :name="iconStarEmpty"
-                    color="dark"
+                    :name="iconEmail"
+                    color="grey-4"
                     size="xs"
                     class="cursor-pointer"
                   />
@@ -51,7 +51,7 @@
                 </template>
               </readonly-field>
               <q-input
-                :placeholder="'Add new email'"
+                :placeholder="$t('form.contact.email.add')"
                 v-model.trim="newEmail"
                 type="email"
                 dense
@@ -104,9 +104,9 @@ import {
   iconChat,
   iconContact,
   iconDelete,
+  iconEmail,
+  iconEmailPrimary,
   iconInfo,
-  iconStar,
-  iconStarEmpty,
   iconTimeDashed,
 } from '@/icons';
 
@@ -126,8 +126,6 @@ const newEmail = ref<string>('');
 
 const sortedEmailAddresses = computed<EmailAddressObject[]>(() => {
   return obj.value.email_addresses.sort((a, b) => {
-    if (a.primary && !b.primary) return -1;
-    if (!a.primary && b.primary) return 1;
     return a.email.localeCompare(b.email);
   });
 });
@@ -183,6 +181,7 @@ function addContactEmail() {
     .then((res) => {
       obj.value.email_addresses = res.data.email_addresses;
       newEmail.value = '';
+      store.updateObj('contact', res.data);
       notify.success(t('form.contact.email.added'));
     });
 }
@@ -208,6 +207,7 @@ function changeContactPrimaryEmail(email: string) {
       })
       .then((res) => {
         obj.value.email_addresses = res.data.email_addresses;
+        store.updateObj('contact', res.data);
         notify.success(t('form.contact.email.changed_primary'));
       });
   });

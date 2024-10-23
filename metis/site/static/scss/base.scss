@@ -247,6 +247,10 @@ code, kbd, pre, samp,
   }
 }
 
+.q-field.force-align .q-field__control {
+  align-items: center;
+}
+
 
 @import '_marked.scss';
 @import '_ugent.scss';

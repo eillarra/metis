@@ -27,7 +27,7 @@
             <visibility-badges :tags="file.tags" />
           </template>
           <template #actions>
-            <q-btn flat round :icon="iconDownload" :size="btnSize" @click="openRelatedFile(file)" />
+            <q-btn flat round :href="file.url" target="_blank" :icon="iconDownload" :size="btnSize" />
             <q-space />
             <q-btn
               v-if="!readOnly"
@@ -160,10 +160,6 @@ async function deleteRelatedFile(file: RelatedFile) {
       files.value.splice(files.value.indexOf(file), 1);
     });
   });
-}
-
-async function openRelatedFile(file: RelatedFile) {
-  window.open(file.url, '_blank');
 }
 
 fetchRelatedFiles();

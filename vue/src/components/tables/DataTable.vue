@@ -66,7 +66,7 @@ $in-table-dense-field-height: 28px;
           <q-icon :name="iconSearch" />
         </template>
       </q-input>
-      <q-space />
+      <q-space v-else />
       <q-select
         v-if="!hideColumnSelector"
         v-model="visibleColumns"

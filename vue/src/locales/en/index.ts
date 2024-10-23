@@ -201,6 +201,7 @@ export default {
       save: 'Save contact',
       saved: 'Contact information saved',
       email: {
+        add: 'Add new email',
         added: 'Email added to contact',
         confirm_delete: 'Are you sure you want to delete this email ({email})?',
         deleted: 'Email deleted',
