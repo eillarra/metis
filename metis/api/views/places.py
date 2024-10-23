@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from metis.models import Contact, Place, Project, User, find_user_by_email
 from metis.services.graph import register_emails_at_ugent
-from metis.services.mailer.contacts import schedule_invitation_email
+from metis.services.mailer.contacts import schedule_welcome_email
 
 from ..permissions import IsEducationOfficeMember
 from ..serializers import ContactSerializer, PlaceSerializer
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from metis.models.educations import Education
 
 
-def schedule_contact_invitation_email(contact: Contact, project_id: int | None) -> None:
+def schedule_contact_welcome_email(contact: Contact, project_id: int | None) -> None:
     """Schedule an invitation email for a contact, adding the project info to the email logs (if set)."""
     project = None
 
@@ -33,7 +33,7 @@ def schedule_contact_invitation_email(contact: Contact, project_id: int | None) 
         except Project.DoesNotExist:
             project = None
 
-    schedule_invitation_email(contact, project=project)
+    schedule_welcome_email(contact, project=project)
 
 
 class PlaceViewSet(EducationNestedModelViewSet):
@@ -62,7 +62,8 @@ class PlaceViewSet(EducationNestedModelViewSet):
         contact = Contact.objects.create(place=self.get_object(), user=user, created_by=self.request.user, **data)
         self.get_object().contacts.add(contact)
 
-        schedule_contact_invitation_email(contact, request.data.get("project_id", None))
+        if contact.education.configuration["place_contact_welcome_email"]:
+            schedule_contact_welcome_email(contact, request.data.get("project_id", None))
 
         return Response(ContactSerializer(contact, context={"request": request}).data, status=status.CREATED)
 
@@ -145,7 +146,7 @@ class ContactViewSet(PlaceNestedModelViewSet):
     @action(detail=True, methods=["post"])
     def invite(self, request, *args, **kwargs):
         """Invite contact to place."""
-        schedule_contact_invitation_email(self.get_object(), request.data.get("project_id", None))
+        schedule_contact_welcome_email(self.get_object(), request.data.get("project_id", None))
         return Response(status=status.NO_CONTENT)
 
     @action(detail=True, methods=["post"])

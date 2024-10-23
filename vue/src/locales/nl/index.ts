@@ -1,6 +1,3 @@
-import { add } from "date-fns";
-import { emit } from "process";
-
 export default {
   ugent: 'Universiteit Gent',
   ge: 'Faculteit Geneeskunde en Gezondheidswetenschappen',
@@ -156,6 +153,7 @@ export default {
     updated: 'Bijgewerkt',
     send_email: 'E-mail versturen',
     send_email_to: 'Mailen naar {email}',
+    send_welcome_email: 'Welkomstmail versturen',
     email_sent: 'E-mail verstuurd',
     add_to_place: 'Voeg toe aan stageplaats',
     add_to_project: 'Voeg toe aan project',
@@ -187,11 +185,13 @@ export default {
         new: 'Nieuwe contactpersoon aanmaken',
         add_existing: 'Bestaande account toevoegen',
         search:
-          'Als de contactpersoon een account heeft, kan je deze hier toevoegen. Als er geen account gevonden wordt, kan je de contactpersoon uitnodigen om er een aan te maken.',
-        invite:
-          'Er zal een email verstuurd worden naar de contactpersoon om hen uit te nodigen om een account aan te maken. Ze zullen aan het project toegevoegd worden nadat ze een account hebben aangemaakt.',
+          'Als de contactpersoon een account heeft, kan je deze hier toevoegen. Als er geen account gevonden wordt, je kan een nieuwe account aanmaken ("overslaan").',
+        create_and_welcome:
+          'De volgende informatie zal gebruikt worden om een account aan te maken voor de contactpersoon. Een welkomstmail zal verstuurd worden naar de contactpersoon.',
+        create_no_welcome:
+          'De volgende informatie zal gebruikt worden om een account aan te maken voor de contactpersoon. Er zal geen welkomstmail verstuurd worden naar de contactpersoon.',
         success: 'Contactpersoon aangemaakt',
-        invited: 'Contactpersoon uitgenodigd',
+        welcome_email_sent: 'Welkomstmail verstuurd naar contactpersoon',
         exists_warning: 'Deze contactpersoon heeft al een account',
       },
       delete: 'Contactpersoon verwijderen',
@@ -205,7 +205,7 @@ export default {
         deleted: 'Email verwijderd',
         confirm_change_primary: 'Ben je zeker dat je {email} het primaire emailadres wil maken voor {name}?',
         changed_primary: 'Primaire emailadres gewijzigd',
-      }
+      },
     },
     evaluation: {
       create: {

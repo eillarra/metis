@@ -58,6 +58,10 @@ class EducationConfig(BaseModel):
         default=False,
         description="Whether staff level contacts are allowed, or just a simple contact > mentor > admin hierarchy",
     )
+    place_contact_welcome_email: bool = Field(
+        default=True,
+        description="Whether a welcome email is sent to new contacts created by the education office",
+    )
     student_update_dates: bool = Field(
         default=False,
         description="Whether students can update their internship dates",

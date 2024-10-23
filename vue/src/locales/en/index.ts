@@ -154,6 +154,7 @@ export default {
     updated: 'Updated',
     send_email: 'Send email',
     send_email_to: 'Mail to {email}',
+    send_welcome_email: 'Send welcome email',
     email_sent: 'Email sent',
     add_to_place: 'Add to place',
     add_to_project: 'Add to project',
@@ -185,11 +186,13 @@ export default {
         new: 'Create a new contact',
         add_existing: 'Add existing user account',
         search:
-          'If the contact has an account, you can add it here. If no account is found, you can invite the contact to create one.',
-        invite:
-          'An email will be sent to the contact to invite them to create an account. They will be added to the project once they have created an account.',
+          'If the contact has an account, you can add it here. If no account is found, you can create a new one bellow ("skip").',
+        create_and_welcome:
+          'The following information will be used to create an account for the contact. A welcome email will be sent to the contact.',
+        create_no_welcome:
+          'The following information will be used to create an account for the contact. No welcome email will be sent automatically.',
         success: 'Contact created',
-        invited: 'Contact invited',
+        welcome_email_sent: 'Welcome email sent to contact',
         exists_warning: 'This contact has already an account',
       },
       delete: 'Delete contact',
@@ -203,7 +206,7 @@ export default {
         deleted: 'Email deleted',
         confirm_change_primary: 'Are you sure you want to make {email} the primary email address for {name}?',
         changed_primary: 'Primary email address changed',
-      }
+      },
     },
     evaluation: {
       create: {

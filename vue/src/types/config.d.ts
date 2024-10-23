@@ -23,6 +23,7 @@ interface EducationConfig {
   place_text_types: PlaceTextEntryType[];
   place_set_disciplines_per_block: boolean;
   place_contact_is_staff: boolean;
+  place_contact_welcome_email: boolean;
   student_update_dates: boolean;
   timesheets_extra_form: CustomFormDefinition | null;
 }

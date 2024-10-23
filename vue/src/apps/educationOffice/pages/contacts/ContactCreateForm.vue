@@ -52,7 +52,10 @@
           </q-stepper-navigation>
         </q-step>
         <q-step :name="2" :title="$t('form.contact.create.new')" :icon="iconEmail" :active-icon="iconEmail">
-          {{ $t('form.contact.create.invite') }}
+          <div v-if="education?.configuration?.place_contact_welcome_email">
+            {{ $t('form.contact.create.create_and_welcome') }}
+          </div>
+          <div v-else>{{ $t('form.contact.create.create_no_welcome') }}</div>
           <div class="q-gutter-sm q-mt-sm">
             <div class="row q-col-gutter-lg q-pt-sm">
               <q-checkbox v-model="formData.is_mentor" :label="t('mentor')" class="col-6 col-md-3" />
@@ -85,9 +88,9 @@
         <q-space />
         <q-btn
           unelevated
-          @click="inviteContact"
+          @click="createContact"
           color="ugent"
-          :label="$t('form.invite')"
+          :label="$t('form.create')"
           :disable="!selectedPlace || !formData.name || !formData.email"
         />
       </div>
@@ -176,7 +179,7 @@ function addContact() {
   });
 }
 
-function inviteContact() {
+function createContact() {
   if (!selectedPlace.value) return;
 
   api
@@ -206,7 +209,7 @@ function inviteContact() {
 
       api.post(`${selectedPlace.value?.self}invite/`, data).then((res) => {
         store.createObj('contact', res.data);
-        notify.success(t('form.contact.create.invited'));
+        notify.success(t('form.contact.create.success'));
         emit('create:obj');
       });
     });

@@ -30,15 +30,35 @@
               <readonly-field v-for="eaddress in sortedEmailAddresses" :key="eaddress.email" :value="eaddress.email">
                 <template #prepend>
                   <q-icon v-if="eaddress.primary" :name="iconStar" color="dark" size="xs" />
-                  <q-icon v-else @click="changeContactPrimaryEmail(eaddress.email)" :name="iconStarEmpty" color="dark" size="xs" class="cursor-pointer" />
+                  <q-icon
+                    v-else
+                    @click="changeContactPrimaryEmail(eaddress.email)"
+                    :name="iconStarEmpty"
+                    color="dark"
+                    size="xs"
+                    class="cursor-pointer"
+                  />
                 </template>
                 <template #append>
-                  <q-icon v-if="!eaddress.primary" @click="deleteContactEmail(eaddress.email)" color="red" :name="iconDelete" size="xs" class="cursor-pointer" />
+                  <q-icon
+                    v-if="!eaddress.primary"
+                    @click="deleteContactEmail(eaddress.email)"
+                    color="red"
+                    :name="iconDelete"
+                    size="xs"
+                    class="cursor-pointer"
+                  />
                 </template>
               </readonly-field>
-              <q-input :placeholder="'Add new email'" v-model.trim="newEmail" type="email" dense class="use-default-q-btn">
+              <q-input
+                :placeholder="'Add new email'"
+                v-model.trim="newEmail"
+                type="email"
+                dense
+                class="use-default-q-btn"
+              >
                 <template #append>
-                  <q-icon @click="addContactEmail" :name="iconAddBox" color="ugent" size="xs" />
+                  <q-icon @click="addContactEmail" :name="iconAddBox" color="ugent" size="xs" class="cursor-pointer" />
                 </template>
               </q-input>
             </div>
@@ -56,7 +76,7 @@
       <div v-if="tab == 'info'" class="flex q-gutter-sm q-pa-lg">
         <q-btn @click="removeContact" outline color="red" :label="$t('form.contact.delete')" />
         <q-space />
-        <q-btn @click="inviteContact" outline color="ugent" :label="$t('form.invite')" />
+        <q-btn @click="welcomeContact" outline color="ugent" :label="$t('form.send_welcome_email')" />
         <q-btn @click="save" unelevated color="ugent" :label="$t('form.contact.save')" />
       </div>
     </template>
@@ -87,7 +107,7 @@ import {
   iconInfo,
   iconStar,
   iconStarEmpty,
-  iconTimeDashed
+  iconTimeDashed,
 } from '@/icons';
 
 const emit = defineEmits(['delete:obj']);
@@ -143,47 +163,53 @@ function removeContact() {
   });
 }
 
-function inviteContact() {
+function welcomeContact() {
   const data = {
     project_id: project.value?.id || null,
   };
 
   api.post(`${obj.value.self}invite/`, data).then(() => {
-    notify.success(t('form.contact.create.invited'));
+    notify.success(t('form.contact.create.welcome_email_sent'));
   });
 }
 
 function addContactEmail() {
   if (!newEmail.value) return;
 
-  api.post(`${obj.value.self}add_email/`, {
-    "email": newEmail.value,
-  }).then((res) => {
-    obj.value.email_addresses = res.data.email_addresses;
-    newEmail.value = '';
-    notify.success(t('form.contact.email.added'));
-  });
+  api
+    .post(`${obj.value.self}add_email/`, {
+      email: newEmail.value,
+    })
+    .then((res) => {
+      obj.value.email_addresses = res.data.email_addresses;
+      newEmail.value = '';
+      notify.success(t('form.contact.email.added'));
+    });
 }
 
 function deleteContactEmail(email: string) {
   confirm(t('form.contact.email.confirm_delete', { email: email }), () => {
-    api.post(`${obj.value.self}delete_email/`, {
-      "email": email,
-    }).then(() => {
-      obj.value.email_addresses = obj.value.email_addresses.filter((e) => e.email !== email);
-      notify.success(t('form.contact.email.deleted'));
-    });
+    api
+      .post(`${obj.value.self}delete_email/`, {
+        email: email,
+      })
+      .then(() => {
+        obj.value.email_addresses = obj.value.email_addresses.filter((e) => e.email !== email);
+        notify.success(t('form.contact.email.deleted'));
+      });
   });
 }
 
 function changeContactPrimaryEmail(email: string) {
   confirm(t('form.contact.email.confirm_change_primary', { email: email, name: obj.value.user.name }), () => {
-    api.post(`${obj.value.self}change_primary_email/`, {
-      "email": email,
-    }).then((res) => {
-      obj.value.email_addresses = res.data.email_addresses;
-      notify.success(t('form.contact.email.changed_primary'));
-    });
+    api
+      .post(`${obj.value.self}change_primary_email/`, {
+        email: email,
+      })
+      .then((res) => {
+        obj.value.email_addresses = res.data.email_addresses;
+        notify.success(t('form.contact.email.changed_primary'));
+      });
   });
 }
 </script>
