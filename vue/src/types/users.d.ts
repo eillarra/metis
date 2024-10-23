@@ -1,6 +1,12 @@
+interface EmailAddressObject {
+  email: EmailAddress;
+  verified: boolean;
+  primary: boolean;
+}
+
 interface UserTiny extends ApiObject {
   name: string;
-  email: string;
+  email: EmailAddress;
 }
 
 interface UserLastLogin extends UserTiny {

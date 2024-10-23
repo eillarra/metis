@@ -25,6 +25,23 @@
               />
               <q-checkbox v-model="obj.is_admin" :label="t('admin')" class="col-6 col-md-2" />
             </div>
+            <div class="q-mt-md">
+              <span class="text-body2">{{ $t('field.email_address', 9) }}</span>
+              <readonly-field v-for="eaddress in sortedEmailAddresses" :key="eaddress.email" :value="eaddress.email">
+                <template #prepend>
+                  <q-icon v-if="eaddress.primary" :name="iconStar" color="dark" size="xs" />
+                  <q-icon v-else @click="changeContactPrimaryEmail(eaddress.email)" :name="iconStarEmpty" color="dark" size="xs" class="cursor-pointer" />
+                </template>
+                <template #append>
+                  <q-icon v-if="!eaddress.primary" @click="deleteContactEmail(eaddress.email)" color="red" :name="iconDelete" size="xs" class="cursor-pointer" />
+                </template>
+              </readonly-field>
+              <q-input :placeholder="'Add new email'" v-model.trim="newEmail" type="email" dense class="use-default-q-btn">
+                <template #append>
+                  <q-icon @click="addContactEmail" :name="iconAddBox" color="ugent" size="xs" />
+                </template>
+              </q-input>
+            </div>
           </div>
         </q-tab-panel>
         <q-tab-panel name="remarks">
@@ -62,7 +79,16 @@ import ReadonlyField from '@/components/forms/ReadonlyField.vue';
 import UpdatedByView from '@/components/forms/UpdatedByView.vue';
 import RemarksView from '@/components/rel/RemarksView.vue';
 
-import { iconChat, iconContact, iconInfo, iconTimeDashed } from '@/icons';
+import {
+  iconAddBox,
+  iconChat,
+  iconContact,
+  iconDelete,
+  iconInfo,
+  iconStar,
+  iconStarEmpty,
+  iconTimeDashed
+} from '@/icons';
 
 const emit = defineEmits(['delete:obj']);
 
@@ -76,6 +102,15 @@ const { education, project } = storeToRefs(store);
 
 const tab = ref<string>('info');
 const obj = ref<Contact>(props.obj);
+const newEmail = ref<string>('');
+
+const sortedEmailAddresses = computed<EmailAddressObject[]>(() => {
+  return obj.value.email_addresses.sort((a, b) => {
+    if (a.primary && !b.primary) return -1;
+    if (!a.primary && b.primary) return 1;
+    return a.email.localeCompare(b.email);
+  });
+});
 
 const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
   if (!props.obj) return null;
@@ -115,6 +150,40 @@ function inviteContact() {
 
   api.post(`${obj.value.self}invite/`, data).then(() => {
     notify.success(t('form.contact.create.invited'));
+  });
+}
+
+function addContactEmail() {
+  if (!newEmail.value) return;
+
+  api.post(`${obj.value.self}add_email/`, {
+    "email": newEmail.value,
+  }).then((res) => {
+    obj.value.email_addresses = res.data.email_addresses;
+    newEmail.value = '';
+    notify.success(t('form.contact.email.added'));
+  });
+}
+
+function deleteContactEmail(email: string) {
+  confirm(t('form.contact.email.confirm_delete', { email: email }), () => {
+    api.post(`${obj.value.self}delete_email/`, {
+      "email": email,
+    }).then(() => {
+      obj.value.email_addresses = obj.value.email_addresses.filter((e) => e.email !== email);
+      notify.success(t('form.contact.email.deleted'));
+    });
+  });
+}
+
+function changeContactPrimaryEmail(email: string) {
+  confirm(t('form.contact.email.confirm_change_primary', { email: email, name: obj.value.user.name }), () => {
+    api.post(`${obj.value.self}change_primary_email/`, {
+      "email": email,
+    }).then((res) => {
+      obj.value.email_addresses = res.data.email_addresses;
+      notify.success(t('form.contact.email.changed_primary'));
+    });
   });
 }
 </script>

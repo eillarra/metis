@@ -4,7 +4,7 @@ from metis.models import Contact, Place, PlaceLocation, PlaceType, User
 
 from .base import BaseModelSerializer, BaseTranslatedModelSerializer, NestedHyperlinkField
 from .rel import AddressesMixin, AddressSerializer, FilesMixin, PhoneNumbersMixin, RemarksMixin, TextEntriesMixin
-from .users import UserLastLoginSerializer
+from .users import EmailAddressSerializer, UserLastLoginSerializer
 
 
 education_lookup_fields = {
@@ -27,10 +27,15 @@ class ContactSerializer(RemarksMixin, BaseModelSerializer):
     user = UserLastLoginSerializer(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(source="user", queryset=User.objects.all(), write_only=True)
     place = serializers.PrimaryKeyRelatedField(read_only=True)
+    email_addresses = serializers.SerializerMethodField()
 
     class Meta:  # noqa: D106
         model = Contact
         exclude = ("created_at", "created_by")
+
+    def get_email_addresses(self, obj):
+        """Return the email addresses of the user."""
+        return EmailAddressSerializer(obj.user.emailaddress_set.all(), many=True).data
 
 
 class PlaceSerializer(

@@ -98,6 +98,7 @@ export default {
   type: 'Type | Types',
   field: {
     email: 'Email | Emails',
+    email_address: 'Email address | Email addresses',
     name: 'Name | Names',
     code: 'Internal code | Internal codes',
     date: 'Date | Dates',
@@ -196,6 +197,13 @@ export default {
       deleted: 'Contact deleted',
       save: 'Save contact',
       saved: 'Contact information saved',
+      email: {
+        added: 'Email added to contact',
+        confirm_delete: 'Are you sure you want to delete this email ({email})?',
+        deleted: 'Email deleted',
+        confirm_change_primary: 'Are you sure you want to make {email} the primary email address for {name}?',
+        changed_primary: 'Primary email address changed',
+      }
     },
     evaluation: {
       create: {

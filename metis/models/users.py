@@ -2,14 +2,12 @@ from typing import TYPE_CHECKING
 
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.signals import pre_social_login
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 
-from metis.services.graph import GraphAPI
-from metis.services.mailer import send_email_to_admins
+from metis.services.graph import register_emails_at_ugent
 
 from .rel import AddressesMixin, LinksMixin, PhoneNumbersMixin
 
@@ -95,12 +93,8 @@ class User(AddressesMixin, PhoneNumbersMixin, LinksMixin, AbstractUser):
         for email in emails:
             EmailAddress.objects.create(user=user, email=email, verified=False, primary=email == primary_email)
 
-        if settings.ENV == "production":
-            with GraphAPI() as graph:
-                for email in emails:
-                    _, _, enabled = graph.register_email(email)
-                    if not enabled:
-                        send_email_to_admins(f"Email disabled at UGent: {email} EOM")
+        # register the emails on the UGent tenant
+        register_emails_at_ugent(emails)
 
         return user
 

@@ -4,6 +4,9 @@ from typing import NamedTuple
 
 import requests
 from allauth.socialaccount.models import SocialApp
+from django.conf import settings
+
+from metis.services.mailer import send_email_to_admins
 
 
 class GraphToken(NamedTuple):
@@ -129,3 +132,19 @@ class GraphAPI:
         res.raise_for_status()
 
         return True, res.json()["invitedUser"]["id"], True
+
+
+def register_emails_at_ugent(emails: list[str]) -> None:
+    """Register one or more email addresses on the UGent tenant.
+
+    :param emails: The email addresses to register.
+    """
+    if settings.ENV == "production":
+        with GraphAPI() as graph:
+            for email in emails:
+                _, _, enabled = graph.register_email(email)
+                if not enabled:
+                    send_email_to_admins(f"Email disabled at UGent: {email} EOM")
+
+    else:
+        print("Emails registered only on production:", emails)

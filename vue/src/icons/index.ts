@@ -51,6 +51,7 @@ import {
   symSharpSettingsAccountBox,
   symSharpSignature,
   symSharpSmartToy,
+  symSharpStar,
   symSharpSplitscreenLeft,
   symSharpStackedEmail,
   symSharpStylusNote,
@@ -62,6 +63,7 @@ export const iconAccount =
   'M222-255q63-40 124.5-60.5T480-336q72 0 134 20.5T739-255q44-54 62.5-109T820-480q0-145-97.5-242.5T480-820q-145 0-242.5 97.5T140-480q0 61 19 116t63 109Zm257.81-195q-57.81 0-97.31-39.69-39.5-39.68-39.5-97.5 0-57.81 39.69-97.31 39.68-39.5 97.5-39.5 57.81 0 97.31 39.69 39.5 39.68 39.5 97.5 0 57.81-39.69 97.31-39.68 39.5-97.5 39.5Zm-.21 370q-83.15 0-156.28-31.5t-127.22-86Q142-252 111-324.84 80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.5t-127.13 86Q562.74-80 479.6-80Z|0 -960 960 960';
 export const iconActions = symSharpAdsClick;
 export const iconAdd = symSharpAdd;
+export const iconAddBox = 'M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160ZM120-120v-720h720v720H120Z|0 -960 960 960';
 export const iconAttachment = symSharpAttachFile;
 export const iconCalendar = symSharpCalendarMonth;
 export const iconCalendarRange = symSharpDateRange;
@@ -97,6 +99,8 @@ export const iconRobot = symSharpSmartToy;
 export const iconSearch = symSharpSearch;
 export const iconSettings = symSharpSettings;
 export const iconSignature = symSharpSignature;
+export const iconStar = 'm233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z|0 -960 960 960';
+export const iconStarEmpty = symSharpStar;
 export const iconTime = symSharpSchedule;
 export const iconTimeDashed = symSharpHistoryToggleOff;
 

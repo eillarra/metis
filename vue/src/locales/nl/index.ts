@@ -1,3 +1,6 @@
+import { add } from "date-fns";
+import { emit } from "process";
+
 export default {
   ugent: 'Universiteit Gent',
   ge: 'Faculteit Geneeskunde en Gezondheidswetenschappen',
@@ -97,6 +100,7 @@ export default {
   type: 'Type | Types',
   field: {
     email: 'E-mail | E-mails',
+    email_address: 'E-mailadres | E-mailadressen',
     name: 'Naam | Namen',
     code: 'Interne code | Interne codes',
     date: 'Datum | Data',
@@ -195,6 +199,13 @@ export default {
       deleted: 'Contactpersoon verwijderd',
       save: 'Contactpersoon opslaan',
       saved: 'Contactpersoon informatie opgeslagen',
+      email: {
+        added: 'Email toegevoegd aan contactpersoon',
+        confirm_delete: 'Ben je zeker dat je deze email ({email}) wil verwijderen?',
+        deleted: 'Email verwijderd',
+        confirm_change_primary: 'Ben je zeker dat je {email} het primaire emailadres wil maken voor {name}?',
+        changed_primary: 'Primaire emailadres gewijzigd',
+      }
     },
     evaluation: {
       create: {

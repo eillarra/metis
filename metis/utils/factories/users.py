@@ -1,4 +1,5 @@
 import factory
+from allauth.account.models import EmailAddress
 from django.utils import timezone
 
 
@@ -13,8 +14,16 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.Faker("email")
     last_login = factory.LazyFunction(timezone.now)
 
-    username = factory.Sequence(lambda n: f"usename{n}")
+    username = factory.Sequence(lambda n: f"username{n}")
     password = factory.django.Password("metis")
+
+    @factory.post_generation
+    def create_email_address(obj, create, extracted, **kwargs):
+        """Create an email address for the user at EmailAddress."""
+        if not create:
+            return
+
+        EmailAddress.objects.create(user=obj, email=obj.email, primary=True, verified=True)
 
 
 class AdminFactory(UserFactory):

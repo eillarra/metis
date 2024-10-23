@@ -99,6 +99,7 @@ interface Contact extends ApiObject {
   is_mentor: boolean;
   remark_count: number;
   place: number;
+  email_addresses: EmailAddressObject[];
   updated_at: string;
   updated_by: UserTiny | null;
   // -----

@@ -3,7 +3,10 @@
     <template #control>
       <div class="self-center full-width no-outline" tabindex="0">{{ value }}</div>
     </template>
-    <template #append>
+    <template v-if="$slots.prepend" #prepend>
+      <slot name="prepend" />
+    </template>
+    <template v-if="$slots.append" #append>
       <slot name="append" />
     </template>
   </q-field>
@@ -11,7 +14,7 @@
 
 <script setup lang="ts">
 defineProps<{
-  label: string;
   value: string;
+  label?: string;
 }>();
 </script>
