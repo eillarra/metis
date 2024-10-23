@@ -13,6 +13,7 @@
     hide-column-selector
     removable
     @remove:row="removeContact"
+    in-dialog
   />
 </template>
 

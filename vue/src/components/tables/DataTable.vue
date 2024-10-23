@@ -346,10 +346,12 @@ const extendedColumns = computed(() => {
 
 const selectableColumns = computed(() => props.columns.filter((c) => c.label));
 
-const parentName = getCurrentInstance()?.parent?.type.__name || '';
+const parentName = (getCurrentInstance()?.parent?.type.__name || '') + (props.inDialog ? '-dialog' : '');
 const fullPath = `${window.location.href.split('#')[0]}#${route.path}&component=${parentName}`;
 const queryStorageKey = Md5.hashStr(`data_table.query.${fullPath}`);
-const query = ref<string>(props.hideToolbar ? '' : storage.get(queryStorageKey) || route.query.q?.toString() || '');
+const query = ref<string>(
+  props.hideToolbar || props.inDialog ? '' : storage.get(queryStorageKey) || route.query.q?.toString() || '',
+);
 const queriedRows = computed(() => {
   if (!query.value || !props.queryColumns) {
     return props.rows;
