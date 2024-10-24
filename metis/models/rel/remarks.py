@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
 from ..base import BaseModel, TagsMixin
@@ -46,8 +46,19 @@ class RemarksMixin(models.Model):
 
 
 @receiver(post_save, sender=Remark)
-def update_internship_tags(sender, instance, **kwargs):
-    """Update the tags of the associated internship when an evaluation is saved."""
+def post_save_remark(sender, instance, **kwargs):
+    """Update the remark tags of the associated object when an evaluation is saved."""
+    sync_remark_tags(instance)
+
+
+@receiver(post_delete, sender=Remark)
+def post_delete_remark(sender, instance, **kwargs):
+    """Update the remark tags of the associated object when an evaluation is deleted."""
+    sync_remark_tags(instance)
+
+
+def sync_remark_tags(instance):
+    """Sync the remark tags of the associated object."""
     from metis.models import Internship, Place
 
     if isinstance(instance.content_object, Internship):

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
@@ -125,8 +125,19 @@ class FilesMixin(models.Model):
 
 
 @receiver(post_save, sender=File)
-def update_internship_tags(sender, instance, **kwargs):
-    """Update the tags of the associated internship when an evaluation is saved."""
+def post_save_file(sender, instance, **kwargs):
+    """Update the file tags of the associated object when a file is saved."""
+    sync_file_tags(instance)
+
+
+@receiver(post_delete, sender=File)
+def post_delete_file(sender, instance, **kwargs):
+    """Update the file tags of the associated object when a file is deleted."""
+    sync_file_tags(instance)
+
+
+def sync_file_tags(instance):
+    """Sync the file tags of the associated object."""
     from metis.models import Internship, Place
 
     if isinstance(instance.content_object, Internship):

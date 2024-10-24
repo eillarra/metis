@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
 from metis.models.base import BaseModel
@@ -124,8 +124,19 @@ class Timesheet(SignaturesMixin, BaseModel):
 
 
 @receiver(post_save, sender=Timesheet)
-def update_internship_tags(sender, instance, **kwargs):
-    """Update the tags of the associated internship when an evaluation is saved."""
+def post_save_timesheet(sender, instance, **kwargs):
+    """Update the timesheet tags of the associated internship when a timesheet is saved."""
+    sync_timesheet_tags(instance)
+
+
+@receiver(post_delete, sender=Timesheet)
+def post_delete_timesheet(sender, instance, **kwargs):
+    """Update the timesheet tags of the associated internship when a timesheet is deleted."""
+    sync_timesheet_tags(instance)
+
+
+def sync_timesheet_tags(instance):
+    """Sync the timesheet tags of the associated internship."""
     from metis.models.stages.internships import Internship
 
     Internship.update_tags(instance.internship, type="hours")
