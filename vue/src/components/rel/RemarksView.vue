@@ -118,8 +118,8 @@ async function addRemark() {
 async function deleteRemark(remark: Remark) {
   confirm(t('form.remark.confirm_delete'), () => {
     api.delete(remark.self).then(() => {
+      remarks.value = remarks.value.filter((obj) => obj.id !== remark.id);
       notify.success(t('form.remark.deleted'));
-      remarks.value.splice(remarks.value.indexOf(remark), 1);
     });
   });
 }
