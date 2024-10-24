@@ -10,6 +10,21 @@ if TYPE_CHECKING:
     from metis.models import Education, EmailTemplate, Project, User
 
 
+def clean_shared_email(fake_email: str) -> str:
+    """Clean a shared email.
+
+    Sometimes we are forced to use shared emails, that we internally format as: address++ourpart@fld.com
+    These are not real emails, so we need to clean it to get the real email: address@fld.com
+
+    :param email: The email to clean.
+    :returns: The cleaned email.
+    """
+    if "++" not in fake_email:
+        return fake_email
+
+    return fake_email.split("++")[0] + "@" + fake_email.split("@")[1]
+
+
 def render_context(body: str, context: dict) -> str:
     """Render a body with a context.
 
@@ -88,6 +103,9 @@ def schedule_email(
 
     if log_user and f"user.id:{log_user.pk}" not in tags:
         tags.append(f"user.id:{log_user.pk}")
+
+    # Clean shared emails
+    to = [clean_shared_email(email) for email in to]
 
     # Remove duplicate entries
     unique_to = list(set(to))

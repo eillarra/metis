@@ -29,7 +29,12 @@
               <span class="text-body2">{{ $t('field.email_address', 9) }}</span>
               <readonly-field v-for="eaddress in sortedEmailAddresses" :key="eaddress.email" :value="eaddress.email">
                 <template #prepend>
-                  <q-icon v-if="eaddress.primary" :name="iconEmailPrimary" color="dark" size="xs" />
+                  <q-icon
+                    v-if="eaddress.primary"
+                    :name="eaddress.email.includes('++') ? iconEmailWarning : iconEmailPrimary"
+                    color="dark"
+                    size="xs"
+                  />
                   <q-icon
                     v-else
                     @click="changeContactPrimaryEmail(eaddress.email)"
@@ -106,6 +111,7 @@ import {
   iconDelete,
   iconEmail,
   iconEmailPrimary,
+  iconEmailWarning,
   iconInfo,
   iconTimeDashed,
 } from '@/icons';

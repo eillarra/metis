@@ -6,7 +6,7 @@ import requests
 from allauth.socialaccount.models import SocialApp
 from django.conf import settings
 
-from metis.services.mailer import send_email_to_admins
+from metis.services.mailer import clean_shared_email, send_email_to_admins
 
 
 class GraphToken(NamedTuple):
@@ -92,6 +92,7 @@ class GraphAPI:
         :returns: A tuple containing the user's id and status (enabled), or (None, False) if the user was not found.
         :raises requests.HTTPError: If the request to the Graph API fails.
         """
+        email = clean_shared_email(email)
         token = self._get_token()
         response = self.session.get(
             "https://graph.microsoft.com/v1.0/users",
@@ -115,6 +116,7 @@ class GraphAPI:
         :returns: A tuple containing a boolean indicating success or failure, a user id, and account enabled status.
         :raises requests.HTTPError: If the request to the Graph API fails.
         """
+        email = clean_shared_email(email)
         existing_user_id, enabled = self.find_user_by_email(email)
         if existing_user_id:
             return False, existing_user_id, enabled
