@@ -31,7 +31,7 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="remarks">
-          <remarks-view :api-endpoints="remarkEndpoints" />
+          <remarks-view :api-endpoint="obj.rel_remarks" />
         </q-tab-panel>
         <q-tab-panel name="updated_by">
           <updated-by-view :obj="obj" />
@@ -94,13 +94,6 @@ const filteredPeriods = computed(() => {
       obj.value.Student?.Track?.program_internships.includes(period.program_internship)
     );
   });
-});
-
-const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
-  if (!props.obj) return null;
-  return {
-    default: props.obj.rel_remarks,
-  };
 });
 
 function save() {

@@ -158,10 +158,12 @@ $in-table-dense-field-height: 28px;
             <q-badge v-if="props.value" outline :label="props.value" color="dark" />
           </span>
           <span v-else-if="props.col.name == 'remarks'">
-            <q-icon
-              :name="props.value > 0 ? iconChatBadge : iconChat"
-              :color="props.value > 0 ? 'dark' : 'grey-4'"
-              :size="iconSize"
+            <remarks-dialog
+              :api-endpoint="props.row._remarks_endpoint"
+              :title="props.row._remarks_title || undefined"
+              :visibilityOptions="props.row._remarks_visibility_options || undefined"
+              :icon="props.value > 0 ? iconChatBadge : iconChat"
+              :icon-color="props.value > 0 ? 'dark' : 'grey-4'"
             />
           </span>
           <span v-else-if="props.col.name.startsWith('steps_')" class="q-gutter-x-xs">
@@ -256,6 +258,7 @@ import { notify } from '@/notify';
 import { storage } from '@/storage';
 
 import NoResults from '@/components/NoResults.vue';
+import RemarksDialog from '@/components/rel/RemarksDialog.vue';
 
 import {
   iconAdd,

@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-col-gutter-sm q-mb-lg">
+  <div v-if="!hideTitle" class="row q-col-gutter-sm q-mb-lg">
     <h4 class="col-12 col-md-3 q-mt-none q-mb-none">
       {{ $t('remark', 9) }}
     </h4>
@@ -33,25 +33,6 @@
       </div>
     </div>
     <div class="bg-white q-pa-lg">
-      <!--<q-select
-        v-if="!skipTypes"
-        v-model="selectedRemarkType"
-        clearable
-        dense
-        rounded
-        outlined
-        :options="remarkTypeOptions"
-        :label="$t('type')"
-        options-dense
-        emit-value
-        map-options
-        class="col-6 col-md-4"
-        :bg-color="selectedRemarkType !== null ? 'blue-1' : 'white'"
-      >
-        <template #selected-item="scope">
-          <span class="ellipsis">{{ scope.opt.label }}</span>
-        </template>
-      </q-select>-->
       <q-page-sticky expand position="bottom" class="bg-white z-top">
         <div class="full-width full-height text-right q-px-lg q-pb-lg">
           <q-input v-model="remarkText" :label="$t('form.remark.create.new')" autogrow clearable class="q-mb-md" />
@@ -84,36 +65,16 @@ const page = usePage();
 const djangoUser = computed<DjangoAuthenticatedUser>(() => page.props.django_user as DjangoAuthenticatedUser);
 
 const props = defineProps<{
-  apiEndpoints: Record<string, ApiEndpoint> | null;
+  apiEndpoint: ApiEndpoint | null;
   remarkTypes?: Record<string, string>;
   visibilityOptions?: string[];
+  hideTitle?: boolean;
 }>();
 
 const loading = ref<boolean>(true);
 const remarks = ref<Remark[]>([]);
 const remarkText = ref<string>('');
 const remarkTags = ref<Tags>([]);
-const selectedRemarkType = ref<string | null>(null);
-
-const skipTypes = computed(() => {
-  // skip type selection if we only have one "default" endpoint
-  const keys = Object.keys(props.apiEndpoints ?? {});
-  return keys.length == 1 && keys[0] == 'default';
-});
-
-const remarkTypeOptions = computed(() => {
-  if (!props.apiEndpoints) return [];
-  return Object.keys(props.apiEndpoints).map((key) => ({
-    label: props.remarkTypes?.[key] ?? key,
-    value: key,
-  }));
-});
-
-const selectedRemarkEndpoint = computed(() => {
-  if (skipTypes.value) return props.apiEndpoints?.default;
-  if (!props.apiEndpoints) return null;
-  return props.apiEndpoints[selectedRemarkType.value ?? 'default'];
-});
 
 const sortedRemarks = computed<Remark[]>(() => {
   let mutable = [...remarks.value];
@@ -127,19 +88,22 @@ const sortedRemarks = computed<Remark[]>(() => {
 });
 
 async function fetchRemarks() {
-  if (!props.apiEndpoints) return;
-  for (const [key, endpoint] of Object.entries(props.apiEndpoints)) {
-    const { data } = await api.get<Remark[]>(endpoint);
-    remarks.value.push(...data.map((remark) => ({ ...remark, type: key })));
-  }
-  loading.value = false;
+  if (!props.apiEndpoint) return;
+
+  remarks.value = [];
+  loading.value = true;
+
+  api.get<Remark[]>(props.apiEndpoint).then((res) => {
+    remarks.value = res.data;
+    loading.value = false;
+  });
 }
 
 async function addRemark() {
-  if (!selectedRemarkEndpoint.value || !remarkText.value) return;
+  if (!props.apiEndpoint) return;
 
   api
-    .post<Remark>(selectedRemarkEndpoint.value, {
+    .post<Remark>(props.apiEndpoint, {
       text: remarkText.value,
       tags: remarkTags.value,
     })
@@ -162,5 +126,5 @@ async function deleteRemark(remark: Remark) {
 
 fetchRemarks();
 
-watch(() => props.apiEndpoints, fetchRemarks);
+watch(() => props.apiEndpoint, fetchRemarks);
 </script>

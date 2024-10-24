@@ -2,6 +2,7 @@ export default {
   ugent: 'Universiteit Gent',
   ge: 'Faculteit Geneeskunde en Gezondheidswetenschappen',
   version: 'Versie',
+  language: 'Taal',
   loading: 'Aan het laden...',
   configuration: 'Configuratie',
   progress: 'Verloop',

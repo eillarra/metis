@@ -129,7 +129,7 @@
           <address-cards :api-endpoint="obj.place.rel_addresses" in-dialog />
         </q-tab-panel>
         <q-tab-panel name="remarks">
-          <remarks-view :api-endpoints="remarkEndpoints" :visibility-options="['student']"/>
+          <remarks-view :api-endpoint="obj.place.rel_remarks" :visibility-options="['student']" />
         </q-tab-panel>
         <q-tab-panel name="documents">
           <files-view :api-endpoint="obj.place.rel_files" :visibility-options="['place', 'student']">
@@ -220,12 +220,6 @@ const tab = ref('info');
 const obj = ref<ProjectPlace>(props.obj);
 
 const hasRemarks = computed<boolean>(() => (Number(obj.value.place._tags_dict?.['remarks.count']) || 0) > 0);
-const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
-  if (!props.obj) return null;
-  return {
-    default: props.obj.place.rel_remarks,
-  };
-});
 
 // ----- CHECK BELOW HERE -----
 

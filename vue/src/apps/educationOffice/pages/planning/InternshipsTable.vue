@@ -175,6 +175,7 @@ const rows = computed(() => {
             : !obj.is_approved
               ? 'bg-yellow-1'
               : '',
+      _remarks_endpoint: obj.rel_remarks,
       remarks: Number(obj._tags_dict?.['remarks.count']) || 0,
       student_name: (obj.Student?.User as StudentUser)?.name || '-',
       student_number: obj.Student?.number || '-',

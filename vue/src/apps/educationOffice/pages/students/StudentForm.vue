@@ -31,7 +31,7 @@
           <address-cards :api-endpoint="studentUser.rel_addresses" in-dialog />
         </q-tab-panel>
         <q-tab-panel name="remarks">
-          <remarks-view :api-endpoints="remarkEndpoints" />
+          <remarks-view :api-endpoint="obj.rel_remarks" />
         </q-tab-panel>
       </q-tab-panels>
     </template>
@@ -95,16 +95,6 @@ const remarkCount = computed<number>(() => {
   return props.obj.student_set.reduce((acc, projectStudent: Student) => {
     return acc + projectStudent.remark_count;
   }, 0);
-});
-
-const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
-  if (!props.obj) return null;
-
-  let acc: Record<string, ApiEndpoint> = {};
-  return props.obj.student_set.reduce((acc, projectStudent: Student) => {
-    acc[(projectStudent.Project as Project).name] = projectStudent.rel_remarks;
-    return acc;
-  }, acc);
 });
 
 function makeActive(active: boolean) {

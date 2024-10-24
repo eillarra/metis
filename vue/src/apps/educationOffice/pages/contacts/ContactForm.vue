@@ -65,7 +65,7 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="remarks">
-          <remarks-view :api-endpoints="remarkEndpoints" />
+          <remarks-view :api-endpoint="props.obj.rel_remarks" />
         </q-tab-panel>
         <q-tab-panel name="updated_by">
           <updated-by-view :obj="obj" />
@@ -128,13 +128,6 @@ const sortedEmailAddresses = computed<EmailAddressObject[]>(() => {
   return obj.value.email_addresses.sort((a, b) => {
     return a.email.localeCompare(b.email);
   });
-});
-
-const remarkEndpoints = computed<null | Record<string, ApiEndpoint>>(() => {
-  if (!props.obj) return null;
-  return {
-    default: props.obj.rel_remarks,
-  };
 });
 
 function save() {

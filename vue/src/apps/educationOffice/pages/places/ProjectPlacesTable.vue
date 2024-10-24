@@ -88,6 +88,9 @@ const rows = computed(() => {
   return props.projectPlaces.map((obj: ProjectPlace) => ({
     _self: obj,
     _class: obj.place.is_flagged ? 'bg-orange-1' : '',
+    _remarks_endpoint: obj.place.rel_remarks,
+    _remarks_title: obj.place.name,
+    _remarks_visibility_options: ['student'],
     remarks: Number(obj.place._tags_dict?.['remarks.count']) || 0,
     name: obj.place.name,
     code: obj.place.code,
